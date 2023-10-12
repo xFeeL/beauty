@@ -1,0 +1,33 @@
+ion-toolbar {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  }
+  
+  .no-capitalization {
+    text-transform: none;
+  }
+  
+  .scheduleIcon {
+    cursor: pointer;
+    color: var(--ion-color-danger);
+    /* Set the desired color for the trash icon */
+    //margin-left: 10px; /* Add desired spacing between interval and trash icon */
+    flex-shrink: 0;
+    /* Prevent icon from shrinking */
+    width: 26px;
+    height: 26px;
+  }
+  
+  .invalid-input {
+    --border-color: red;
+    --highlight-color-focused: red;
+    --highlight-color-invalid: red;
+  }
+  
+  .capsOff{
+    text-transform: none;
+  }

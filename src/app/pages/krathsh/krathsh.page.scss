@@ -1,0 +1,330 @@
+.bdgC {
+    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .h30 {
+    height: 30px;
+  }
+  
+  .hedCol {
+    bottom: -20px;
+  }
+  
+  .header-md::after {
+    background-image: none;
+  }
+  
+  .paddSE {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  .paddBt {
+    padding-bottom: 10px;
+  }
+  
+  ion-item {
+    --inner-padding-end: 14px;
+    --inner-padding-start: 0px;
+  }
+  
+  .cusItem {
+    --ion-background-color: var(--ion-color-light);
+  }
+  
+  .custAvatar {
+    width: 50px;
+    height: 50px
+  }
+  
+  .mg5 {
+    margin-right: 5px;
+  }
+  
+  .mg7 {
+    margin-right: 7px;
+  }
+  
+  .bordB {
+    border-bottom-style: solid;
+    border-color: var(--ion-color-light);
+    border-width: 0.5px;
+  }
+  
+  .timDiv {
+    border-radius: 50px;
+    padding: 8px;
+    margin: 3px;
+    width: 90%;
+    max-width: 100px;
+  }
+  
+  .bgC {
+    background-color: #FFDBD0;
+  }
+  
+  .bgL {
+    --background: var(--ion-color-primary-contrast);
+    background-color: var(--ion-color-primary-contrast);
+  }
+  
+  .avail {
+    background-color: var(--ion-color-primary-contrast);
+    border-style: solid;
+    border-width: .5px;
+    border-color: var(--ion-color-success);
+    color: var(--ion-color-success);
+  }
+  
+  .dis {
+    background-color: var(--ion-color-medium);
+  }
+  
+  .selected {
+    background-color: var(--ion-color-primary);
+    color: var(--ion-color-light);
+  }
+  
+  .inerrP15 {
+    --inner-padding-end: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  
+  .inerrP5 {
+    --inner-padding-end: 6px;
+    // padding-top: 5px;
+    padding-bottom: 10px;
+  }
+  
+  .cusItemSuccess {
+    --background: #C8DDFF;
+  }
+  
+  .cusItemOrang {
+    --background: #FFDBD0;
+  }
+  
+  .custItemGreen {
+    background-color: #DAFFDB;
+  }
+  
+  .custItemYellow {
+    background-color: #fff6dc;
+  }
+  
+  .orang {
+    --background: #FF3E01;
+    color: #FF3E01
+  }
+  
+  .custBadge {
+    text-align: left;
+    font-size: 13px;
+    /* height: 100%; */
+    border-radius: 50px;
+    padding: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  
+  .mr2 {
+    margin-right: 2rem;
+  }
+  
+  .bgS {
+    background-color: #DAFFDB;
+  }
+  
+  .bgM {
+    background-color: var(--ion-color-light);
+  }
+  
+  .custBadge2 {
+    text-align: left;
+    /* height: 100%; */
+    border-radius: 50px;
+    padding: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 5px !important;
+  }
+  
+  .vertical-center {
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    padding-bottom: 10px;
+    //justify-content: center;
+  }
+  
+  .uniform-height {
+    height: 100px;
+    /* Or any desired height */
+  }
+  
+  .co {
+    color: #FF3E01;
+  }
+  
+  .p7 {
+    padding: 7px;
+  }
+  
+  .p8 {
+    padding-left: 7px;
+  }
+  
+  .p10 {
+    padding-left: 10px;
+  }
+  
+  .custAvatarHed {
+    width: 95px;
+    height: 95px;
+    border-style: solid;
+    border-width: 4.5px;
+    border-color: var(--ion-color-medium);
+  }
+  
+  .ion-margin-top {
+    --margin-top: var(--ion-margin, 10px);
+    margin-top: var(--ion-margin, 10px);
+  }
+  
+  .p5 {
+    padding-top: 10px;
+  }
+  
+  .bl5 {
+    padding-left: 10px;
+  }
+  
+  .custcol {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 50px;
+  }
+  
+  .brD {
+    border-color: var(--ion-color-danger);
+  }
+  
+  .brs {
+    background-color: var(--ion-color-success);
+    border-width: 0px;
+  }
+  
+  .selectedItem {
+    --ion-background-color: var(--ion-color-primary);
+    --ion-color: var(--ion-color-primary-contrast);
+  }
+  
+  .selectedGrid {
+    background-color: var(--ion-color-primary);
+  }
+  
+  .p5 {
+    padding: 5px;
+  }
+  
+  .location-icon {
+    padding-right: 7px;
+  }
+  
+  .status {
+    padding-right: 5px;
+  }
+  
+  .star {
+    padding-left: 4px;
+    padding-right: 3px;
+    padding-bottom: 4px;
+  }
+  
+  .vertical-align {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  .pb3 {
+    padding-bottom: 3px;
+  }
+  
+  .pr3 {
+    padding-right: 3px;
+  }
+  
+  .f15 {
+    font-size: 15px;
+  }
+  
+  ion-button {
+    text-transform: none;
+  }
+  
+  .cancelReason {
+    padding-top: 30px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 0px;
+  }
+  
+  .reasonChips {
+    padding-left: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+  
+    ion-chip {
+      display: inline-block;
+      border-radius: 15px;
+    }
+  }
+  
+  * {
+    scrollbar-width: thin;
+  }
+  
+  .f12 {
+    font-size: 12px;
+  }
+  
+  .checkmark-icon {
+    padding-left: 5px
+  }
+  
+  .success-chip {
+    background-color: green;
+    /* Adjust to match your 'success' color */
+    border: 1px solid green;
+    color: white;
+  }
+  
+  .light-chip {
+    background-color: white;
+    /* Adjust to match your 'light' color */
+    border: 1px solid gray;
+    color: black;
+  }
+  
+  ion-button.rounded-btn {
+    --border-radius: 100px;
+  }
+  
+  ion-popover {
+    --width: 300px;
+    --height: 400px;
+  }
+  
+  .round {
+    border-radius: 20px;
+  }

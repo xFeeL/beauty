@@ -1,0 +1,86 @@
+.posR {
+    position: relative;
+    float: left;
+  }
+  
+  .mgB {
+    margin-bottom: 5px;
+  }
+  
+  .mgCam {
+    margin-right: 5px;
+  }
+  
+  .f11 {
+    font-size: 14px;
+    ;
+    font-weight: 500;
+  }
+  
+  
+  .no_results_text {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 50px;
+    width: 95%;
+    padding-bottom: 20px;
+  }
+  
+  .no_results_item {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .theContent {
+    --ion-background-color: #E3F0F9;
+  }
+  
+  .chat {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+  }
+  
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom:3px;
+  }
+  
+  .before_time {
+    padding-top: 26px;
+  }
+  
+  .vertical-align-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    /* occupy the full space */
+  }
+  
+  ion-icon[name="arrow-back"] {
+    display: none;
+    /* Hide by default */
+  }
+  
+  /* Desktop screens */
+  @media only screen and (min-width: 992px) {
+    ion-icon[name="arrow-back"] {
+      display: inline-block;
+      /* Show only on desktop */
+    }
+  }
+  
+  ion-header{
+    background: var(--ion-color-primary);
+  
+  }
+  
+  ion-toolbar{
+    --background: var(--ion-color-primary);
+  
+  }

@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-button (click)="goBack()">
+          <ion-icon color="light" name="arrow-back"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+
+    <ion-title color="light" text-wrap>Νέα Υπηρεσία</ion-title>
+
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <ion-grid >
+    <ion-row class="ion-justify-content-center">
+
+      <ion-col size-lg="8">
+        <ion-grid class="customGrid">
+          <ion-row class="ion-justify-content-center ">
+            <ion-col size-lg="12" size-xs="12">
+              <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Υπηρεσίας"
+                label-placement="floating" fill="solid" placeholder="Εισάγετε Όνομα"
+                [(ngModel)]="serviceName"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size-lg="6" size-xs="6">
+              <ion-input color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
+                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="9,50"></ion-input>
+            </ion-col>
+            <ion-col size-lg="6" size-xs="6">
+              <ion-input color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
+                label="Διάρκεια (λεπτά)" label-placement="floating" fill="solid" placeholder="15"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+
+              
+                
+                <ion-select label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
+                  <ion-select-option  *ngFor="let category of categories" [value]="category">{{category}}</ion-select-option>
+                  
+                </ion-select>
+
+            </ion-col>
+
+          </ion-row>
+          <ion-row>
+            <ion-textarea labelPlacement="floating" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
+              color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
+              labelPlacement="floating" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
+          </ion-row>
+
+          <!-- ... (existing content) ... -->
+
+          <ion-row class="ion-justify-content-center ion-margin-top">
+            <ion-col size="12">
+              <ion-item-divider color="light" class="whiteBack">
+                <ion-label>
+                  Ποιοι προσφέρουν την υπηρεσία;
+                </ion-label>
+              </ion-item-divider>
+
+              <ion-item lines="full">
+                <ion-label>Επιλογή όλων</ion-label>
+                <ion-checkbox slot="start" [(ngModel)]="selectAll" (ionChange)="selectAllPeople()"></ion-checkbox>
+              </ion-item>
+
+              <ion-list class="ion-no-padding">
+                <ion-item lines="full" *ngFor="let person of people">
+                  <ion-label>{{person.name}}</ion-label>
+                  <ion-checkbox slot="start" [(ngModel)]="person.selected"
+                    (ionChange)="checkIfAllSelected()"></ion-checkbox>
+                </ion-item>
+
+              </ion-list>
+            </ion-col>
+          </ion-row>
+
+
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>
+<ion-footer>
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="6" (click)="deleteService()" class="ion-no-padding" *ngIf="editing==true">
+        <ion-button size="full" color="danger" class="capsoff ion-no-margin">
+          Διαγραφή
+        </ion-button>
+      </ion-col>
+      <ion-col [size]="editing==true?'6':'12'" class="ion-no-padding">
+        <ion-button  size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
+          Αποθήκευση
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

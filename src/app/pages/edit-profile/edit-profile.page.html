@@ -1,0 +1,62 @@
+<ion-header> <ion-toolbar>
+    <ion-buttons slot="start" class="ion-no-margin">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button> </ion-buttons>
+    <ion-title color="light">Επεξεργασία Προφίλ</ion-title> </ion-toolbar></ion-header>
+<ion-content *ngIf="initialized === false">
+  <ion-spinner color="primary" class="ion-text-center ion-padding"></ion-spinner></ion-content>
+<ion-content *ngIf="initialized==true">
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" class="ion-no-padding"> <ion-grid class="bgL ion-margin-top">
+          <ion-row class="ion-justify-content-center ion-padding">
+            <ion-col size="5" md-size="2" lg-size="2" class="custCol ion-no-padding ion-padding-start ion-padding-end">
+              <ion-avatar class="custAvatarHed">
+                <img [src]="image">
+              </ion-avatar>
+            </ion-col>
+            <ion-col size="12" class="ion-text-center">
+              <h3 class="ion-no-margin"> {{name}}</h3>
+              <ion-note class="mg5">{{email}}</ion-note><br>
+              <ion-chip class="chipPr shadow" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-chip>
+            </ion-col>
+            <ion-col size="4" class="ion-text-center">
+              <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*"
+                hidden> </ion-col>
+          </ion-row>
+          <ion-row class="ion-margin">
+            <ion-list class="w100 ion-no-padding bgL ">
+              <ion-item [class]="businessNameItemClass" (ionChange)="businessNameTest()" (keyup)="businessNameTest()">
+                <ion-label position="floating">Όνομα Επιχείρησης</ion-label>
+                <ion-input [(ngModel)]="name" [value]="name"></ion-input>
+                <ion-icon [class]="businessNameVariableClass " slot="end" [name]="businessNameIconName"
+                  [color]="businessNameColor"></ion-icon>
+              </ion-item>
+              <ion-item class="ion-margin validBorderItem" (click)="chooseAddress()">
+                <ion-label position="floating">Διεύθυνση</ion-label>
+                <ion-input disabled="false" [value]="address"></ion-input>
+                <ion-icon class="ion-margin-top pt7" slot="end" name="checkmark-outline" color="success"></ion-icon>
+              </ion-item>
+              <ion-item [class]="phoneDisplayedItemClass" (ionChange)="mobileCheck()" (keyup)="mobileCheck()">
+                <ion-label position="floating">Εμφανιζόμενο Τηλέφωνο</ion-label>
+                <ion-input disabled="false" [(ngModel)]="displayed_phone" [value]="displayed_phone"></ion-input>
+                <ion-icon [class]="phoneVariableClass" slot="end" [name]="phoneIconName" [color]="phoneColor"
+                  *ngIf="displayed_phone!=null && displayed_phone.length>0"></ion-icon>
+              </ion-item>
+              <ion-item class="ion-margin ">
+                <ion-label position="floating">E-mail</ion-label>
+                <ion-input disabled="true" [value]="email"></ion-input>
+              </ion-item>
+              <ion-item class="ion-margin ">
+                <ion-label position="floating">Προσωπικό Κινητό</ion-label>
+                <ion-input disabled="true" [value]="phone"></ion-input>
+              </ion-item> </ion-list>
+          </ion-row>
+        </ion-grid></ion-col>
+    </ion-row>
+  </ion-grid></ion-content>
+<ion-footer (click)="save()"> <ion-button [disabled]="!saveButtonEnabled" expand="full" color="primary"
+    class="ion-no-margin">
+    <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
+  </ion-button></ion-footer>

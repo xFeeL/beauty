@@ -8,19 +8,278 @@
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
-
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
-
+@import "~@ionic/angular/css/core.css";
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import '@ionic/angular/css/display.css';
-
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+@import "node_modules/@costlydeveloper/ngx-awesome-popup/styles/theme";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "swiper/scss";
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ion-modal {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.w95 {
+  width: 95%;
+}
+
+.w55 {
+  width: 55%
+}
+
+.head2 {
+  border-bottom-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+  //background-color: var(--ion-color-primary);
+  background: linear-gradient(162.61deg, #246EE9 15.44%, #25A9FF 89.47%);
+  height: 300px;
+}
+
+.head3 {
+  border-bottom-right-radius: 32%;
+  border-bottom-left-radius: 35%;
+  height: 375px;
+  background-color: var(--ion-color-primary)
+}
+
+ion-content {
+  --ion-background-color: var(--ion-color-light);
+}
+
+ion-toolbar {
+  --background: var(--ion-color-primary-contrast)
+}
+
+ion-item {
+  --ion-background-color: var(--ion-color-primary-contrast);
+}
+
+.ion-item2 {
+  --ion-background-color: var(--ion-color-light);
+}
+
+.f30 {
+  font-size: 30px;
+}
+
+.float {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
+}
+
+.bg {
+  // background-color: var(--ion-color-primary);
+  background: linear-gradient(208.93deg, #FFFFFF -103.04%, #0083FD 77.05%);
+}
+
+.cusItemPrimary {
+  --ion-background-color: var(--ion-color-primary);
+}
+
+.cusItemPrimary {
+  --ion-background-color: var(--ion-color-primary);
+}
+
+.pt7 {
+  padding-top: 6px;
+}
+
+.pt5 {
+  padding-top: 5px;
+}
+
+.background {
+  --background: #E3F0F9;
+}
+
+.backgroundGrid {
+  background: #E3F0F9;
+}
+
+.mgSE8 {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.custModal {
+  --border-radius: 50px;
+}
+
+.review-modal {
+  --height: 60%;
+  --border-radius: 16px;
+  --backdrop-opacity: 0.5;
+  backdrop-filter: blur(3px);
+
+  &::part(handle) {
+    background: var(--ion-color-primary);
+    width: 150px;
+    height: 6px;
+  }
+
+  &::part(content) {
+    border-radius: 0px;
+    // box-shadow: 0px 0px 20px 5px rgb(0 0 0 / 32%);
+  }
+}
+
+ion-spinner {
+  display: block;
+  margin: auto;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+.vertical-align {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+ion-alert {
+  --min-width: 20% !important;
+}
+
+.custom-toast {
+  --background: #1c1c1e !important;
+  --color: #fff !important;
+  --padding: 0.5rem;
+  --border-radius: 0.5rem;
+  --max-width: calc(100% - 2rem);
+  --text-align: left;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025rem;
+  line-height: 1.25rem;
+}
+
+.custom-toast::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0.5rem 0.5rem 0.5rem;
+  border-color: transparent transparent var(--background) transparent;
+}
+
+.custom-toast::after {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: var(--background);
+  border-radius: 50%;
+}
+
+ion-header,
+ion-footer {
+  background-color: white;
+}
+
+.scroll-width-thin {
+  scrollbar-width: thin;
+}
+
+ion-modal {
+  --height: 70%;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --min-width: 300px;
+}
+
+ion-modal ion-toolbar {
+  --background: var(--ion-color-primary); // primary background color
+}
+
+/* This will apply when the screen width is 600px or less */
+@media screen and (max-width: 600px) {
+  ion-modal {
+    --height: 100%;
+  }
+}
+
+ion-modal::part(backdrop) {
+  background: rgb(69, 143, 255);
+  opacity: 1;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.modal_button {}
+
+.modal-toolbar {
+  --opacity: 100 !important;
+}
+
+.float {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
+}
+
+.capsoff {
+  text-transform: none;
+}
+
+.mat-mdc-standard-chip {
+  --mdc-theme-primary:
+}
+
+ion-input {
+  --border-color:var(--ion-color-primary) !important;
+  --highlight-color-focused:var(--ion-color-primary) !important;
+  --highlight-color-valid:var(--ion-color-primary) !important;
+}
+
+
+ion-textarea {
+  --border-color:var(--ion-color-primary) !important;
+  --highlight-color-focused:var(--ion-color-primary) !important;
+  --highlight-color-valid:var(--ion-color-primary) !important;
+}
+
+ion-select {
+  --border-color:var(--ion-color-primary) !important;
+  --highlight-color-focused:var(--ion-color-primary) !important;
+  --highlight-color-valid:var(--ion-color-primary) !important;
+}
+

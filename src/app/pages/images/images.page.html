@@ -1,0 +1,210 @@
+<ion-header> <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button (click)="goBack()" slot="start" fill="clear">
+      <ion-icon color="light" name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">{{folderName}}</ion-title>
+  <ion-buttons slot="end">
+    <ion-button *ngIf="images.length!=0" id="settings-trigger" slot="start" fill="clear">
+      <ion-icon color="light" name="ellipsis-vertical-outline"></ion-icon>
+      <ion-popover #deletePop trigger="settings-trigger" triggerAction="click">
+        <ng-template>
+          <ion-content (click)="deleteFolderImages()" class="ion-padding">Επιλογή εικόνων για διαγραφή</ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar></ion-header>
+<ion-content> <ion-item class="ion-padding " lines="none" *ngIf="images.length==0">
+  <ion-grid>
+    <ion-row>
+      <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+    </ion-row>
+    <ion-row> <ion-note class="no_results_text">
+        Εισάγετε εικόνες πατώντας στο κουμπί "Νέες".
+      </ion-note>
+    </ion-row>
+  </ion-grid> </ion-item>
+<div class="image-grid my-gallery">
+  <ng-container *ngFor="let item of images; index as i">
+    <div class="image-wrapper">
+      <img class="thumbnailImage" [lightbox]="i" [src]="item.data ? item.data.thumb : ''">
+      <ion-icon class="icon2" color="danger" name="trash-outline" (click)="presentAlert(i,item)"
+        *ngIf="deleteImages"></ion-icon>
+    </div>
+  </ng-container>
+</div> <ion-fab slots="fixed" class="float" id="open-modal-new-photos">
+  <ion-chip class="ion-padding" class="bg">
+    <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
+    <ion-label color="light">Νέες</ion-label>
+  </ion-chip>
+</ion-fab> <ion-modal trigger="open-modal-new-photos" #newPhotosModal (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary" class="modal-toolbar">
+        <ion-buttons slot="start" color="primary">
+          <ion-button no-caps class="modal-button" (click)="cancelNewPhotosModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title color="light" class="center-title" text-wrap>Προσθήκη Φωτογραφιών</ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="modal-button" (click)="confirmNewPhotosModal()" *ngIf="newImages.length!=0"
+            [strong]="true">Προσθήκη</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid class="paddSE ion-margin-top ">
+        <ion-row class="bgL "> <ion-col size="12" class="ion-text-center ion-margin-top ">
+            <ion-label><b>Ανεβάστε εικόνες </b></ion-label><br>
+            <ion-label><ion-note color="medium">Υποστηρίζονται εικόνες jpg, png και jpeg</ion-note></ion-label>
+          </ion-col> <ion-col size="12" class="ion-margin-top ion-text-center " (click)="presentActionSheet()">
+            <svg width="300" height="122" viewBox="0 0 300 122" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.5" y="0.5" width="299" height="121" rx="9.5" fill="white" stroke="black"
+                stroke-dasharray="2 2" />
+              <path
+                d="M150 51.0001V66.0001M150 51.0001L145.833 54.3334M150 51.0001L154.167 54.3334M138.39 46.1951C136.814 46.5917 135.436 47.5503 134.517 48.8908C133.598 50.2313 133.199 51.8613 133.397 53.4747C133.595 55.0881 134.375 56.5738 135.591 57.6526C136.807 58.7314 138.375 59.3291 140 59.3334H141.667"
+                stroke="#246EE9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M156.383 42.8967C155.814 40.641 154.408 38.6863 152.45 37.4288C150.493 36.1713 148.131 35.7052 145.842 36.1249C143.554 36.5446 141.511 37.8187 140.127 39.689C138.743 41.5592 138.122 43.8857 138.39 46.1967C138.39 46.1967 138.645 47.6667 139.167 48.5001"
+                stroke="#246EE9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M158.334 59.3334C159.51 59.3326 160.674 59.0826 161.747 58.5998C162.82 58.1171 163.779 57.4125 164.56 56.5325C165.341 55.6525 165.927 54.6171 166.279 53.4943C166.631 52.3715 166.742 51.1869 166.603 50.0183C166.465 48.8498 166.08 47.7239 165.475 46.7146C164.87 45.7054 164.058 44.8358 163.092 44.1631C162.127 43.4903 161.03 43.0296 159.874 42.8113C158.717 42.5931 157.528 42.6222 156.384 42.8967L154.167 43.5001"
+                stroke="#246EE9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <text
+                style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 12.3px;"
+                x="10.273" y="88.366" transform="matrix(0.970533, 0, 0, 1, 18.971533, 0)">
+                Κάντε κλικ στο πλαίσιο για να επιλέξετε εικόνα</text>
+            </svg> </ion-col>
+          <input #_fileInput type="file" accept="image/*" hidden> <ion-col size="12"
+            class="ion-margin-top ion-padding-start" *ngIf="newImages.length!=0">
+            <ion-label>Εικόνες</ion-label><br>
+          </ion-col> <ion-col size="12" class="ion-margin-top poa  ion-padding-bottom ion-padding-start">
+            <ion-spinner class="ion-padding-top" color="primary" *ngIf="loadingOn"></ion-spinner>
+            <div class="img-wrap " *ngFor="let im of newImages">
+              <ion-img src="data:image/jpeg;base64,{{im}}"></ion-img> <ion-icon id="clear" name="close-circle"
+                color="dark" (click)="removeImage(im)"></ion-icon>
+            </div>
+          </ion-col> </ion-row>
+      </ion-grid> </ion-content>
+  </ng-template>
+</ion-modal>
+<ion-modal trigger="open-modal-facebook" #facebookModal>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary" class="modal-toolbar">
+        <ion-buttons slot="start" color="primary">
+          <ion-button no-caps class="modal-button" (click)="cancelFacebookModal()">Ακύρωση</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button *ngIf="selectedImages.length>0" class="modal-button" (click)="confirmFacebookModal()"
+            [strong]="true">Επιλογή</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ng-container *ngIf="choosePage">
+        <ion-grid>
+          <ion-row>
+            <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="4" size-xl="4" *ngFor="let page of pagesToChoose">
+              <ion-card (click)="goToPage(page)">
+                <img [src]="page.url" class="page-image " />
+                <ion-card-content>
+                  <ion-card-title class="album-name">{{ page.name }}</ion-card-title>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+      <ng-container *ngIf="pageChosen">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="backToPages()">
+              <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title color="light">{{ pageName }}</ion-title>
+        </ion-toolbar>
+        <ion-grid>
+          <ion-row>
+            <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="4" size-xl="4" *ngFor="let album of albums">
+              <ion-card (click)="openAlbum(album)">
+                <img [src]="album.imageLink" class="cover-image " />
+                <ion-card-content>
+                  <ion-card-title class="album-name">{{ album.folder_name }}</ion-card-title>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+      <ng-container *ngIf="albumChosen">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="backToAlbums()">
+              <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title color="light">{{ currentAlbum.folder_name }}</ion-title>
+        </ion-toolbar>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6" *ngFor="let photo of currentAlbumPhotos">
+              <ion-card [class]="photo.selected?'selected-photo': ''" (click)="selectImage(photo)">
+                <img [src]="photo.imageLink" class="photo-image" />
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+<ion-modal trigger="open-modal-instagram" #instagramModal>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary" class="modal-toolbar">
+        <ion-buttons slot="start" color="primary">
+          <ion-button no-caps class="modal-button" (click)="cancelInstagramModal()">Ακύρωση</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button *ngIf="selectedImages.length>0" class="modal-button" (click)="confirmInstagramModal()"
+            [strong]="true">Επιλογή</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar color="light">
+        <ion-title size="small" class="helper-text ion-no-padding">
+          <ion-button id="popover" fill="clear" class="ion-text-start helper-text ">
+            <ion-icon class="pr7" color="primary" name="information-circle"></ion-icon>
+            Θέλω τις εικόνες από άλλο Instagram προφίλ.
+          </ion-button>
+          <ion-popover trigger="popover" triggerAction="click">
+            <ng-template>
+              <ion-content class="ion-padding">
+                <ion-note>Αν θέλετε να εισαγάγετε φωτογραφίες από άλλο προφίλ στο Instagram, πρέπει να συνδεθείτε στον
+                  επιθυμητό λογαριασμό μέσω του προγράμματος περιήγησης ή μέσω της εφαρμογής του Instagram.
+                </ion-note>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ng-container>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6" *ngFor="let photo of instagramImages">
+              <ion-card [class]="photo.selected?'selected-photo': ''" (click)="selectImage(photo)">
+                <img [src]="photo.imageLink" class="photo-image" />
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container> </ion-content>
+  </ng-template>
+</ion-modal>
+</ion-content>

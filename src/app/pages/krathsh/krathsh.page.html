@@ -1,0 +1,569 @@
+<ion-header> <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">Κράτηση</ion-title>
+  <ion-buttons slot="end" *ngIf="status=='Αποδεκτή'" class="ion-margin-end"> <ion-button class="rounded-btn"
+      [ngClass]="{'expanded': checkedIn=='checked_in'}"
+      [@buttonAnimation]="checkedIn=='true' ? 'expanded' : 'collapsed'" *ngIf="checkedIn != 'Εκκρεμεί'"
+      [fill]="checkedIn=='true' ? 'solid' : 'outline'" size="small" [class.green-border]="checkedIn!='true'"
+      [color]="checkedIn=='true'?'success':'light'" (click)="checkIn(); $event.stopPropagation();"
+      style="text-transform: none; border-radius: 100px !important;">
+      <ion-icon *ngIf="checkedIn=='true'" [@checkmarkAnimation] name="checkmark-outline"
+        style="padding-right: 10px;"></ion-icon>
+      Έφτασε
+    </ion-button> </ion-buttons>
+</ion-toolbar></ion-header><ion-content [fullscreen]="true" class="background">
+<ion-grid class="ion-no-padding">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="12" class="ion-no-padding">
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12" class="ion-text-center"> <ion-badge [class]="booking_status_class"> <ion-icon item-start
+                [name]="booking_status_icon" [color]="booking_status_color" class="bdgC"></ion-icon>
+              <span [style.color]="text_color" class="status">{{booking_status}}</span>
+            </ion-badge>
+          </ion-col>
+        </ion-row>
+      </ion-grid> <ion-grid class="paddSE p10">
+        <ion-row class="bgL"> <ion-col size="12" class="bordB">
+            <ion-list class="bgL ion-no-padding ">
+              <ion-item lines="none">
+                <ion-label><ion-note color="medium">Πελάτης</ion-note></ion-label>
+              </ion-item>
+              <ion-grid class="ion-no-padding">
+                <ion-row>
+                  <ion-col size="12" class="ion-no-padding">
+                    <ion-grid class="ion-no-padding">
+                      <ion-row class="bgL">
+                        <ion-item button lines="none" class="w100  paddBt bgL">
+                          <ion-avatar class="custAvatar" (click)="goToClient()">
+                            <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img>
+                          </ion-avatar>
+                          <ion-grid class="ion-no-padding p8">
+                            <ion-row>
+                              <ion-col size="5" class="vertical-center" (click)="goToClient()">
+                                <ion-label text-wrap>{{this.username}}</ion-label>
+                              </ion-col>
+                              <ion-col size="7">
+                                <ion-item lines="none" class="inerrP5">
+                                  <ion-icon name="person-outline" color="primary" class="location-icon"></ion-icon>
+                                  <ion-label class="f15" text-wrap>Για {{this.people}} άτομα</ion-label>
+                                </ion-item>
+                              </ion-col>
+                            </ion-row>
+                          </ion-grid>
+                        </ion-item>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-list>
+          </ion-col>
+          <ion-col size="12" class="bordB">
+            <ion-list class="bgL">
+              <ion-grid class="bgL ion-no-padding">
+                <ion-row class="bgL">
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-label><ion-note color="medium">Ημερομηνία / Ώρα</ion-note></ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-label class="mg5"><ion-note color="medium">Χώρος</ion-note></ion-label>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-icon color="primary" name="calendar-outline" slot="start" class="mg5"></ion-icon>
+                      <ion-label class="f15">{{date}}</ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item lines="none" class="inerrP5">
+                      <ion-icon name="footsteps-outline" color="primary" class="location-icon"></ion-icon>
+                      <ion-label class="f15" text-wrap>{{this.floor}}</ion-label>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-icon color="primary" name="time-outline" slot="start" class="mg5"></ion-icon>
+                      <ion-label class="f15">{{time}}</ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item lines="none" class="inerrP5">
+                      <ion-icon name="grid-outline" color="primary" class="location-icon"></ion-icon>
+                      <ion-label class="f15" text-wrap [innerHTML]="tableString"></ion-label>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-label class="ion-margin-start"><ion-note color="medium">Σημειώσεις</ion-note></ion-label>
+                </ion-row>
+                <ion-row>
+                  <ion-item lines="none" class="inerrP5">
+                    <ion-label class="f15" text-wrap>{{ note || 'Δεν υπάρχουν σημειώσεις' }}</ion-label>
+                  </ion-item>
+                </ion-row>
+              </ion-grid>
+            </ion-list> </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-grid class="paddSE ">
+        <ion-row class="bgL">
+          <ion-col size="12" class="bordB">
+            <ion-list class="bgL ion-no-padding">
+              <ion-item lines="none">
+                <ion-label><ion-note color="medium">Κατάσταση</ion-note> </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+        <ion-row class="bgL">
+          <ion-col size="2" class="bordB ion-text-center">
+            <div *ngIf="status=='Αποδεκτή'">
+              <svg width="48" height="209" viewBox="0 0 48 209" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g filter="url(#filter0_d_872_263)">
+                  <path
+                    d="M44 181C44 192.046 35.0457 201 24 201C12.9543 201 4 192.046 4 181C4 169.954 12.9543 161 24 161C35.0457 161 44 169.954 44 181Z"
+                    fill="white" fill-opacity="0.41" shape-rendering="crispEdges" />
+                  <path
+                    d="M43.5 181C43.5 191.77 34.7696 200.5 24 200.5C13.2304 200.5 4.5 191.77 4.5 181C4.5 170.23 13.2304 161.5 24 161.5C34.7696 161.5 43.5 170.23 43.5 181Z"
+                    stroke="#E8E8E8" shape-rendering="crispEdges" />
+                </g>
+                <circle opacity="0.2" cx="24" cy="181" r="15" fill="#687282" />
+                <g opacity="0.6">
+                  <path
+                    d="M24.0133 173.5C19.8705 173.5 16.5 176.867 16.5 181.006C16.5 185.144 19.8705 188.511 24.0133 188.511C28.1562 188.511 31.5266 185.144 31.5266 181.006C31.5266 176.867 28.1562 173.5 24.0133 173.5ZM24.0133 187.01C20.6992 187.01 18.0027 184.316 18.0027 181.006C18.0027 177.695 20.6992 175.001 24.0133 175.001C27.3274 175.001 30.024 177.695 30.024 181.006C30.024 184.316 27.3274 187.01 24.0133 187.01Z"
+                    fill="#687282" />
+                  <path d="M24.7654 177.253H23.2627V181.316L25.7368 183.788L26.7992 182.727L24.7654 180.695V177.253Z"
+                    fill="#687282" />
+                </g>
+                <g filter="url(#filter1_d_872_263)">
+                  <rect x="23" y="40" width="2" height="44" fill="#0FCE16" />
+                </g>
+                <g filter="url(#filter2_d_872_263)">
+                  <path
+                    d="M44 20C44 31.0457 35.0457 40 24 40C12.9543 40 4 31.0457 4 20C4 8.9543 12.9543 0 24 0C35.0457 0 44 8.9543 44 20Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 20C43.5 30.7696 34.7696 39.5 24 39.5C13.2304 39.5 4.5 30.7696 4.5 20C4.5 9.23045 13.2304 0.5 24 0.5C34.7696 0.5 43.5 9.23045 43.5 20Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="20" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 15.2062L21.9073 23.1358L18.2542 19.4412L18.2542 19.4412C17.9516 19.1353 17.4599 19.1352 17.1573 19.4412L17.1572 19.4413C16.8565 19.7459 16.8564 20.2383 17.1572 20.5428L17.1573 20.5429L21.3578 24.7932L21.3579 24.7934C21.6607 25.0992 22.1521 25.0992 22.4548 24.7934L22.4549 24.7932L30.8424 16.3081L30.8425 16.308C31.1432 16.0035 31.1432 15.5111 30.8425 15.2065L30.8421 15.2062C30.6927 15.0555 30.4882 14.9725 30.2759 14.9775L30.2759 14.9775C30.0761 14.982 29.8864 15.0643 29.746 15.2059L29.7457 15.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <g filter="url(#filter3_d_872_263)">
+                  <path
+                    d="M44 102C44 113.046 35.0457 122 24 122C12.9543 122 4 113.046 4 102C4 90.9543 12.9543 82 24 82C35.0457 82 44 90.9543 44 102Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 102C43.5 112.77 34.7696 121.5 24 121.5C13.2304 121.5 4.5 112.77 4.5 102C4.5 91.2304 13.2304 82.5 24 82.5C34.7696 82.5 43.5 91.2304 43.5 102Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="102" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 97.2062L21.9073 105.136L18.2542 101.441L18.2542 101.441C17.9516 101.135 17.4599 101.135 17.1573 101.441L17.1572 101.441C16.8565 101.746 16.8564 102.238 17.1572 102.543L17.1573 102.543L21.3578 106.793L21.3579 106.793C21.6607 107.099 22.1521 107.099 22.4548 106.793L22.4549 106.793L30.8424 98.3081L30.8425 98.308C31.1432 98.0035 31.1432 97.5111 30.8425 97.2065L30.8421 97.2062C30.6927 97.0555 30.4882 96.9725 30.2759 96.9775L30.2759 96.9775C30.0761 96.982 29.8864 97.0643 29.746 97.2059L29.7457 97.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <defs>
+                  <filter id="filter0_d_872_263" x="0" y="161" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_263" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_263" result="shape" />
+                  </filter>
+                  <filter id="filter1_d_872_263" x="19" y="40" width="10" height="52" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_263" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_263" result="shape" />
+                  </filter>
+                  <filter id="filter2_d_872_263" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_263" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_263" result="shape" />
+                  </filter>
+                  <filter id="filter3_d_872_263" x="0" y="82" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_263" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_263" result="shape" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+            <div *ngIf="status=='Ακυρώθηκε'">
+              <svg width="48" height="132" viewBox="0 0 48 132" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g filter="url(#filter0_d_872_271)">
+                  <path d="M23 40H25V84H23V40Z" fill="#FF3E01" />
+                </g>
+                <g filter="url(#filter1_d_872_271)">
+                  <path
+                    d="M44 104C44 115.046 35.0457 124 24 124C12.9543 124 4 115.046 4 104C4 92.9543 12.9543 84 24 84C35.0457 84 44 92.9543 44 104Z"
+                    fill="white" />
+                  <path
+                    d="M43.25 104C43.25 114.631 34.6315 123.25 24 123.25C13.3685 123.25 4.75 114.631 4.75 104C4.75 93.3685 13.3685 84.75 24 84.75C34.6315 84.75 43.25 93.3685 43.25 104Z"
+                    stroke="#FFDBD0" stroke-width="1.5" />
+                </g>
+                <circle cx="24" cy="104" r="15" fill="#FF3E01" />
+                <path
+                  d="M24.9827 104.163L30.1363 109.316L29.3164 110.136L24.1629 104.983L19.0093 110.136L18.1895 109.316L23.343 104.163L18.1895 99.0095L19.0093 98.1896L24.1629 103.343L29.3164 98.1896L30.1363 99.0095L24.9827 104.163Z"
+                  fill="white" />
+                <g filter="url(#filter2_d_872_271)">
+                  <path
+                    d="M44 20C44 31.0457 35.0457 40 24 40C12.9543 40 4 31.0457 4 20C4 8.9543 12.9543 0 24 0C35.0457 0 44 8.9543 44 20Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 20C43.5 30.7696 34.7696 39.5 24 39.5C13.2304 39.5 4.5 30.7696 4.5 20C4.5 9.23045 13.2304 0.5 24 0.5C34.7696 0.5 43.5 9.23045 43.5 20Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="20" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 15.2062L21.9073 23.1358L18.2542 19.4412L18.2542 19.4412C17.9516 19.1353 17.4599 19.1352 17.1573 19.4412L17.1572 19.4413C16.8565 19.7459 16.8564 20.2383 17.1572 20.5428L17.1573 20.5429L21.3578 24.7932L21.3579 24.7934C21.6607 25.0992 22.1521 25.0992 22.4548 24.7934L22.4549 24.7932L30.8424 16.3081L30.8425 16.308C31.1432 16.0035 31.1432 15.5111 30.8425 15.2065L30.8421 15.2062C30.6927 15.0555 30.4882 14.9725 30.2759 14.9775L30.2759 14.9775C30.0761 14.982 29.8864 15.0643 29.746 15.2059L29.7457 15.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <defs>
+                  <filter id="filter0_d_872_271" x="19" y="40" width="10" height="52" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_271" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_271" result="shape" />
+                  </filter>
+                  <filter id="filter1_d_872_271" x="0" y="84" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_271" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_271" result="shape" />
+                  </filter>
+                  <filter id="filter2_d_872_271" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_271" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_271" result="shape" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+            <div *ngIf="status=='Ολοκληρωμένη'">
+              <svg width="48" height="213" viewBox="0 0 48 213" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g filter="url(#filter0_d_872_277)">
+                  <rect x="23" y="123" width="2" height="44" fill="#0FCE16" />
+                </g>
+                <g filter="url(#filter1_d_872_277)">
+                  <path
+                    d="M44 185C44 196.046 35.0457 205 24 205C12.9543 205 4 196.046 4 185C4 173.954 12.9543 165 24 165C35.0457 165 44 173.954 44 185Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 185C43.5 195.77 34.7696 204.5 24 204.5C13.2304 204.5 4.5 195.77 4.5 185C4.5 174.23 13.2304 165.5 24 165.5C34.7696 165.5 43.5 174.23 43.5 185Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="185" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 180.206L21.9073 188.136L18.2542 184.441L18.2542 184.441C17.9516 184.135 17.4599 184.135 17.1573 184.441L17.1572 184.441C16.8565 184.746 16.8564 185.238 17.1572 185.543L17.1573 185.543L21.3578 189.793L21.3579 189.793C21.6607 190.099 22.1521 190.099 22.4548 189.793L22.4549 189.793L30.8424 181.308L30.8425 181.308C31.1432 181.003 31.1432 180.511 30.8425 180.207L30.8421 180.206C30.6927 180.056 30.4882 179.972 30.2759 179.978L30.2759 179.977C30.0761 179.982 29.8864 180.064 29.746 180.206L29.7457 180.206Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <g filter="url(#filter2_d_872_277)">
+                  <rect x="23" y="40" width="2" height="44" fill="#0FCE16" />
+                </g>
+                <g filter="url(#filter3_d_872_277)">
+                  <path
+                    d="M44 20C44 31.0457 35.0457 40 24 40C12.9543 40 4 31.0457 4 20C4 8.9543 12.9543 0 24 0C35.0457 0 44 8.9543 44 20Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 20C43.5 30.7696 34.7696 39.5 24 39.5C13.2304 39.5 4.5 30.7696 4.5 20C4.5 9.23045 13.2304 0.5 24 0.5C34.7696 0.5 43.5 9.23045 43.5 20Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="20" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 15.2062L21.9073 23.1358L18.2542 19.4412L18.2542 19.4412C17.9516 19.1353 17.4599 19.1352 17.1573 19.4412L17.1572 19.4413C16.8565 19.7459 16.8564 20.2383 17.1572 20.5428L17.1573 20.5429L21.3578 24.7932L21.3579 24.7934C21.6607 25.0992 22.1521 25.0992 22.4548 24.7934L22.4549 24.7932L30.8424 16.3081L30.8425 16.308C31.1432 16.0035 31.1432 15.5111 30.8425 15.2065L30.8421 15.2062C30.6927 15.0555 30.4882 14.9725 30.2759 14.9775L30.2759 14.9775C30.0761 14.982 29.8864 15.0643 29.746 15.2059L29.7457 15.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <g filter="url(#filter4_d_872_277)">
+                  <path
+                    d="M44 102C44 113.046 35.0457 122 24 122C12.9543 122 4 113.046 4 102C4 90.9543 12.9543 82 24 82C35.0457 82 44 90.9543 44 102Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 102C43.5 112.77 34.7696 121.5 24 121.5C13.2304 121.5 4.5 112.77 4.5 102C4.5 91.2304 13.2304 82.5 24 82.5C34.7696 82.5 43.5 91.2304 43.5 102Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="102" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 97.2062L21.9073 105.136L18.2542 101.441L18.2542 101.441C17.9516 101.135 17.4599 101.135 17.1573 101.441L17.1572 101.441C16.8565 101.746 16.8564 102.238 17.1572 102.543L17.1573 102.543L21.3578 106.793L21.3579 106.793C21.6607 107.099 22.1521 107.099 22.4548 106.793L22.4549 106.793L30.8424 98.3081L30.8425 98.308C31.1432 98.0035 31.1432 97.5111 30.8425 97.2065L30.8421 97.2062C30.6927 97.0555 30.4882 96.9725 30.2759 96.9775L30.2759 96.9775C30.0761 96.982 29.8864 97.0643 29.746 97.2059L29.7457 97.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <defs>
+                  <filter id="filter0_d_872_277" x="19" y="123" width="10" height="52" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_277" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_277" result="shape" />
+                  </filter>
+                  <filter id="filter1_d_872_277" x="0" y="165" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_277" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_277" result="shape" />
+                  </filter>
+                  <filter id="filter2_d_872_277" x="19" y="40" width="10" height="52" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_277" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_277" result="shape" />
+                  </filter>
+                  <filter id="filter3_d_872_277" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_277" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_277" result="shape" />
+                  </filter>
+                  <filter id="filter4_d_872_277" x="0" y="82" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_277" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_277" result="shape" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+            <div *ngIf="status=='Εκκρεμεί'">
+              <svg width="48" height="209" viewBox="0 0 48 209" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g filter="url(#filter0_d_872_270)">
+                  <path
+                    d="M44 104C44 115.046 35.0457 124 24 124C12.9543 124 4 115.046 4 104C4 92.9543 12.9543 84 24 84C35.0457 84 44 92.9543 44 104Z"
+                    fill="white" fill-opacity="0.41" shape-rendering="crispEdges" />
+                  <path
+                    d="M43.5 104C43.5 114.77 34.7696 123.5 24 123.5C13.2304 123.5 4.5 114.77 4.5 104C4.5 93.2304 13.2304 84.5 24 84.5C34.7696 84.5 43.5 93.2304 43.5 104Z"
+                    stroke="#E8E8E8" shape-rendering="crispEdges" />
+                </g>
+                <circle opacity="0.2" cx="24" cy="104" r="15" fill="#687282" />
+                <g opacity="0.6">
+                  <path
+                    d="M24.0133 96.5C19.8705 96.5 16.5 99.867 16.5 104.006C16.5 108.144 19.8705 111.511 24.0133 111.511C28.1562 111.511 31.5266 108.144 31.5266 104.006C31.5266 99.867 28.1562 96.5 24.0133 96.5ZM24.0133 110.01C20.6992 110.01 18.0027 107.316 18.0027 104.006C18.0027 100.695 20.6992 98.0011 24.0133 98.0011C27.3274 98.0011 30.024 100.695 30.024 104.006C30.024 107.316 27.3274 110.01 24.0133 110.01Z"
+                    fill="#687282" />
+                  <path d="M24.7654 100.253H23.2627V104.316L25.7368 106.788L26.7992 105.727L24.7654 103.695V100.253Z"
+                    fill="#687282" />
+                </g>
+                <g filter="url(#filter1_d_872_270)">
+                  <path
+                    d="M44 181C44 192.046 35.0457 201 24 201C12.9543 201 4 192.046 4 181C4 169.954 12.9543 161 24 161C35.0457 161 44 169.954 44 181Z"
+                    fill="white" fill-opacity="0.41" shape-rendering="crispEdges" />
+                  <path
+                    d="M43.5 181C43.5 191.77 34.7696 200.5 24 200.5C13.2304 200.5 4.5 191.77 4.5 181C4.5 170.23 13.2304 161.5 24 161.5C34.7696 161.5 43.5 170.23 43.5 181Z"
+                    stroke="#E8E8E8" shape-rendering="crispEdges" />
+                </g>
+                <circle opacity="0.2" cx="24" cy="181" r="15" fill="#687282" />
+                <g opacity="0.6">
+                  <path
+                    d="M24.0133 173.5C19.8705 173.5 16.5 176.867 16.5 181.006C16.5 185.144 19.8705 188.511 24.0133 188.511C28.1562 188.511 31.5266 185.144 31.5266 181.006C31.5266 176.867 28.1562 173.5 24.0133 173.5ZM24.0133 187.01C20.6992 187.01 18.0027 184.316 18.0027 181.006C18.0027 177.695 20.6992 175.001 24.0133 175.001C27.3274 175.001 30.024 177.695 30.024 181.006C30.024 184.316 27.3274 187.01 24.0133 187.01Z"
+                    fill="#687282" />
+                  <path d="M24.7654 177.253H23.2627V181.316L25.7368 183.788L26.7992 182.727L24.7654 180.695V177.253Z"
+                    fill="#687282" />
+                </g>
+                <g filter="url(#filter2_d_872_270)">
+                  <path
+                    d="M44 20C44 31.0457 35.0457 40 24 40C12.9543 40 4 31.0457 4 20C4 8.9543 12.9543 0 24 0C35.0457 0 44 8.9543 44 20Z"
+                    fill="white" />
+                  <path
+                    d="M43.5 20C43.5 30.7696 34.7696 39.5 24 39.5C13.2304 39.5 4.5 30.7696 4.5 20C4.5 9.23045 13.2304 0.5 24 0.5C34.7696 0.5 43.5 9.23045 43.5 20Z"
+                    stroke="#DAFFDB" />
+                </g>
+                <circle cx="24" cy="20" r="15" fill="#0FCE16" />
+                <path
+                  d="M29.7457 15.2062L21.9073 23.1358L18.2542 19.4412L18.2542 19.4412C17.9516 19.1353 17.4599 19.1352 17.1573 19.4412L17.1572 19.4413C16.8565 19.7459 16.8564 20.2383 17.1572 20.5428L17.1573 20.5429L21.3578 24.7932L21.3579 24.7934C21.6607 25.0992 22.1521 25.0992 22.4548 24.7934L22.4549 24.7932L30.8424 16.3081L30.8425 16.308C31.1432 16.0035 31.1432 15.5111 30.8425 15.2065L30.8421 15.2062C30.6927 15.0555 30.4882 14.9725 30.2759 14.9775L30.2759 14.9775C30.0761 14.982 29.8864 15.0643 29.746 15.2059L29.7457 15.2062Z"
+                  fill="white" stroke="white" stroke-width="0.5" />
+                <defs>
+                  <filter id="filter0_d_872_270" x="0" y="84" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_270" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_270" result="shape" />
+                  </filter>
+                  <filter id="filter1_d_872_270" x="0" y="161" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_270" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_270" result="shape" />
+                  </filter>
+                  <filter id="filter2_d_872_270" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_872_270" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_872_270" result="shape" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+          </ion-col> <ion-col size="10" class="ion-text-center" class="bordB">
+            <ion-grid>
+              <ion-row class="bgL">
+                <ion-col size="12">
+                  <ion-badge class="custBadge2 p7 bgS"> <ion-text color="success" class="mr2">Η κράτηση έχει
+                      καταχωρηθεί.</ion-text>
+                  </ion-badge>
+                </ion-col>
+                <ion-col size="12" class="h30 ion-padding-top ion-text-center"> </ion-col>
+                <ion-col size="12" class="ion-padding-top">
+                  <ion-badge [class]="booking_confirmed_class"> <ion-text [color]="booking_confirmed_color"
+                      class="mr2">{{booking_confirmed_text}}</ion-text>
+                  </ion-badge>
+                </ion-col>
+                <ion-col size="12" class="h30 ion-padding-top"> </ion-col>
+                <ion-col size="12" class="h30 ion-padding-top" *ngIf="status!='Ακυρώθηκε'">
+                  <ion-badge [class]="booking_completed_class"> <ion-text [color]="booking_completed_color"
+                      class="mr2">{{booking_completed_text}}</ion-text>
+                  </ion-badge>
+                </ion-col> <ion-col size="12" class="h30 ion-padding-top "> </ion-col> </ion-row>
+            </ion-grid>
+          </ion-col> </ion-row>
+      </ion-grid>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>
+<ion-footer> <ion-grid class="ion-no-padding">
+  <ion-row class="ion-no-padding">
+    <ion-col size="6" class="ion-no-padding">
+      <ion-button class="ion-no-margin" *ngIf="status=='Αποδεκτή'" color="danger" expand="block"
+        (click)="openRejectionPopover()">
+        Ακύρωση Κράτησης
+      </ion-button>
+    </ion-col>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-button class="ion-no-margin" *ngIf="status=='Αποδεκτή'" expand="block" color="primary"
+        (click)="editReservationDialog()">
+        Τροποποίηση Κράτησης
+      </ion-button>
+    </ion-col> <ion-col size="6" *ngIf="status=='Εκκρεμεί'">
+      <ion-button fill="outline" color="danger" expand="block" (click)="cancelAppointment()">
+        <ion-icon style="margin-right:3px;" name="close-circle-outline"></ion-icon>
+        Απόρριψη
+      </ion-button>
+    </ion-col> <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
+      <ng-template>
+        <ion-header> <ion-title class="ion-margin-top ion-margin-bottom">
+            Αιτία απόρριψης
+          </ion-title>
+        </ion-header>
+        <ion-content>
+          <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true" class="cancelReason ion-padding"
+            label="Λόγος απόρριψης" labelPlacement="floating" fill="outline" [value]="cancelReason"></ion-textarea>
+          <div class="scrolling-wrapper reasonChips">
+            <ion-chip outline color="primary" style="font-size: 12px;"
+              (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">Μη
+              διαθέσιμη ώρα</ion-chip>
+            <ion-chip outline color="secondary" style="font-size: 12px;"
+              (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">Αναπάντεχο
+              συμβάν</ion-chip>
+          </div>
+        </ion-content>
+        <ion-footer class="ion-no-padding" (click)="applyRejectPopover()">
+          <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
+            <ion-label class="ion-no-padding" class="ion-text-center capsoff">Αποθήκευση</ion-label>
+          </ion-button>
+        </ion-footer> </ng-template>
+    </ion-popover>
+    <ion-col size="6" *ngIf="status=='Εκκρεμεί'"> <ion-button fill="solid" color="success" expand="block"
+        (click)="acceptAppointment()">
+        <ion-icon name="checkmark-circle-outline" style="margin-right:3px;"></ion-icon>
+        Αποδοχή
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid></ion-footer>

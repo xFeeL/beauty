@@ -1,0 +1,126 @@
+<ion-header> <ion-toolbar>
+  <ion-buttons slot="start" class="ion-no-margin">
+    <ion-button (click)="goBack()" slot="start" fill="clear">
+      <ion-icon color="light" name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons> <ion-title color="light">Άλμπουμ Εικόνων</ion-title>
+</ion-toolbar></ion-header><ion-content> <ion-grid class="bgL ion-margin-top">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="12">
+      <ion-item class="ion-padding " lines="none" *ngIf="portfolio.length==0">
+        <ion-grid>
+          <ion-row>
+            <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+          </ion-row>
+          <ion-row> <ion-note class="no_results_text">
+              Δημιουργήστε ένα άλμπουμ πατώντας στο κουμπί "Νέο".
+            </ion-note>
+          </ion-row>
+        </ion-grid> </ion-item>
+    </ion-col>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" *ngFor="let item of portfolio; let i = index" (click)="goToImages(item)">
+          <ion-card class="uniform-card">
+            <ion-img src="data:image/jpeg;base64,{{item.image}}"></ion-img>
+            <ion-card-header class="ion-no-padding uniform-card-header">
+              <ion-item lines="none">
+                <ion-label class="ion-text-wrap">
+                  <ion-card-subtitle>{{item.displayedName}}</ion-card-subtitle>
+                </ion-label>
+                <!-- Added stopPropagation() to prevent triggering parent's click event -->
+                <ion-icon slot="end" name="ellipsis-vertical"
+                  (click)="presentOptions(item); $event.stopPropagation()"></ion-icon>
+              </ion-item>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-row>
+</ion-grid>
+<ion-fab slots="fixed" class="float" id="open-modal-new-folder">
+  <ion-chip class="ion-padding" class="bg">
+    <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
+    <ion-label color="light">Νέο</ion-label>
+  </ion-chip>
+</ion-fab> <ion-modal trigger="open-modal-new-folder" #newFolderModal (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary" class="modal-toolbar">
+        <ion-buttons slot="start" color="primary">
+          <ion-button no-caps class="modal-button" (click)="cancelNewFolderModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title color="light" class="center-title" text-wrap>Νέο Άλμπουμ</ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="modal-button" (click)="confirmNewFolderModal()"
+            *ngIf="newFolderName!='' && newFolderImage!=''" [strong]="true">Δημιουργία</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content> <ion-grid class="ion-padding-top">
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="7" size-sm="7" size-md="7" size-lg="5" size-xl="5" class="ion-no-padding">
+            <div class="image-container" (click)="presentActionSheet()">
+              <ng-container *ngIf="newImageChosen; else chooseImage">
+                <img src="data:image/jpeg;base64,{{newFolderImage}}" class="folder-image">
+              </ng-container>
+              <ng-template #chooseImage>
+                <ion-note>Επιλογή εικόνας</ion-note>
+              </ng-template>
+            </div> <input #_fileInput type="file" accept="image/*" hidden> <ion-item text-wrap fill="outline"
+              class="name-input">
+              <ion-label position="stacked">Όνομα Άλμπουμ</ion-label>
+              <ion-input text-wrap type="text" [(ngModel)]="newFolderName"></ion-input>
+              <ion-note slot="helper">Εισάγετε το όνομα του άλμπουμ</ion-note>
+              <ion-note slot="error">Σφάλμα ονόματος</ion-note>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+  </ng-template>
+</ion-modal><ion-modal trigger="open-modal-edit-folder" #editFolderModal (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary" class="modal-toolbar">
+        <ion-buttons slot="start" color="primary">
+          <ion-button no-caps class="modal-button" (click)="cancelEditFolderModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title color="light" class="center-title ion-text-center" text-wrap>Επεξεργασία </ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="modal-button" (click)="confirmEditFolderModal()" [strong]="true">
+            Αποθήκευση
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid class="ion-padding">
+        <ion-row>
+          <ion-col size="12" class="ion-text-center">
+            <ion-button class="noCaps ion-margin-bottom" (click)="presentActionSheet()" color="primary"
+              fill="outline">Αλλαγή εικόνας άλμπουμ</ion-button>
+            <div class="image-container square-image">
+              <img src="data:image/jpeg;base64,{{newFolderImage}}" class="folder-image">
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="10" class="ion-padding-top ion-padding-bottom">
+            <ion-item text-wrap fill="outline" class="name-input">
+              <ion-label position="stacked">Όνομα Άλμπουμ</ion-label>
+              <ion-input text-wrap type="text" [(ngModel)]="toBeEditedFolderName"></ion-input>
+              <ion-note slot="helper">Εισάγετε το όνομα του άλμπουμ</ion-note>
+              <ion-note slot="error">Σφάλμα ονόματος</ion-note>
+            </ion-item>
+          </ion-col>
+        </ion-row> </ion-grid>
+    </ion-content>
+  </ng-template>
+</ion-modal></ion-content>

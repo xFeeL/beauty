@@ -1,0 +1,58 @@
+<ion-header class=" ion-padding-top ion-padding-bottom">  <ion-toolbar>
+  <ion-buttons slot="start" class="ion-no-margin">
+    <ion-menu-button color="light"></ion-menu-button>      </ion-buttons>
+  <ion-title color="light" class="ion-no-padding">
+    <div class="vertical-align-content">
+      <ion-icon color="light" (click)="goBack()" name="arrow-back" class="ion-padding-end ion-margin-start"></ion-icon>
+      Μηνύματα
+    </div>
+  </ion-title>  </ion-toolbar> </ion-header><ion-content class="background">    <ion-spinner color="primary" *ngIf="initialized === false" class="ion-text-center ion-padding"></ion-spinner>  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+<ion-grid class="ion-no-padding" class="backgroundGrid">
+  <ion-row class="ion-justify-content-center"> 
+    <ion-col size="12"   class="ion-no-padding">
+      <ion-item class="ion-padding " lines="none" *ngIf="initialized==false || chats.length==0">
+        <ion-grid>
+          <ion-row>
+        <ion-img class="no_results_item" src="../../../assets/imgs/nomessages.svg">          </ion-img>
+          </ion-row>
+        <ion-row>            <ion-note class="no_results_text">
+            Δεν έχετε ακόμα συνομιλίες με χρήστες
+          </ion-note>
+      </ion-row>
+    </ion-grid>         </ion-item><ion-list *ngIf="initialized==true" class="backgroundGrid">  <ion-item  *ngFor="let chat of chats" (click)="goToChatDetail(chat)" class="ion-margin chat" detail >
+  <ion-avatar>
+    <ion-img src="data:image/jpeg;base64,{{this.chat.image}}" ></ion-img>
+  </ion-avatar>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-label ><b>{{chat.display_name}}</b></ion-label> 
+          <ion-label class="posR">
+          </ion-label>
+        </ion-col>          </ion-row>
+        <ion-row *ngIf="chat.lastMessage && chat.lastMessage._image !== true">
+                      <ion-col size="12">              <ion-icon class="icon" *ngIf="chat.isReceiver==false" [name]="chat.lastMessage._read!=true?'checkmark-circle-outline':'checkmark-circle'" color="primary">          </ion-icon>                  <ion-note *ngIf="chat.isReceiver==false">  Εσείς: {{chat.lastMessage.content}}         
+          </ion-note>
+          <ion-note *ngIf="chat.isReceiver==true && chat.lastMessage._read==true">{{chat.lastMessage.content}}         
+          </ion-note>
+          <ion-label class="f11" *ngIf="chat.isReceiver==true && chat.lastMessage._read==false"><b>{{chat.lastMessage.content}} </b>       
+          </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="chat.lastMessage._image==true">
+      <ion-col size="12">          <ion-icon class="icon" [name]="chat.lastMessage._read!=true?'camera-outline':'camera'" color="primary">          </ion-icon>              <ion-note>  Φωτογραφία
+      </ion-note>
+  </ion-col>
+</ion-row>    </ion-grid> 
+  <ion-note class="before_time" slot="end"> {{chat.lastMessage.datetime}}</ion-note>  </ion-item></ion-list>
+<ion-fab slot="fixed" class="float">
+ <ion-chip class="ion-padding" class="bg">
+  <ion-icon name="add-circle"  color="light" class="f30" ></ion-icon>
+    <ion-label color="light">New Project</ion-label> 
+</ion-chip>
+</ion-fab></ion-col>
+</ion-row>
+</ion-grid>
+</ion-content>

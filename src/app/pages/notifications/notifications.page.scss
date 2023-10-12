@@ -1,0 +1,73 @@
+.f10 {
+    font-size: 10px;
+}
+
+.bgL {
+    --ion-background-color: var(--ion-color-primary-contrast);
+}
+
+.pd10 {
+    padding-inline: 10px;
+}
+
+
+.diflx {
+    display: inline-flex;
+}
+
+.mgr10 {
+    margin-right: 10px;
+}
+
+.icon {
+    height: 40px;
+    width: 40px;
+    padding-top: 8px;
+}
+
+ion-content {
+    --ion-background-color: var(--ion-color-primary-contrast);
+}
+
+.itemB {
+    --background: #D7E8FF;
+    width: 100%
+}
+
+.itemC {
+    width: 100%
+}
+
+.padBlk {
+    padding-block: 12px
+}
+
+.pad {
+    padding-top: 7px;
+}
+
+.no_results_text {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 50px;
+    width: 95%;
+    padding-bottom: 20px;
+}
+
+.new_grid {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.no_results_item {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.customPad {
+    padding-left: 10px;
+}

@@ -1,0 +1,86 @@
+<ion-header *ngIf="initialized==true">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-no-margin">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-avatar class="custAv" slot="start" (click)="goToUserProfile()">
+      <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img>
+    </ion-avatar> <ion-label color="light" slot="start" (click)="goToUserProfile()">
+      <ion-text><b>{{userName}}</b></ion-text>
+    </ion-label> <ion-buttons slot="end">
+      <!--<a href="tel:{{expert[0][8]}}">      <ion-button fill="clear" size="small" class="btns" >
+        <ion-icon  name="call-outline" color="primary"></ion-icon>
+      </ion-button> 
+    </a>--> </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="initialized === false">
+  <ion-spinner color="primary" class="ion-text-center ion-padding"></ion-spinner></ion-content>
+<ion-content *ngIf="initialized==true">
+  <ion-grid class="ion-no-padding ">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" class="ion-no-padding grid">
+        <ion-infinite-scroll position="top" threshold="100px" (ionInfinite)="loadData($event)">
+          <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll><ion-grid
+          *ngFor="let message of messages; let first = first;let last = last; let i = index;"
+          [class]="message.addPadding==true?paddingEnd:''">
+          <ion-row *ngIf="i==0" class="ion-justify-content-center ion-padding-top ion-padding-bottom">
+            <ion-col size="4" class="ion-text-center colt">
+              <ion-label>{{message.datetime}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="(i>0) && !(message.datetime==messages[i-1].datetime)"
+            class="ion-justify-content-center ion-padding-top ion-padding-bottom">
+            <ion-col size="4" class="ion-text-center colt">
+              <ion-label>{{message.datetime}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row [class]="message.showAvatar==true?nopadding:pl45 " [dir]="message.id_sender==userId?'ltr':'rtl'"
+            (click)="message.showTime = !message.showTime">
+            <ion-avatar class="messagesAvatar bottom" *ngIf="message.showAvatar==true">
+              <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img> </ion-avatar>
+            <div [class]="message.id_sender==userId?'msgLbl pgChrWl':'msgLbl  pgChr'" style="display: inline-block">
+              <ion-label class="somePad" *ngIf="message._image==false" text-wrap>{{message.content}}</ion-label>
+              <div class="image-list" [gallerize]="'myGalleryId' + i">
+                <img class="container" *ngFor="let image of message.images" [src]="image+'?thumbnail=true'"
+                  [attr.imageSrc]="image+'?thumbnail=false'" [attr.thumbSrc]="image+'?thumbnail=true'">
+              </div> <ion-note class="tim r16">
+                <ion-note color="medium" class="f11" *ngIf="message.showTime" [@fadeInOut]>
+                  {{message.time}}
+                </ion-note> </ion-note>
+            </div>
+          </ion-row></ion-grid>
+        <!--<ng-container *ngIf="last_message.id_sender!=userId && last_message._read==true" class="ion-padding-top">
+  <span style="color: gray; font-weight: bold; font-size: 11px; position: absolute; bottom: 0.7%; right: 6%;">Διαβάστηκε</span>
+</ng-container>--></ion-col>
+    </ion-row>
+  </ion-grid></ion-content><ion-footer class="footer">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-padding-start">
+      <ion-icon name="images-outline" slot="start" color="light" (click)="selectImages()"></ion-icon>
+    </ion-buttons>
+    <div slot="start" *ngIf="mode=='image'">
+      <div class="image-list">
+        <div class="img-wrap" *ngFor="let im of imagesToSend">
+          <ion-img src="data:image/jpeg;base64,{{im}}"></ion-img>
+          <ion-icon class="clear-icon" name="close-circle" color="dark" (click)="removeImage(im)"
+            title="Remove Image"></ion-icon>
+        </div>
+        <ion-icon class="add-image-icon" name="add-circle" color="primary" (click)="selectImages()"
+          title="Add Image"></ion-icon>
+      </div>
+    </div> <ion-buttons slot="end"> <ion-button fill="clear" size="small" class="btns">
+        <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg"
+          (click)="sendMessage()">
+          <circle cx="21.5" cy="21.5" r="21.5" fill="#246EE9" />
+          <path d="M12.01 31L33 22L12.01 13L12 20L27 22L12 24L12.01 31Z" fill="white" />
+        </svg> </ion-button>
+    </ion-buttons>
+    <ion-input class="chat_input" #inputId autofocus="true" *ngIf="mode=='text'" type="text" [(ngModel)]="to_send"
+      placeholder="Aa" (keyup.enter)="sendMessage()"></ion-input>
+  </ion-toolbar>
+</ion-footer>

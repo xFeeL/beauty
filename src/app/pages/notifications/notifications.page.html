@@ -1,0 +1,87 @@
+<ion-header> <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+      <ion-title color="light">Ειδοποιήσεις</ion-title> </ion-buttons> </ion-toolbar></ion-header><ion-content>
+  <ion-item class="ion-padding " lines="none" *ngIf="!(new_notifications.length!=0 || notifications.length!=0)">
+    <ion-grid>
+      <ion-row>
+        <ion-img class="no_results_item" src="../../../assets/imgs/notifications.svg"> </ion-img>
+      </ion-row>
+      <ion-row> <ion-note class="no_results_text">
+          Εδώ μπορείτε να δείτε ενημερώσεις για τον λογαριασμός σας!
+        </ion-note>
+      </ion-row>
+    </ion-grid> </ion-item> <ion-grid class="ion-no-padding bgL ion-padding-start"
+    *ngIf="new_notifications.length!=0 || notifications.length!=0">
+    <ion-row class="ion-justify-content-center">
+      <ion-col class="ion-no-padding">
+        <ion-grid class="ion-margin-top" *ngIf="new_notifications.length!=0">
+          <ion-row>
+            <ion-col size="12">
+              <h6>
+                <ion-label>
+                  <ion-text color="primary">Νέες</ion-text>
+                </ion-label>
+              </h6>
+            </ion-col>
+          </ion-row>
+        </ion-grid> <ion-grid class="ion-margin-top ion-no-padding new_grid">
+          <ion-row>
+            <ion-item class="itemB cursor" *ngFor="let not of new_notifications" (click)="goToSpecificPage(not)">
+              <ion-grid class="padBlk">
+                <ion-row>
+                  <ion-img class="icon ion-margin-end" *ngIf="not[0]=='appointment'"
+                    src="../../../assets/icon/alert.png"></ion-img>
+                  <ion-img class="icon ion-margin-end" *ngIf="not[0]=='review'"
+                    src="../../../assets/icon/customer-review.png"></ion-img>
+
+                  <ion-grid>
+                    <ion-row> <ion-label *ngIf="not[0]=='review'" class="ion-text-wrap">
+                        Έχετε νέες κριτικές! Δείτε τις και απαντήστε στους πελάτες σας.
+                      </ion-label>
+                      <ion-label *ngIf="not[0]=='appointment'" class="ion-text-wrap">
+                        Έχετε νέες κρατήσεις! </ion-label>
+                      <ion-label *ngIf="not[0]=='proposal'" class="ion-text-wrap">
+                        Μία προσφορά σας έγινε αποδεκτή! </ion-label> </ion-row>
+                    <ion-row>
+                      <ion-label> <ion-text color="medium">{{not[3]}}</ion-text></ion-label> </ion-row>
+                  </ion-grid> </ion-row> </ion-grid>
+            </ion-item> </ion-row>
+        </ion-grid> <ion-grid class="ion-margin-top ion-padding-start" *ngIf="notifications.length!=0">
+          <ion-row>
+            <ion-col size="12">
+              <h6>
+                <ion-label>
+                  <ion-text color="primary">Παλαιότερες</ion-text>
+                </ion-label>
+              </h6>
+            </ion-col>
+          </ion-row>
+        </ion-grid> <ion-grid class="ion-margin-top ion-no-padding ion-margin-bottom ">
+          <ion-row>
+            <ion-item class="itemC cursor" *ngFor="let notif of notifications" (click)="goToSpecificPage(notif)">
+              <ion-grid class="padBlk">
+                <ion-row>
+                  <ion-img class="icon ion-margin-end" *ngIf="notif[0]=='appointment'"
+                    src="../../../assets/icon/alert.png"></ion-img>
+                  <ion-img class="icon ion-margin-end" *ngIf="notif[0]=='review'"
+                    src="../../../assets/icon/customer-review.png"></ion-img>
+                  <ion-grid> <ion-row>
+                      <ion-label *ngIf="notif[0]=='review'" class="ion-text-wrap">
+                        Έχετε νέες κριτικές! Δείτε τις και απαντήστε στους πελάτες σας.
+                      </ion-label>
+                      <ion-label *ngIf="notif[0]=='appointment'" class="ion-text-wrap">
+                        Έχετε νέες κρατήσεις! </ion-label> </ion-row>
+                    <ion-row>
+                      <ion-label> <ion-text color="medium">{{notif[3]}}</ion-text></ion-label> </ion-row>
+                  </ion-grid> </ion-row> </ion-grid>
+            </ion-item> </ion-row>
+        </ion-grid> </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll></ion-content>

@@ -1,1 +1,18 @@
 
+ion-tab-bar, ion-tab-button{
+    background-color: white;
+   }   /* By default, hide the tabs */
+ion-tab-bar {
+    display: none;
+  }  /* On screens that are 992px wide or less, show the tabs */
+  @media screen and (max-width: 992px) {
+    ion-tab-bar {
+      display: flex; /* or 'block' depending on your design needs */
+    }
+  }
+
+  .tab-icon{
+    height:22px;
+    width: auto;
+    margin-bottom: 5px;
+  }

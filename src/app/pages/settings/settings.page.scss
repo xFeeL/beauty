@@ -1,0 +1,304 @@
+//all
+.background {
+  --background: #E3F0F9;
+}
+
+//wrario
+
+.no-capitalize ion-label {
+  text-transform: none !important;
+}
+
+.scrollable-list {
+
+  scrollbar-width: thin;
+  /* scrollbar-color:var(--ion-color-primary) var(--ion-color-primary-contrast); */
+}
+
+.time-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  background-color: white;
+}
+
+.mr5 {
+  margin-right: 5px;
+}
+
+.smaller-font {
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.scheduleIcon {
+  cursor: pointer;
+  color: var(--ion-color-danger);
+  /* Set the desired color for the trash icon */
+  //margin-left: 10px; /* Add desired spacing between interval and trash icon */
+  flex-shrink: 0;
+  /* Prevent icon from shrinking */
+  width: 26px;
+  height: 26px;
+}
+
+
+//floors
+.add-floor-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 50px;
+
+  margin-bottom: 10px;
+}
+
+.grid-container {
+  //max-height: 50vh; /* Adjust the maximum height as desired */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.w80 {
+  width: 85%;
+}
+
+.custRow {
+  background-color: var(--ion-color-primary-contrast);
+  border-radius: 15px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  display: block;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.room-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.room-buttons {
+  padding-bottom: 12px;
+}
+
+.add-floor-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 50px;
+
+  margin-bottom: 10px;
+}
+
+.add-floor-button:hover {
+  background-color: #0056b3;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+
+  text-align: right;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.align-right2 {
+  float: right;
+}
+
+.parent-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-icon {
+  width: 20px;
+  height: 20px
+}
+
+//krathseis
+.custom-grid {
+  background-color: white;
+  border-radius: 15px;
+  /* You can adjust the value based on how rounded you want the corners to be */
+
+  /* Optional: you might want to add some padding inside the grid to ensure content doesn't press up against the rounded corners */
+  padding: 16px;
+}
+
+
+.max-height {
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+mat-form-field {
+  display: block !important;
+}
+
+mat-hint.mat-mdc-form-field-hint.pl5 {
+  padding-left: 0 !important;
+}
+
+::ng-deep .special-action {
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f0f0f0; // Adjust as necessary
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::ng-deep .special-action mat-icon {
+  margin-right: 5px; // Adjust as necessary
+}
+
+::ng-deep .mat-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+::ng-deep .no-checkbox.mat-option .mat-pseudo-checkbox {
+  display: none;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-field {
+  flex-grow: 1;
+}
+
+
+ion-segment-button {
+  ion-icon {
+    margin-right: 5px; // adjust as needed
+  }
+}
+
+
+.blue-icon {
+  color: var(--ion-color-primary);
+}
+
+
+
+//social media
+.social-segment {
+  --background: var(--ion-color-primary);
+}
+
+
+.mt16 {
+  margin-top: 16px;
+}
+
+.phones-image {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.image-container {
+  position: relative;
+}
+
+.overlay-button {
+  position: absolute;
+  bottom: 20px;
+  /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-image {
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  //object-fit: cover;
+}
+
+.album-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 8px;
+}
+
+ion-card-content {
+  padding: 12px 16px;
+}
+
+.information-icon {
+  font-size: 1.5em;
+  /* Adjust as needed */
+  padding-top: 2px;
+}
+
+.messenger-menu-items {
+  font-size: 0.9rem;
+  /* Adjust as needed */
+}
+
+.mat-list-item-line {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 13px;
+}
+
+.link-icon {
+  margin-right: 16px !important;
+}
+
+.disabled-style {
+  opacity: 0.75;
+  /* Adjust as needed */
+  color: #a0a0a0 !important;
+  /* A shade of grey, adjust as needed, !important to override other styles if necessary */
+}
+
+.fixed-width-button {
+  width: 170px;
+  /* Adjust to your preferred width */
+}
+
+.small-spinner {
+  width: 20px;
+  /* Adjust to your preferred size */
+  height: 20px;
+  /* Adjust to your preferred size */
+}
+
+.no-menu-header {
+  margin-top: 20px !important;
+}
+
+.fixed-width-button-manual {
+  width: 190px;
+  /* Adjust to your preferred width */
+
+}

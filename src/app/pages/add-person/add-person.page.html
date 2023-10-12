@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ng-container *ngIf="isMobile(); else cancelButton">
+          <ion-button (click)="goBack()">
+              <ion-icon color="light" name="arrow-back"></ion-icon>
+          </ion-button>
+      </ng-container>
+      <ng-template #cancelButton>
+          <ion-button color="light" class="no-capitalization" (click)="goBack()" [strong]="true">Ακύρωση</ion-button>
+      </ng-template>
+    </ion-buttons>
+
+    <ion-title color="light" text-wrap>Νέο Άτομο</ion-title>
+
+    <ion-buttons slot="end">
+      <ng-container *ngIf="isMobile(); else confirmButton">
+          <ion-button color="light" class="no-capitalization" (click)="confirm()">
+              <ion-icon color="light" name="checkmark"></ion-icon>
+          </ion-button>
+      </ng-container>
+      <ng-template #confirmButton>
+          <ion-button color="light" class="no-capitalization" (click)="confirm()" [strong]="true">Επιβεβαίωση</ion-button>
+      </ng-template>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="background">
+  <ion-grid class="ion-margin-top">
+    <ion-row class="ion-justify-content-center ion-margin">
+      <ion-avatar>
+        <ion-img [src]="image"></ion-img>
+      </ion-avatar>
+    </ion-row>
+    <ion-row class="ion-justify-content-center ion-margin ">
+      <ion-button fill="outline" class="capsOff" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-lg="7" >
+
+       
+        <ion-input label="Όνομα Ατόμου" label-placement="floating" fill="outline" placeholder="Όνομα Ατόμου" [(ngModel)]="personName"></ion-input>
+        <ion-toggle class="ion-padding-top" [enableOnOffLabels]="true" [(ngModel)]="customSchedule"></ion-toggle>
+                <ion-note class="ion-padding-start" color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
+        <ion-note  class="ion-padding-start" color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>
+        <ion-list class="scrollable-list ion-margin-top" *ngIf="customSchedule">
+                    <div *ngFor="let day of days">
+            <ion-item lines="none">
+              <ion-label>{{day.name}}</ion-label>
+              <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
+            </ion-item>
+            <!--<div *ngIf="day.open" class="time-selection">-->              
+              <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection">              
+                <ion-grid class="ion-no-margin w100">
+                <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
+                  <ion-col size="5">
+                    <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="floating" fill="outline" interface="popover" [(ngModel)]="timeInterval.start" (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
+                      <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+                    </ion-select>                    
+                  </ion-col>
+                  <ion-col size="5">
+                    <ion-select class="smaller-font" label="Κλείνει στις" label-placement="floating" fill="outline" interface="popover" [(ngModel)]="timeInterval.end" (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
+                      <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+                    </ion-select>                    
+                  </ion-col>
+                <ion-col size="2">
+                  <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline" size="large" (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon>                  <ion-icon  class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger" (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon>                </ion-col>
+                </ion-row>
+              </ion-grid>            
+            </div>
+          </div>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid></ion-content>

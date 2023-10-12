@@ -1,0 +1,62 @@
+.servicesGrid{
+    //--background:white;
+    background-color: white;
+    border-radius: 20px;
+  }
+
+
+  .small-segment {
+    max-width: 640px;  /* Adjust this value for the entire segment's width */
+    background: var(--ion-color-primary) !important;
+  
+  }
+
+  ion-segment-button{
+    --color:white;
+    --color-checked:black;
+  }
+
+  .normal-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-primary);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+
+  .success-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-success);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+  
+  .servicesList{
+    width:100%;
+    //max-height: 300px; /* Adjust this value to your desired maximum height */
+    //overflow-y: auto;
+  }
+
+  .selected-services-panel {
+   
+    width: 100%;
+    background-color: #f7f7f7; /* Adjust as needed */
+    padding: 1rem;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mt40 {
+    margin-top: 40px;
+  }
+
+  .mt30{
+    margin-top: 30px;
+  }
+
+  .mb30{
+    margin-bottom: 30px;
+  }
+
+  .scrollable-list {
+    max-height: 300px !important; /* or whatever value you want */
+    overflow-y: auto !important;  /* this makes it scrollable */
+}

@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar color="primary" class="modal-toolbar">
+    <ion-buttons slot="start" color="primary">
+      <ion-button no-caps class="modal-button" (click)="cancelFacebookModal()">Ακύρωση</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="selectedImage.selected && currentAlbum" class="modal-button" (click)="confirmFacebookModal()" [strong]="true">Επιλογή</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="choosePage">
+    <ion-grid>
+      <ion-row>
+        <ion-col  size-xs="6" size-sm="4" size-md="4"  size-lg="4" size-xl="4"  *ngFor="let page of pagesToChoose">
+          <ion-card (click)="goToPage(page)">
+            <img [src]="page.url" class="page-image " />
+            <ion-card-content>
+              <ion-card-title class="album-name">{{ page.name }}</ion-card-title>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+  <ng-container *ngIf="pageChosen">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="backToPages()">
+          <ion-icon slot="icon-only" color="light" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title  color="light" >{{ pageName }}</ion-title>
+    </ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xs="6" size-sm="4" size-md="4"  size-lg="4" size-xl="4" *ngFor="let album of albums">
+          <ion-card (click)="openAlbum(album)">
+            <img [src]="album.imageLink" class="cover-image " />
+            <ion-card-content>
+              <ion-card-title class="album-name">{{ album.folder_name }}</ion-card-title>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+  <ng-container *ngIf="albumChosen">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="backToAlbums()">
+          <ion-icon slot="icon-only"  color="light"  name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title  color="light" >{{ currentAlbum.folder_name }}</ion-title>
+    </ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" *ngFor="let photo of currentAlbumPhotos">
+          <ion-card [class]="photo.selected?'selected-photo': ''" (click)="selectImage(photo)">
+            <img [src]="photo.imageLink" class="photo-image" />
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+</ion-content>

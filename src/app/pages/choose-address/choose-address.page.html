@@ -1,0 +1,36 @@
+<ion-header> <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">Επιλογή Διεύθυνσης</ion-title>
+</ion-toolbar>
+<ion-toolbar>
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" class="ion-no-padding">
+        <ion-searchbar class="input" type="text" [(ngModel)]="autocompleteInput" (keyup)="searchAddress()"
+          placeholder="Εισάγετε διεύθυνση">
+        </ion-searchbar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-toolbar></ion-header><ion-content>
+<ion-spinner class="ion-padding-top" color="primary" *ngIf="loadingOn"></ion-spinner> <ion-grid>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
+        <ion-row class="ion-justify-content-center custRow" *ngFor="let item of suggestions"
+          (click)="returnAddress(item)">
+          <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
+            <ion-label>
+              <ion-text color="dark">{{item}} </ion-text>
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-grid>
+</ion-content>

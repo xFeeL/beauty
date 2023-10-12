@@ -1,0 +1,501 @@
+swiper-container {
+    --swiper-pagination-bullet-inactive-color: var(--ion-color-step-200, #000000);
+    --swiper-pagination-color: var(--ion-color-primary, #3880ff);
+    --swiper-pagination-progressbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.25);
+    --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+    --swiper-scrollbar-drag-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.5);
+    scrollbar-width: thin;
+  }
+  
+  swiper-slide {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    text-align: center;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+
+  }
+  
+  swiper-slide img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+  
+  ion-slides {
+    height: 100%;
+  }
+  
+  ion-slide {
+    display: block;
+  }
+  
+  ion-slide img {
+    padding: 15%;
+  }
+  
+  .slider-text h2 {
+    font-family: 'SF UI Display Semibold';
+  }
+  
+  ion-button {
+    text-transform: none;
+  }
+  
+  .customCol {
+    background: #E7F0FF;
+    border-radius: 10px;
+    /* Change this value to the desired border radius */
+    border: 2px solid #0088cc;
+    /* Change this color to the desired stroke color */
+    height: 95vh;
+  }
+  
+  ion-slides {
+    --bullet-background: #246EE9;
+    --bullet-background-active: #246EE9;
+  }
+  
+  .beginButton {
+    margin-top: 50px;
+  }
+  
+  .custAvatarHed {
+    margin-top: 40px;
+    width: 95px;
+    height: 95px;
+    border-style: solid;
+    border-width: 4.5px;
+    border-color: var(--ion-color-medium);
+  }
+
+  .custAvatarHedPerson{
+    margin-top:5px;
+    width: 55px;
+    height: 55px;
+  
+  }
+  
+  .custAvatarHedHighLighted {
+    margin-top: 40px;
+    width: 95px;
+    height: 95px;
+    border-style: solid;
+    border-width: 4.5px;
+    border-color: var(--ion-color-primary);
+  }
+  
+  .orgName {
+    padding: 15px;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    margin-left: 10px !important;
+  }
+  
+  .ion-item2 {
+    --inner-padding-end: 0px;
+    --background: none;
+  }
+  
+  .slider-text {
+    padding-top: 25px;
+  }
+  
+  .name-input {
+    padding-top: 50px;
+  }
+  
+  ion-input {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .vcenter-icon {
+    vertical-align: middle; /* Vertically aligns the icon with adjacent inline elements */
+    padding-bottom: 3px;
+    font-size:17px;
+}
+
+.mt8{
+  margin-top:8px;
+}
+
+  ion-col {
+    max-width: none;
+  }
+  
+  .bl5 {
+    margin-top: 15px;
+  }
+  
+  .customNote {
+    height: 50px;
+    padding-left: 23px !important;
+  }
+  
+  .pt5 {
+    padding-top: 5px;
+  }
+  
+  .navigator {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .scrollable-list {
+    padding-top: 0px !important;
+    margin-top: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    /* Add overflow-y property */
+    width: 100%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    scrollbar-width: thin;
+    /* scrollbar-color:var(--ion-color-primary) var(--ion-color-primary-contrast); */
+  }
+  
+  .time-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    background-color: white;
+  }
+  
+  .input-item {
+    margin-top: 20px;
+    /* adjust as needed */
+    width: 100%;
+  }
+  
+  .flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    /* Add desired margin between intervals */
+  }
+  
+  .scheduleIcon {
+    cursor: pointer;
+    color: var(--ion-color-danger);
+    /* Set the desired color for the trash icon */
+    //margin-left: 10px; /* Add desired spacing between interval and trash icon */
+    flex-shrink: 0;
+    /* Prevent icon from shrinking */
+    width: 26px;
+    height: 26px;
+  }
+  
+  .smaller-font {
+    margin-left: 10px;
+    font-size: 14px;
+  }
+  
+  .width40 {
+    //flex: 0 0 55%;
+    margin-right: 10px;
+    /* adjust as needed */
+  }
+  
+  ion-select {
+    width: 100%;
+  }
+  
+  .small-width .ion-select-label {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  ion-toggle {
+    --track-background: #f69393;
+    --track-background-checked: #8cfe8c;
+    /* Change the handle background color based on open property */
+    --handle-background: var(--ion-color-danger);
+    --handle-background-checked: var(--ion-color-success);
+  }
+  
+  .add-person-button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    //font-size: 16px;
+    margin-top: 50px;
+    margin-bottom: 10px;
+  }
+  
+
+  
+  .person-list {
+    margin-top: 20px;
+  }
+  
+  .person-list h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .person-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .person-list li {
+    margin-bottom: 15px;
+  }
+  
+  .person-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+  }
+  
+  .person-details {
+    flex-grow: 1;
+  }
+  
+  .person-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .person-opening-hours {
+    color: #555;
+  }
+  
+  .edit-person-button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-person-button:hover {
+    background-color: #1d9239;
+  }
+  
+  .chipPr {
+    background-color: var(--ion-color-primary);
+    color: var(--ion-color-light);
+  }
+  
+  .shadow {
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.45);
+  }
+  
+  .custRow {
+    background-color: var(--ion-color-primary-contrast);
+    border-radius: 15px;
+    display: block;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  @media screen and (min-width: 500px) {
+    .w80 {
+      width: 85%;
+    }
+    
+  }
+
+
+    
+  
+  
+  .person-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0px !important;
+    margin-top:10px;
+  }
+  
+  .person-buttons {
+    padding-bottom: 3px;
+  }
+  
+  .f12 {
+    font-size: 12px;
+  }
+  
+  .f15 {
+    font-size: 15px;
+  }
+  
+  .align-left {
+    text-align: left;
+  }
+  
+  .grid-container {
+    max-height: 50vh;
+    /* Adjust the maximum height as desired */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .person-grid {
+    max-height: 100%;
+  }
+  
+  .custom-accordion {
+    width: 100%;
+  }
+  
+  .restaurantIcon {
+    //padding-right:5px;
+  }
+  
+  .theH {
+    padding-top: 5px;
+  }
+  
+  .modal-button {
+    font-size: 14px;
+    text-transform: capitalize;
+  }
+  
+  .cover-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    //object-fit: cover;
+  }
+  
+  .album-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 8px;
+  }
+  
+  .selected-photo {
+    border: 2px solid var(--ion-color-primary);
+  }
+
+  .small-input {
+    font-size: 15px;
+}
+
+ion-toolbar {
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.flex-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* Ensure the div takes up full width */
+}
+
+.person-row {
+  align-items: center;  /* Vertically aligns the children elements to the center */
+}
+
+.align-left {
+  display: flex;        /* Makes the element a flex container */
+  align-items: center;  /* Vertically aligns the children to the center */
+  justify-content: flex-start; /* Horizontally aligns the children to the start */
+}
+
+.align-right {
+  display: flex;             /* Makes the element a flex container */
+  align-items: center;       /* Vertically aligns the children to the center */
+  justify-content: flex-end; /* Horizontally aligns the children to the end */
+}
+
+.person-buttons ion-icon {
+  vertical-align: middle;  /* Vertically aligns the icons */
+}
+
+.address-row{
+  padding-left:8px;
+}
+
+.custom-grid {
+  --ion-grid-padding: 0;
+  --ion-grid-column-padding: 0;
+}
+
+
+.f15{
+  font-size: 15px;
+}
+
+.mt3{
+  margin-top:5px;
+}
+
+
+@media screen and (max-width: 500px) {
+  .w100{
+    width:90%
+  }
+  
+}
+
+
+.normal-line {
+  width: 4px; /* Adjust width as desired */
+  height: 100%; /* Take full height of the ion-item */
+  background: var(--ion-color-primary);
+  margin-right: 10px; /* Space between the line and the label */
+}
+
+.success-line {
+  width: 4px; /* Adjust width as desired */
+  height: 100%; /* Take full height of the ion-item */
+  background: var(--ion-color-primary);
+  margin-right: 10px; /* Space between the line and the label */
+}
+
+
+.servicesList{
+  width:100%;
+  //max-height: 300px; /* Adjust this value to your desired maximum height */
+  //overflow-y: auto;
+}
+
+
+/* Your component's SCSS file */
+.small-icon {
+  font-size: 19px; /* Adjust the font size as needed */
+}
+
+.mr10{
+  margin-right:10px;
+}
+
+.ml10{
+  margin-left:10px;
+}
+
+.ml13{
+  margin-left:13px;
+}
+
+.mt9{
+  margin-top:9px;
+}

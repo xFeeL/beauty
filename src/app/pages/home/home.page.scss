@@ -1,0 +1,622 @@
+
+
+.notif{
+    margin-right: 10px;
+    padding: 10px;
+    background: none;
+    size:15px;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .mt0{
+    margin-top:0px;
+  }
+  
+  .left-text {
+    flex: 1;
+    padding-right: 10px;
+  }
+  
+  .end-button {
+    padding-left: 10px;
+    padding-top:44px;
+    font-size:12px;
+cursor:pointer;
+  }
+
+  .cursor{
+    cursor:pointer;
+
+  }
+
+ 
+  .custAvatarHed{
+    width: 60px;
+    height: 60px;
+   margin-left:10px;
+   margin-bottom:20px;
+   margin-top:16px;
+  }
+
+  .scrolling-wrapper {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    ion-segment {
+      display: flex;
+      align-items: center;
+    }
+    ion-segment-button {
+      flex: 0 0 auto;
+    }
+  }
+  
+
+  .borderBottom{
+    border-bottom: 2px solid #eceef1;
+    height: 65px;
+  }
+
+  .borderBottom2{
+    border-bottom: 2px solid #eceef1;
+    height: 80px;
+  }
+
+  .customPadding{
+    padding-left:0px;
+    padding-top:10px;
+  }
+
+  .f18{
+    font-size: 18px;
+  }
+
+  .f14{
+    font-size: 14px;
+  }
+
+  .thechip{
+    margin-right:0px;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .f11{
+    font-size: 11px;
+}
+.f10{
+  font-size: 11px;
+
+}
+
+.title{
+  padding-left:5px;
+  font-size: 15px;;
+  color:black
+}
+
+.p5{
+  padding-left:5px;
+}
+
+
+.center{
+  //width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.theItem{
+  border-radius:20px;
+  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.35));
+  --background:white;
+}
+
+.moreImage{
+  height:40px;
+  width:auto;
+}
+
+.background{
+  --background:#E3F0F9;
+}
+.moreCard{
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  width:115px;
+  --background:white;
+  border: 2px solid var(--ion-color-primary); /* Change color as needed */
+}
+
+ion-item-divider {
+  --background:white;
+
+  height:10px;
+  min-height: 10px !important;
+  max-height: 10px !important;
+  --padding-top: 0px;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.caption{
+  padding-bottom: 5px;
+  padding-top: 5px;
+
+}
+
+.pl9{
+  padding-left:9px;
+}
+
+.mat-mdc-table-sticky-border-elem-top {
+  border-bottom: 2px solid midnightblue !important;
+}
+
+
+.modal-toolbar{
+  --opacity	:100 !important;
+}
+
+.custRow{
+  background-color:var(--ion-color-primary-contrast);
+  border-radius: 15px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  display: block;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  margin:16px;
+  padding-top:5px;
+  padding-bottom: 0px;
+  height:auto;
+}
+
+.chip-container {
+  margin-left: 0px;
+  margin-right: auto;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  --height: 17px;            /* Adjusts the height of the chip */
+  --padding-start: 5px;      /* Adjusts the left padding of the chip */
+  --padding-end: 5px;        /* Adjusts the right padding of the chip */
+  --padding-top: 10px;        /* Adjusts the top padding of the chip */
+  --padding-bottom: 10px;     /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;  
+}
+
+.chip-container2 {
+  margin-left: 0px;
+  margin-right:auto;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
+  --background:var(--ion-color-primary);
+  color:white;
+  --padding-start: 5px;      /* Adjusts the left padding of the chip */
+  --padding-end: 5px;        /* Adjusts the right padding of the chip */
+ /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;  
+}
+
+.container-time-people{
+  padding-top:0px;
+  padding-left:6px;
+}
+
+.small-icon {
+  font-size: 17px;
+}
+
+.pr5{
+  padding-right:3px;
+}
+
+.pr10{
+  padding-right:10px;
+  color:var(--ion-color-step-600, #666666);
+
+}
+
+
+.pt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.end-button {
+  padding-left: 10px;
+  padding-top:44px;
+  font-size:12px;
+
+}
+
+
+.date-space {
+  margin-right: 5px;
+}
+
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+}
+
+
+/* iOS styles */
+ion-segment-button.ios {
+  --color: var(--ion-color-primary);
+  --color-checked: #fff;
+  --border-radius: 20px;
+}
+
+.right-align-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.p10{
+  padding:10px;
+}
+
+
+.demo-table {
+  width: 100%;
+  border-bottom: 0px solid transparent;
+  border-top: 0px solid transparent;
+}
+
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 0px solid transparent;
+  border-top: 0px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  //border-color: currentColor;
+}
+
+.desktopGrid {
+  margin-top:16px;
+  background-color: white;
+  border-radius:25px;
+}
+
+.small-segment {
+  max-width: 640px;  /* Adjust this value for the entire segment's width */
+  //width: 540px;  /* Adjust this value for the entire segment's width */
+
+  //min-width: 480px;  /* Adjust this value for the entire segment's width */
+
+}
+
+.small-segment ion-segment-button {
+  max-width: 160px;  /* Adjust this value to control the width of individual segment buttons */
+  min-width: 120px;  /* Adjust this value for the entire segment's width */
+
+  justify-content: center;
+}
+
+.custAvatarHedTable{
+  width:35px;
+  height:35px;
+}
+
+.avatar-column {
+  width: 55px !important;  /* use !important to ensure the width is applied */
+  max-width: 55px;
+  min-width: 55px;
+  overflow: hidden;        /* this is to ensure that the content doesn't spill over */
+  
+}
+
+
+.custom-cell {
+  color: gray;               /* Set the text color to gray */
+  font-size: 0.9em;          /* Make the text a bit smaller */
+  padding-left: 5px !important;
+  //min-width: 150px; /* Adjust this value as needed */
+}
+
+.table-column{
+  min-width:115px !important;
+}
+
+.pl0{
+  padding-left:0px !important;
+
+}
+
+.icon-spacing {
+  margin-right: 0px; // adjust this value as needed
+}
+
+ion-icon[name="checkmark-circle-outline"].icon-spacing {
+  margin-right: 10px; // adjust this value as needed
+}
+ion-icon[name="checkmark-circle-outline"]{
+  font-size:26px;
+}
+
+ion-icon[name="close-circle-outline"]{
+  font-size:26px;
+}
+
+.no_results_item{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  text-align: center;
+  width:300px;
+  height:auto;
+}
+.pt4{
+  padding-top:4px;
+}
+
+.no_results_header{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-family:serif
+  font-size 20px;
+}
+
+.date-section {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-top:0px;
+}
+
+h3 {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between; /* if you want them spaced out evenly */
+  gap: 20px; /* you can adjust this value to change the gap */
+}
+
+.stat-number {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 0; /* Reduce margin value here */
+  gap: 10px;
+}
+
+
+.stat-block {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  margin: 0;
+  display: flex;
+    flex-direction: column; /* stack children vertically */
+    align-items: center; /* center children horizontally */
+    justify-content: center; /* center children vertically */
+    margin: 4px 0; /* Adjust the value as needed */
+    gap:10px;
+}
+
+.stat-label {
+  margin-top: 5px;
+  color: #777;
+  font-size: 14px;
+}
+
+
+.stats_right{
+  margin-top:0px;
+  margin-bottom:20px;
+}
+
+/* Makes sure sticky columns appear above other table cells */
+th.mat-header-cell.sticky, td.mat-cell.sticky {
+  z-index: 1;
+  background-color: inherit; /* or whatever background-color you want */
+}
+
+/* Optional: If you have a shadow or something to differentiate the sticky column from others */
+th.mat-header-cell.sticky:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: #ddd; /* Adjust as needed */
+}
+
+.mat-table {
+  overflow: auto;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .table-container::-webkit-scrollbar {
+      height: 15px; /* adjust as needed */
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+      background-color: #ccc; /* adjust as needed */
+      border-radius: 4px; /* adjust as needed */
+  }
+
+  .table-container::-webkit-scrollbar-track {
+      background-color: #f7f7f7; /* adjust as needed */
+  }
+}
+
+.block-display {
+  display: block;
+}
+
+.chart{
+  padding-bottom:10px;
+  padding-left:10px;
+  padding-right: 10px;
+}
+
+.light-blue-bg {
+  background-color: lightblue;
+}
+
+.white-bg {
+  background-color: white;
+}
+.no-shrink {
+  flex-shrink: 0;
+}
+
+.first-rank {
+  color: rgb(240, 204, 0);
+  font-weight:550 !important;
+  
+}
+
+.second-rank {
+  color: rgb(180, 180, 180);
+  font-weight:450 !important;
+
+}
+
+.third-rank {
+  color: #cd7f32;  /* bronze */
+  font-weight:400;
+
+}
+.f400{
+  font-weight:400;
+
+}
+
+.title_space{
+  padding-left:9px;
+}
+
+ion-button.rounded-btn {
+  --border-radius: 100px;
+}
+
+.pl5{
+  padding-left:3px;
+}
+
+/* Styles for the container div */
+.badge-avatar-container {
+  display: flex;
+  align-items: center; /* Vertically center the badge and the avatar */
+}
+
+/* Styles for the badge */
+.cancel-badge {
+  padding:8px;
+  font-size: 12px;
+  font-weight:500;
+  border-radius: 12px; // A bigger border-radius to make it more circular
+  //box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); // A subtle shadow to lift it off the page a bit
+}
+
+
+.badge-column{
+  max-width:50px;
+}
+ion-popover {
+  --width:300px;
+  --height: 400px;
+
+}
+
+.cancelChip{
+  margin-left:0px !important;
+  font-size:12px;
+}
+
+@keyframes ring {
+  0% {
+      transform: rotate(0deg);
+  }
+  25% {
+      transform: rotate(-10deg);
+  }
+  50% {
+      transform: rotate(0deg);
+  }
+  75% {
+      transform: rotate(10deg);
+  }
+  100% {
+      transform: rotate(0deg);
+  }
+}
+
+.ringing-bell {
+  animation: ring 0.75s ease-in-out infinite;
+}
+
+.logo-image{
+  height:60px;
+  width:auto;
+  text-align: left;
+  align-items: left;
+}
+
+.gray-menu{
+  color:#B0B0B0;
+}
+
+.red-name {
+  color: red;
+}
+
+@media (max-width: 600px) {
+.name-column {
+  width: 90px !important;  /* use !important to ensure the width is applied */
+  max-width: 90px;
+  min-width: 90px;
+  overflow: hidden;        /* this is to ensure that the content doesn't spill over */
+  
+}
+}
+
+@media (max-width: 600px) {
+
+.mlr0{
+  margin-left:0px !important;
+  margin-right:0px !important;
+  padding-left:0px !important;
+  padding-right:0px !important;
+
+}
+}
+
+.border-column {
+  border-bottom: 0px solid #000 !important; /* Adjust as per your requirement */
+}

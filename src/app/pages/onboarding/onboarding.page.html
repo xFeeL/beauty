@@ -1,0 +1,440 @@
+<ion-header></ion-header><ion-content class="ion-padding"> <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" sizeXs="12" sizeSm="7" sizeMd="5.5" sizeLg="4" sizeXl="3" class="customCol">
+        <swiper-container allow-touch-move="false" scrollbar="true" #swiperElRef slides-per-view="1"
+          class="my-custom-slides">
+          <swiper-slide class="ion-padding" data-hash="slide1">
+            <img src="../../../assets/imgs/onboarding.png">
+            <div class="slider-text">
+              <h3>Καλώς ήρθατε!</h3> <ion-note>
+                Είμαστε ενθουσιασμένοι που σας έχουμε στην πλατφόρμας μας.
+                Είστε έτοιμοι να ξεκινήσετε την προσαρμογή του προφίλ σας;
+              </ion-note>
+            </div>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="next($event)">Ας
+                Ξεκινήσουμε!</ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide2"> <ion-item lines="none"
+              class="w100 ion-no-padding ion-item2">
+              <ion-grid>
+                <ion-row>
+                  <ion-avatar class="custAvatarHed">
+                    <img [src]="expertImage">
+                  </ion-avatar>
+                  <ion-grid class="ion-no-padding bl5">
+                    <ion-row>
+                      <ion-col size="12">
+                        <h4 class="orgName " *ngIf="expertName==undefined || expertName==''">
+                          ________
+                        </h4>
+                        <h4 class="orgName" *ngIf="expertName!=''">
+                          {{expertName}}
+                        </h4>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+            <div class="slider-text">
+              <h3>Όνομα Επιχείρησης
+
+              </h3>
+              <ion-note>
+                Με το όνομα αυτό θα σας βρίσκουν οι υποψήφιοι πελάτες σας.
+              </ion-note>
+            </div>
+            <ion-grid class="ion-margin-top">
+              <ion-row class="ion-justify-content-center">
+                <ion-col size="12">
+                  <ion-input class="small-input" label="Εισαγωγή ονόματος" label-placement="floating" fill="outline"
+                    text-wrap type="text" [(ngModel)]="expertName" placeholder="{{expertName}}"></ion-input>
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+            <div class="navigator ion-padding">
+              <ion-button color="primary" [disabled]="!(expertName!='' && expertName!=undefined)" class="beginButton"
+                no-caps (click)="next($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide3"> <ion-item lines="none"
+              class="w100 ion-no-padding ion-item2">
+              <ion-grid>
+                <ion-row>
+                  <ion-avatar class="custAvatarHedHighLighted">
+                    <img [src]="expertImage">
+                  </ion-avatar>
+                  <ion-grid class="ion-no-padding bl5">
+                    <ion-row>
+                      <ion-col size="12">
+                        <h4 class="orgName">
+                          {{expertName}}
+                        </h4>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-row>
+              </ion-grid> </ion-item>
+            <div class="slider-text">
+              <h3>Φωτογραφία Προφίλ</h3> <ion-note>
+                Χρησιμοποιήστε το λογότυπο της επιχείρησης σας ή μία φωτογραφία με το πρόσωπο σας.
+              </ion-note>
+            </div>
+            <ion-button fill="outline" class="ion-margin-top" (click)="presentActionSheet()">Αλλαγή
+              Φωτογραφίας</ion-button>
+            <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button>
+              <ion-button color="primary" class="beginButton" no-caps (click)="next($event)"><ion-icon
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide4"> <ion-item lines="none"
+              class="w100 ion-no-padding ion-item2">
+              <ion-grid>
+                <ion-row>
+                  <ion-avatar class="custAvatarHed">
+                    <img [src]="expertImage">
+                  </ion-avatar>
+                  <ion-grid class="ion-no-padding bl5">
+                    <ion-row>
+                      <ion-col size="12">
+                        <h4 class="orgName">
+                          {{expertName}}
+                        </h4>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="this.address!=''" class="address-row" style="justify-content: flex-start;">
+                      <div style="display: flex; align-items: center;">
+                        <ion-icon name="location-outline" color="primary" style="flex-shrink: 0;"></ion-icon>
+                        <ion-note text-wrap style="margin-left: 10px;">
+                          {{address}}
+                        </ion-note>
+                      </div>
+                    </ion-row>
+
+
+
+                    <ion-row *ngIf="this.address==''" class="customNote">
+                      <ion-icon name="location-outline" color="primary" class="vertical-align pb3"></ion-icon>
+                      <ion-note class="ion-text-center">
+                        ___________
+                      </ion-note>
+                    </ion-row> </ion-grid>
+                </ion-row>
+                <ion-row> <ion-chip *ngFor="let item of selectedItems" [outline]="true">{{item.title}}</ion-chip>
+                </ion-row> </ion-grid> </ion-item>
+            <div class="slider-text">
+              <h3>Διεύθυνση</h3> <ion-note>
+                Με αυτή την διεύθυνση θα ξέρουν οι υποψήφιοι πελάτες σας την τοποθεσία σας και την απόσταση τους από
+                εσάς.
+              </ion-note>
+            </div>
+            <ion-button fill="outline" (click)="chooseAddress()" expand="block" class="ion-margin-top">Επιλογή
+              Διεύθυνσης</ion-button>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
+                class="beginButton" [disabled]="!addressEntered" no-caps (click)="next($event)"><ion-icon
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide5">
+            <ion-item lines="none" class="w100 ion-no-padding ion-item2"> <ion-grid>
+                <ion-row>
+                  <ion-avatar class="custAvatarHed">
+                    <img [src]="expertImage">
+                  </ion-avatar>
+                  <ion-grid class="ion-no-padding bl5">
+                    <ion-row class="ion-no-padding">
+                      <ion-col size="12">
+                        <h4 class="orgName">
+                          {{expertName}}
+                        </h4>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="this.address!=''" class="address-row" style="justify-content: flex-start;">
+                      <div style="display: flex; align-items: center;">
+                        <ion-icon name="location-outline" color="primary" style="flex-shrink: 0;"></ion-icon>
+                        <ion-note text-wrap style="margin-left: 10px;">
+                          {{address}}
+                        </ion-note>
+                      </div>
+                    </ion-row>
+                    <ion-row *ngIf="this.address=='0'">
+                      <ion-icon name="location-outline" color="primary" class="vertical-align pb3"></ion-icon>
+                      <ion-note class="ion-text-center">
+                        ___________
+                      </ion-note>
+                    </ion-row> </ion-grid>
+                </ion-row>
+                <ion-row class="pt5"> <ion-chip *ngFor="let item of selectedItems"
+                    [outline]="true">{{item.title}}</ion-chip> </ion-row> </ion-grid> </ion-item>
+            <div class="slider-text">
+              <h3>Κατηγορίες</h3> <ion-note class="ion-margin-top">
+                Επιλέξτε τουλάχιστον μία κατηγορία που ειδικεύεστε.
+              </ion-note>
+            </div> <ion-button fill="outline" id="open-modal" expand="block" class="ion-margin-top">Επιλογή
+              Κατηγοριών</ion-button>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+                [disabled]="!(selectedItems.length>0)" color="primary" class="beginButton" no-caps
+                (click)="next($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide6">
+            <div class="slider-text">
+              <h3>Ωράριο λειτουργίας</h3>
+            </div>
+            <ion-list class="scrollable-list">
+              <div *ngFor="let day of days">
+                <ion-item lines="none">
+                  <ion-label>{{day.name}}</ion-label>
+                  <ion-toggle color="success" (click)="onDayToggle(day)"></ion-toggle>
+                </ion-item>
+                <!--<div *ngIf="day.open" class="time-selection">-->
+                <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid
+                    class="ion-no-margin w100">
+                    <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
+                      <ion-col size="5">
+                        <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="floating" fill="outline"
+                          interface="popover" [(ngModel)]="timeInterval.start"
+                          (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
+                          <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+                        </ion-select>
+                      </ion-col>
+                      <ion-col size="5">
+                        <ion-select class="smaller-font" label="Κλείνει στις" label-placement="floating" fill="outline"
+                          interface="popover" [(ngModel)]="timeInterval.end"
+                          (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
+                          <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+                        </ion-select>
+                      </ion-col>
+                      <ion-col size="2">
+                        <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline"
+                          size="large" (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon> <ion-icon
+                          class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger"
+                          (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon> </ion-col>
+                    </ion-row>
+                  </ion-grid> </div>
+              </div>
+            </ion-list>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
+                color="primary" class="beginButton" no-caps (click)="next($event)">
+                <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide7">
+            <div class="slider-text">
+              <h3>Ομάδα Εξυπηρέτησης</h3>
+              <ion-note>
+                Παρακαλώ εισάγετε τα άτομα που εξυπηρετούν στην επιχείρησης σας.
+              </ion-note>
+            </div> <!-- Add New person Button -->
+            <ion-button fill="outline" (click)="managePerson()" class="ion-margin-top">Προσθήκη Ατόμου</ion-button>
+            <ion-grid class="w80 w100 grid-container custRow ion-padding-top ion-padding-bottom"
+              *ngFor="let person of people">
+
+              <ion-row>
+
+                <ion-col size="auto">
+                  <ion-avatar class="custAvatarHedPerson">
+                    <ion-img [src]="person.image"></ion-img>
+                  </ion-avatar>
+                </ion-col>
+
+                <ion-col class="ion-align-self-center">
+
+                  <ion-grid class=" ion-no-padding">
+                    <ion-row class="person-row ion-no-padding">
+                      <ion-col>
+                        <ion-label text-wrap class="ion-no-margin f15 align-left">{{ person.name }}</ion-label>
+                      </ion-col>
+                      <ion-col size="auto">
+                        <ion-buttons class="align-right">
+                         
+                          <mat-icon  [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="managePerson(person)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Αλλαγή</span>
+                          </button>
+                          <button mat-menu-item (click)="deletePerson(person)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Διαγραφή</span>
+                          </button>
+                        </mat-menu>
+                        </ion-buttons>
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="!isScheduleDefault(person.schedule)" class="align-left ion-padding-bottom mt3">
+                      <ion-note class="f12">
+                        Διαφορετικό ωράριο από την επιχείρηση
+                      </ion-note>
+                    </ion-row>
+                    <ion-row *ngIf="isScheduleDefault(person.schedule)" class="align-left ion-padding-bottom mt3">
+                      <ion-note class="f12">
+                        Ίδιο ωράριο με την επιχείρηση
+                      </ion-note>
+                    </ion-row>
+                  </ion-grid>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
+                color="primary" class="beginButton" no-caps (click)="next($event)"><ion-icon
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+            </div>
+          </swiper-slide>
+          <swiper-slide class="ion-padding" data-hash="slide8">
+            <div class="slider-text">
+              <h3>Υπηρεσίες</h3>
+              <ion-note>
+                Παρακαλώ εισάγετε τις υπηρεσίες της επιχείρησης σας.
+              </ion-note>
+            </div>
+            <!-- Trigger for the menu -->
+            <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top">Προσθήκη</ion-button>
+            <!-- Menu definition -->
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>
+              <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσίας</button>
+            </mat-menu>
+            <ion-grid class="w100 w80 custRow ion-margin-start" *ngIf="serviceCategories.length!=0">
+              <ion-row>
+                <ion-col size="12">
+                  <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom" *ngFor="let category of serviceCategories">
+                    <ion-row>
+                      <ion-col>
+                        <h4 class="ml13" style="text-align: left">{{ category }}</h4> <!-- Display category name -->
+                      </ion-col>
+                      <ion-col class="ion-text-right">
+                        <mat-icon class="ion-margin-top" [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="editCategory(category)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Αλλαγή</span>
+                          </button>
+                          <button mat-menu-item (click)="deleteCategory(category)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Διαγραφή</span>
+                          </button>
+                        </mat-menu>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row >
+                      <ion-list lines="inset" class="ion-no-padding servicesList">
+                        <ng-container *ngIf="getServicesForCategory(category).length > 0; else noServices">
+                          <ion-item class="cursor" *ngFor="let service of getServicesForCategory(category)"
+                            (click)="editService(service)">
+                            <div class="success-line"></div>
+                            <ion-grid>
+                              <ion-row>
+                                <ion-col>
+                                  <ion-label>{{ service.name }}</ion-label>
+                                </ion-col>
+
+                              </ion-row>
+                              <ion-row class="mt9">
+                                <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+                              </ion-row>
+                            </ion-grid>
+                          </ion-item>
+                        </ng-container>
+                        <ng-template #noServices>
+                          <ion-item>
+                            <ion-note text-wrap>Δεν υπάρχουν ακόμα υπηρεσίες στην κατηγορία.</ion-note>
+                          </ion-item>
+                        </ng-template>
+                      </ion-list>
+                    </ion-row>
+                  </ion-grid>
+
+
+
+
+
+
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+                [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
+                (click)="sendData()">Τέλος</ion-button>
+            </div>
+          </swiper-slide>
+        </swiper-container>
+        <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+          <ng-template>
+            <ion-header>
+              <ion-toolbar>
+                <ion-buttons slot="start">
+                  <ng-container *ngIf="isMobile(); else cancelButton">
+                    <ion-button (click)="cancel()">
+                      <ion-icon color="light" name="arrow-back"></ion-icon>
+                    </ion-button>
+                  </ng-container>
+                  <ng-template #cancelButton>
+                    <ion-button color="light" class="no-capitalization" (click)="cancel()"
+                      [strong]="true">Ακύρωση</ion-button>
+                  </ng-template>
+                </ion-buttons>
+
+                <ion-title color="light" text-wrap>Κατηγορίες</ion-title>
+
+                <ion-buttons slot="end">
+                  <ng-container *ngIf="isMobile(); else confirmButton">
+                    <ion-button color="light" class="no-capitalization" (click)="confirm()">
+                      <ion-icon color="light" name="checkmark"></ion-icon>
+                    </ion-button>
+                  </ng-container>
+                  <ng-template #confirmButton>
+                    <ion-button color="light" class="no-capitalization" (click)="confirm()"
+                      [strong]="true">Επιβεβαίωση</ion-button>
+                  </ng-template>
+                </ion-buttons>
+              </ion-toolbar>
+            </ion-header>
+            <ion-content class="ion-padding"> <ion-card>
+                <ion-accordion-group [value]="['first']">
+                  <ion-accordion value="first" class="bgL bdl">
+                    <ion-item lines="none" slot="header" class="padd">
+                      <ion-avatar slot="start">
+                        <ion-img src="../../../assets/categories/Υπηρεσίες Ομορφιάς.png"></ion-img>
+                      </ion-avatar>
+                      <ion-label>Υπηρεσίες Ομορφιάς</ion-label>
+                    </ion-item>
+                    <div class="ion-padding " slot="content">
+                      <ion-list>
+                        <ion-item *ngFor="let item of omorfia_categories">
+                          <!--<a href="/experts?category={{item.name}}">--> <ion-text
+                            color="primary">{{item.title}}</ion-text>
+                          <ion-checkbox [(ngModel)]="item.selected" slot="end" value="{{item.title}}"></ion-checkbox>
+                          <!--</a>-->
+                        </ion-item>
+                      </ion-list>
+                    </div>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-card>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-col>
+    </ion-row>
+  </ion-grid></ion-content>
