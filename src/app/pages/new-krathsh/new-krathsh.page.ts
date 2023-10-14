@@ -45,7 +45,7 @@ export class NewKrathshPage implements OnInit {
   months = ["Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος", "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"];
   dateSelected: boolean = false;
   timeSelected: boolean = false;
-  selected!: any;
+  timeSlotSelected!: any;
   splitChoices: any;
   peopleSelected: boolean = false;
   animationState: 'in' | 'out' = 'in'; // Add this line
@@ -100,6 +100,11 @@ export class NewKrathshPage implements OnInit {
     } else {
         // Extract employeeIds from all selected services
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
+        // Construct servicesEmployeesMap from this.selectedServices
+          this.servicesEmployees = {};
+          this.selectedServices.forEach(service => {
+            this.servicesEmployees[service.id] = service.selectedEmployeeId;
+          });
         this.onMonthChange();
 
         
@@ -113,6 +118,7 @@ export class NewKrathshPage implements OnInit {
 
   presentClientPop() {
     this.clientModal.present()
+    this.isAddingNewClient=false
   }
 
 
@@ -161,17 +167,26 @@ export class NewKrathshPage implements OnInit {
       observer.observe(targetNode, config);
     }, 0);
   }
-
+  
   dateChanged() {
     this.time_slots = [];
 
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
-    this.dateSelected = true;
-   
-    this.scrollToBottomSetTimeout(150);
 
+    
 
-  }
+    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees).subscribe(response => {
+      console.log(response);
+      for (let i = 0; i < response.length; i++) {
+        response[i] = { value: response[i].start.slice(0, 5), selected: false }; // You can directly assign the object to the array
+      }
+      this.time_slots=response
+      this.dateSelected = true;
+
+      this.scrollToBottomSetTimeout(150);
+    });
+}
+
 
 
   scrollToBottomSetTimeout(time: number) {
@@ -258,10 +273,10 @@ export class NewKrathshPage implements OnInit {
 
   slotSelected(item: any) {
     this.timeSelected = true;
-    if (this.selected != null) {
-      this.selected.selected = false;
+    if (this.timeSlotSelected != null) {
+      this.timeSlotSelected.selected = false;
     }
-    this.selected = item;
+    this.timeSlotSelected = item;
     item.selected = true;
     this.scrollToBottomSetTimeout(200);
 
@@ -279,11 +294,9 @@ export class NewKrathshPage implements OnInit {
 
 
   saveKrathsh() {
-    this.saveButtonEnabled = false;
-    let selectedTimeSlot;
-    
+    this.saveButtonEnabled = false;   
 
-    this.userService.newAppointment(1, moment(this.theDate).format('YYYY-MM-DD'), "", "", this.selectedClientId,[""]).subscribe(data => {
+    this.userService.newAppointment(this.servicesEmployees, moment(this.theDate).format('YYYY-MM-DD'), this.timeSlotSelected.value, this.selectedClientId).subscribe(data => {
       this.userService.presentToast("Το ραντεβού αποθηκεύτηκε με επιτυχία.", "success")
       this.modalController.dismiss(true)
       this.saveButtonEnabled = true
@@ -351,5 +364,7 @@ toggleSelectService(service: any) {
     this.selectedServices = this.selectedServices.filter((s: any) => s !== service);
   }
 }
+
+
 
 }

@@ -1023,7 +1023,7 @@ export class UserService {
     * @returns An observable that emits the response data from the API
     */
   searchClient(filter: string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "search-client?filter=" + filter, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.get(Authenticated_API_URL + "search-client?filter=" + filter, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(this.handleError)
     );
   }
@@ -1037,53 +1037,63 @@ export class UserService {
    */
   newManualClient(name: string, surname: string, phone: string): Observable<any> {
     const body = { name: name, surname: surname, phone: phone };
-    return this.http.post(beautyAuthenticated_API_URL + "new-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-   /**
-   * Returns the available time booking for the given date, floor ID, number of people and table IDs
-   * @param date The date for which to retrieve available time bookings
-   * @param floor_id The ID of the floor to retrieve available time bookings for
-   * @param people The number of people to accommodate
-   * @param tableIds The IDs of the tables to retrieve available time bookings for
-   * @returns An observable that emits the response data from the API
-   */
-   getAvailableTimeBooking(date: string, floor_id: string, people: number, tableIds: string[]): Observable<any> {
-    const params = new HttpParams()
-      .set('floor_id', floor_id)
-      .set('people', people.toString())
-      .set('date', date)
-      .set('tableIds', tableIds.join(',')); // Create a comma-separated string
-    return this.http.get(beautyAuthenticated_API_URL + "get-available-times-bookings", { headers: this.getHeaders(), params: params, withCredentials: true }).pipe(
+    return this.http.post(Authenticated_API_URL + "new-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(this.handleError)
     );
   }
 
   /**
-   * Saves the Appointment with the given details
-   * @param people The number of people for the Krathsh
-   * @param theDate The date for the Krathsh
-   * @param selected_floor The ID of the floor for the Krathsh
-   * @param timeSelected The time selected for the Krathsh
-   * @param selectedClientId The ID of the selected client for the Krathsh
-   * @param bestSplit The best split for the Krathsh
-   * @returns An observable that emits the response data from the API
+   * Edits a manual client.
+   * @param client_id The ID of the client to edit.
+   * @param name The new name of the client.
+   * @param phone The new phone number of the client.
+   * @returns An Observable that resolves with the server response.
    */
-  newAppointment(people: number, theDate: string, selected_floor: string, timeSelected: string, selectedClientId: string, bestSplit: string[]): Observable<any> {
+  editManualClient(client_id: string, name: string, phone: string): Observable<any> {
+    // Body for the post request based on your endpoint's expected data structure
     const body = {
-      people: people,
-      theDate: theDate,
-      selectedFloor: selected_floor,
-      timeSelected: timeSelected,
-      selectedClientId: selectedClientId,
-      bestSplit: bestSplit
+      "client_id": client_id,
+      "name": name,
+      "phone": phone
     };
+    return this.http.post(Authenticated_API_URL + "edit-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+ 
+  getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }): Observable<any> {
+    // Set the date as a query parameter
+    const params = new HttpParams().set('date', date);
+    
+    // Use the provided servicesEmployeesMap as the body directly
+    const body = servicesEmployeesMap;
+
+    return this.http.post(beautyAuthenticated_API_URL + "get-available-slots", body, {
+        headers: this.getHeaders(),
+        params: params,
+        withCredentials: true
+    })
+    .pipe(
+      catchError(this.handleError)
+    );
+}
+
+
+ 
+  newAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string): Observable<any> {
+    const body = {
+      servicesEmployees: servicesEmployees,
+      bookingDate: theDate,
+      timeSelected: timeSelected,
+      selectedClientId: selectedClientId
+    };
+
     return this.http.post(beautyAuthenticated_API_URL + "new-appointment", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(this.handleError)
     );
   }
+
 
   /**
    * Searches for a Krathsh with the given filter and page number

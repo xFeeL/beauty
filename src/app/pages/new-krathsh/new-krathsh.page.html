@@ -92,10 +92,34 @@
            class="mxw" presentation="date" [min]="minDate" max="2099-10-31"
           [(ngModel)]="theDate" (ionChange)="dateChanged()"></ion-datetime> 
        
+          <h4 *ngIf="dateSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
+            <ion-text color="dark"><b>Ώρας</b></ion-text>
+          </h4>
+  
+          <ion-grid class="customGrid" *ngIf="dateSelected" [@moveToBottom]="'*'">
+            <ion-row class="ion-margin scrollable-content">
+              <ng-container *ngIf="time_slots && time_slots.length > 0; else noSlotsAvailable">
+                <div *ngFor="let slot of time_slots" 
+                  [class]="slot.selected?'ion-text-center timDiv selected cursor':'ion-text-center timDiv avail cursor' "
+                  (click)="slotSelected(slot)">
+                  <ion-label>{{slot.value}}</ion-label>
+                </div>
+              </ng-container>
+              <ng-template #noSlotsAvailable>
+                <ion-note class="no_results_text ion-justify-content-center">
+                  Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε με άλλο συνδυασμό τραπεζιών ή χώρου.
+                </ion-note>
+              </ng-template>
+            </ion-row>
+          </ion-grid>
+          
+
+          
+
         <h4 *ngIf="timeSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Πελάτη</b></ion-text>
         </h4>
-        <ion-item *ngIf="timeSelected" class="border ion-margin-start ion-margin-end" (click)="presentClientPop()">
+        <ion-item *ngIf="timeSelected" class="border ion-margin-bottom ion-margin-end" (click)="presentClientPop()">
           <ion-label class="full-width-label"> <ion-item lines="none" *ngIf="selectedClientImage!=''">
               <ion-avatar class="custAvatarHed2">
                 <ion-img src="data:image/jpeg;base64,{{selectedClientImage}}"></ion-img>
@@ -152,26 +176,30 @@
             Προσθήκη νέου πελάτη
           </ion-button>
         </ng-container> <ng-container *ngIf="isAddingNewClient">
-          <ion-item>
-            <ion-label position="stacked">Ονομα</ion-label>
-            <ion-input [(ngModel)]="newClientName"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Επίθετο</ion-label>
-            <ion-input [(ngModel)]="newClientSurname"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Τηλέφωνο</ion-label>
-            <ion-input [(ngModel)]="newClientPhone"></ion-input>
-          </ion-item>
-          <div class="button-container">
-            <ion-button class="cancel-button" fill="outline" color="" (click)="goBackPop()">Πίσω</ion-button>
-            <ion-button class="apply-button" fill="solid" color="primary"
-              [disabled]="!newClientName || !newClientSurname || !newClientPhone"
-              (click)="createClient()">Δημιουργία</ion-button>
-          </div>
+          <ion-grid>
+            <ion-row class="ion-margin-top ion-margin-bottom">
+              <ion-col size="6">
+
+                <ion-input [(ngModel)]="newClientName" label="Όνομα" label-placement="floating" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
+              </ion-col>
+              <ion-col size="6">
+                <ion-input [(ngModel)]="newClientSurname" label="Επίθετο" label-placement="floating" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
+
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-margin-top ion-margin-bottom">
+              <ion-input [(ngModel)]="newClientPhone" label="Τηλέφωνο" label-placement="floating" fill="solid" placeholder="Εισάγετε τηλέφωνο"></ion-input>
+
+            </ion-row>
+          </ion-grid>
+          
         </ng-container>
       </ion-content>
+      <ion-footer *ngIf="isAddingNewClient">
+        <ion-button class="apply-button ion-no-margin" fill="solid" expand="full" color="primary"
+        [disabled]="!newClientName || !newClientSurname || !newClientPhone"
+        (click)="createClient()">Δημιουργία</ion-button>
+      </ion-footer>
     </ng-template>
   </ion-modal></ion-content><ion-footer (click)="save()"> <ion-button class="ion-no-margin"
     [disabled]="!saveButtonEnabled" expand="full" color="primary" (click)="saveKrathsh()">
