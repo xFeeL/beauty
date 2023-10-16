@@ -44,6 +44,8 @@ export class AddPersonPage implements OnInit {
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
 ];
 personName=""
+personSurName=""
+
 customSchedule = false;
   businessSchedule: any;
   personSchedule: any;
@@ -152,12 +154,16 @@ customSchedule = false;
     if(this.customSchedule){
       await this.modalController.dismiss({
         'personName': this.personName,
+        'personSurName': this.personSurName,
+
         'days': this.scheduleToReturn,
         'image': this.image,
       });
     }else{
       await this.modalController.dismiss({
         'personName': this.personName,
+        'personSurName': this.personSurName,
+
         'days': this.businessSchedule,
         'image': this.image,
 

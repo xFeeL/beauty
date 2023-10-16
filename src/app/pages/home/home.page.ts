@@ -20,15 +20,19 @@ import { ChartConfiguration, ChartDataset, ChartType } from 'chart.js';
 import { ClientProfilePage } from '../client-profile/client-profile.page';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
+import { MatTooltip } from '@angular/material/tooltip';
+
+
 export interface PeriodicElement {
   badge: string;
   avatar: string;
   name: string;
   date: string;
-  floor: string;
-  tables: string;
+  employee: string;
+  service: string;
   status: string;
   id: string;
+  serviceEmployeeMapping?: string // This will map each service to its respective employee
 }
 const ELEMENT_DATA: PeriodicElement[] = [
 
@@ -106,14 +110,14 @@ export class HomePage implements OnInit {
   initialized: boolean = false;
   cancelReason: string = "";
   statsNumberLoading = false;
-  displayedColumns: string[] = ['avatar', 'name', 'date', 'floor', 'tables', 'status'];
+  displayedColumns: string[] = ['avatar', 'name', 'date', 'employee', 'service', 'status'];
   dataSource = ELEMENT_DATA;
   clickedRows = new Set<PeriodicElement>();
   resizeListener: any;
   pendingAppointments: any = 0;
   totalAppointments: any = 0;
   totalVisitors: any = 0;
-  topClients: any=[];
+  topClients: any = [];
   statsLoading: boolean = false;
   activeSegment: string = 'all'; // default value
   statusChosen: string = "0,0,0,0";
@@ -182,7 +186,7 @@ export class HomePage implements OnInit {
 
   }
 
- 
+
 
   getTopClients() {
     this.userService.getTopClients().subscribe(data => {
@@ -201,54 +205,7 @@ export class HomePage implements OnInit {
 
 
   }
-  getTabKrathseis(status: string) {
-    let temp_status = "0,0,0,0";
-    if (status == "pending") {
-      temp_status = "1,0,0,0"
-    } else if (status == "accepted") {
-      temp_status = "0,0,1,0"
-    } else if (status == "canceled") {
-      temp_status = "0,0,0,1"
 
-    }
-    this.userService.getAppointments(temp_status, 0, "upcoming", false).subscribe(data => {
-      const newDataSource: PeriodicElement[] = [];
-
-      for (let k = 0; k < data.length; k++) {
-        let el = data[k];
-        el[3] = moment(el[3]).locale("el").format('Do MMM, h:mm a');
-        el[5] = el[5].split('$')[0] + " " + el[5].split('$')[1];
-        this.krathseis.push(el);
-
-        if (el[2] === "Αποδεκτή") {
-          el[2] = el[7] === "false" ? "not_checked_in" : "checked_in";
-        }
-
-        if (k < 5) {
-          const periodicElement: PeriodicElement = {
-            badge: '',
-            avatar: el[10],
-            name: el[5],
-            date: el[3],
-            floor: el[8],
-            tables: el[9],
-            status: el[2],
-            id: el[0],
-          };
-          newDataSource.push(periodicElement);
-        }
-      }
-
-      this.dataSource = newDataSource;
-      this.cdr.detectChanges();
-    }, err => {
-      if (err.error.text == "No more data") {
-        this.dataSource = []
-        this.cdr.detectChanges();
-
-      }
-    });
-  }
 
   calculateTimeSince(dateString: string): string {
     let eventDate = new Date(dateString);
@@ -275,31 +232,10 @@ export class HomePage implements OnInit {
 
 
 
-  notif() {
-
-    this.rout.navigate(['notifications']);
-    this.navCtrl.navigateRoot('notifications', { animated: true, animationDirection: 'forward' });
-
-
-  }
-
   public newNotification() {
     return this.userService.newNotification;
   }
 
-  goToProject(item: any) {
-    this.navCtrl.navigateRoot('/ergasia?project_id=' + item.id, { animated: true, animationDirection: 'forward' });
-
-  }
-
-  goToProjects() {
-    this.navCtrl.navigateRoot('/tabs/ergasies', { animated: true, animationDirection: 'forward' });
-  }
-  goToProposals() {
-    this.navCtrl.navigateRoot('/tabs/prosfores', { animated: true, animationDirection: 'forward' });
-
-
-  }
 
 
   async goToNotifications() {
@@ -308,12 +244,6 @@ export class HomePage implements OnInit {
     });
     return await modal.present();
   }
-
-
-
-
-
-
 
 
   async goToProfile() {
@@ -420,35 +350,35 @@ export class HomePage implements OnInit {
     return await modal.present();
   }
 
+
   getKrathseis(status: string) {
     this.statusChosen = status
     this.dataSource = []
     this.userService.getAppointments(this.statusChosen, this.page, "upcoming", false).subscribe(data => {
       this.dataSource = [];
-
+      console.log(data)
       for (let k = 0; k < data.length; k++) {
         let el = data[k];
         el[3] = moment(el[3]).locale("el").format('Do MMM, h:mm a');
-        el[5] = el[5].split('$')[0] + " " + el[5].split('$')[1];
+        el[4] = el[4].split('$')[0] + " " + el[4].split('$')[1];
         this.krathseis.push(el);
-
-        if (el[2] == "Αποδεκτή") {
-          if (el[7] == "false") {
-            el[2] = "not_checked_in"
-          } else {
-            el[2] = "checked_in"
-          }
+        if (el[2] === "Αποδεκτή") {
+          el[2] = el[5] === "false" ? "not_checked_in" : "checked_in";
         }
+
+        let uniqueNames = Array.from(new Set(el[6].split(',').map((name: string) => name.trim()))).join(', ');
         if (k < 5) {
           const periodicElement: PeriodicElement = {
             badge: '',
-            avatar: el[10],
-            name: el[5],
+            avatar: el[9],
+            name: el[4],
             date: el[3],
-            floor: el[8],  // Replace with actual mapping when available
-            tables: el[9],  // Assuming tables is a string representation of the number of tables
+            employee: uniqueNames,  // Using unique names now
+            service: el[7],  // Assuming tables is a string representation of the number of tables
             status: el[2],
             id: el[0],
+            serviceEmployeeMapping: this.mergeServicesForEmployees(el[8])
+
           };
           this.dataSource.push(periodicElement);
         }
@@ -459,6 +389,19 @@ export class HomePage implements OnInit {
         this.displayedColumns.unshift('badge');
       }
 
+      // Check if on mobile and remove avatar column if present
+      /*if (this.isMobile && this.displayedColumns.includes('avatar')) {
+        //const index = this.displayedColumns.indexOf('avatar');
+        //this.displayedColumns.splice(index, 1);
+      }
+      // Add avatar column if not on mobile and not already present
+      else if (!this.isMobile && !this.displayedColumns.includes('avatar')) {
+        //this.displayedColumns.unshift('avatar');
+      }*/
+
+      this.cdr.detectChanges();
+
+
       this.cdr.detectChanges();
 
 
@@ -467,6 +410,34 @@ export class HomePage implements OnInit {
       this.initialized = true;
     });
   }
+
+  mergeServicesForEmployees(input: string): string {
+    const serviceByEmployee = new Map<string, string[]>();
+
+    const pairs = input.split(', ');
+
+    for (let pair of pairs) {
+      const [employeeWithParenthesis, service] = pair.split(' (');
+      const employee = employeeWithParenthesis.trim(); // Cleaning up employee name
+      const cleanService = service.replace(')', '');   // Removing trailing parenthesis from service name
+
+      if (serviceByEmployee.has(employee)) {
+        serviceByEmployee.get(employee)!.push(cleanService);
+      } else {
+        serviceByEmployee.set(employee, [cleanService]);
+      }
+    }
+
+    const result = [];
+    for (let [employee, services] of serviceByEmployee.entries()) {
+      let combinedService = services.join(' & ');
+      result.push(`${employee}. (${combinedService})`);
+    }
+
+    return result.join(', ');
+  }
+
+
 
 
   getColorForStatus(status: string): string {
@@ -490,6 +461,15 @@ export class HomePage implements OnInit {
 
   getTime(datetime: string): string {
     return moment(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
+  }
+
+
+  getEmployees(employeeString: string): string[] {
+    return employeeString.split(',').map(item => item.trim());
+  }
+
+  getAllEmployeeNames(employeeString: string): string {
+    return this.getEmployees(employeeString).join(', ');
   }
 
 
@@ -651,7 +631,7 @@ export class HomePage implements OnInit {
     }
     return mappedTimeFrame
   }
-  
+
   getStats(timeFrame: string) {
     this.statsLoading = true;
 
@@ -766,6 +746,21 @@ export class HomePage implements OnInit {
 
     return hoursLeft;
   }
+
+  toggleTooltip(tooltip: MatTooltip, event: Event): void {
+    event.stopPropagation();
+    if (tooltip._isTooltipVisible()) {
+      tooltip.hide();
+    } else {
+      tooltip.show();
+    }
+
+  }
+
+  getAllServiceNames(services: string): string {
+    return services.split(',').map(service => service.trim()).join(', ');
+  }
+
 
 
 

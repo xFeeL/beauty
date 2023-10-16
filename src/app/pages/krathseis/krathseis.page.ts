@@ -108,6 +108,9 @@ export class KrathseisPage implements OnInit {
     this.getKrathseis();
   }
 
+  isMobile(){
+    return this.userService.isMobile();
+  }
   appendToTextArea(reason: string) {
     this.cancelReason = ""
     this.cancelReason = reason;
@@ -253,13 +256,16 @@ export class KrathseisPage implements OnInit {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
       for (let k = 0; k < data.length; k++) {
         data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a')
-        data[k][5] = data[k][5].split('$')[0] + " " + data[k][5].split('$')[1]
+        data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
         this.krathseis.push(data[k])
       }
       console.log("APPOINTMETNS")
       console.log(this.krathseis)
       this.initialized = true;
     }, err => {
+      if(err.error.text=='No more data'){
+        this.disableInfiniteScroll=true;
+      }
       this.initialized = true;
 
 
@@ -293,6 +299,7 @@ export class KrathseisPage implements OnInit {
   }
 
   toggleItem(item: any) {
+    console.log(item)
     item.selected = !item.selected
   }
 
@@ -375,15 +382,15 @@ export class KrathseisPage implements OnInit {
   getColorForStatus(status: string): string {
     switch (status) {
       case 'Ακυρώθηκε':
-        return 'danger';
+        return 'danger-line cursor w100 rad ion-margin-bottom ';
       case 'Ολοκληρωμένη':
-        return 'warning';
+        return 'warning-line cursor w100 rad ion-margin-bottom ';
       case 'Αποδεκτή':
-        return 'success';
+        return 'success-line cursor w100 rad ion-margin-bottom';
       case 'Εκκρεμεί':
-        return 'primary';
+        return 'pending-line cursor w100 rad ion-margin-bottom ';
       default:
-        return 'medium';
+        return 'pending-line cursor w100 rad ion-margin-bottom';
     }
   }
 

@@ -315,16 +315,19 @@ ion-segment-button.ios {
   color: gray;               /* Set the text color to gray */
   font-size: 0.9em;          /* Make the text a bit smaller */
   padding-left: 5px !important;
-  //min-width: 150px; /* Adjust this value as needed */
+  //min-width: 150px; /* Adjust this value as needed */+
+  text-align: left;
 }
 
-.table-column{
-  min-width:115px !important;
-}
+
 
 .pl0{
-  padding-left:0px !important;
+  padding-left:6px !important;
 
+}
+
+.textLeft{
+  text-align: left;
 }
 
 .icon-spacing {
@@ -454,10 +457,7 @@ th.mat-header-cell.sticky:after {
   overflow: auto;
 }
 
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-}
+
 
 @media (max-width: 768px) {
   .table-container::-webkit-scrollbar {
@@ -595,12 +595,26 @@ ion-popover {
 .red-name {
   color: red;
 }
+.table-container {
+  width: 80%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1500px) {
+ 
+
+  .table-container {
+   width:100% /* adjust as needed */
+    
+}
+
+}
 
 @media (max-width: 600px) {
 .name-column {
-  width: 90px !important;  /* use !important to ensure the width is applied */
-  max-width: 90px;
-  min-width: 90px;
+  width: 100px !important;  /* use !important to ensure the width is applied */
+  max-width: 100px;
+  min-width: 100px;
   overflow: hidden;        /* this is to ensure that the content doesn't spill over */
   
 }
@@ -619,4 +633,39 @@ ion-popover {
 
 .border-column {
   border-bottom: 0px solid #000 !important; /* Adjust as per your requirement */
+  text-align: left;
+}
+
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plusChip{
+  margin-left: 5px;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.chipHeight{
+  height:40px;
+}
+
+th{
+  text-align: center;
+}
+
+td{
+  text-align: center;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+
+.employeeChip{
+  font-size:0.9em;
 }

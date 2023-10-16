@@ -516,6 +516,8 @@ performDeletion(person: any, affectedServices: any[] = []) {
     const editingComponentProps = isEditing ? {
       personSchedule: person.schedule,
       personName: person.name,
+      personSurName: person.surname,
+
       toggled: !this.isScheduleDefault(person.schedule),
     } : {};
 
@@ -530,6 +532,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
     if (data) {
       const processedPerson = {
         name: data.personName,
+        surname:data.personSurName,
         image: data.image,
         schedule: data.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
           const mappedDay = day.name;
@@ -556,6 +559,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
     // Transform the people array to contain only names and selected attributes
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
+      surname:person.surname,
       selected: person.selected
     }));
   
@@ -712,6 +716,8 @@ performDeletion(person: any, affectedServices: any[] = []) {
   
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
+      surname: person.surname,
+
     }));
   
     const modal = await this.modalController.create({

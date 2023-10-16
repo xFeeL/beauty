@@ -28,7 +28,7 @@
           <ion-row>
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
-                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="9,50"></ion-input>
+                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="9.50"></ion-input>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
@@ -71,7 +71,7 @@
 
               <ion-list class="ion-no-padding">
                 <ion-item lines="full" *ngFor="let person of people">
-                  <ion-label>{{person.name}}</ion-label>
+                  <ion-label>{{person.surname}}&nbsp;{{person.name}}</ion-label>
                   <ion-checkbox slot="start" [(ngModel)]="person.selected"
                     (ionChange)="checkIfAllSelected()"></ion-checkbox>
                 </ion-item>

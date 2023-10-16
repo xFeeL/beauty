@@ -31,7 +31,7 @@
   }
   
   .not-selected-chip {
-    --background: #246EE9;
+    --background: #4B91E9;
     --color: white;
     border: 1px solid #FFFFFF;
     border-radius: 15px;
@@ -80,8 +80,7 @@
   .custAvatarHed {
     width: 50px;
     height: 50px;
-    margin-left: 10px;
-    margin-bottom: 20px;
+    margin-right: 10px;
   }
   
   .custGrid {
@@ -108,19 +107,8 @@
     text-align: right;
   }
   
-  .not-selected-chip {
-    --background: #246EE9;
-    --color: white;
-    border: 1px solid #FFFFFF;
-    border-radius: 15px;
-  }
-  
-  .selected-chip {
-    --background: white;
-    --color: #246EE9;
-  }
-  
-  
+
+
   .arrowChip {
     margin-right: 0px;
     margin-left: 5px;
@@ -300,6 +288,12 @@
   
   .date-chip {
     border: 0.5px solid var(--ion-color-primary);
+    margin-bottom:10px;
+  }
+
+
+  .rad{
+    border-radius: 20px;
   }
   
   .pr10 {
@@ -360,4 +354,34 @@
       display: inline-block;
       /* Show only on desktop */
     }
+  }
+
+  
+
+  .completed-line {
+    border-left: 20px solid  var(--ion-color-warning); /* Adjust the color and width as needed */
+
+  }
+
+  .success-line {
+    border-left: 20px solid  var(--ion-color-success); /* Adjust the color and width as needed */
+}
+
+
+.pending-line {
+  border-left: 20px solid  var(--ion-color-pending); /* Adjust the color and width as needed */
+}
+
+  .danger-line {
+    border-left: 20px solid  var(--ion-color-danger); /* Adjust the color and width as needed */
+
+  }
+
+
+  .customFontNote{
+    font-size:13px !important;
+  }
+
+  .customFontHeader{
+    font-size:15px !important;
   }

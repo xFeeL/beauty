@@ -22,7 +22,7 @@
         <ion-list class="backgroundGrid">
           <ion-item *ngFor="let item of itemsKrathsh" (click)="toggleItem(item)">
             <ion-label text-wrap>{{ item.value }}</ion-label>
-            <ion-checkbox slot="end" [checked]="item.selected" (ionChange)="toggleItem(item)"></ion-checkbox>
+            <ion-checkbox slot="end" [checked]="item.selected" ></ion-checkbox>
           </ion-item> </ion-list>
         <div class="button-container">
           <ion-button class="cancel-button" fill="outline" color="danger"
@@ -63,6 +63,8 @@
   </ion-refresher>
   <ion-grid class="npt">
     <ion-row class="ion-justify-content-center"> <ion-col size="12" class="ion-no-padding">
+
+
         <ion-item class="ion-padding-start -ion-padding-end " lines="none" *ngIf="krathseis.length==0">
           <ion-grid>
             <ion-row>
@@ -74,11 +76,49 @@
             </ion-row>
           </ion-grid> </ion-item> <ion-list class="ion-no-padding backgroundGrid">
           <ion-grid>
-            <ng-container *ngFor="let krathsh of krathseis; let i = index">
+            <ng-container *ngFor="let krathsh of krathseis; let i = index" >
+
+              <ion-chip *ngIf="mode === 'upcoming' && (i === 0 || getDate(krathsh[3]) !== getDate(krathseis[i-1][3]))"
+                color="primary" class=" date-chip ion-margin-top">
+                <ion-label>{{ getDate(krathsh[3]) }}</ion-label>
+              </ion-chip>
+              <ion-item  [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
+                <ion-avatar class="custAvatarHed">
+                  <ion-img src="data:image/jpeg;base64,{{krathsh[9]}}"></ion-img>
+                </ion-avatar>
+                <ion-label>
+                  <h2 class="customFontHeader">{{krathsh[4]}}</h2>
+                  <ion-note class="customFontNote" *ngIf="mode=='upcoming'">Ώρα:  {{getTime(krathsh[3])}} • Τιμή: €5</ion-note>
+                  <ion-note class="customFontNote" *ngIf="mode=='new'">{{krathsh[3]}} • Τιμή: €5</ion-note>
+
+                </ion-label>
+                <div class="align-right" *ngIf="krathsh[2]=='Αποδεκτή'">
+                  <ion-icon *ngIf="isMobile()" [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon"
+                    name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
+                   
+            <ion-button *ngIf="!isMobile()"
+                            class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
+                            [@buttonAnimation]="krathsh[7]=='true' ? 'expanded' : 'collapsed'"
+                            [fill]="krathsh[7]=='true' ? 'solid' : 'outline'" size="small"
+                            [class.green-border]="krathsh[7]!='true'" [color]="krathsh[7]=='true'?'success':'medium'"
+                            (click)="checkIn(krathsh); $event.stopPropagation();"
+                            style="text-transform: none; border-radius: 100px !important;">
+                            <ion-icon *ngIf="krathsh[7]=='true'" [@checkmarkAnimation] name="checkmark-outline"
+                              style="padding-right: 10px;"></ion-icon>
+                            Έφτασε
+                          </ion-button>
+                </div>
+              </ion-item>
+
+            </ng-container>
+            <!--<ng-container *ngFor="let krathsh of krathseis; let i = index">
+
               <ion-chip *ngIf="mode === 'upcoming' && (i === 0 || getDate(krathsh[3]) !== getDate(krathseis[i-1][3]))"
                 color="primary" class=" date-chip">
                 <ion-label>{{ getDate(krathsh[3]) }}</ion-label>
-              </ion-chip> <ion-row class="ion-margin-start ion-margin-end custRow">
+              </ion-chip> 
+              
+              <ion-row class="ion-margin-start ion-margin-end custRow">
                 <ion-grid>
                   <ion-row class="ion-align-items-center borderBottom " (click)="goToKrathsh(krathsh[0])">
                     <ion-avatar class="custAvatarHed">
@@ -88,9 +128,7 @@
                       <ion-row class="pb7">
                         <ion-col>
                           <ion-label class="f15 title" text-wrap>{{krathsh[5]}}</ion-label>
-                          <!--<div class="align-right" *ngIf="krathsh[2]=='Αποδεκτή'">
-                        <ion-icon [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon" name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
-                      </div>--> </ion-col>
+                          </ion-col>
                         <ion-col size="6"
                           *ngIf="mode=='upcoming' && krathsh[2] != 'Εκκρεμεί' && krathsh[2] != 'Ακυρώθηκε'"> <ion-button
                             class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
@@ -174,7 +212,7 @@
                   </ion-row>
                 </ion-grid>
               </ion-row>
-            </ng-container>
+            </ng-container>-->
           </ion-grid> <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)"
             [disabled]="disableInfiniteScroll">
             <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">

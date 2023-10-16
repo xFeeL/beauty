@@ -75,7 +75,8 @@
                 <ion-col size="12" class="ion-no-padding">
                   <div class="table-container">
                     <table mat-table [dataSource]="dataSource" class=" demo-table "
-                      *ngIf="initialized && dataSource.length!=0"> <ng-container *ngIf="shouldDisplayBadgeColumn()"
+                      *ngIf="initialized && dataSource.length!=0"> 
+                      <ng-container *ngIf="shouldDisplayBadgeColumn()"
                         matColumnDef="badge" sticky>
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element" class="badge-column">
@@ -87,7 +88,7 @@
                             {{ getHoursLeft(element.date) }}
                           </ion-badge>
                         </td>
-                      </ng-container> <ng-container matColumnDef="avatar" sticky>
+                      </ng-container> <ng-container matColumnDef="avatar" sticky >
                         <th mat-header-cell *matHeaderCellDef class="avatar-column"></th>
                         <td mat-cell *matCellDef="let element" class="avatar-column ion-text-center">
                           <!-- Container div for the badge and the avatar --> <!-- Avatar -->
@@ -96,20 +97,65 @@
                           </ion-avatar>
                         </td>
                       </ng-container> <ng-container matColumnDef="name" sticky>
-                        <th mat-header-cell *matHeaderCellDef class="pl0 name-column border border-column">Όνομα</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell name-column">{{element.name}}</td>
+                        <th mat-header-cell *matHeaderCellDef class="pl0 table-column border border-column">Όνομα</th>
+                        <td mat-cell *matCellDef="let element" class="custom-cell table-column textLeft">{{element.name}}</td>
                       </ng-container> <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ημερομηνία / Ώρα</th>
+                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ημερ/Ώρα</th>
                         <td mat-cell *matCellDef="let element" class="custom-cell">{{element.date}}</td>
                       </ng-container>
-                      <ng-container matColumnDef="floor">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Χώρος</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">{{element.floor}}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="tables">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 table-column border-column">Τραπέζια</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">{{element.tables}}</td>
-                      </ng-container>
+                      
+                      <ng-container matColumnDef="employee">
+                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Εξυπηρέτηση</th>
+                        <td mat-cell *matCellDef="let element" class="custom-cell">
+                            <ng-container *ngIf="getEmployees(element.employee).length > 0">
+                                <!-- Display the first employee and if there are more employees, display +n -->
+                                
+                                <ion-chip [outline]="true" class="no-wrap ion-no-margin" color="primary"
+                                          (click)="toggleTooltip(tooltipChip, $event)"
+                                          #tooltipChip="matTooltip" 
+                                          [matTooltip]="element.serviceEmployeeMapping"
+                                          matTooltipPosition="above"
+                                          matTooltipShowDelay="0"
+                                          matTooltipHideDelay="1500" >
+                                    <ion-note color="primary" class="employeeChip">{{ getEmployees(element.employee)[0] }}</ion-note>
+                                    <ng-container *ngIf="getEmployees(element.employee).length > 1">
+                                        <ion-note color="primary" class="plusChip"> +{{ getEmployees(element.employee).length - 1 }} </ion-note>
+                                    </ng-container>
+                                </ion-chip>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    
+                    
+                    
+                    
+                    
+                    <ng-container matColumnDef="service">
+                      <th mat-header-cell *matHeaderCellDef class="pl0 table-column border-column">Υπηρεσίες</th>
+                      <td mat-cell *matCellDef="let element" class="custom-cell">
+                          <ng-container *ngIf="element.service.split(',').length > 0">
+                              <!-- Display the first service and if there are more services, display +n -->
+                              <ion-chip [outline]="true" [class]="isMobile==true?'chipHeight ion-no-margin':'ion-no-margin'" color="primary"
+                                        (click)="toggleTooltip(serviceTooltip, $event)"
+                                        #serviceTooltip="matTooltip" 
+                                        [matTooltip]="element.serviceEmployeeMapping"
+                                        matTooltipPosition="above"
+                                        matTooltipShowDelay="0"
+                                        matTooltipHideDelay="1500">
+                                 
+                                  <ion-note color="primary" class="employeeChip"> {{ element.service.split(',')[0].trim() }}</ion-note>
+
+                                  <ng-container *ngIf="element.service.split(',').length > 1">
+                                      <ion-note color="primary" class="plusChip"> +{{ element.service.split(',').length - 1 }} </ion-note>
+                                  </ng-container>
+                              </ion-chip>
+                          </ng-container>
+                      </td>
+                  </ng-container>
+                  
+                  
+                  
+                  
                       <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ενέργεια</th>
                         <td mat-cell *matCellDef="let element" class="custom-cell">

@@ -36,10 +36,19 @@
       <ion-button fill="outline" class="capsOff" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-button>
     </ion-row>
     <ion-row class="ion-justify-content-center">
-      <ion-col size="12" size-lg="7" >
+      <ion-col size="6" size-lg="5" >
 
        
-        <ion-input label="Όνομα Ατόμου" label-placement="floating" fill="outline" placeholder="Όνομα Ατόμου" [(ngModel)]="personName"></ion-input>
+        <ion-input label="Όνομα" label-placement="floating" fill="outline" [(ngModel)]="personName"></ion-input>
+      </ion-col>
+      <ion-col size="6"   size-lg="5" >
+
+       
+        <ion-input label="Επίθετο" label-placement="floating" fill="outline"  [(ngModel)]="personSurName"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-lg="10">
         <ion-toggle class="ion-padding-top" [enableOnOffLabels]="true" [(ngModel)]="customSchedule"></ion-toggle>
                 <ion-note class="ion-padding-start" color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
         <ion-note  class="ion-padding-start" color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>

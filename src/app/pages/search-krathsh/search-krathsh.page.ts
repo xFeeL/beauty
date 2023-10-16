@@ -4,11 +4,35 @@ import { IonPopover, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { KrathshPage } from '../krathsh/krathsh.page';
 import * as moment from 'moment';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-search-krathsh',
   templateUrl: './search-krathsh.page.html',
   styleUrls: ['./search-krathsh.page.scss'],
+  animations: [
+    trigger('buttonAnimation', [
+      state('collapsed', style({
+        width: '80px',  // replace with the initial width of the button
+      })),
+      state('expanded', style({
+        width: '110px',  // replace with the expanded width of the button
+      })),
+      transition('collapsed <=> expanded', animate('300ms ease-out'))
+    ]),
+    trigger('checkmarkAnimation', [
+      state('void', style({
+        opacity: 0,
+        transform: 'scale(0.5)'
+      })),
+      state('*', style({
+        opacity: 1,
+        transform: 'scale(1)'
+      })),
+      transition('void => *', animate('300ms ease-out')),
+      transition('* => void', animate('300ms ease-in'))
+    ]),
+  ]
 })
 export class SearchKrathshPage implements OnInit {
   searchTerm = '';
@@ -24,7 +48,9 @@ export class SearchKrathshPage implements OnInit {
   ngOnInit() {
   }
 
-
+  isMobile(){
+    return this.userService.isMobile();
+  }
   onSearch(eve: any) {
     this.page = 0
     this.krathseis = []
@@ -32,12 +58,16 @@ export class SearchKrathshPage implements OnInit {
       this.searchKrathsh();
 
     }
-    if (eve.detail.value.length == 0) {
+    if (eve.detail.value && eve.detail.value.length == 0) {
       return null;
     }
     return null;
   }
 
+  onClear(){
+    this.page = 0
+    this.krathseis = []
+  }
   goBack() {
     this.modalController.dismiss()
   }
@@ -45,6 +75,7 @@ export class SearchKrathshPage implements OnInit {
   searchKrathsh() {
 
     this.userService.searchAppointment(this.searchTerm, this.page).subscribe(data => {
+      console.log(data)
       for (let k = 0; k < data.length; k++) {
         data[k][3] = moment(data[k][3]).locale("el").format('Do MMM , h:mm a')
         data[k][5] = data[k][5].split('$')[0] + " " + data[k][5].split('$')[1]
@@ -64,22 +95,27 @@ export class SearchKrathshPage implements OnInit {
   }
 
   getColorForStatus(status: string): string {
-    console.log(status)
     switch (status) {
       case 'Ακυρώθηκε':
-        return 'danger';
+        return 'danger-line cursor w100 rad ion-margin-bottom ';
       case 'Ολοκληρωμένη':
-        return 'warning';
+        return 'warning-line cursor w100 rad ion-margin-bottom ';
       case 'Αποδεκτή':
-        return 'success';
+        return 'success-line cursor w100 rad ion-margin-bottom';
       case 'Εκκρεμεί':
-        return 'primary';
+        return 'pending-line cursor w100 rad ion-margin-bottom ';
       default:
-        return 'medium';
+        return 'pending-line cursor w100 rad ion-margin-bottom';
     }
   }
 
+  getDate(datetime: string): string {
+    return moment(datetime, 'Do MMM, h:mm a', 'el').format('D MMM, YYYY');
+  }
 
+  getTime(datetime: string): string {
+    return moment(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
+  }
   openAcceptPopover() {
     this.cancelReason = ""
 
@@ -145,6 +181,27 @@ export class SearchKrathshPage implements OnInit {
     event.target.complete();
   }
 
+  checkIn(krathsh: any) {
+    if (krathsh[7] == "true") {
+      this.userService.changeCheckInStatus(krathsh[0], "false").subscribe(data => {
+        krathsh[7] = "false"
+
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+      })
+
+    } else {
+      this.userService.changeCheckInStatus(krathsh[0], "true").subscribe(data => {
+        krathsh[7] = "true"
+
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+
+      })
+
+
+    }
+  }
 }
 
 

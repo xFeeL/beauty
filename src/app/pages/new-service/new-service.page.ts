@@ -32,6 +32,7 @@ export class NewServicePage implements OnInit {
 
   ionViewWillEnter() {
     this.people = this.navParams.get('people');
+    console.log(this.people)
     this.categories = this.navParams.get('categories');
     this.editing = this.navParams.get('editing');
     this.services = this.navParams.get('services');
@@ -46,13 +47,14 @@ export class NewServicePage implements OnInit {
     console.log(servicePeople)
     // If servicePeople is found in the navParams, mark those people as selected
     if(servicePeople && servicePeople.length) {
-      servicePeople.forEach((servicePersonName: any) => {
-        let person = this.people.find((p: { name: any; }) => p.name === servicePersonName);
-        if (person) {
-          person.selected = true;
-        }
+      servicePeople.forEach((servicePersonName: string) => {
+          let person = this.people.find((p: { name: string; surname: string; }) => `${p.name} ${p.surname}` === servicePersonName);
+          if (person) {
+              person.selected = true;
+          }
       });
-    }
+  }
+  
   
     console.log("Opening New Service Modal");
     console.log(this.people)
@@ -89,7 +91,7 @@ export class NewServicePage implements OnInit {
     return;
   }
     const selectedPeople = this.people.filter((person: { selected: any; }) => person.selected);
-    const selectedPeopleNames = selectedPeople.map((person: { name: any; }) => person.name);
+    const selectedPeopleNames = selectedPeople.map((person: { name: string; surname: string; }) => `${person.name} ${person.surname}`);
 
     // Check if no people are selected
     if (selectedPeopleNames.length === 0) {
@@ -154,24 +156,24 @@ export class NewServicePage implements OnInit {
     const value = ev.target!.value;
 
     // Remove all characters except numbers and a comma
-    let filteredValue = value.replace(/[^0-9,]+/g, '');
+    let filteredValue = value.replace(/[^0-9.]+/g, '');
 
     // If more than one comma exists, keep only the first comma
-    const allCommas = filteredValue.split(',');
+    const allCommas = filteredValue.split('.');
     if (allCommas.length > 2) {
-      filteredValue = allCommas[0] + ',' + allCommas.slice(1).join('');
+      filteredValue = allCommas[0] + '.' + allCommas.slice(1).join('');
     }
 
     // Check if the string has a comma and make sure only two numbers follow it
-    const parts = filteredValue.split(',');
+    const parts = filteredValue.split('.');
 
     if (parts.length > 1 && parts[1].length > 2) {
       // If there are more than two characters after the comma, truncate them
-      filteredValue = parts[0] + ',' + parts[1].slice(0, 2);
+      filteredValue = parts[0] + '.' + parts[1].slice(0, 2);
     }
 
     // Remove trailing ,0 or ,00
-    if (filteredValue.endsWith(',0') || filteredValue.endsWith(',00')) {
+    if (filteredValue.endsWith('.0') || filteredValue.endsWith('.00')) {
       filteredValue = parts[0];
     }
 
