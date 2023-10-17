@@ -1094,6 +1094,49 @@ export class UserService {
     );
   }
 
+  /**
+   * Get the number of reservations for a client
+   * @param user_id User ID
+   * @returns Observable of the number of reservations
+   */
+  getNumberOfReservationsClient(user_id: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-number-reservations-client?user_id=" + user_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+   /**
+   * Returns the user's reservations for the given page number and user ID
+   * @param page The page number to retrieve
+   * @param userId The ID of the user to retrieve reservations for
+   * @returns An observable that emits the response data from the API
+   */
+   getUserReservations(page: number, userId: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-user-appointments?user_id=" + userId + "&page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  /**
+ * Retrieves user data by their ID.
+ * @param {string} id - The ID of the user to retrieve data for.
+ * @returns {Observable<any>} - The Observable that emits the user data.
+ */
+getUserData(id: string): Observable<any> {
+  return this.http.get(Authenticated_API_URL + "get-user-data?user_id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    catchError(this.handleError)
+  );
+}
+  /**
+   * Returns the reviews by user ID.
+   * @param id The user ID.
+   * @returns An Observable that resolves to the reviews by user ID.
+   */
+  getReviewsByUserId(id: string): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-user-reviews?user_id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   /**
    * Searches for a Krathsh with the given filter and page number

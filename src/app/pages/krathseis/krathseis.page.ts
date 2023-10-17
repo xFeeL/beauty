@@ -91,6 +91,7 @@ export class KrathseisPage implements OnInit {
   krathshIds: string[] = [];
   mode: string = "upcoming";
   cancelReason: string = "";
+  reloadAppointments: any=false;
   constructor(private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
   }
   ngOnInit() {
@@ -169,7 +170,7 @@ export class KrathseisPage implements OnInit {
 
   }
   goBack() {
-    this.modalController.dismiss()
+    this.modalController.dismiss(this.reloadAppointments)
   }
 
 
@@ -221,6 +222,8 @@ export class KrathseisPage implements OnInit {
     });
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned !== null) {
+        this.reloadAppointments=true
+
         // Your logic here, 'dataReturned' is the data returned from modal
         this.page = 0;
         this.krathseis = []
@@ -403,9 +406,10 @@ export class KrathseisPage implements OnInit {
   }
 
   checkIn(krathsh: any) {
-    if (krathsh[7] == "true") {
+    this.reloadAppointments=true
+    if (krathsh[5] == "true") {
       this.userService.changeCheckInStatus(krathsh[0], "false").subscribe(data => {
-        krathsh[7] = "false"
+        krathsh[5] = "false"
 
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
@@ -413,7 +417,7 @@ export class KrathseisPage implements OnInit {
 
     } else {
       this.userService.changeCheckInStatus(krathsh[0], "true").subscribe(data => {
-        krathsh[7] = "true"
+        krathsh[5] = "true"
 
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά.", "danger")

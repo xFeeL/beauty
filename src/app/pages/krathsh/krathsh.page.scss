@@ -328,3 +328,14 @@
   .round {
     border-radius: 20px;
   }
+
+  .normal-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-primary);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+
+  .customFontNote{
+    font-size:14px;
+  }

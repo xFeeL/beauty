@@ -31,6 +31,8 @@ export interface PeriodicElement {
   employee: string;
   service: string;
   status: string;
+  price: string,
+
   id: string;
   serviceEmployeeMapping?: string // This will map each service to its respective employee
 }
@@ -110,7 +112,7 @@ export class HomePage implements OnInit {
   initialized: boolean = false;
   cancelReason: string = "";
   statsNumberLoading = false;
-  displayedColumns: string[] = ['avatar', 'name', 'date', 'employee', 'service', 'status'];
+  displayedColumns: string[] = ['avatar', 'name', 'date', 'employee', 'service', 'status', 'price'];
   dataSource = ELEMENT_DATA;
   clickedRows = new Set<PeriodicElement>();
   resizeListener: any;
@@ -370,12 +372,13 @@ export class HomePage implements OnInit {
         if (k < 5) {
           const periodicElement: PeriodicElement = {
             badge: '',
-            avatar: el[9],
+            avatar: el[10],
             name: el[4],
             date: el[3],
             employee: uniqueNames,  // Using unique names now
             service: el[7],  // Assuming tables is a string representation of the number of tables
             status: el[2],
+            price: '€' + el[9],
             id: el[0],
             serviceEmployeeMapping: this.mergeServicesForEmployees(el[8])
 
@@ -575,18 +578,23 @@ export class HomePage implements OnInit {
   async goToKrathseis() {
     if (this.isMobile) {
       this.rout.navigate(['/tabs/krathseis']);
-
     } else {
       const modal = await this.modalController.create({
         component: KrathseisPage,
-
+        backdropDismiss: false
       });
-      return await modal.present();
+
+      // Present the modal
+      await modal.present();
+
+      // Listen for the modal to be dismissed
+      const { data } = await modal.onDidDismiss();
+      if (data === true) {
+        // Execute the desired action when the returned data is true
+        this.getKrathseis(this.statusChosen);
+      }
     }
-
-
-
-  }
+}
 
 
   updateSelectedTimeFrame(newTimeFrame: string) {

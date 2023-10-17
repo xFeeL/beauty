@@ -1,0 +1,44 @@
+mat-header-cell, mat-cell {
+    border-right: 1px solid rgba(0,0,0,0.12); /* This adds a right border to every cell */
+}
+
+mat-header-row, mat-row {
+    border-bottom: 1px solid rgba(0,0,0,0.12); /* This adds a bottom border to every row */
+}
+
+/* If you want to remove the border from the last column, you can use this: */
+mat-header-cell:last-child, mat-cell:last-child {
+    border-right: none;
+}
+
+/* CSS for the scheduler component */
+
+.time-column {
+    width: 80px; /* adjust this value based on your requirement */
+    max-width: 80px;
+    min-width: 80px;
+}
+
+.employee-column {
+    flex: 1; /* this will distribute the remaining space equally among the employee columns */
+}
+
+.current-time-row {
+    border-top: 1px dashed red; /* You can customize the appearance here */
+    position: relative;
+}
+
+.current-time-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: red; /* Customize the line color here */
+}
+
+.table{
+    height:100%;
+    overflow-y: auto;
+}

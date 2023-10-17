@@ -46,7 +46,7 @@ export class KrathshPage implements OnInit {
   text_color: string = "";
   initialized = false;
   appointment_data: any;
-  services: string[][] = new Array<string[]>;
+  services: any = new Array<any>;
   booking_confirmed: string = "";
   booking_confirmed_class: string = "";
   booking_confirmed_text: string = "";
@@ -59,17 +59,16 @@ export class KrathshPage implements OnInit {
   time: string = "";
   date: string = "";
   profile_image: any;
-  floor: any;
   expert_id: any;
   username: string = "";
-  people: any;
   @ViewChild('rejectPop') rejectPop!: IonPopover;
   cancelReason: string = "";
-  tableString: any = "";
   checkedIn: any;
   canceled: any = false;
   note = ""
   user_id: any = "";
+  price: any;
+  service: any;
 
   constructor(private alertController: AlertController, private navParams: NavParams, private actRouter: ActivatedRoute, private rout: Router, private navCtrl: NavController, private userService: UserService, public modalController: ModalController) { }
 
@@ -80,18 +79,19 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
-      this.date = moment(data.start).locale("el").format('DD-MMM-YYYY')
-      this.time = moment(data.start).format('HH:mm')
+      console.log(data)
+      this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
+      this.time = data.time
       this.profile_image = data.image;
       this.user_id = data.idPelath
       this.username = data.clientName.replace("$", " ");
-      this.people = data.people
+      this.price = data.price
       this.appointment_data = data;
-      this.tableString = data.tablesString
       this.status = data.status;
+      this.services=data.services
+      console.log(this.services)
       this.checkedIn = data.checkedIn
       this.note = data.note
-      this.floor = data.floorId
       if (data.status == "Αποδεκτή") {
 
         this.text_color = "#2dd36f"
@@ -211,10 +211,10 @@ export class KrathshPage implements OnInit {
     this.time = "";
     this.profile_image = null;
     this.username = "";
-    this.people = null;
+    this.price = null;
     this.appointment_data = null;
     this.status = null;
-    this.floor = null;
+    this.service = null;
     this.text_color = "";
     this.booking_status = "";
     this.booking_status_color = "";

@@ -1,0 +1,804 @@
+.bgL {
+    background-color: var(--ion-color-primary-contrast);
+  }
+  
+  .hedCol {
+    bottom: -20px;
+  }
+  
+  .header-md::after {
+    background-image: none;
+  }
+  
+  .custChip {
+    background-color: #90ee907d;
+    ;
+  }
+  
+  .custChipdanger {
+    background-color: #fd000067;
+  }
+  
+  .custChiplight {
+    background-color: var(--ion-color-primary-contrast);
+  }
+  
+  .borderP {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--ion-color-primary);
+  }
+  
+  .custRow {
+    background-color: var(--ion-color-primary-contrast);
+    margin: 5px;
+    margin-bottom: 0px !important;
+  }
+  
+  .borderB {
+    border-bottom-style: solid;
+    border-width: 0.5px;
+    border-color: var(--ion-color-medium);
+  }
+  
+  ion-item {
+    --inner-padding-end: 10px;
+  }
+  
+  .ion-item2 {
+    --inner-padding-end: 0px;
+    --background: none;
+  }
+  
+  .custAvatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .custAvatarHed2 {
+    width: 75px;
+    height: 75px;
+    border-style: solid;
+    border-width: 4.5px;
+    border-color: var(--ion-color-medium);
+    //margin-left:15px;
+    margin-top: 7px;
+  }
+  
+  .p5 {
+    padding-top: 5px;
+  }
+  
+  .bl5 {
+    padding-left: 10px;
+    margin-bottom: 40px !important;
+  }
+  
+  .custcol {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 50px;
+  }
+  
+  .brD {
+    border-color: var(--ion-color-danger);
+  }
+  
+  .brs {
+    background-color: var(--ion-color-success);
+    border-width: 0px;
+  }
+  
+  .brP {
+    background-color: var(--ion-color-primary);
+    border-width: 0px;
+    color: var(--ion-color-light);
+  }
+  
+  .imgCol {
+    background-color: var(--ion-color-light-tint);
+    border-width: 0px;
+    border-radius: 10px;
+  }
+  
+  .fi {
+    font-size: 24px;
+  }
+  
+  .un {
+    text-decoration: underline;
+    margin-bottom: 10px;
+  }
+  
+  .pro {
+    height: 7px;
+    border-radius: 5px;
+  }
+  
+  .proGood {
+    --progress-background: rgba(67, 230, 67, 0.612);
+    --background: var(--ion-color-light);
+  }
+  
+  .proDownAvrg {
+    --progress-background: rgb(235, 239, 116);
+    --background: var(--ion-color-light);
+  }
+  
+  .proWarn {
+    --progress-background: var(--ion-color-warning);
+    --background: var(--ion-color-light);
+  }
+  
+  .proDang {
+    --progress-background: var(--ion-color-danger);
+    --background: var(--ion-color-light);
+  }
+  
+  .proSucc {
+    --progress-background: var(--ion-color-success);
+    --background: var(--ion-color-light);
+  }
+  
+  .sm {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .bgPshadeP {
+    background-color: #E3F0F9;
+  }
+  
+  .cusItem {
+    --ion-background-color: none;
+  }
+  
+  .cusItemPrimary {
+    --ion-background-color: var(--ion-color-primary);
+  }
+  
+  .services_list {
+    margin-left: -20px;
+  }
+  
+  .chat {
+    padding-right: 10px;
+  }
+  
+  .reviews {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .portfolio {
+    margin-top: 20px;
+  }
+  
+  .name_reviews {
+    font-size: 13px;
+  }
+  
+  .grid {
+    background-color: white;
+  }
+  
+  .vertical-align {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  .star {
+    padding-bottom: 3px;
+  }
+  
+  .no_results_text {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 50px;
+    width: 95%;
+    padding-bottom: 20px;
+  }
+  
+  .no_results_item {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .phone {
+    margin-left: 5px;
+  }
+  
+  .custGrid {
+    padding-top: 0px !important;
+  }
+  
+  .custAvatarHed {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .p5 {
+    padding-left: 5px;
+  }
+  
+  .shadow {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+    border-radius: 15px;
+  }
+  
+  .custRow {
+    background-color: var(--ion-color-primary-contrast);
+    border-radius: 15px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+    display: block;
+    margin: 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  
+  .title {
+    padding-left: 10px;
+  }
+  
+  .mt5 {
+    margin-top: 4px;
+  }
+  
+  .wrap {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    /* Modern browsers */
+  }
+  
+  .alignRight {
+    margin-left: auto;
+  }
+  
+  .custAvatar {
+    width: 60px;
+    height: 60px;
+    margin-left: 16px;
+    margin-top: 16px;
+  }
+  
+  .name_reviews {
+    font-size: 16px;
+    color: black;
+  }
+  
+  .nameCol {
+    padding-bottom: 20px !important;
+    padding-left: 10px !important;
+  }
+  
+  .responseItem {
+    padding-top: 5px;
+    width: 100%;
+  }
+  
+  .relative {
+    position: relative;
+  }
+  
+  ion-textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .show-more-button,
+  .show-less-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .show-less-button {
+    z-index: 1;
+    /* Make sure the "show less" button is displayed above the "show more" button */
+  }
+  
+  .dateCol {
+    padding-top: 10px;
+  }
+  
+  .dateNote {
+    margin-right: 7px;
+  }
+  
+  ion-segment {
+    --background: var(--ion-color-primary);
+  }
+  
+  .custRowProposal {
+    background-color: var(--ion-color-primary-contrast);
+    border-radius: 15px;
+    display: block;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    margin: 16px;
+    margin-top: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  
+  .borderBottom {
+    border-bottom: 2px solid #eceef1;
+    height: 85px;
+  }
+  
+  .custAvatarHed {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+  }
+  
+  .custGrid {
+    padding-top: 0px !important;
+  }
+  
+  .title {
+    padding-left: 5px;
+  }
+  
+  .thechip {
+    margin-top: 7px !important;
+    margin-right: 0px;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  .date {
+    padding-top: 10px;
+  }
+  
+  .mb10 {
+    margin-bottom: 10px;
+  }
+  
+  .pt6 {
+    padding-top: 6px;
+  }
+  
+  .f14 {
+    font-size: 14px;
+  }
+  
+  .pl5 {
+    padding-left: 5px;
+  }
+  
+  .bgtool {
+    background-image: url('../../../assets/imgs/bgtoolbar2.png');
+    background-blend-mode: multiply;
+    background-color: #246EE9;
+    opacity: 0.75;
+  }
+  
+  .hedCol {
+    position: absolute;
+    bottom: -30px;
+  }
+  
+  .notif {
+    margin-right: 10px;
+    padding: 10px;
+    background: none;
+  }
+  
+  .not-selected-chip {
+    --background: #0048C0;
+    --color: white;
+    border: 1px solid #FFFFFF;
+    border-radius: 15px;
+  }
+  
+  .selected-chip {
+    --background: white;
+    --color: #0048C0;
+  }
+  
+  .modal_button {}
+  
+  .modal-toolbar {
+    --opacity: 100 !important;
+  }
+  
+  ion-button {
+    text-transform: none;
+  }
+  
+  .center-title {
+    text-align: center;
+  }
+  
+  .custRow {
+    background-color: var(--ion-color-primary-contrast);
+    border-radius: 15px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+    display: block;
+    margin: 16px;
+    padding-top: 5px;
+    padding-bottom: 0px;
+    height: auto;
+  }
+  
+  .borderBottom {
+    display: flex;
+    align-items: center;
+  }
+  
+  .f15 {
+    font-size: 13px;
+  }
+  
+  .custAvatarHed {
+    width: 50px;
+    height: 50px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .custGrid {
+    padding-top: 0px !important;
+  }
+  
+  .title {
+    font-weight: 550;
+    padding-left: 5px;
+    overflow-wrap: break-word;
+    /* Allow long words to be able to break and wrap onto the next line */
+    word-wrap: break-word;
+    /* Back up for overflow-wrap for older browsers */
+  }
+  
+  .not-selected-chip {
+    --background: #0048C0;
+    --color: white;
+    border: 1px solid #FFFFFF;
+    border-radius: 15px;
+  }
+  
+  .selected-chip {
+    --background: white;
+    --color: #0048C0;
+  }
+  
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+  
+    .card {
+      display: inline-block;
+    }
+  }
+  
+  .arrowChip {
+    margin-right: 0px;
+    margin-left: 5px;
+    margin-top: -1px;
+  }
+  
+  .apply-button {
+    flex: 1;
+    margin-right: 5px;
+    text-transform: none;
+    text-align: right;
+  }
+  
+  .cancel-button {
+    flex: 1;
+    margin-left: 5px;
+    text-transform: none;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .button-container2 {
+    display: flex;
+    //justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .button-container2 ion-button {
+    flex: 1;
+  }
+  
+  .button-container2 ion-button:last-child {
+    //padding-right: 16px;
+  }
+  
+  ion-range {
+    margin-left: 10px;
+    margin-right: 20px;
+  }
+  
+  .distanceLabel {
+    margin-left: 10px;
+  }
+  
+  .row-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0px !important;
+  }
+  
+  .note-container {
+    margin-right: auto;
+  }
+  
+  .chip-container {
+    margin-left: 0px;
+    margin-right: auto;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    --height: 17px;
+    /* Adjusts the height of the chip */
+    --padding-start: 5px;
+    /* Adjusts the left padding of the chip */
+    --padding-end: 5px;
+    /* Adjusts the right padding of the chip */
+    --padding-top: 10px;
+    /* Adjusts the top padding of the chip */
+    --padding-bottom: 10px;
+    /* Adjusts the bottom padding of the chip */
+    font-size: 0.7rem;
+  }
+  
+  .chip-container2 {
+    margin-left: 0px;
+    margin-right: auto;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
+    --background: var(--ion-color-primary);
+    color: white;
+    --padding-start: 5px;
+    /* Adjusts the left padding of the chip */
+    --padding-end: 5px;
+    /* Adjusts the right padding of the chip */
+    /* Adjusts the bottom padding of the chip */
+    font-size: 0.7rem;
+  }
+  
+ 
+  
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .date {
+    font-size: 11px;
+    padding-top: 10px;
+  }
+  
+  .align-right {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0px;
+    text-align: right;
+  }
+  
+  .align-left {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0px;
+    text-align: left;
+  }
+  
+  .no_results_text {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 50px;
+    width: 95%;
+    padding-bottom: 20px;
+  }
+  
+  .no_results_item {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .people-number {
+    padding-left: 1px;
+  }
+  
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+  
+    ion-chip {
+      //display: inline-block;
+      border-radius: 15px;
+    }
+  }
+  
+  .cancelReason {
+    padding-top: 30px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 0px;
+  }
+  
+  .reasonChips {
+    padding-left: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .npt {
+    padding-top: 0px !important;
+  }
+  
+  * {
+    scrollbar-width: thin;
+  }
+  
+  .date-chip {
+    border: 0.5px solid var(--ion-color-primary);
+  }
+  
+  .pr10 {
+    padding-right: 0px !important;
+    color: var(--ion-color-step-600, #666666);
+  }
+  
+  .pb7 {
+    padding-bottom: 7px;
+  }
+  
+  .checkmark {
+    margin-right: 10px;
+  }
+  
+  .checkmark-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .checkButton {
+    padding-top: 5px;
+  }
+  
+  .small-chip {
+    font-size: 13px;
+  }
+  
+  .small-icon {
+    font-size: 17px;
+  }
+  
+  .pt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .flex-center {
+    display: flex;
+    align-items: center;
+    /* Vertically centers the items in the container */
+  }
+  
+  .pr5 {
+    padding-right: 5px;
+  }
+  
+  .centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .phone {
+    display: inline;
+    /* Makes the phone number be on the same line as the icon */
+  }
+  
+  .f20 {
+    font-size: 20px;
+  }
+  
+  .light-blue-background {
+    background-color: #dfecff;
+    /* Light blue color. Adjust as needed. */
+  }
+  
+  .custom-segment {
+    width: 70%;
+    margin: 0 auto;
+  }
+  
+  ion-segment-button {
+    //width: 50%;
+  }
+  
+  /* Default styles (for desktop) */
+  .small-icon {
+    font-size: 16px;
+    /* or whatever the default size you want */
+    padding-right: 5px;
+  }
+  
+  ion-note.pr10 {
+    font-size: 14px;
+    /* or whatever the default size you want */
+    padding-right: 10px;
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .small-icon {
+      font-size: 16px;
+      /* adjust as needed for mobile */
+      padding-right: 3px;
+    }
+  
+    ion-note.pr10 {
+      font-size: 12px;
+      /* adjust as needed for mobile */
+      padding-right: 5px;
+    }
+  }
+
+ 
+  .warning-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-warning);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+
+
+
+.pending-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-primary);
+    margin-right: 10px; /* Space between the line and the label */}
+
+  .danger-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-danger);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+
+  .success-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-success);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+  
+
+  .customFontNote {
+    white-space: normal !important; /* Force wrapping */
+    word-wrap: break-word;          /* Break long words if necessary */
+}
+
+.ml10{
+    margin-left:10px;
+}
+

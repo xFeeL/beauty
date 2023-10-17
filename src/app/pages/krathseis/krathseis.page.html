@@ -84,12 +84,12 @@
               </ion-chip>
               <ion-item  [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
                 <ion-avatar class="custAvatarHed">
-                  <ion-img src="data:image/jpeg;base64,{{krathsh[9]}}"></ion-img>
+                  <ion-img src="data:image/jpeg;base64,{{krathsh[10]}}"></ion-img>
                 </ion-avatar>
                 <ion-label>
                   <h2 class="customFontHeader">{{krathsh[4]}}</h2>
-                  <ion-note class="customFontNote" *ngIf="mode=='upcoming'">Ώρα:  {{getTime(krathsh[3])}} • Τιμή: €5</ion-note>
-                  <ion-note class="customFontNote" *ngIf="mode=='new'">{{krathsh[3]}} • Τιμή: €5</ion-note>
+                  <ion-note class="customFontNote" *ngIf="mode=='upcoming'">Ώρα:  {{getTime(krathsh[3])}} • Τιμή: €{{krathsh[9]}}</ion-note>
+                  <ion-note class="customFontNote" *ngIf="mode=='new'">{{krathsh[3]}} • Τιμή: €{{krathsh[9]}}</ion-note>
 
                 </ion-label>
                 <div class="align-right" *ngIf="krathsh[2]=='Αποδεκτή'">
@@ -97,13 +97,13 @@
                     name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
                    
             <ion-button *ngIf="!isMobile()"
-                            class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
-                            [@buttonAnimation]="krathsh[7]=='true' ? 'expanded' : 'collapsed'"
-                            [fill]="krathsh[7]=='true' ? 'solid' : 'outline'" size="small"
-                            [class.green-border]="krathsh[7]!='true'" [color]="krathsh[7]=='true'?'success':'medium'"
+                            class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[5]=='checked_in'}"
+                            [@buttonAnimation]="krathsh[5]=='true' ? 'expanded' : 'collapsed'"
+                            [fill]="krathsh[5]=='true' ? 'solid' : 'outline'" size="small"
+                            [class.green-border]="krathsh[5]!='true'" [color]="krathsh[5]=='true'?'success':'medium'"
                             (click)="checkIn(krathsh); $event.stopPropagation();"
                             style="text-transform: none; border-radius: 100px !important;">
-                            <ion-icon *ngIf="krathsh[7]=='true'" [@checkmarkAnimation] name="checkmark-outline"
+                            <ion-icon *ngIf="krathsh[5]=='true'" [@checkmarkAnimation] name="checkmark-outline"
                               style="padding-right: 10px;"></ion-icon>
                             Έφτασε
                           </ion-button>

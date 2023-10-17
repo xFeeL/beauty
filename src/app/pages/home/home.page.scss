@@ -596,12 +596,11 @@ ion-popover {
   color: red;
 }
 .table-container {
-  width: 80%;
+  width: 85%;
   overflow-x: auto;
 }
 
 @media (max-width: 1500px) {
- 
 
   .table-container {
    width:100% /* adjust as needed */
