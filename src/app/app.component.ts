@@ -144,12 +144,8 @@ async goToProfile() {
     return await modal.present();
 }
 
-async goToKrathseis(){
-
-  const modal = await this.modalController.create({
-       component: KrathseisPage,
-   });
-   return await modal.present();
+async goToKrathseis() {
+  this.userService.callGoToKrathseis();
 }
 
 async goToMessages(){

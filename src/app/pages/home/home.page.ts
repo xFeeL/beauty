@@ -139,6 +139,10 @@ export class HomePage implements OnInit {
     this.resizeListener = this.platform.resize.subscribe(() => {
       this.checkScreenWidth();
     });
+
+    this.userService.invokeGoToKrathseis$.subscribe(() => {
+      this.goToKrathseis();
+    });
   }
   ionViewWillEnter() {
 

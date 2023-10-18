@@ -83,9 +83,6 @@ export class NewKrathshPage implements OnInit {
     this.modalController.dismiss(false)
   }
 
-  save() {
-
-  }
 
 
   selectEmployee(service: any, employeeId: string) {

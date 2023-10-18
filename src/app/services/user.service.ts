@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
 import { AppearanceAnimation, DialogLayoutDisplay, DisappearanceAnimation, ToastNotificationInitializer, ToastPositionEnum, ToastProgressBarEnum, ToastUserViewTypeEnum } from '@costlydeveloper/ngx-awesome-popup';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/ngx';
@@ -23,8 +23,11 @@ export class UserService {
    * @type {any}
    */
   navData: any;
-
-
+  private invokeGoToKrathseisSource = new Subject<void>();
+  invokeGoToKrathseis$ = this.invokeGoToKrathseisSource.asObservable();
+  callGoToKrathseis() {
+    this.invokeGoToKrathseisSource.next();
+  }
   /**
  * The content type of the HTTP requests.
  * @type {string}
