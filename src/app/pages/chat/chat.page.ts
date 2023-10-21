@@ -188,6 +188,9 @@ export class ChatPage implements OnInit {
     let mes = new Message();
     if (this.mode == "text") {
       mes.content = this.to_send;
+      if(mes.content==undefined){
+        return
+      }
     } else {
       mes.images = this.imagesToSend
     }

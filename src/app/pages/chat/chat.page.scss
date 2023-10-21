@@ -262,12 +262,7 @@ ion-badge {
     background-color: white !important;
   }
 
-  .grid {
-    border-color: lightgray;
-    border-width: .01em;
-    border-style: solid;
-    margin-bottom: -1px;
-  }
+  
 }
 
 .chat_input {
@@ -342,4 +337,12 @@ ion-badge {
 
 .tool {
   --background: var(--ion-color-primary-contrast);
+}
+
+   
+.chat-container {
+  display: flex;
+  flex-direction: column-reverse; /* This makes items start from the bottom */
+  overflow-y: auto; /* This is to enable scrolling when content overflows */
+  height: 100%; /* You might want to adjust this according to your requirements */
 }

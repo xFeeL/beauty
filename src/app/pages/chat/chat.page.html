@@ -19,7 +19,7 @@
 <ion-content *ngIf="initialized === false">
   <ion-spinner color="primary" class="ion-text-center ion-padding"></ion-spinner></ion-content>
 <ion-content *ngIf="initialized==true">
-  <ion-grid class="ion-no-padding ">
+  <ion-grid class="ion-no-padding chat-container">
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" class="ion-no-padding grid">
         <ion-infinite-scroll position="top" threshold="100px" (ionInfinite)="loadData($event)">

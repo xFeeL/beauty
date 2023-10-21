@@ -118,7 +118,7 @@ export class HomePage implements OnInit {
   resizeListener: any;
   pendingAppointments: any = 0;
   totalAppointments: any = 0;
-  totalVisitors: any = 0;
+  totalRevenue: any = 0;
   topClients: any = [];
   statsLoading: boolean = false;
   activeSegment: string = 'all'; // default value
@@ -614,7 +614,7 @@ export class HomePage implements OnInit {
     this.statsNumberLoading = true
     this.userService.getStatsNumber(this.fixTimeFrameWording(timeFrame)).subscribe(data => {
       this.totalAppointments = data.appointmentCount;
-      this.totalVisitors = data.totalPeople;
+      this.totalRevenue = data.totalRevenue;
       this.statsNumberLoading = false
 
     }, err => {
