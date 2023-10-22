@@ -20,11 +20,11 @@
     </ion-segment-button> 
   </ion-segment>
   <div *ngIf="selectedSegment === 'reservations'"> <ion-grid class="ion-margin custom-grid max-height">
-      <ion-row class="ion-justify-content-center">
+      <!--<ion-row class="ion-justify-content-center">
         <ion-col size-xl="7" size="12">
           <ion-input type="number" [(ngModel)]="maxReservationMinutes" label="Μέγιστη διάρκεια κράτησης (λεπτά)"
             label-placement="floating" fill="outline" placeholder="Enter text"></ion-input>
-        </ion-col> </ion-row>
+        </ion-col> </ion-row>-->
       <ion-row class="ion-justify-content-center ion-margin-top">
         <ion-col size-xl="7" size="12">
           <ion-list class="ion-no-padding"> <ion-label>
@@ -283,7 +283,7 @@
 
 
 
-
+ 
   <div *ngIf="selectedSegment === 'wrario'">
     <ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
         <ion-col size-xl="8" class="ion-justify-content-center">
@@ -294,8 +294,8 @@
                 <div class="special-action" (click)="openDateTimePicker()">
                   <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
                 </div>
-                <mat-option *ngFor="let exception of schedulExceptions" [value]="exception">
-                  {{ exception.formatted }} <!-- Adjust as per your data structure -->
+                <mat-option *ngFor="let exception of schedulExceptions" [value]="exception" class="ion-margin-bottom">
+                  {{ exception.formatted }} ({{exception.repeat}}) <!-- Adjust as per your data structure -->
                 </mat-option>
               </mat-select>
             </mat-form-field> <mat-icon class="ion-margin-bottom blue-icon" #tooltip="matTooltip"
@@ -338,6 +338,7 @@
       </div>
     </ion-list>
   </div>
+ 
  
 </ion-content>
 <ion-footer class="ion-no-padding" *ngIf="selectedSegment!='social-media'">

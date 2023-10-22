@@ -931,8 +931,9 @@ export class UserService {
    * @param endDateTime End date and time of the exception
    * @returns Observable of the response
    */
-  addScheduleException(startDateTime: string, endDateTime: string): Observable<any> {
+  addScheduleException(repeat:boolean,startDateTime: string, endDateTime: string): Observable<any> {
     const body = {
+      repeat:repeat,
       startDateTime: startDateTime,
       endDateTime: endDateTime
     };
@@ -960,7 +961,7 @@ export class UserService {
    * @returns An observable that emits the response data from the API
    */
   getAppointmentsSettings(): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-appointments-settings", { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.get(beautyAuthenticated_API_URL + "get-appointment-settings", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(this.handleError)
     );
   }
@@ -974,19 +975,17 @@ export class UserService {
    * @returns An observable that emits the response data from the API
    */
   saveAppointmentsSettings(
-    maxReservationMinutes: number,
     slotInterval: string,
     needAccept: boolean,
     isVisible: boolean
   ): Observable<any> {
     const body = {
-      maxReservationMinutes: maxReservationMinutes.toString(),
       time_interval: slotInterval.toString(),
       reservations_auto_accept: needAccept ? "true" : "false",
       is_visible_for_reservations: isVisible ? "true" : "false"
     };
     return this.http.post(
-      beautyAuthenticated_API_URL + "save-appointments-settings",
+      beautyAuthenticated_API_URL + "save-appointment-settings",
       body,
       { headers: this.getHeaders(), withCredentials: true }
     ).pipe(

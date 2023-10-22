@@ -1,13 +1,62 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>add-schedule-exception</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Προσθήκη εξαίρεσης</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">add-schedule-exception</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding background">
+  <ion-card class="rad">
+    <ion-card-header>
+      <ion-text color="primary"><b>Τύπος εξαίρεσης</b></ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-segment [(ngModel)]="exceptionType">
+        <ion-segment-button class="capsoff" value="once">Μία φορά</ion-segment-button>
+        <ion-segment-button class="capsoff" value="repeated">Επαναλαμβανόμενο</ion-segment-button>
+      </ion-segment>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="rad">
+    <ion-card-header>
+      <ion-text color="primary"><b>Ημερομηνία / Ώρα</b></ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- From datetime button -->
+      <ion-item>
+        <ion-label>Από:</ion-label>
+        <ion-datetime-button datetime="fromDatetime"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="fromDatetime" [(ngModel)]="firstDateTime" presentation="date-time" hourCycle="h24"
+              minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [max]="maxDate" [min]="minDate" locale="el-GR"
+              doneText="OK" cancelText="Ακυρο" [showDefaultButtons]="true" (ionChange)="onFirstDateTimeChange()">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <!-- To datetime button -->
+      <ion-item>
+        <ion-label>Έως:</ion-label>
+        <ion-datetime-button datetime="toDatetime"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="toDatetime" [(ngModel)]="endDateTime" presentation="date-time" hourCycle="h24"
+              minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [max]="maxDate" [min]="firstDateTime" locale="el-GR"
+              [showDefaultButtons]="true" doneText="OK" cancelText="Ακυρο"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
+
+<ion-footer>
+  <ion-button class="ion-no-margin capsoff" expand="full" (click)="saveScheduleException()">Αποθήκευση</ion-button>
+</ion-footer>

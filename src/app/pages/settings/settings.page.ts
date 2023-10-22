@@ -35,7 +35,7 @@ import { ExternalService } from 'src/app/services/external.service';
 export class SettingsPage implements OnInit {
 
   hours: string[] = [];
-  schedulExceptions: any;
+  schedulExceptions: any = new Array<any>;
   facebookAccessGranted: boolean = false;
   facebookPageToEdit: any;
   currentPageDescription: any = "Δεν υπάρχει υπάρχουσα εισαγωγική κάρτα.";
@@ -168,16 +168,18 @@ export class SettingsPage implements OnInit {
   getScheduleExceptions() {
     this.userService.getScheduleExceptions().subscribe(
       data => {
-        this.schedulExceptions = data.map((exception: { start: moment.MomentInput; end: moment.MomentInput; }) => {
-          const formattedStart = moment(exception.start).locale('el').format('MMM DD, HH:mm');
-          const formattedEnd = moment(exception.end).locale('el').format('MMM DD, HH:mm');
+        this.schedulExceptions = data.map((exception: { start: moment.MomentInput; end: moment.MomentInput; repeat:boolean }) => {
+          const formattedStart = moment(exception.start).locale('el').format('DD/MM/YY HH:mm');
+          const formattedEnd = moment(exception.end).locale('el').format('DD/MM/YY HH:mm');
+
           const start = exception.start
           const end = exception.end
           return {
             formatted: `${formattedStart} - ${formattedEnd}`,
             originalStart: start,
-            originalEnd: end
-          };
+            originalEnd: end,
+            repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+        };        
         });
         this.daysControl.setValue(this.schedulExceptions); // Set all exceptions as selected
       },
@@ -322,10 +324,12 @@ export class SettingsPage implements OnInit {
       const selectedExceptions = this.daysControl.value;
 
       // Map them to the desired format
-      const exceptionsToSend = selectedExceptions.map((exception: { originalStart: any; originalEnd: any; }) => ({
+      const exceptionsToSend = selectedExceptions.map((exception: { originalStart: any; originalEnd: any; repeat: string }) => ({
         start: exception.originalStart,
-        end: exception.originalEnd
-      }));
+        end: exception.originalEnd,
+        repeat: exception.repeat === "Επαναλαμβανόμενο" // This will return true if the condition is met, otherwise false
+    }));
+    
 
       // Send the selected exceptions to the backend
       this.userService.saveScheduleExceptions(exceptionsToSend).subscribe(data => {
@@ -347,7 +351,6 @@ export class SettingsPage implements OnInit {
 
 
   //Krathseis
-  maxReservationMinutes: number = 60;
   slotInterval: string = "15";
 
   needAccept: boolean = false;
@@ -361,7 +364,6 @@ export class SettingsPage implements OnInit {
       console.log("THE DATA");
       console.log(data);
 
-      this.maxReservationMinutes = data.maxReservationMinutes;
       this.slotInterval = data.slotInterval.toString();
 
       // Assuming needAccept from server is 0 or 1, convert it to boolean
@@ -376,7 +378,7 @@ export class SettingsPage implements OnInit {
   }
 
   saveKrathseisSettings() {
-    this.userService.saveAppointmentsSettings(this.maxReservationMinutes, this.slotInterval, this.needAccept, this.isVisible).subscribe(data => {
+    this.userService.saveAppointmentsSettings(this.slotInterval, this.needAccept, this.isVisible).subscribe(data => {
       this.userService.presentToast("Οι ρυθμίσεις για τις κρατήσεις αποθηκεύτηκαν με επιτυχία.", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
@@ -394,7 +396,7 @@ export class SettingsPage implements OnInit {
       case 'wrario':
         this.saveWrario();
         break;
-     
+
       // ... add more cases for other segments if they have specific save methods
       default:
         console.error("Invalid segment selected");

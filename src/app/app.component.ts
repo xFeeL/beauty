@@ -15,6 +15,7 @@ import { KrathseisPage } from './pages/krathseis/krathseis.page';
 import { MessagesPage } from './pages/messages/messages.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ChangePasswordPage } from './pages/change-password/change-password.page';
+import { TeamServicesPage } from './pages/team-services/team-services.page';
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl `{
     body {
@@ -117,9 +118,6 @@ copyToClipboard(url: string) {
 }
 
 
-async goToTeam() {
-}
-
 async goToProfile() {
   const modal = await this.modalController.create({
       component: EditProfilePage,
@@ -152,6 +150,14 @@ async goToMessages(){
 
   const modal = await this.modalController.create({
        component: MessagesPage,
+   });
+   return await modal.present();
+}
+
+async goToTeamServices(){
+
+  const modal = await this.modalController.create({
+       component: TeamServicesPage,
    });
    return await modal.present();
 }

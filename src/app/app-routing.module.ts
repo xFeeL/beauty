@@ -126,6 +126,10 @@ const routes: Routes = [
     path: 'add-services',
     loadChildren: () => import('./pages/add-services/add-services.module').then( m => m.AddServicesPageModule)
   },
+  {
+    path: 'team-services',
+    loadChildren: () => import('./pages/team-services/team-services.module').then( m => m.TeamServicesPageModule)
+  },
  
  
 ];

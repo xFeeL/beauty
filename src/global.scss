@@ -55,6 +55,10 @@ ion-modal {
   width: 55%
 }
 
+.rad {
+  border-radius:20px !important;
+}
+
 .head2 {
   border-bottom-right-radius: 50%;
   border-bottom-left-radius: 50%;
@@ -257,7 +261,7 @@ ion-modal::part(backdrop) {
 }
 
 .capsoff {
-  text-transform: none;
+  text-transform: none !important;
 }
 
 .mat-mdc-standard-chip {
