@@ -258,6 +258,13 @@ ion-segment-button.ios {
   padding:10px;
 }
 
+@media screen and (min-width: 500px) {
+  .mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 1px 0px 16px !important;
+  }
+  
+}
+
 
 .demo-table {
   width: 100%;
@@ -550,7 +557,7 @@ ion-button.rounded-btn {
 }
 ion-popover {
   --width:300px;
-  --height: 400px;
+  --height: auto;
 
 }
 

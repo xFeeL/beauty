@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, filter, map, mergeMap, of, switchMap, take, tap, throwError } from 'rxjs';
 import { AppearanceAnimation, DialogLayoutDisplay, DisappearanceAnimation, ToastNotificationInitializer, ToastPositionEnum, ToastProgressBarEnum, ToastUserViewTypeEnum } from '@costlydeveloper/ngx-awesome-popup';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/ngx';
@@ -62,7 +62,9 @@ export class UserService {
   isAuthenticated$ = this._isAuthenticated.asObservable();
 
 
-  constructor(private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) { }
+  constructor(private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) {
+    this.handleError = this.handleError.bind(this);
+  }
 
   /**
  * Connects to the server-sent events.
@@ -180,21 +182,43 @@ export class UserService {
   }
 
 
-  /**
-   * Unified error handler
-   * @param error Error object
-   * @returns Observable of never
-   */
-  private handleError(error: any): Observable<never> {
-    if (error.status === 403) {
-      window.location.href = '/login';
-      localStorage.setItem('authenticated', "false");
-      this._isAuthenticated.next(false);
+  private refreshTokenInProgress: boolean = false;
+  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private requestsQueue: any[] = [];
+
+  private handleError(error: any, method: string = 'GET', body?: any): Observable<any> {
+    if (error.status === 403 && !error.skipRefresh && localStorage.getItem('authenticated') == "true") {
+      return this.getNewJwtWithRefreshToken().pipe(
+        mergeMap(() => {
+          if (method === 'POST') {
+            return this.http.post(error.url, body, { headers: this.getHeaders(), withCredentials: true });
+          } else {
+            return this.http.get(error.url, { headers: this.getHeaders(), withCredentials: true });
+          }
+        }),
+        catchError((refreshError) => {
+          if (refreshError.status === 403) {
+            window.location.href = '/login';
+            localStorage.setItem('authenticated', "false");
+            this._isAuthenticated.next(false);
+          }
+          console.error('API Error:', refreshError);
+          return throwError(refreshError);
+        })
+      );
+    } else {
+      console.log("Den mpika");
+      console.error('API Error:', error);
+      return throwError(error);
     }
-    console.error('API Error:', error); // Logging the error
-    return throwError(error);
   }
 
+  getTopClients(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-top-clients", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+
+  }
   /**
    * Get HTTP headers
    * @returns HTTP headers
@@ -207,12 +231,7 @@ export class UserService {
 * Returns the top clients
 * @returns An observable that emits the response data from the API
 */
-  getTopClients(): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-top-clients", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
-    );
 
-  }
 
   /**
      * Gets the number of pending appointments.
@@ -220,7 +239,7 @@ export class UserService {
      */
   getPendingAppointmentsNumber(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "find-pending-appointments-number", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -240,7 +259,7 @@ export class UserService {
       apiUrl += `&checked_in=${checked_in}`;
     }
     return this.http.get(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -263,7 +282,7 @@ export class UserService {
   acceptAppointment(appointmentId: string): Observable<any> {
     const body = { appointmentId: appointmentId };
     return this.http.post(beautyAuthenticated_API_URL + "accept-appointment", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -280,7 +299,7 @@ export class UserService {
       status: status
     };
     return this.http.post(beautyAuthenticated_API_URL + "check-in-status", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -294,7 +313,7 @@ export class UserService {
   rejectAppointment(appointmentId: string, cancelReason: string): Observable<any> {
     const body = { appointmentId: appointmentId, cancelReason: cancelReason };
     return this.http.post(beautyAuthenticated_API_URL + "reject-appointment", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -305,7 +324,7 @@ export class UserService {
   */
   getStatsNumber(timeFrame: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-stats-numbers?timeFrame=" + timeFrame, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -317,8 +336,9 @@ export class UserService {
    */
   getStats(timeFrame: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-stats?timeFrame=" + timeFrame, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
+
   }
 
 
@@ -514,7 +534,7 @@ export class UserService {
   sendOTP(email: string, otp: string): Observable<any> {
     const params = new HttpParams().append('OTP', otp).append('email', email);
     return this.http.post<any>(API_URL + 'verify-otp', params).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -538,8 +558,8 @@ export class UserService {
    * @param floors The expert's floors.
    * @returns An Observable that resolves to the server response.
    */
-  onBoarding(name: string, expertCategories: string, address: string, photo: string | undefined, days: any[], people: any[], services: any[],servicesCategories:any[]): Observable<any> {
-    const data = {
+  onBoarding(name: string, expertCategories: string, address: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[]): Observable<any> {
+    const body = {
       name: name,
       expertCategories: expertCategories,
       address: address,
@@ -547,14 +567,11 @@ export class UserService {
       expertWP: days,
       people: people,
       services: services,
-      servicesCategories:servicesCategories
+      servicesCategories: servicesCategories
     };
-    console.log(data)
-    return this.http.post(beautyAuthenticated_API_URL + "onboarding", data, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError((error) => {
-
-        return throwError(error);
-      })
+    console.log(body)
+    return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
 
     );
   }
@@ -565,7 +582,7 @@ export class UserService {
    */
   getExpertSlug(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-expert-slug", { withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -575,7 +592,7 @@ export class UserService {
   */
   getExpertData(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-expert-data", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );;
   }
 
@@ -598,7 +615,7 @@ export class UserService {
         // If the request is successful, redirect to login page
         window.location.href = '/login';
       }),
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', ""))
     );
   }
 
@@ -625,7 +642,7 @@ export class UserService {
   */
   getMessages(id: any, page: number): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-messages?userId=" + id + "&page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );;
   }
 
@@ -636,7 +653,7 @@ export class UserService {
    */
   sendMessage(message: Message): Observable<any> {
     return this.http.post(Authenticated_API_URL + "send-message", message, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', message))
     );;
   }
 
@@ -655,7 +672,7 @@ export class UserService {
    */
   getChats(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-chats", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );;
   }
 
@@ -666,7 +683,7 @@ export class UserService {
    */
   getUserName(id: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-user-name?userId=" + id, { withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -677,7 +694,7 @@ export class UserService {
    */
   getUserImage(id: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-user-profile-image?userId=" + id, { withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -700,7 +717,7 @@ export class UserService {
    */
   saveExpertData(expertData: expertData): Observable<any> {
     return this.http.post(Authenticated_API_URL + "save-expert-data", expertData, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', expertData))
     );;
   }
 
@@ -711,7 +728,7 @@ export class UserService {
    */
   getExpertImage(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-expert-profile-image", { withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -721,7 +738,7 @@ export class UserService {
  */
   getPortfolio(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-portfolio-folders", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -734,7 +751,7 @@ export class UserService {
   newPorfolioFolder(name: string, image: string): Observable<any> {
     const body = { displayed_name: name, image: image };
     return this.http.post(Authenticated_API_URL + "new-portfolio-folder", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -749,7 +766,7 @@ export class UserService {
   changePortfolioFolder(id: string, name: string, image: string, new_image: string): Observable<any> {
     const body = { folder_id: id, displayed_name: name, image: image, new_image: new_image };
     return this.http.post(Authenticated_API_URL + "change-portfolio-folder", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -761,7 +778,7 @@ export class UserService {
   deletePortfolioFolder(folder_id: string): Observable<any> {
     const body = { folder_id: folder_id };
     return this.http.post(Authenticated_API_URL + "delete-portfolio-folder", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -774,7 +791,7 @@ export class UserService {
    */
   getFolderName(id: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-portfolio-folder-name?id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -788,7 +805,7 @@ export class UserService {
   deleteImagePortfolio(folder_id: string, image_id: string): Observable<any> {
     const body = { folder_id: folder_id, image_id: image_id };
     return this.http.post(Authenticated_API_URL + "delete-image-portfolio", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -800,7 +817,7 @@ export class UserService {
    */
   getPortfolioFolderImages(folder_id: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "portfolio-images-links?folder_id=" + folder_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -816,7 +833,7 @@ export class UserService {
       folderId: folderId
     };
     return this.http.post(Authenticated_API_URL + "new-photos", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -827,7 +844,7 @@ export class UserService {
  */
   getInstagramTokenFromCode(code: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "instagram-token?code=" + code, { withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -838,7 +855,7 @@ export class UserService {
 */
   filterClients(filter: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "filter-clients?filter=" + filter, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -849,7 +866,7 @@ export class UserService {
    */
   getAllClients(page: number): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-all-clients?page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -861,7 +878,7 @@ export class UserService {
    */
   getExpertReviews(page: number): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-reviews?page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );;
   }
 
@@ -871,7 +888,7 @@ export class UserService {
    */
   getExpertReviewsData(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-expert-reviews-data", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -885,10 +902,18 @@ export class UserService {
   sendResponseToReview(answer: string, reviewId: string): Observable<any> {
     const body = { answer: answer, reviewId: reviewId };
     return this.http.post(Authenticated_API_URL + "send-review-answer", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
+
+  saveServices(services: any, serviceCategories: any): Observable<any> {
+    const body = { services: services, serviceCategories: serviceCategories };
+    console.log(body)
+    return this.http.post(beautyAuthenticated_API_URL + "save-services", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
 
   /**
    * Get working hours
@@ -896,7 +921,7 @@ export class UserService {
    */
   getWrario(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-wrario", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -906,11 +931,11 @@ export class UserService {
    * @returns Observable of the response
    */
   saveWrario(days: any[]): Observable<any> {
-    const data = {
+    const body = {
       expertWP: days
     };
-    return this.http.post(beautyAuthenticated_API_URL + "save-wrario", days, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+    return this.http.post(beautyAuthenticated_API_URL + "save-wrario", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -921,7 +946,7 @@ export class UserService {
    */
   getScheduleExceptions(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-schedule-exceptions", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -931,14 +956,14 @@ export class UserService {
    * @param endDateTime End date and time of the exception
    * @returns Observable of the response
    */
-  addScheduleException(repeat:boolean,startDateTime: string, endDateTime: string): Observable<any> {
+  addScheduleException(repeat: boolean, startDateTime: string, endDateTime: string): Observable<any> {
     const body = {
-      repeat:repeat,
+      repeat: repeat,
       startDateTime: startDateTime,
       endDateTime: endDateTime
     };
     return this.http.post(beautyAuthenticated_API_URL + "add-schedule-exception", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -952,7 +977,7 @@ export class UserService {
       exceptions: scheduleExceptions,
     };
     return this.http.post(beautyAuthenticated_API_URL + "save-schedule-exceptions", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -962,7 +987,7 @@ export class UserService {
    */
   getAppointmentsSettings(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-appointment-settings", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -989,7 +1014,7 @@ export class UserService {
       body,
       { headers: this.getHeaders(), withCredentials: true }
     ).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -1003,7 +1028,7 @@ export class UserService {
   setNewPasswordAuthenticated(old_password: string, password: string, repeated_password: string): Observable<any> {
     const body = { old_password: old_password, password: password, repeated_password: repeated_password };
     return this.http.post<any>(Authenticated_API_URL + 'change-password-authenticated', body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -1014,7 +1039,7 @@ export class UserService {
     */
   getNotifications(page: number): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-notifications?page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -1026,7 +1051,7 @@ export class UserService {
     */
   searchClient(filter: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "search-client?filter=" + filter, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -1040,7 +1065,7 @@ export class UserService {
   newManualClient(name: string, surname: string, phone: string): Observable<any> {
     const body = { name: name, surname: surname, phone: phone };
     return this.http.post(Authenticated_API_URL + "new-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -1059,30 +1084,30 @@ export class UserService {
       "phone": phone
     };
     return this.http.post(Authenticated_API_URL + "edit-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
- 
+
   getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }): Observable<any> {
     // Set the date as a query parameter
     const params = new HttpParams().set('date', date);
-    
+
     // Use the provided servicesEmployeesMap as the body directly
     const body = servicesEmployeesMap;
 
     return this.http.post(beautyAuthenticated_API_URL + "get-available-slots", body, {
-        headers: this.getHeaders(),
-        params: params,
-        withCredentials: true
+      headers: this.getHeaders(),
+      params: params,
+      withCredentials: true
     })
-    .pipe(
-      catchError(this.handleError)
-    );
-}
+      .pipe(
+        catchError(error => this.handleError(error, 'POST', body))
+      );
+  }
 
 
- 
+
   newAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string): Observable<any> {
     const body = {
       servicesEmployees: servicesEmployees,
@@ -1092,7 +1117,7 @@ export class UserService {
     };
 
     return this.http.post(beautyAuthenticated_API_URL + "new-appointment", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
@@ -1103,32 +1128,32 @@ export class UserService {
    */
   getNumberOfReservationsClient(user_id: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-number-reservations-client?user_id=" + user_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
-   /**
-   * Returns the user's reservations for the given page number and user ID
-   * @param page The page number to retrieve
-   * @param userId The ID of the user to retrieve reservations for
-   * @returns An observable that emits the response data from the API
-   */
-   getUserReservations(page: number, userId: string): Observable<any> {
+  /**
+  * Returns the user's reservations for the given page number and user ID
+  * @param page The page number to retrieve
+  * @param userId The ID of the user to retrieve reservations for
+  * @returns An observable that emits the response data from the API
+  */
+  getUserReservations(page: number, userId: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-user-appointments?user_id=" + userId + "&page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
-  
+
   /**
  * Retrieves user data by their ID.
  * @param {string} id - The ID of the user to retrieve data for.
  * @returns {Observable<any>} - The Observable that emits the user data.
  */
-getUserData(id: string): Observable<any> {
-  return this.http.get(Authenticated_API_URL + "get-user-data?user_id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-    catchError(this.handleError)
-  );
-}
+  getUserData(id: string): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-user-data?user_id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
   /**
    * Returns the reviews by user ID.
    * @param id The user ID.
@@ -1136,7 +1161,7 @@ getUserData(id: string): Observable<any> {
    */
   getReviewsByUserId(id: string): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-user-reviews?user_id=" + id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -1148,7 +1173,7 @@ getUserData(id: string): Observable<any> {
    */
   searchAppointment(filter: string, page: number): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "search-appointment?filter=" + filter + "&page=" + page, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -1157,40 +1182,76 @@ getUserData(id: string): Observable<any> {
  * @param {number} appointment_id - The ID of the appointment to retrieve.
  * @returns {Observable<any>} - The Observable that emits the appointment data.
  */
-getAppointment(appointment_id: number): Observable<any> {
-  return this.http.get(beautyAuthenticated_API_URL + "get-appointment?appointment_id=" + appointment_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
-    catchError(this.handleError)
-  );
-}
+  getAppointment(appointment_id: number): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-appointment?appointment_id=" + appointment_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
 
-  
-getServiceCategories(): Observable<any> {
+
+  getServiceCategories(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-service-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+      catchError(error => this.handleError(error))
     );
   }
 
-  getServices(category:string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-services?category="+category, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+  getServices(category: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-services?category=" + category, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
 
 
- 
-  getEmployeesOfServices(serviceIds:string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-employees-of-services?serviceIds="+serviceIds, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+
+
+  getEmployeesOfServices(serviceIds: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-employees-of-services?serviceIds=" + serviceIds, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
 
-  
-
-  getAvailableDays(month:number,year:number,employeeIds:string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-available-days?employeeIds="+employeeIds+"&month="+month+"&year="+year, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(this.handleError)
+  getEmployeesOfExpert(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-employees-of-expert", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
+
+
+
+  getAvailableDays(month: number, year: number, employeeIds: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-available-days?employeeIds=" + employeeIds + "&month=" + month + "&year=" + year, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+  getNewJwtWithRefreshToken(): Observable<any> {
+    if (!this.refreshTokenInProgress) {
+      this.refreshTokenInProgress = true;
+
+      return this.http.post<any>(API_URL + 'refresh-token', {}, {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }).pipe(
+        tap((newToken) => {
+          this.refreshTokenInProgress = false;
+          this.refreshTokenSubject.next(newToken); // Emit the new token
+
+          // Retry all the queued requests
+          this.requestsQueue.forEach(subscriber => subscriber(newToken));
+          this.requestsQueue = [];
+        }),
+        catchError(err => {
+          this.refreshTokenInProgress = false;
+          this.refreshTokenSubject.next(err);
+          return throwError(err);
+        })
+      );
+    } else {
+      return new Observable(observer => {
+        this.requestsQueue.push(observer.next.bind(observer));
+      });
+    }
+  }
+
 
 
 }

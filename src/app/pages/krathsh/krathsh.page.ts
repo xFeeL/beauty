@@ -79,11 +79,12 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
+      console.log("HERE")
       console.log(data)
       this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
       this.time = data.time
       this.profile_image = data.image;
-      this.user_id = data.idPelath
+      this.user_id = data.userId
       this.username = data.clientName.replace("$", " ");
       this.price = data.price
       this.appointment_data = data;

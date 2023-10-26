@@ -260,11 +260,11 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
 
 
-  next(swiper: any) {
+  nextSlide(swiper: any) {
     this.swiper.slideNext();
 
   }
-  previous() {
+  previousSlide() {
 
     this.swiper.slidePrev();
 
@@ -562,7 +562,8 @@ performDeletion(person: any, affectedServices: any[] = []) {
       surname:person.surname,
       selected: person.selected
     }));
-  
+    console.log("The categories")
+    console.log(this.serviceCategories)
     const modal = await this.modalController.create({
       component: NewServicePage,
       componentProps: {
@@ -737,15 +738,10 @@ performDeletion(person: any, affectedServices: any[] = []) {
         description: data.description,
         selectedCategory: data.selectedCategory,
         people: data.people,
-
-        
-
       };
-  
-     
       this.services.push(service);
       this.serviceCategories=data.categories
-  
+
       console.log("After closing newService")
       console.log(service)
       console.log(this.serviceCategories)
@@ -753,16 +749,6 @@ performDeletion(person: any, affectedServices: any[] = []) {
     this._cd.detectChanges();
   }
   
-
-
-
-  calculateTotalTables(tableTypes: any[]) {
-    if (tableTypes) {
-      return tableTypes.reduce((sum, tableType) => sum + tableType.numberOfTables, 0);
-    } else {
-      return 0;
-    }
-  }
 
   getServicesForCategory(categoryName: string): any[] {
     return this.services.filter(service => service.selectedCategory === categoryName);
@@ -889,13 +875,30 @@ performDeletion(person: any, affectedServices: any[] = []) {
   }
 
 
+ 
   isEndButtonDisabled(): boolean {
-    // Check if there are any services or categories
+   
+
     if (this.services.length == 0 || this.serviceCategories.length == 0) {
       return true;
     }
-    return false; // Enable the button if all conditions are met
-  }
+
+    let categoriesWithServices = new Set();
+
+    for (let service of this.services) {
+      if (typeof service.selectedCategory === 'string') {
+        categoriesWithServices.add(service.selectedCategory);
+      }
+    }
+    for (let category of this.serviceCategories) {
+      if (!categoriesWithServices.has(category)) {
+        return true; 
+      }
+    }
+
+    return false;
+}
+
 
   
 }

@@ -181,8 +181,9 @@
                               (click)="openRejectionPopover($event, element)" class="icon-spacing"></ion-icon>
                             <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
                               <ng-template>
-                                <ion-header> <ion-title class="ion-margin-top ion-margin-bottom">
-                                    Αιτία απόρριψης
+                                <ion-header>
+                                  <ion-title class="ion-padding-top ion-padding-bottom">
+                                    Απόρριψη κράτησης
                                   </ion-title>
                                 </ion-header>
                                 <ion-content>

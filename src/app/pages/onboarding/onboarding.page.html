@@ -12,7 +12,7 @@
               </ion-note>
             </div>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="next($event)">Ας
+              <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)">Ας
                 Ξεκινήσουμε!</ion-button>
             </div>
           </swiper-slide>
@@ -58,7 +58,7 @@
 
             <div class="navigator ion-padding">
               <ion-button color="primary" [disabled]="!(expertName!='' && expertName!=undefined)" class="beginButton"
-                no-caps (click)="next($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                no-caps (click)="nextSlide($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide3"> <ion-item lines="none"
@@ -88,9 +88,9 @@
               Φωτογραφίας</ion-button>
             <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button>
-              <ion-button color="primary" class="beginButton" no-caps (click)="next($event)"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
                   name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
@@ -138,9 +138,9 @@
             <ion-button fill="outline" (click)="chooseAddress()" expand="block" class="ion-margin-top">Επιλογή
               Διεύθυνσης</ion-button>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
-                class="beginButton" [disabled]="!addressEntered" no-caps (click)="next($event)"><ion-icon
+                class="beginButton" [disabled]="!addressEntered" no-caps (click)="nextSlide($event)"><ion-icon
                   name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
@@ -182,17 +182,17 @@
             </div> <ion-button fill="outline" id="open-modal" expand="block" class="ion-margin-top">Επιλογή
               Κατηγοριών</ion-button>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="!(selectedItems.length>0)" color="primary" class="beginButton" no-caps
-                (click)="next($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                (click)="nextSlide($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide6">
             <div class="slider-text">
               <h3>Ωράριο λειτουργίας</h3>
             </div>
-            <ion-list class="scrollable-list">
+            <ion-list class="scrollable-list rad">
               <div *ngFor="let day of days">
                 <ion-item lines="none">
                   <ion-label>{{day.name}}</ion-label>
@@ -226,9 +226,9 @@
               </div>
             </ion-list>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
-                color="primary" class="beginButton" no-caps (click)="next($event)">
+                color="primary" class="beginButton" no-caps (click)="nextSlide($event)">
                 <ion-icon name="arrow-forward-circle-outline"></ion-icon>
               </ion-button>
             </div>
@@ -292,9 +292,9 @@
               </ion-row>
             </ion-grid>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
-                color="primary" class="beginButton" no-caps (click)="next($event)"><ion-icon
+                color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
                   name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
@@ -372,7 +372,7 @@
               </ion-row>
             </ion-grid>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previous()"><ion-icon
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
                 (click)="sendData()">Τέλος</ion-button>
@@ -419,8 +419,8 @@
                       </ion-avatar>
                       <ion-label>Υπηρεσίες Ομορφιάς</ion-label>
                     </ion-item>
-                    <div class="ion-padding " slot="content">
-                      <ion-list>
+                    <div  slot="content">
+                      <ion-list class="ion-no-padding">
                         <ion-item *ngFor="let item of omorfia_categories">
                           <!--<a href="/experts?category={{item.name}}">--> <ion-text
                             color="primary">{{item.title}}</ion-text>

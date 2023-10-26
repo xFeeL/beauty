@@ -10,40 +10,149 @@
 </ion-header>
 <ion-content [fullscreen]="true" class="background">
   <ion-segment mode="md" class="capsoff" color="primary" [(ngModel)]="selectedSegment">
-    <ion-segment-button value="team" (click)="loadTeam()" class="mr5 capsoff">
+    <ion-segment-button value="team" (click)="goToTeam()" class="mr5 capsoff">
       <ion-label>Ομάδα</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="services" class="mr5 capsoff" (click)="loadServices()">
+    <ion-segment-button value="services" class="mr5 capsoff" (click)="goToServices()">
       <ion-label>Υπηρεσίες</ion-label>
     </ion-segment-button>
   </ion-segment>
 
 
   <div *ngIf="selectedSegment === 'team'">
-    <ion-grid class="ion-margin custom-grid max-height">
-      <ion-row class="ion-justify-content-center ion-margin-top">
-
-      </ion-row>
-      <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-      </ion-row>
-      <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+   
+    <ion-grid class="ion-no-padding ion-no-margin">
+      <ion-row> <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6" size-md="4" *ngFor="let person of team" (click)="managePerson(person)" class="cursor">
+                <ion-card class="centered-card-content ion-padding-bottom">
+                  <div class="menu-container">
+                    <mat-icon [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">more_vert</mat-icon>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="managePerson(person)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Επεξεργασία</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteEmployee(person)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Διαγραφή</span>
+                      </button>
+                    </mat-menu>
+                  </div>
+                
+                  <div class="avatar-container">
+                    <ion-avatar class="custAv">
+                      <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
+                    </ion-avatar>
+                  </div>
+                  
+                  <ion-card-header class="centered-header ion-margin-bottom">
+                    <ion-card-subtitle text-wrap ><ion-note text-wrap>{{person.surname}} {{person.name}}</ion-note></ion-card-subtitle>
+                  </ion-card-header>
+                </ion-card>
+                
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-fab class="float fabButton" (click)="managePerson()">
+      <ion-chip class="ion-padding bg" >
+        <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
+        <ion-label color="light">Νέο</ion-label>
+      </ion-chip>
+    </ion-fab>
+    
+    
+    
   </div>
 
 
   <div *ngIf="selectedSegment === 'services'">
-    <ion-grid class="ion-margin custom-grid max-height">
-      <ion-row class="ion-justify-content-center ion-margin-top">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="11">
 
-      </ion-row>
-      <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-      </ion-row>
-      <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+
+          <ion-grid class="w100 w80 custRow " *ngIf="serviceCategories.length!=0">
+            <ion-row>
+              <ion-col size="12">
+                <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom"
+                  *ngFor="let category of serviceCategories">
+                  <ion-row>
+                    <ion-col>
+                      <h4 class="ml13" style="text-align: left">{{ category.name }}</h4> <!-- Display category name -->
+                    </ion-col>
+                    <ion-col class="ion-text-right">
+                      <mat-icon class="ion-margin-top" [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="editCategory(category.name)">
+                          <mat-icon>edit</mat-icon>
+                          <span>Επεξεργασία</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteCategory(category)">
+                          <mat-icon>delete</mat-icon>
+                          <span>Διαγραφή</span>
+                        </button>
+                      </mat-menu>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-list lines="inset" class="ion-no-padding servicesList">
+                      <ng-container *ngIf="getServicesForCategory(category.name).length > 0; else noServices">
+                        <ion-item class="cursor" *ngFor="let service of getServicesForCategory(category.name)"
+                          (click)="editService(service)">
+                          <div class="success-line"></div>
+                          <ion-grid>
+                            <ion-row>
+                              <ion-col>
+                                <ion-label>{{ service.name }}</ion-label>
+                              </ion-col>
+
+                            </ion-row>
+                            <ion-row class="mt9">
+                              <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+                            </ion-row>
+                          </ion-grid>
+                        </ion-item>
+                      </ng-container>
+                      <ng-template #noServices>
+                        <ion-item>
+                          <ion-note text-wrap>Δεν υπάρχουν ακόμα υπηρεσίες στην κατηγορία.</ion-note>
+                        </ion-item>
+                      </ng-template>
+                    </ion-list>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-fab class="float fabButton">
+      <ion-chip class="ion-padding bg" [matMenuTriggerFor]="menu">
+        <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
+        <ion-label color="light">Νέα</ion-label>
+      </ion-chip>
+    </ion-fab>
+    
+    <mat-menu #menu="matMenu" xPosition="before" yPosition="above">
+      <button mat-menu-item (click)="newCategory()">Κατηγορία</button>
+      <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσία</button>
+    </mat-menu>
+
+   
   </div>
 
 
 
 </ion-content>
+
+<ion-footer>
+  <ion-button (click)="save()" [disabled]="isSaveButtonDisabled()" class="capsoff ion-no-margin" expand="full"
+    color="primary">{{getSaveButtonText()}}</ion-button>
+</ion-footer>

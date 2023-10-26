@@ -11,18 +11,11 @@
       </ng-template>
     </ion-buttons>
 
-    <ion-title color="light" text-wrap>Νέο Άτομο</ion-title>
-
+    <ion-title color="light"  text-wrap>Νέο Άτομο</ion-title>
     <ion-buttons slot="end">
-      <ng-container *ngIf="isMobile(); else confirmButton">
-          <ion-button color="light" class="no-capitalization" (click)="confirm()">
-              <ion-icon color="light" name="checkmark"></ion-icon>
-          </ion-button>
-      </ng-container>
-      <ng-template #confirmButton>
-          <ion-button color="light" class="no-capitalization" (click)="confirm()" [strong]="true">Επιβεβαίωση</ion-button>
-      </ng-template>
+      <ion-button disabled="true" color="primary"></ion-button>
     </ion-buttons>
+   
   </ion-toolbar>
 </ion-header>
 <ion-content class="background">
@@ -52,7 +45,7 @@
         <ion-toggle class="ion-padding-top" [enableOnOffLabels]="true" [(ngModel)]="customSchedule"></ion-toggle>
                 <ion-note class="ion-padding-start" color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
         <ion-note  class="ion-padding-start" color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>
-        <ion-list class="scrollable-list ion-margin-top" *ngIf="customSchedule">
+        <ion-list class="scrollable-list ion-margin-top ion-no-padding rad" *ngIf="customSchedule">
                     <div *ngFor="let day of days">
             <ion-item lines="none">
               <ion-label>{{day.name}}</ion-label>
@@ -82,3 +75,6 @@
       </ion-col>
     </ion-row>
   </ion-grid></ion-content>
+  <ion-footer>
+    <ion-button color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()">Αποθήκευση</ion-button>
+  </ion-footer>

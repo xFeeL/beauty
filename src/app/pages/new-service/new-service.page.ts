@@ -13,8 +13,8 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 export class NewServicePage implements OnInit {
 
   serviceName = ""
-  people: any = [];
-  servicePrice = '';
+  people: any = new Array<any>;
+  servicePrice!: number;
 
   @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
   serviceDuration: any;
@@ -22,8 +22,8 @@ export class NewServicePage implements OnInit {
   categories: any = [];
   serviceCategory: string = '';
   newCategory: string = '';
-  editing=false;
-  services: any=[];
+  editing = false;
+  services: any = [];
   originalServiceName: any;
 
   constructor(private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
@@ -32,64 +32,81 @@ export class NewServicePage implements OnInit {
 
   ionViewWillEnter() {
     this.people = this.navParams.get('people');
+    console.log("THE PEOPLE")
     console.log(this.people)
     this.categories = this.navParams.get('categories');
     this.editing = this.navParams.get('editing');
     this.services = this.navParams.get('services');
+    this.serviceCategory=this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
-   
+    console.log("The categories are")
+    console.log(this.serviceCategory)
     // Make all people unselected by default
     this.people.forEach((person: { selected: boolean; }) => person.selected = false);
-  
+
     // Get the servicePeople from navParams
     let servicePeople = this.navParams.get('servicePeople');
     console.log(this.people)
     console.log(servicePeople)
     // If servicePeople is found in the navParams, mark those people as selected
-    if(servicePeople && servicePeople.length) {
+
+    if (servicePeople && servicePeople.length) {
       servicePeople.forEach((servicePersonName: string) => {
-          let person = this.people.find((p: { name: string; surname: string; }) => `${p.name} ${p.surname}` === servicePersonName);
-          if (person) {
-              person.selected = true;
-          }
+        console.log(`Looking for: ${servicePersonName}`);
+        let person = this.people.find((p: { name: string; surname: string; }) => {
+          const combinedName = `${p.name} ${p.surname}`;
+          console.log(`Checking against: ${combinedName}`);
+          return combinedName === servicePersonName;
+        });
+
+        if (person) {
+          person.selected = true;
+        } else {
+          console.log(`Person not found for: ${servicePersonName}`);
+        }
       });
-  }
-  
-  
+    }
+
+
+
     console.log("Opening New Service Modal");
     console.log(this.people)
     console.log(servicePeople)
-    if(!this.editing){
-      this.selectAll=true
+    if (!this.editing) {
+      this.selectAll = true
       this.selectAllPeople();
-    }else{
-      if(this.people.length==servicePeople.length){
-        this.selectAll=true
+    } else {
+      if (this.people.length == servicePeople.length) {
+        this.selectAll = true
 
-      }else{
-        this.selectAll=false
+      } else {
+        this.selectAll = false
 
       }
 
     }
   }
-  
+
 
   goBack() {
     this.modalController.dismiss()
   }
 
   async saveService() {
-    if (this.servicePrice.trim() === '' || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
+    console.log("Save service")
+    console.log(typeof (this.servicePrice))
+    console.log(this.serviceName)
+    console.log(this.serviceDuration)
+    if (this.servicePrice == undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
       this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα  πεδία.', "danger");
       return;
     }
-  
-     // Check if selected category exists in categories
-  if (!this.categories.includes(this.serviceCategory)) {
-    this.userService.presentToast('Παρακαλώ επιλέξτε κατηγορία.', "danger");
-    return;
-  }
+
+    // Check if selected category exists in categories
+    if (!this.categories.includes(this.serviceCategory)) {
+      this.userService.presentToast('Παρακαλώ επιλέξτε κατηγορία.', "danger");
+      return;
+    }
     const selectedPeople = this.people.filter((person: { selected: any; }) => person.selected);
     const selectedPeopleNames = selectedPeople.map((person: { name: string; surname: string; }) => `${person.name} ${person.surname}`);
 
@@ -98,13 +115,13 @@ export class NewServicePage implements OnInit {
       this.userService.presentToast('Παρακαλώ επιλέξτε τουλάχιστον ένα άτομο.', "danger");
       return;
     }
-  
+
     // Check if the service already exists
     if (this.serviceExists(this.serviceName, this.originalServiceName)) {
       this.userService.presentToast('Η υπηρεσία με αυτό το όνομα υπάρχει ήδη.', "danger");
       return;
     }
-  
+
     await this.modalController.dismiss({
       'name': this.serviceName,
       'price': this.servicePrice,
@@ -114,9 +131,9 @@ export class NewServicePage implements OnInit {
       'selectedCategory': this.serviceCategory,
       'categories': this.categories
     });
-    
+
   }
-  
+
   serviceExists(serviceName: string, originalServiceName?: string): boolean {
     for (const service of this.services) {
       if (service.name === serviceName) {

@@ -56,28 +56,28 @@ export class NewKrathshPage implements OnInit {
 
   canSelectDate: boolean = false;
   availableDays: any;
-  allEmployeeIds: string="";
+  allEmployeeIds: string = "";
 
-  
-  constructor( private modalController: ModalController, private userService: UserService) {
+
+  constructor(private modalController: ModalController, private userService: UserService) {
     this.minDate = new Date().toISOString().split('T')[0];
     this.animationState = 'in';
   }
   @ViewChild(IonContent, { static: false }) content2!: IonContent;
 
   @ViewChild('clientModal') clientModal!: IonModal;
-  selectedServices:Array<any> = new Array<any>;
+  selectedServices: Array<any> = new Array<any>;
 
 
 
- 
+
   ngOnInit() {
-    
-}
+
+  }
 
 
   ionViewWillEnter() {
-   
+
   }
   goBack() {
     this.modalController.dismiss(false)
@@ -93,29 +93,29 @@ export class NewKrathshPage implements OnInit {
 
     // Check if there's a next service to open and it's not the last one
     if (currentIndex < this.selectedServices.length - 1) {
-        this.currentService = this.selectedServices[currentIndex + 1];
+      this.currentService = this.selectedServices[currentIndex + 1];
     } else {
-        // Extract employeeIds from all selected services
-        this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
-        // Construct servicesEmployeesMap from this.selectedServices
-          this.servicesEmployees = {};
-          this.selectedServices.forEach(service => {
-            this.servicesEmployees[service.id] = service.selectedEmployeeId;
-          });
-        this.onMonthChange();
+      // Extract employeeIds from all selected services
+      this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
+      // Construct servicesEmployeesMap from this.selectedServices
+      this.servicesEmployees = {};
+      this.selectedServices.forEach(service => {
+        this.servicesEmployees[service.id] = service.selectedEmployeeId;
+      });
+      this.onMonthChange();
 
-        
+
     }
 
     // Check if all services have a selection
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
-}
+  }
 
 
 
   presentClientPop() {
     this.clientModal.present()
-    this.isAddingNewClient=false
+    this.isAddingNewClient = false
   }
 
 
@@ -142,17 +142,17 @@ export class NewKrathshPage implements OnInit {
 
                   if (e) {
                     this.month = that.months.indexOf(e.split(' ')[0]) + 1;
-                    this.year = e.split(' ')[1]         
+                    this.year = e.split(' ')[1]
                     this.userService.getAvailableDays(this.month, this.year, this.allEmployeeIds).subscribe(data => {
                       let availableDates = data || [];
 
-                      that.dayValues = availableDates.join(','); 
+                      that.dayValues = availableDates.join(',');
                       console.log("Available days");
                       console.log(that.dayValues);
                       this.scrollToBottomSetTimeout(150);
-                  }, err => {
+                    }, err => {
                       console.log(err);
-                  });       
+                    });
                   }
                 }
               }
@@ -164,25 +164,29 @@ export class NewKrathshPage implements OnInit {
       observer.observe(targetNode, config);
     }, 0);
   }
-  
+
   dateChanged() {
     this.time_slots = [];
 
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
 
-    
-
     this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees).subscribe(response => {
       console.log(response);
+      
+      // Populate the time_slots array with the start of the outerTimePeriods
       for (let i = 0; i < response.length; i++) {
-        response[i] = { value: response[i].start.slice(0, 5), selected: false }; // You can directly assign the object to the array
+        let slot = {
+          value: response[i].outerTimePeriod.start.slice(0, 5),
+          selected: false
+        };
+        this.time_slots.push(slot);
       }
-      this.time_slots=response
+      
       this.dateSelected = true;
-
       this.scrollToBottomSetTimeout(150);
     });
 }
+
 
 
 
@@ -291,7 +295,7 @@ export class NewKrathshPage implements OnInit {
 
 
   saveKrathsh() {
-    this.saveButtonEnabled = false;   
+    this.saveButtonEnabled = false;
 
     this.userService.newAppointment(this.servicesEmployees, moment(this.theDate).format('YYYY-MM-DD'), this.timeSlotSelected.value, this.selectedClientId).subscribe(data => {
       this.userService.presentToast("Το ραντεβού αποθηκεύτηκε με επιτυχία.", "success")
@@ -315,52 +319,52 @@ export class NewKrathshPage implements OnInit {
     console.log(this.selectedServices)
 
     const modal = await this.modalController.create({
-        component: AddServicesPage,
-        componentProps: {
-          'selectedServices': this.selectedServices
-        }
+      component: AddServicesPage,
+      componentProps: {
+        'selectedServices': this.selectedServices
+      }
     });
 
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
     if (data) {
-        // Now, the data variable contains the selected services
-        this.selectedServices = data;
+      // Now, the data variable contains the selected services
+      this.selectedServices = data;
 
-        let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
-        
-        this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
-            // Loop through each service in selectedServices
-            for (let service of this.selectedServices) {
-                // Check if the service ID exists in the response
-                if (response[service.id]) {
-                    service.employees = response[service.id];
-                } else {
-                    service.employees = []; // If no employees are found for the service, initialize an empty array
-                }
-            }
-            if (this.selectedServices && this.selectedServices.length > 0) {
-              this.currentService = this.selectedServices[0];
-              
-              this.scrollToBottomSetTimeout(150)
+      let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
 
-            }
-            console.log(this.selectedServices);
-        }, err => {
-            console.log(err);
-        });
+      this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
+        // Loop through each service in selectedServices
+        for (let service of this.selectedServices) {
+          // Check if the service ID exists in the response
+          if (response[service.id]) {
+            service.employees = response[service.id];
+          } else {
+            service.employees = []; // If no employees are found for the service, initialize an empty array
+          }
+        }
+        if (this.selectedServices && this.selectedServices.length > 0) {
+          this.currentService = this.selectedServices[0];
+
+          this.scrollToBottomSetTimeout(150)
+
+        }
+        console.log(this.selectedServices);
+      }, err => {
+        console.log(err);
+      });
     }
-}
-
-
-toggleSelectService(service: any) {
-  service.isSelected = !service.isSelected; // Toggle the isSelected property
-
-  if (this.selectedServices.includes(service)) {
-    this.selectedServices = this.selectedServices.filter((s: any) => s !== service);
   }
-}
+
+
+  toggleSelectService(service: any) {
+    service.isSelected = !service.isSelected; // Toggle the isSelected property
+
+    if (this.selectedServices.includes(service)) {
+      this.selectedServices = this.selectedServices.filter((s: any) => s !== service);
+    }
+  }
 
 
 

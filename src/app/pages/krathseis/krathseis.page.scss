@@ -1,387 +1,392 @@
 .bgtool {
-    //background-image: url('../../../assets/imgs/bgtoolbar2.png');
-    //background-blend-mode: multiply;
-    background-color: #246EE9;
-    //opacity: 0.75;
-  }
-  
-  .backgroundChips{
-    background: var(--ion-color-primary) !important;
-  
-  }
-  ion-header{
-    background: var(--ion-color-primary);
-  
-  }
-  
-  ion-toolbar{
-    --background: var(--ion-color-primary);
-  
-  }
-  
-  .hedCol {
-    position: absolute;
-    bottom: -30px;
-  }
-  
-  .notif {
-    margin-right: 10px;
-    padding: 10px;
-    background: none;
-  }
-  
-  .not-selected-chip {
-    --background: #4B91E9;
-    --color: white;
-    border: 1px solid #FFFFFF;
-    border-radius: 15px;
-  }
-  
-  .selected-chip {
-    --background: white;
-    --color: #246EE9;
-  }
-  
-  .modal_button {}
-  
-  .modal-toolbar {
-    --opacity: 100 !important;
-  }
-  
-  ion-button {
-    text-transform: none;
-  }
-  
-  .center-title {
-    text-align: center;
-  }
-  
-  .custRow {
-    background-color: var(--ion-color-primary-contrast);
-    border-radius: 15px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
-    display: block;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
-    margin: 16px;
-    padding-top: 5px;
-    padding-bottom: 0px;
-    height: auto;
-  }
-  
-  .borderBottom {
-    display: flex;
-    align-items: center;
-  }
-  
-  .f15 {
-    font-size: 13px;
-  }
-  
-  .custAvatarHed {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
-  
-  .custGrid {
-    padding-top: 0px !important;
-  }
-  
-  .pt5 {
-    padding-top: 5px;
-  }
-  
-  .title {
-    font-weight: 550;
-    //padding-left:5px;
-    overflow-wrap: break-word;
-    /* Allow long words to be able to break and wrap onto the next line */
-    word-wrap: break-word;
-    /* Back up for overflow-wrap for older browsers */
-  }
-  
-  .align-right2 {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: right;
-  }
-  
+  //background-image: url('../../../assets/imgs/bgtoolbar2.png');
+  //background-blend-mode: multiply;
+  background-color: #246EE9;
+  //opacity: 0.75;
+}
+
+.backgroundChips {
+  background: var(--ion-color-primary) !important;
+
+}
+
+ion-header {
+  background: var(--ion-color-primary);
+
+}
+
+ion-toolbar {
+  --background: var(--ion-color-primary);
+
+}
+
+.hedCol {
+  position: absolute;
+  bottom: -30px;
+}
+
+.notif {
+  margin-right: 10px;
+  padding: 10px;
+  background: none;
+}
+
+.not-selected-chip {
+  --background: #4B91E9;
+  --color: white;
+  border: 1px solid #FFFFFF;
+  border-radius: 15px;
+}
+
+.selected-chip {
+  --background: white;
+  --color: #246EE9;
+}
+
+.modal_button {}
+
+.modal-toolbar {
+  --opacity: 100 !important;
+}
+
+ion-button {
+  text-transform: none;
+}
+
+.center-title {
+  text-align: center;
+}
+
+.custRow {
+  background-color: var(--ion-color-primary-contrast);
+  border-radius: 15px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  display: block;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
+  margin: 16px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+  height: auto;
+}
+
+.borderBottom {
+  display: flex;
+  align-items: center;
+}
+
+.f15 {
+  font-size: 13px;
+}
+
+.custAvatarHed {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.custGrid {
+  padding-top: 0px !important;
+}
+
+.pt5 {
+  padding-top: 5px;
+}
+
+.title {
+  font-weight: 550;
+  //padding-left:5px;
+  overflow-wrap: break-word;
+  /* Allow long words to be able to break and wrap onto the next line */
+  word-wrap: break-word;
+  /* Back up for overflow-wrap for older browsers */
+}
+
+.align-right2 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: right;
+}
 
 
-  .arrowChip {
-    margin-right: 0px;
-    margin-left: 5px;
-    margin-top: -1px;
-  }
-  
-  .apply-button {
-    flex: 1;
-    margin-right: 5px;
-    text-transform: none;
-    text-align: right;
-  }
-  
-  .cancel-button {
-    flex: 1;
-    margin-left: 5px;
-    text-transform: none;
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .button-container2 {
-    display: flex;
-    //justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .button-container2 ion-button {
-    flex: 1;
-  }
-  
-  .button-container2 ion-button:last-child {
-    //padding-right: 16px;
-  }
-  
-  ion-range {
-    margin-left: 10px;
-    margin-right: 20px;
-  }
-  
-  .distanceLabel {
-    margin-left: 10px;
-  }
-  
-  .row-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0px !important;
-  }
-  
-  .note-container {
-    margin-right: auto;
-  }
-  
-  .chip-container {
-    margin-left: 0px;
-    margin-right: auto;
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-    pointer-events: none;
-    --height: 17px;
-    /* Adjusts the height of the chip */
-    --padding-start: 5px;
-    /* Adjusts the left padding of the chip */
-    --padding-end: 5px;
-    /* Adjusts the right padding of the chip */
-    --padding-top: 10px;
-    /* Adjusts the top padding of the chip */
-    --padding-bottom: 10px;
-    /* Adjusts the bottom padding of the chip */
-    font-size: 0.7rem;
-  }
-  
-  .chip-container2 {
-    margin-left: 0px;
-    margin-right: auto;
-    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
-    --background: var(--ion-color-primary);
-    color: white;
-    --padding-start: 5px;
-    /* Adjusts the left padding of the chip */
-    --padding-end: 5px;
-    /* Adjusts the right padding of the chip */
-    /* Adjusts the bottom padding of the chip */
-    font-size: 0.7rem;
-  }
-  
-  ion-segment {
-    --background: var(--ion-color-primary);
-  }
-  
-  
-  .center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .date {
-    font-size: 11px;
-    padding-top: 10px;
-  }
-  
-  .align-right {
-    display: flex;
-    margin-left: auto;
-    margin-right: 0px;
-    text-align: right;
-  }
-  
-  .align-left {
-    display: flex;
-    margin-left: auto;
-    margin-right: 0px;
-    text-align: left;
-  }
-  
-  .no_results_text {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    padding-top: 50px;
-    width: 95%;
-    padding-bottom: 20px;
-  }
-  
-  .no_results_item {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 20px;
-    text-align: center;
-  }
-  
-  .people-number {
-    padding-left: 1px;
-  }
-  
-  @media (max-width: 768px) { 
+
+.arrowChip {
+  margin-right: 0px;
+  margin-left: 5px;
+  margin-top: -1px;
+}
+
+.apply-button {
+  flex: 1;
+  margin-right: 5px;
+  text-transform: none;
+  text-align: right;
+}
+
+.cancel-button {
+  flex: 1;
+  margin-left: 5px;
+  text-transform: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-container2 {
+  display: flex;
+  //justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-container2 ion-button {
+  flex: 1;
+}
+
+.button-container2 ion-button:last-child {
+  //padding-right: 16px;
+}
+
+ion-range {
+  margin-left: 10px;
+  margin-right: 20px;
+}
+
+.distanceLabel {
+  margin-left: 10px;
+}
+
+.row-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0px !important;
+}
+
+.note-container {
+  margin-right: auto;
+}
+
+.chip-container {
+  margin-left: 0px;
+  margin-right: auto;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  --height: 17px;
+  /* Adjusts the height of the chip */
+  --padding-start: 5px;
+  /* Adjusts the left padding of the chip */
+  --padding-end: 5px;
+  /* Adjusts the right padding of the chip */
+  --padding-top: 10px;
+  /* Adjusts the top padding of the chip */
+  --padding-bottom: 10px;
+  /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;
+}
+
+.chip-container2 {
+  margin-left: 0px;
+  margin-right: auto;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
+  --background: var(--ion-color-primary);
+  color: white;
+  --padding-start: 5px;
+  /* Adjusts the left padding of the chip */
+  --padding-end: 5px;
+  /* Adjusts the right padding of the chip */
+  /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;
+}
+
+ion-segment {
+  --background: var(--ion-color-primary);
+}
+
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.date {
+  font-size: 11px;
+  padding-top: 10px;
+}
+
+.align-right {
+  display: flex;
+  margin-left: auto;
+  margin-right: 0px;
+  text-align: right;
+}
+
+.align-left {
+  display: flex;
+  margin-left: auto;
+  margin-right: 0px;
+  text-align: left;
+}
+
+.no_results_text {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding-top: 50px;
+  width: 95%;
+  padding-bottom: 20px;
+}
+
+.no_results_item {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.people-number {
+  padding-left: 1px;
+}
+
+@media (max-width: 768px) {
   .scrolling-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
     scrollbar-width: thin;
-  
+
     ion-chip {
       //display: inline-block;
       border-radius: 15px;
     }
   }
-  }
-  
-  .cancelReason {
-    padding-top: 30px;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: 0px;
-  }
-  
-  .reasonChips {
-    padding-left: 14px;
-    margin-bottom: 16px;
-  }
-  
-  .npt {
-    padding-top: 0px !important;
-  }
-  
-  * {
-    scrollbar-width: thin;
-  }
-  
-  .date-chip {
-    border: 0.5px solid var(--ion-color-primary);
-    margin-bottom:10px;
-  }
+}
+
+.cancelReason {
+  padding-top: 30px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+}
+
+.reasonChips {
+  padding-left: 14px;
+  margin-bottom: 16px;
+}
+
+.npt {
+  padding-top: 0px !important;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+.date-chip {
+  border: 0.5px solid var(--ion-color-primary);
+  margin-bottom: 10px;
+}
 
 
-  .rad{
-    border-radius: 20px;
-  }
-  
-  .pr10 {
-    //padding-right:10px;
-    color: var(--ion-color-step-600, #666666);
-  }
-  
-  .pb7 {
-    padding-bottom: 7px;
-  }
-  
-  .checkmark {
-    margin-right: 10px;
-  }
-  
-  .checkmark-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .checkButton {
-    padding-top: 5px;
-  }
-  
-  .small-chip {
-    font-size: 13px;
-  }
-  
-  .small-icon {
-    font-size: 17px;
-  }
-  
-  .pt {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .pr5 {
-    padding-right: 3px;
-  }
-  
-  .vertical-align-content {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    /* occupy the full space */
-  }
-  
+.rad {
+  border-radius: 20px;
+}
+
+.pr10 {
+  //padding-right:10px;
+  color: var(--ion-color-step-600, #666666);
+}
+
+.pb7 {
+  padding-bottom: 7px;
+}
+
+.checkmark {
+  margin-right: 10px;
+}
+
+.checkmark-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.checkButton {
+  padding-top: 5px;
+}
+
+.small-chip {
+  font-size: 13px;
+}
+
+.small-icon {
+  font-size: 17px;
+}
+
+.pt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pr5 {
+  padding-right: 3px;
+}
+
+.vertical-align-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  /* occupy the full space */
+}
+
+ion-icon[name="arrow-back"] {
+  display: none;
+  /* Hide by default */
+}
+
+/* Desktop screens */
+@media only screen and (min-width: 992px) {
   ion-icon[name="arrow-back"] {
-    display: none;
-    /* Hide by default */
+    display: inline-block;
+    /* Show only on desktop */
   }
-  
-  /* Desktop screens */
-  @media only screen and (min-width: 992px) {
-    ion-icon[name="arrow-back"] {
-      display: inline-block;
-      /* Show only on desktop */
-    }
-  }
+}
 
-  
 
-  .warning-line {
-    border-left: 20px solid  var(--ion-color-warning); /* Adjust the color and width as needed */
 
-  }
+.warning-line {
+  border-left: 20px solid var(--ion-color-warning);
+  /* Adjust the color and width as needed */
 
-  .success-line {
-    border-left: 20px solid  var(--ion-color-success); /* Adjust the color and width as needed */
+}
+
+.success-line {
+  border-left: 20px solid var(--ion-color-success);
+  /* Adjust the color and width as needed */
 }
 
 
 .pending-line {
-  border-left: 20px solid  var(--ion-color-pending); /* Adjust the color and width as needed */
+  border-left: 20px solid var(--ion-color-primary);
+  /* Adjust the color and width as needed */
 }
 
-  .danger-line {
-    border-left: 20px solid  var(--ion-color-danger); /* Adjust the color and width as needed */
+.danger-line {
+  border-left: 20px solid var(--ion-color-danger);
+  /* Adjust the color and width as needed */
 
-  }
+}
 
 
-  .customFontNote{
-    font-size:13px !important;
-  }
+.customFontNote {
+  font-size: 13px !important;
+}
 
-  .customFontHeader{
-    font-size:15px !important;
-  }
+.customFontHeader {
+  font-size: 15px !important;
+}
