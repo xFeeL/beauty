@@ -465,13 +465,9 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
 
   isScheduleDefault(personschedule: any[]): boolean {
+    
     // create a deep copy of the default schedule and filter for open days
     const defaultScheduleCopy = JSON.parse(JSON.stringify(this.days)).filter((day: { open: boolean; }) => day.open);
-
-    // translate days to match person schedule
-    defaultScheduleCopy.forEach((day: { name: string; }) => {
-      day.name = day.name;
-    });
 
     // compare schedules
     for (let defaultDay of defaultScheduleCopy) {
@@ -517,10 +513,10 @@ performDeletion(person: any, affectedServices: any[] = []) {
       personSchedule: person.schedule,
       personName: person.name,
       personSurName: person.surname,
-
+      image: person.image,
       toggled: !this.isScheduleDefault(person.schedule),
+      onboarding:true
     } : {};
-
     const modal = await this.modalController.create({
       component: AddPersonPage,
       componentProps: { ...defaultComponentProps, ...editingComponentProps }

@@ -10,6 +10,9 @@ import { ImgCropperEvent } from '@alyle/ui/image-cropper';
 import { CropperDialog } from '../onboarding/cropper-dialog';
 import { LyDialog } from '@alyle/ui/dialog';
 import { BASE64_STRING } from '../../../assets/icon/default-image';
+import { MatSelect } from '@angular/material/select';
+import { AddScheduleExceptionPage } from '../add-schedule-exception/add-schedule-exception.page';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-person',
@@ -42,11 +45,11 @@ export class AddPersonPage implements OnInit {
     { name: 'Παρασκευή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
-];
-personName=""
-personSurName=""
+  ];
+  personName = ""
+  personSurName = ""
 
-customSchedule = false;
+  customSchedule = false;
   businessSchedule: any;
   personSchedule: any;
   person: any;
@@ -61,9 +64,12 @@ customSchedule = false;
   cropped?: string;
   image: string | undefined = BASE64_STRING
   new_image: string = "false";
-  
+  onboarding: boolean = false;
+  scheduleExceptions: any = new Array<any>;
+  daysControl = new FormControl();
 
-  constructor(private _cd: ChangeDetectorRef,private _dialog: LyDialog,private userService:UserService,private modalController:ModalController,private navParams: NavParams,private actionSheetController:ActionSheetController) { 
+
+  constructor(private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
       this.hours.push(this.formatHour(i, '30'));
@@ -75,16 +81,35 @@ customSchedule = false;
 
   }
 
-  ionViewWillEnter(){
-    console.log(this.navParams)
+  ionViewWillEnter() {
+    console.log(this.navParams);
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
     this.customSchedule = this.navParams.get('toggled');
     this.personName = this.navParams.get('personName'); // Get the name of the person
+    this.onboarding = this.navParams.get('onboarding');
+
+    if (this.navParams.get('personImage') != undefined) {
+      this.image = this.navParams.get('personImage');
+    }
+
+    if (!this.onboarding) {
+      if (this.navParams.get('personSurName') != undefined) {
+        this.scheduleExceptions = this.navParams.get('scheduleExceptions');
+        console.log("THE EXCEPTIONS");
+        console.log(this.scheduleExceptions);
+        this.scheduleExceptions = this.scheduleExceptions.map(this.formatException);
+        console.log("THE EXCEPTIONS2");
+        console.log(this.scheduleExceptions);
+        this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
+      }
+    }
+
     if (this.customSchedule) {
       this.applypersonSchedule();
     }
-    console.log(this.personName)
+
+    console.log(this.personName);
   }
 
 
@@ -95,7 +120,7 @@ customSchedule = false;
       acc[curr.day] = curr.intervals;
       return acc;
     }, {});
-  
+
     // Map this.days to update the intervals based on personScheduleDict
     this.days = this.days.map((day: any) => {
       if (personScheduleDict[day.name]) {
@@ -111,8 +136,8 @@ customSchedule = false;
       return day;
     });
   }
-  
-  
+
+
 
 
   formatHour(hour: number, minutes: string): string {
@@ -123,7 +148,7 @@ customSchedule = false;
     day.timeIntervals.splice(index, 1);
   }
 
-  
+
   pad(num: number): string {
     return num < 10 ? '0' + num : num.toString();
   }
@@ -138,163 +163,163 @@ customSchedule = false;
     const previousInterval = day.timeIntervals[day.timeIntervals.length - 1];
     const defaultStart = previousInterval ? previousInterval.end : '9:00';
     const defaultEnd = previousInterval ? this.addHours(previousInterval.end, 2) : '11:00';
-  
+
     day.timeIntervals.push({ start: defaultStart, end: defaultEnd });
   }
 
   public scheduleToReturn: any;
 
-  
-  async confirm(){
+
+  async confirm() {
     if (!this.personName || this.personName.trim() === '') {
-      this.userService.presentToast('Το όνομα του ατόμου δεν μπορεί να είναι κενό.',"danger");
+      this.userService.presentToast('Το όνομα του ατόμου δεν μπορεί να είναι κενό.', "danger");
       return;
     }
     this.scheduleToReturn = this.customSchedule ? this.days : this.businessSchedule;
-    if(this.customSchedule){
+    if (this.customSchedule) {
       await this.modalController.dismiss({
         'personName': this.personName,
         'personSurName': this.personSurName,
-
+        'scheduleExceptions': this.deformatExceptions(this.scheduleExceptions),
         'days': this.scheduleToReturn,
         'image': this.image,
       });
-    }else{
+    } else {
       await this.modalController.dismiss({
         'personName': this.personName,
         'personSurName': this.personSurName,
-
+        'scheduleExceptions': this.deformatExceptions(this.scheduleExceptions),
         'days': this.businessSchedule,
         'image': this.image,
 
       });
     }
 
-    
-   
+
+
   }
 
 
   goBack() {
     this.modalController.dismiss();
-    }
+  }
 
-    firstDayTemplate: any[] = [];
-    firstDayToggled: any = null;
+  firstDayTemplate: any[] = [];
+  firstDayToggled: any = null;
 
-    onDayToggle(day: any) {
-      // Toggle the day
-      day.open = !day.open;
-  
-      if (day.open) {
-        // If this is the first day toggled, store it
-        if (!this.firstDayToggled) {
-          this.firstDayToggled = day;
-        } 
-        // If another day is toggled and the template is empty, copy the first day's intervals to the template
-        else if (this.firstDayToggled.name != day.name && this.firstDayTemplate.length == 0) {
-          this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
-          for (let d of this.days) {
-            if (d.name !== this.firstDayToggled.name) {
-              d.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
-            }
-          }     
-           } 
-        
-        
-        // If this is not the first day toggled and the day has no intervals yet, copy the template to the day
-        if (this.firstDayToggled !== day && day.timeIntervals.length === 0) {
-          day.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
-        }
+  onDayToggle(day: any) {
+    // Toggle the day
+    day.open = !day.open;
+
+    if (day.open) {
+      // If this is the first day toggled, store it
+      if (!this.firstDayToggled) {
+        this.firstDayToggled = day;
       }
-    } 
-        
-    onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-      console.log('Selected start time: ', selectedStartTime);
-    
-      const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
-    
-      for (let previousInterval of day.timeIntervals) {
-        if (previousInterval === timeInterval) {
-          continue; // Skip current interval
-        }
-    
-        const parsedPreviousStartTime = moment(previousInterval.start, 'HH:mm');
-        const parsedPreviousEndTime = moment(previousInterval.end, 'HH:mm');
-    
-        if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
-          this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-          console.log(timeInterval.start)
-    
-          new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-            timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
-            selectedStartTime = timeInterval.start;
-            console.log(this.days);
-          });
-    
-          break;
-        } else {
-          timeInterval.start = selectedStartTime; // Only update start time if it's not within any other time intervals
-        }
-      }
-      
-      if (this.firstDayToggled.name == day.name ) {
-        console.log("MPIKA")
+      // If another day is toggled and the template is empty, copy the first day's intervals to the template
+      else if (this.firstDayToggled.name != day.name && this.firstDayTemplate.length == 0) {
         this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
+        for (let d of this.days) {
+          if (d.name !== this.firstDayToggled.name) {
+            d.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
+          }
+        }
+      }
+
+
+      // If this is not the first day toggled and the day has no intervals yet, copy the template to the day
+      if (this.firstDayToggled !== day && day.timeIntervals.length === 0) {
+        day.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
       }
     }
-    
-    
-    onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-      console.log('Selected end time: ', selectedEndTime);
-    
-      const parsedEndTime = moment(selectedEndTime, 'HH:mm');
-      const parsedStartTime = moment(timeInterval.start, 'HH:mm');
-    
-      if (parsedEndTime.isBefore(parsedStartTime)) {
-        this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
+  }
+
+  onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
+    console.log('Selected start time: ', selectedStartTime);
+
+    const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
+
+    for (let previousInterval of day.timeIntervals) {
+      if (previousInterval === timeInterval) {
+        continue; // Skip current interval
+      }
+
+      const parsedPreviousStartTime = moment(previousInterval.start, 'HH:mm');
+      const parsedPreviousEndTime = moment(previousInterval.end, 'HH:mm');
+
+      if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
+        this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
         console.log(timeInterval.start)
-    
-        // delay setting the new value until next event loop to give the UI a chance to update
+
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-          timeInterval.end = this.addHours(timeInterval.start, 2);
-          selectedEndTime = timeInterval.end;
+          timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
+          selectedStartTime = timeInterval.start;
           console.log(this.days);
         });
-    
-      } else {
-        timeInterval.end = selectedEndTime; // Only update end time if it's not before start time
-      }
-    
-      if (this.firstDayToggled.name == day.name ) {
-        console.log("MPIKA")
-        this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
-      }
-    }   
 
-    addHours(time: string, hours: number): string {
-      const parsedTime = moment(time, 'HH:mm');
-      
-      if (parsedTime.isValid()) {
-        const newTime = parsedTime.clone().add(hours, 'hours'); // Use clone() to avoid mutating parsedTime
-        
-        // Check if the newTime has crossed over to the next day
-        if (newTime.isSame(parsedTime, 'day')) {
-          const formattedTime = newTime.format('HH:mm');
-          return formattedTime;
-        } else {
-          // If the day of newTime is not the same as the day of parsedTime, then it has crossed over to the next day
-          return '23:59';
-        }
+        break;
       } else {
-        console.log('Invalid time format');
-        return '';
+        timeInterval.start = selectedStartTime; // Only update start time if it's not within any other time intervals
       }
     }
-          
-    isMobile(){
-      return this.userService.isMobile()
+
+    if (this.firstDayToggled.name == day.name) {
+      console.log("MPIKA")
+      this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
+  }
+
+
+  onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
+    console.log('Selected end time: ', selectedEndTime);
+
+    const parsedEndTime = moment(selectedEndTime, 'HH:mm');
+    const parsedStartTime = moment(timeInterval.start, 'HH:mm');
+
+    if (parsedEndTime.isBefore(parsedStartTime)) {
+      this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
+      console.log(timeInterval.start)
+
+      // delay setting the new value until next event loop to give the UI a chance to update
+      new Promise(resolve => setTimeout(resolve, 0)).then(() => {
+        timeInterval.end = this.addHours(timeInterval.start, 2);
+        selectedEndTime = timeInterval.end;
+        console.log(this.days);
+      });
+
+    } else {
+      timeInterval.end = selectedEndTime; // Only update end time if it's not before start time
+    }
+
+    if (this.firstDayToggled.name == day.name) {
+      console.log("MPIKA")
+      this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
+    }
+  }
+
+  addHours(time: string, hours: number): string {
+    const parsedTime = moment(time, 'HH:mm');
+
+    if (parsedTime.isValid()) {
+      const newTime = parsedTime.clone().add(hours, 'hours'); // Use clone() to avoid mutating parsedTime
+
+      // Check if the newTime has crossed over to the next day
+      if (newTime.isSame(parsedTime, 'day')) {
+        const formattedTime = newTime.format('HH:mm');
+        return formattedTime;
+      } else {
+        // If the day of newTime is not the same as the day of parsedTime, then it has crossed over to the next day
+        return '23:59';
+      }
+    } else {
+      console.log('Invalid time format');
+      return '';
+    }
+  }
+
+  isMobile() {
+    return this.userService.isMobile()
+  }
 
 
 
@@ -418,5 +443,77 @@ customSchedule = false;
     }
   }
 
-  
+
+  handleClick() {
+    if (this.scheduleExceptions.length === 0) {
+      this.openDateTimePicker();
+    }
+  }
+
+  @ViewChild('mySelect') mySelect!: MatSelect;
+
+
+
+  async openDateTimePicker() {
+    this.mySelect.close();
+    const modal = await this.modalController.create({
+      component: AddScheduleExceptionPage,
+      componentProps: {
+        // room: room, // Pass the entire room object
+      }
+    });
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+
+    if (data) {
+      const formattedException = this.formatException(data);
+      this.scheduleExceptions.push(formattedException);
+      this.daysControl.setValue(this.scheduleExceptions); 
+
+      console.log("NEW EXCEPTIONs");
+      console.log(this.scheduleExceptions);
+    }
+  }
+
+  formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
+    const formattedStart = moment(exception.start).locale('el').format('DD/MM/YY HH:mm');
+    const formattedEnd = moment(exception.end).locale('el').format('DD/MM/YY HH:mm');
+
+    return {
+      formatted: `${formattedStart} - ${formattedEnd}`,
+      originalStart: exception.start,
+      originalEnd: exception.end,
+      repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+    };
+  }
+
+  deformatExceptions(exceptionsArray: Array<{
+    formatted: string,
+    originalStart: moment.MomentInput,
+    originalEnd: moment.MomentInput,
+    repeat: string
+  }>): any[] {
+    return exceptionsArray.map(exception => {
+      console.log("Processing exception:", exception);
+
+      const start = exception.originalStart;
+      const end = exception.originalEnd;
+      const repeat = exception.repeat === "Επαναλαμβανόμενο";
+
+      console.log("Extracted start:", start);
+      console.log("Extracted end:", end);
+      console.log("Extracted repeat:", repeat);
+
+      return {
+        start: start,
+        end: end,
+        repeat: repeat
+      };
+    });
+  }
+
+
+
+
 }

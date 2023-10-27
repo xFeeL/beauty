@@ -32,31 +32,47 @@ export class TeamServicesPage implements OnInit {
   }
 
   ionViewWillEnter() {
-      this.goToTeam();
+    this.goToTeam();
 
   }
 
- 
 
-  deleteEmployee(employee:any){
 
+  deleteEmployee(employee: any) {
+    this.team = this.team.filter(r => r !== employee);
   }
+
+
+  addBase64Prefix(image: string) {
+    if (image && !image.startsWith("data:")) {
+      return "data:image/png;base64," + image;
+    }
+    return image;
+  }
+
 
   async managePerson(person?: any) {
     const isEditing = !!person; // if 'person' is provided, we are in editing mode
-
+    console.log("AAAAAAAAAAAAAA ")
+    console.log(person)
+    console.log(isEditing)
     const defaultComponentProps = {
       data: this.days,
+      onboarding:false
+
     };
 
     const editingComponentProps = isEditing ? {
       personSchedule: person.schedule,
       personName: person.name,
       personSurName: person.surname,
-
+      image: this.addBase64Prefix(person.image),
       toggled: !this.isScheduleDefault(person.schedule),
+      scheduleExceptions: person.exceptions,
     } : {};
 
+    console.log("editing")
+    console.log(editingComponentProps)
     const modal = await this.modalController.create({
       component: AddPersonPage,
       componentProps: { ...defaultComponentProps, ...editingComponentProps }
@@ -66,10 +82,12 @@ export class TeamServicesPage implements OnInit {
 
     const { data } = await modal.onDidDismiss();
     if (data) {
+      console.log("THE DATA RETURNED",data)
       const processedPerson = {
         name: data.personName,
-        surname:data.personSurName,
-        image: data.image,
+        surname: data.personSurName,
+        image: data.image.split(",")[1],
+        exceptions: data.scheduleExceptions,
         schedule: data.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
           const mappedDay = day.name;
           return {
@@ -80,51 +98,69 @@ export class TeamServicesPage implements OnInit {
       };
 
       if (isEditing) {
-        let peopleIndex = this.people.findIndex(r => r.name === person.name);
+        let peopleIndex = this.team.findIndex(r => r.name === person.name);
         if (peopleIndex !== -1) {
-          this.people[peopleIndex] = processedPerson;
+          console.log("FOUND INDEX")
+          this.team[peopleIndex] = processedPerson;
         }
+
       } else {
-        this.people.push(processedPerson);
+        this.team.push(processedPerson);
+    
       }
+      console.log("The people")
+        console.log(this.team)
+        console.log(processedPerson)
     }
   }
 
   isScheduleDefault(personschedule: any[]): boolean {
-    // create a deep copy of the default schedule and filter for open days
-    const defaultScheduleCopy = JSON.parse(JSON.stringify(this.days)).filter((day: { open: boolean; }) => day.open);
+    console.log("Checking if schedule is default");
 
-    // translate days to match person schedule
-    defaultScheduleCopy.forEach((day: { name: string; }) => {
-      day.name = day.name;
-    });
+    // Return false if personschedule is empty or its length differs from this.days
+    if (!personschedule.length || this.days.length !== personschedule.length) {
+      console.log("RETURNING FALSE - Empty personschedule or different number of days");
+      return false;
+    }
 
-    // compare schedules
-    for (let defaultDay of defaultScheduleCopy) {
-      let personDay = personschedule.find((day: { day: any; }) => day.day === defaultDay.name);
-      if (!personDay) {
+    // Loop through each day in the default schedule
+    for (let defaultDay of this.days) {
+      let personDay = personschedule.find(day => day.day === defaultDay.name);
+
+      // If the default day is open but isn't present in personschedule, return false
+      if (defaultDay.open && !personDay) {
+        console.log("RETURNING FALSE - Missing day in personschedule");
         return false;
       }
 
-      // Convert the timeIntervals array into a format that matches personDay.intervals
-      let defaultIntervals = defaultDay.timeIntervals.map((interval: { start: string; end: string; }) => interval.start + '-' + interval.end);
-
-      // If the lengths of the two interval arrays don't match, the schedules can't be the same
-      if (defaultIntervals.length != personDay.intervals.length) {
-        return false;
+      // If the day is not open in the default schedule and also not present in personschedule, continue to the next day
+      if (!defaultDay.open && !personDay) {
+        continue;
       }
 
-      // Sort both intervals arrays and compare them
-      defaultIntervals.sort();
-      personDay.intervals.sort();
+      // Compare time intervals if the day is open
+      if (defaultDay.open) {
+        let defaultIntervals = defaultDay.timeIntervals.map(interval => interval.start + '-' + interval.end);
 
-      for (let i = 0; i < defaultIntervals.length; i++) {
-        if (defaultIntervals[i] != personDay.intervals[i]) {
+        // If the number of time intervals differs, return false
+        if (defaultIntervals.length !== personDay.intervals.length) {
+          console.log("RETURNING FALSE - Different number of intervals");
           return false;
+        }
+
+        // Sort and compare each time interval
+        defaultIntervals.sort();
+        personDay.intervals.sort();
+        for (let i = 0; i < defaultIntervals.length; i++) {
+          if (defaultIntervals[i] !== personDay.intervals[i]) {
+            console.log("RETURNING FALSE - Different intervals");
+            return false;
+          }
         }
       }
     }
 
+    console.log("RETURNING TRUE");
     return true;
   }
 
@@ -132,7 +168,7 @@ export class TeamServicesPage implements OnInit {
   goToServices() {
     this.initialized = false;
 
-    this.getEmployees();
+    this.getEmployeesForServices();
 
     this.userService.getServiceCategories().subscribe(data => {
       this.serviceCategories = data;
@@ -157,26 +193,26 @@ export class TeamServicesPage implements OnInit {
       this.services.forEach(service => {
         const category = this.serviceCategories.find(cat => cat.id === service.serviceCategory);
         if (category) {
-            service.serviceCategoryId = service.serviceCategory;
-            service.serviceCategoryName = category.name;
+          service.serviceCategoryId = service.serviceCategory;
+          service.serviceCategoryName = category.name;
         }
         delete service.serviceCategory;
-    });
-    console.log("THe services")
-    console.log(this.services)
+      });
+      console.log("THe services")
+      console.log(this.services)
       const serviceIds = this.services.map(service => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(employeesData => {
         this.services.forEach(service => {
-            const employeesForService = employeesData[service.id] || [];
-            service.people = employeesForService.map((person: { image: any; }) => {
-                delete person.image;
-                return person;
-            });
+          const employeesForService = employeesData[service.id] || [];
+          service.people = employeesForService.map((person: { image: any; }) => {
+            delete person.image;
+            return person;
+          });
         });
-  
-    
-       
+
+
+
       }, err => {
         // Handle the error from getEmployeesOfServices
       });
@@ -187,7 +223,7 @@ export class TeamServicesPage implements OnInit {
   }
 
 
-  getEmployees() {
+  getEmployeesForServices() {
     this.userService.getEmployeesOfExpert().subscribe(data => {
       this.people = data;
 
@@ -200,11 +236,31 @@ export class TeamServicesPage implements OnInit {
 
   goToTeam() {
     this.userService.getEmployeesOfExpert().subscribe(data => {
-      this.team = data;
-      this.initialized = true;
+        this.team = data;
+
+        let employeeIds = this.team.map(employee => employee.id).join(",");
+
+        this.userService.getEmployeeWorkingPlans(employeeIds).subscribe(workingPlans => {
+            // For each employee, find their corresponding working plan and attach it
+            this.team.forEach(employee => {
+                let matchingPlan = workingPlans.find((plan: any) => plan.objectId === employee.id);
+                if (matchingPlan) {
+                    employee.schedule = matchingPlan.personSchedule;
+                    employee.exceptions = matchingPlan.exceptions;
+                }
+            });
+
+            this.initialized = true;
+            console.log("THE TEAM")
+            console.log(this.team)
+        }, err => {
+            console.log(err);
+        });
+
     }, err => {
-    })
-  }
+        // Handle error here
+    });
+}
 
 
   goBack() {
@@ -457,18 +513,15 @@ export class TeamServicesPage implements OnInit {
     } else if (data) {
       const processedService = this.processServiceData(data, service);
       this.updateService(processedService, service);
-      console.log("Service edited:", processedService);
     }
 
-    console.log("Actions on service completed");
-    console.log(this.services);
+
   }
 
   deleteService(deletedServiceName: string) {
     const serviceIndex = this.services.findIndex((s) => s.name === deletedServiceName);
     if (serviceIndex !== -1) {
       this.services.splice(serviceIndex, 1);
-      console.log("Service deleted:", deletedServiceName);
     }
   }
 
@@ -507,8 +560,7 @@ export class TeamServicesPage implements OnInit {
   }
 
   isSaveButtonDisabled(): boolean {
-    console.log(this.services)
-    console.log(this.serviceCategories)
+    if(this.selectedSegment != "team"){
     if (this.services.length == 0 || this.serviceCategories.length == 0) {
       return true;
     }
@@ -520,32 +572,43 @@ export class TeamServicesPage implements OnInit {
     }
     for (let category of this.serviceCategories) {
       if (!categoriesWithServices.has(category.id) && !categoriesWithServices.has(category.name)) {
-        return true; 
+        return true;
       }
     }
 
     return false;
-}
-
-
-save(){
-  if(this.selectedSegment=="team"){
-    this.saveTeam();
   }else{
-    this.saveServices();
+    if(this.team.length == 0){
+      return true;
+    }
+    return false;
   }
-}
+  }
 
-saveTeam(){
 
-}
+  save() {
+    if (this.selectedSegment == "team") {
+      this.saveTeam();
+    } else {
+      this.saveServices();
+    }
+  }
 
-saveServices(){
-  this.userService.saveServices(this.services,this.serviceCategories).subscribe(data=>{
-    this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.","success")
-  },err=>{
-    this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.","danger")
-  })
-}
+  saveTeam() {
+    this.userService.saveTeam(this.team).subscribe(data => {
+      this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success")
+    }, err => {
+
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
+    })
+  }
+
+  saveServices() {
+    this.userService.saveServices(this.services, this.serviceCategories).subscribe(data => {
+      this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.", "success")
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
+    })
+  }
 
 }

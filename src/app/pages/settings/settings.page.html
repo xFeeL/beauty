@@ -288,13 +288,13 @@
     <ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
         <ion-col size-xl="8" class="ion-justify-content-center">
           <div class="flex-container">
-            <mat-form-field appearance="fill" (click)="handleClick()" class="form-field">
+            <mat-form-field appearance="fill" (click)="handleClickExceptions()" class="form-field">
               <mat-label>Εξαιρέσεις ωραρίου</mat-label>
               <mat-select #mySelect [formControl]="daysControl" multiple>
                 <div class="special-action" (click)="openDateTimePicker()">
                   <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
                 </div>
-                <mat-option *ngFor="let exception of schedulExceptions" [value]="exception" class="ion-margin-bottom">
+                <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception" class="ion-margin-bottom">
                   {{ exception.formatted }} ({{exception.repeat}}) <!-- Adjust as per your data structure -->
                 </mat-option>
               </mat-select>

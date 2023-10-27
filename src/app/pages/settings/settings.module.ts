@@ -22,8 +22,9 @@ import {MatListModule} from '@angular/material/list';
     CommonModule,
     FormsModule,
     IonicModule,
-    MatCheckboxModule,
     FormsModule,
+    MatCheckboxModule,
+
     ReactiveFormsModule,
     MatFormFieldModule,
     MatIconModule,

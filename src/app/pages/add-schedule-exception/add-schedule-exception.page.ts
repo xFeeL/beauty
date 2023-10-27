@@ -47,22 +47,17 @@ export class AddScheduleExceptionPage implements OnInit {
 
 
   saveScheduleException() {
-    // Assuming this.firstDateTime and this.endDateTime are JavaScript Date objects.
     const formattedFirstDateTime = formatDate(this.firstDateTime, 'yyyy-MM-ddTHH:mm:ss', 'en-US');
     const formattedEndDateTime = formatDate(this.endDateTime, 'yyyy-MM-ddTHH:mm:ss', 'en-US');
-    let repeat:boolean;
-    if(this.exceptionType=="once"){
-       repeat=false;
-    }else {
-       repeat=true;
-    }
-    this.userService.addScheduleException(repeat,formattedFirstDateTime, formattedEndDateTime).subscribe(data => {
-      this.userService.presentToast("Η εξαίρεση αποθηκεύτηκε με επιτυχία!", "success")
-      this.modalController.dismiss("reload")
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
-    })
-  }
+    let repeat:boolean = this.exceptionType !== "once";
+
+    // Instead of saving here, dismiss the modal with the formatted data
+    this.modalController.dismiss({
+      start: formattedFirstDateTime,
+      end: formattedEndDateTime,
+      repeat: repeat
+    });
+}
 
   onSubmit() {
 

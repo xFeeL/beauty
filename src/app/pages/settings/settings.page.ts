@@ -35,7 +35,7 @@ import { ExternalService } from 'src/app/services/external.service';
 export class SettingsPage implements OnInit {
 
   hours: string[] = [];
-  schedulExceptions: any = new Array<any>;
+  scheduleExceptions: any = new Array<any>;
   facebookAccessGranted: boolean = false;
   facebookPageToEdit: any;
   currentPageDescription: any = "Δεν υπάρχει υπάρχουσα εισαγωγική κάρτα.";
@@ -123,7 +123,7 @@ export class SettingsPage implements OnInit {
 
 
   async openDateTimePicker() {
-    this.mySelect.close()
+    this.mySelect.close();
     const modal = await this.modalController.create({
       component: AddScheduleExceptionPage,
       componentProps: {
@@ -131,17 +131,18 @@ export class SettingsPage implements OnInit {
       }
     });
     await modal.present();
-    //; // Close the MatSelect dropdown
 
     const { data } = await modal.onDidDismiss();
-    this.schedulExceptions = []
-    this.getScheduleExceptions()
 
     if (data) {
+      const formattedException = this.formatException(data);
+      this.scheduleExceptions.push(formattedException);
 
-      // room.tableTypes = data.tableTypes; // Update the room's table types with the returned data
+      console.log("NEW EXCEPTIONs");
+      console.log(this.scheduleExceptions);
     }
-  }
+}
+
 
 
   onDelete(day: string) {
@@ -155,11 +156,11 @@ export class SettingsPage implements OnInit {
   }
 
   get hasScheduleExceptions(): boolean {
-    return this.schedulExceptions && this.schedulExceptions.length > 0;
+    return this.scheduleExceptions && this.scheduleExceptions.length > 0;
   }
 
-  handleClick() {
-    if (this.schedulExceptions.length === 0) {
+  handleClickExceptions() {
+    if (this.scheduleExceptions.length === 0) {
       this.openDateTimePicker();
     }
   }
@@ -168,26 +169,27 @@ export class SettingsPage implements OnInit {
   getScheduleExceptions() {
     this.userService.getScheduleExceptions().subscribe(
       data => {
-        this.schedulExceptions = data.map((exception: { start: moment.MomentInput; end: moment.MomentInput; repeat:boolean }) => {
-          const formattedStart = moment(exception.start).locale('el').format('DD/MM/YY HH:mm');
-          const formattedEnd = moment(exception.end).locale('el').format('DD/MM/YY HH:mm');
-
-          const start = exception.start
-          const end = exception.end
-          return {
-            formatted: `${formattedStart} - ${formattedEnd}`,
-            originalStart: start,
-            originalEnd: end,
-            repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
-        };        
-        });
-        this.daysControl.setValue(this.schedulExceptions); // Set all exceptions as selected
+        this.scheduleExceptions = data.map(this.formatException);
+        this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
       },
       err => {
         console.error('Error fetching schedule exceptions', err);
       }
     );
-  }
+}
+
+formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
+    const formattedStart = moment(exception.start).locale('el').format('DD/MM/YY HH:mm');
+    const formattedEnd = moment(exception.end).locale('el').format('DD/MM/YY HH:mm');
+
+    return {
+      formatted: `${formattedStart} - ${formattedEnd}`,
+      originalStart: exception.start,
+      originalEnd: exception.end,
+      repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+    };
+}
+
 
 
 
@@ -334,7 +336,7 @@ export class SettingsPage implements OnInit {
       // Send the selected exceptions to the backend
       this.userService.saveScheduleExceptions(exceptionsToSend).subscribe(data => {
         this.userService.presentToast("Οι εξαιρέσεις αποθηκεύτηκαν με επιτυχία.", "success");
-        this.schedulExceptions = []
+        this.scheduleExceptions = []
         this.getScheduleExceptions()
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");

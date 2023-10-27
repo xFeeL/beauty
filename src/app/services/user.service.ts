@@ -915,6 +915,14 @@ export class UserService {
     );
   }
 
+  saveTeam(team: any): Observable<any> {
+    return this.http.post(beautyAuthenticated_API_URL + "save-services", team, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', team))
+    );
+  }
+
+  
+
   /**
    * Get working hours
    * @returns Observable of working hours
@@ -931,11 +939,9 @@ export class UserService {
    * @returns Observable of the response
    */
   saveWrario(days: any[]): Observable<any> {
-    const body = {
-      expertWP: days
-    };
-    return this.http.post(beautyAuthenticated_API_URL + "save-wrario", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', body))
+    
+    return this.http.post(beautyAuthenticated_API_URL + "save-wrario", days, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', days))
     );
   }
 
@@ -1216,6 +1222,12 @@ export class UserService {
     );
   }
 
+  
+  getEmployeeWorkingPlans(employeeIds:string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-employee-working-plans?employeeIds="+employeeIds, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
 
 
   getAvailableDays(month: number, year: number, employeeIds: string): Observable<any> {
