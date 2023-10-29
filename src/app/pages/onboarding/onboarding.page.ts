@@ -507,6 +507,9 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
     const defaultComponentProps = {
       data: this.days,
+      isEditing:false,
+      onboarding:true
+
     };
 
     const editingComponentProps = isEditing ? {
@@ -515,7 +518,9 @@ performDeletion(person: any, affectedServices: any[] = []) {
       personSurName: person.surname,
       image: person.image,
       toggled: !this.isScheduleDefault(person.schedule),
-      onboarding:true
+      onboarding:true,
+      isEditing:true
+
     } : {};
     const modal = await this.modalController.create({
       component: AddPersonPage,
@@ -674,7 +679,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
           role: 'cancel'
         },
         {
-          text: 'Ενημέρωση',
+          text: 'Ενημερωση',
           handler: (data: { categoryName: any; }) => {
             
             // Check if the new category name already exists, but not counting the currentCategory being edited

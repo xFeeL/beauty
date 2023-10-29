@@ -8,7 +8,6 @@ import { EditProfilePage } from './pages/edit-profile/edit-profile.page';
 import { ClientsPage } from './pages/clients/clients.page';
 import { ReviewsPage } from './pages/reviews/reviews.page';
 import { SettingsPage } from './pages/settings/settings.page';
-import { WrarioPage } from './pages/wrario/wrario.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { Subscription } from 'rxjs';
 import { KrathseisPage } from './pages/krathseis/krathseis.page';
@@ -158,8 +157,16 @@ async goToTeamServices(){
 
   const modal = await this.modalController.create({
        component: TeamServicesPage,
+       backdropDismiss:false
    });
-   return await modal.present();
+   modal.onDidDismiss().then((result) => {
+    if (result.data === true) {
+        window.location.reload(); // To reload the entire window
+        // Or you can implement any other logic to refresh the component/view as needed.
+    }
+});
+return await modal.present();
+
 }
 
 async goToSettings(){
@@ -187,12 +194,6 @@ async goToSettings(){
 
 
 
-async goToWrario() {
-  const modal = await this.modalController.create({
-      component: WrarioPage,
-  });
-  return await modal.present();
-}
 
 
 async goToPortfolio() {

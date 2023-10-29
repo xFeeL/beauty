@@ -915,8 +915,8 @@ export class UserService {
     );
   }
 
-  saveTeam(team: any): Observable<any> {
-    return this.http.post(beautyAuthenticated_API_URL + "save-services", team, { headers: this.getHeaders(), withCredentials: true }).pipe(
+  saveTeam(team: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {
+    return this.http.post(beautyAuthenticated_API_URL + "save-team?safeDelete="+safeDelete+"&cancelAllForDeletedEmployees="+cancelAllForDeletedEmployees+"&cancelAllForNewException="+cancelAllForNewException, team, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', team))
     );
   }

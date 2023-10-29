@@ -5,7 +5,9 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="light">Νέο Άτομο</ion-title>
+    <ion-title color="light" *ngIf="isEditing==false">Νέο Άτομο</ion-title>
+    <ion-title color="light" *ngIf="isEditing==true">Επεξεργασία Ατόμου</ion-title>
+
   </ion-toolbar>
 </ion-header>
 
@@ -23,20 +25,18 @@
       <ion-col size="6" size-lg="5" >
 
        
-        <ion-input class="whiteback" label="Όνομα" label-placement="floating" fill="outline" [(ngModel)]="personName"></ion-input>
-      </ion-col>
+        <ion-input class="whiteback" label="Όνομα" label-placement="floating" fill="outline" [(ngModel)]="personName" (ionInput)="validateInput()"></ion-input>      </ion-col>
       <ion-col size="6"   size-lg="5" >
 
        
-        <ion-input class="whiteback" label="Επίθετο" label-placement="floating" fill="outline"  [(ngModel)]="personSurName"></ion-input>
-      </ion-col>
+        <ion-input class="whiteback" label="Επίθετο" label-placement="floating" fill="outline" [(ngModel)]="personSurName" (ionInput)="validateInput()"></ion-input>      </ion-col>
     </ion-row>
     <ion-row *ngIf="onboarding==false">
       <ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
         <ion-col size-xl="10" class="ion-justify-content-center ion-no-padding">
           <div class="flex-container">
             <mat-form-field appearance="fill" (click)="handleClick()" class="form-field ">
-              <mat-label>Εξαιρέσεις ωραρίου</mat-label>
+              <mat-label>Εξαιρέσεις ωραρίου ατόμου</mat-label>
               <mat-select #mySelect [formControl]="daysControl" multiple>
                 <div class="special-action" (click)="openDateTimePicker()">
                   <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
@@ -90,5 +90,5 @@
     </ion-row>
   </ion-grid></ion-content>
   <ion-footer>
-    <ion-button color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()">Αποθήκευση</ion-button>
+    <ion-button [disabled]="disabledSaveButton()" color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()">Αποθήκευση ατόμου</ion-button>
   </ion-footer>

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonAlert, IonDatetime, IonModal, IonPopover, ModalController } from '@ionic/angular';
-import { WrarioPage } from '../wrario/wrario.page';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
 import { trigger, state, style, transition, animate } from '@angular/animations';

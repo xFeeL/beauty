@@ -25,6 +25,7 @@ export class TeamServicesPage implements OnInit {
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
+  reloadAppointments: any=false;
 
   constructor(private modalController: ModalController, private alertController: AlertController, private userService: UserService, private _cd: ChangeDetectorRef) { }
 
@@ -53,13 +54,11 @@ export class TeamServicesPage implements OnInit {
 
   async managePerson(person?: any) {
     const isEditing = !!person; // if 'person' is provided, we are in editing mode
-    console.log("AAAAAAAAAAAAAA ")
-    console.log(person)
-    console.log(isEditing)
+   
     const defaultComponentProps = {
       data: this.days,
-      onboarding:false
-
+      onboarding:false,
+      isEditing:false
     };
 
     const editingComponentProps = isEditing ? {
@@ -69,10 +68,9 @@ export class TeamServicesPage implements OnInit {
       image: this.addBase64Prefix(person.image),
       toggled: !this.isScheduleDefault(person.schedule),
       scheduleExceptions: person.exceptions,
+      isEditing:true
     } : {};
 
-    console.log("editing")
-    console.log(editingComponentProps)
     const modal = await this.modalController.create({
       component: AddPersonPage,
       componentProps: { ...defaultComponentProps, ...editingComponentProps }
@@ -82,8 +80,8 @@ export class TeamServicesPage implements OnInit {
 
     const { data } = await modal.onDidDismiss();
     if (data) {
-      console.log("THE DATA RETURNED",data)
       const processedPerson = {
+        id: person.id,
         name: data.personName,
         surname: data.personSurName,
         image: data.image.split(",")[1],
@@ -100,7 +98,6 @@ export class TeamServicesPage implements OnInit {
       if (isEditing) {
         let peopleIndex = this.team.findIndex(r => r.name === person.name);
         if (peopleIndex !== -1) {
-          console.log("FOUND INDEX")
           this.team[peopleIndex] = processedPerson;
         }
 
@@ -108,18 +105,14 @@ export class TeamServicesPage implements OnInit {
         this.team.push(processedPerson);
     
       }
-      console.log("The people")
-        console.log(this.team)
-        console.log(processedPerson)
+    
     }
   }
 
   isScheduleDefault(personschedule: any[]): boolean {
-    console.log("Checking if schedule is default");
 
     // Return false if personschedule is empty or its length differs from this.days
     if (!personschedule.length || this.days.length !== personschedule.length) {
-      console.log("RETURNING FALSE - Empty personschedule or different number of days");
       return false;
     }
 
@@ -129,7 +122,6 @@ export class TeamServicesPage implements OnInit {
 
       // If the default day is open but isn't present in personschedule, return false
       if (defaultDay.open && !personDay) {
-        console.log("RETURNING FALSE - Missing day in personschedule");
         return false;
       }
 
@@ -144,7 +136,6 @@ export class TeamServicesPage implements OnInit {
 
         // If the number of time intervals differs, return false
         if (defaultIntervals.length !== personDay.intervals.length) {
-          console.log("RETURNING FALSE - Different number of intervals");
           return false;
         }
 
@@ -153,14 +144,12 @@ export class TeamServicesPage implements OnInit {
         personDay.intervals.sort();
         for (let i = 0; i < defaultIntervals.length; i++) {
           if (defaultIntervals[i] !== personDay.intervals[i]) {
-            console.log("RETURNING FALSE - Different intervals");
             return false;
           }
         }
       }
     }
 
-    console.log("RETURNING TRUE");
     return true;
   }
 
@@ -172,7 +161,6 @@ export class TeamServicesPage implements OnInit {
 
     this.userService.getServiceCategories().subscribe(data => {
       this.serviceCategories = data;
-      console.log(data)
       this.getServices("all");
       this.initialized = true;
 
@@ -198,8 +186,7 @@ export class TeamServicesPage implements OnInit {
         }
         delete service.serviceCategory;
       });
-      console.log("THe services")
-      console.log(this.services)
+      
       const serviceIds = this.services.map(service => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(employeesData => {
@@ -228,7 +215,6 @@ export class TeamServicesPage implements OnInit {
       this.people = data;
 
     }, err => {
-      console.log(err)
     })
   }
 
@@ -251,20 +237,38 @@ export class TeamServicesPage implements OnInit {
             });
 
             this.initialized = true;
-            console.log("THE TEAM")
-            console.log(this.team)
+          
         }, err => {
-            console.log(err);
         });
 
     }, err => {
         // Handle error here
     });
+
+    this.userService.getWrario().subscribe(data => {
+      const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      const dayNames = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή'];
+      
+      this.days = daysOfWeek.map((day, index) => {
+        const dayData = data[day];
+        return {
+          name: dayNames[index],
+          open: dayData !== null,
+          timeIntervals: dayData ? dayData.workingHours.map((hour: { start: string | any[]; end: string | any[]; }) => ({
+            start: hour.start.slice(0, 5),  // Convert to 'HH:mm' format
+            end: hour.end.slice(0, 5)  // Convert to 'HH:mm' format
+          })) : []
+        };
+      });
+     
+    }, err => {
+    });
+    
 }
 
 
   goBack() {
-    this.modalController.dismiss()
+    this.modalController.dismiss(this.reloadAppointments)
   }
 
 
@@ -289,13 +293,11 @@ export class TeamServicesPage implements OnInit {
         {
           text: 'Προσθηκη',
           handler: async (data: { categoryName: any; }) => {
-            console.log('Category Attempt:', data.categoryName);
             if (this.categoryExists(data.categoryName)) {
               // Present a toast to the user
               this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
               return false;
             } else {
-              console.log('Category Added:', data.categoryName);
               const newCategory = {
                 id: null,
                 name: data.categoryName,
@@ -336,7 +338,7 @@ export class TeamServicesPage implements OnInit {
           role: 'cancel'
         },
         {
-          text: 'Ενημέρωση',
+          text: 'Ενημερωση',
           handler: (data: { categoryName: any; }) => {
 
             // Check if the new category name already exists, but not counting the currentCategory being edited
@@ -346,7 +348,6 @@ export class TeamServicesPage implements OnInit {
               return false; // Keep the alert open
             }
 
-            console.log('Category Updated:', data.categoryName);
 
             // Find the category object to replace
             const categoryToUpdate = this.serviceCategories.find(category => category.name === currentCategory);
@@ -361,8 +362,7 @@ export class TeamServicesPage implements OnInit {
               }
             });
 
-            console.log("The categories");
-            console.log(this.serviceCategories)
+          
             return true;
           }
         }
@@ -388,7 +388,6 @@ export class TeamServicesPage implements OnInit {
 
     if (data) {
       this.processAndAddService(data);
-      console.log("Service added:", this.services[this.services.length - 1]);
       this._cd.detectChanges();
     }
   }
@@ -439,7 +438,6 @@ export class TeamServicesPage implements OnInit {
             text: 'Ακυρο',
             role: 'cancel',
             handler: () => {
-              console.log('Category deletion cancelled.');
             }
           },
           {
@@ -448,7 +446,6 @@ export class TeamServicesPage implements OnInit {
               // Delete the category and its associated services
               this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
               this.services = this.services.filter(r => r.serviceCategoryName !== category);
-              console.log('Category and associated services deleted.');
             }
           }
         ]
@@ -467,7 +464,7 @@ export class TeamServicesPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-
+    console.log("Service dismissed with data: ", data)
     this.handleModalDismiss(data, service);
     this._cd.detectChanges();
   }
@@ -595,13 +592,89 @@ export class TeamServicesPage implements OnInit {
   }
 
   saveTeam() {
-    this.userService.saveTeam(this.team).subscribe(data => {
-      this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success")
+    this.userService.saveTeam(this.team, false, false, false).subscribe(data => {
+      this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
     }, err => {
-
-      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
-    })
+      if (err.status === 409) {
+        console.log("THE ERROR");
+        console.log(err.error);
+        this.presentChoiceAlert(err.error);
+      } else {
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+      }
+    });
   }
+  
+  async presentChoiceAlert(errorObj: any) {
+    let message: string = "Unknown error";  // Set a default value
+    let buttonText: string="";
+    let handlerFn;
+  
+    if (errorObj.deletedEmployee) { 
+      message = errorObj.deletedEmployee;
+      buttonText = 'Ακυρωση ολων';
+      handlerFn = () => {
+        this.userService.saveTeam(this.team, true, true, false).subscribe(
+          data => {
+            this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
+            this.reloadAppointments= true;
+
+          },
+          err => {
+            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+          }
+        );
+      };
+    } else if (errorObj.newException) {
+      message = errorObj.newException;
+      buttonText = 'Ακυρωση ολων';
+      handlerFn = () => {
+        this.userService.saveTeam(this.team, true, false, true).subscribe(
+          data => {
+            this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
+            this.reloadAppointments= true;
+          },
+          err => {
+            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+          }
+        );
+      };
+    }
+  
+    const alert = await this.alertController.create({
+      header: 'Προσοχή!',
+      message: message,
+      buttons: [
+        {
+          text: buttonText,
+          handler: handlerFn
+        },
+        {
+          text: 'Καμια Ακυρωση',
+          handler: () => {
+            this.userService.saveTeam(this.team, true, false, false).subscribe(
+              data => {
+                this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς χωρίς καμία ακύρωση.", "success");
+              },
+              err => {
+                this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+              }
+            );
+          }
+        },
+        {
+          text: 'πισω',
+          role: 'cancel', // This makes it dismiss the dialog
+          handler: () => {
+            // Dismisses the dialog without any further action
+          }
+        },
+      ]
+    });
+  
+    await alert.present();
+  }
+  
 
   saveServices() {
     this.userService.saveServices(this.services, this.serviceCategories).subscribe(data => {

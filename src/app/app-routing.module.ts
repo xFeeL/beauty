@@ -86,10 +86,7 @@ const routes: Routes = [
     path: 'settings',
     loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
   },
-  {
-    path: 'wrario',
-    loadChildren: () => import('./pages/wrario/wrario.module').then( m => m.WrarioPageModule)
-  },
+
   {
     path: 'change-password',
     loadChildren: () => import('./pages/change-password/change-password.module').then( m => m.ChangePasswordPageModule)
@@ -130,6 +127,7 @@ const routes: Routes = [
     path: 'team-services',
     loadChildren: () => import('./pages/team-services/team-services.module').then( m => m.TeamServicesPageModule)
   },
+  
  
  
 ];

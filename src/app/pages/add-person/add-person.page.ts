@@ -65,8 +65,9 @@ export class AddPersonPage implements OnInit {
   image: string | undefined = BASE64_STRING
   new_image: string = "false";
   onboarding: boolean = false;
-  scheduleExceptions: any = new Array<any>;
+  scheduleExceptions: any[] = [];
   daysControl = new FormControl();
+  isEditing: any=false;
 
 
   constructor(private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
@@ -88,13 +89,14 @@ export class AddPersonPage implements OnInit {
     this.customSchedule = this.navParams.get('toggled');
     this.personName = this.navParams.get('personName'); // Get the name of the person
     this.onboarding = this.navParams.get('onboarding');
+    this.isEditing = this.navParams.get('isEditing');
 
     if (this.navParams.get('personImage') != undefined) {
       this.image = this.navParams.get('personImage');
     }
 
     if (!this.onboarding) {
-      if (this.navParams.get('personSurName') != undefined) {
+      if (this.navParams.get('scheduleExceptions') != undefined) {
         this.scheduleExceptions = this.navParams.get('scheduleExceptions');
         console.log("THE EXCEPTIONS");
         console.log(this.scheduleExceptions);
@@ -102,6 +104,8 @@ export class AddPersonPage implements OnInit {
         console.log("THE EXCEPTIONS2");
         console.log(this.scheduleExceptions);
         this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
+      }else{
+        this.scheduleExceptions = [];
       }
     }
 
@@ -175,12 +179,23 @@ export class AddPersonPage implements OnInit {
       this.userService.presentToast('Το όνομα του ατόμου δεν μπορεί να είναι κενό.', "danger");
       return;
     }
+  
     this.scheduleToReturn = this.customSchedule ? this.days : this.businessSchedule;
+  
+    let deformattedSelectedExceptions = [];
+    if (!this.onboarding) {
+      // Fetch only the selected exceptions
+      const selectedExceptions = this.daysControl.value;
+  
+      // Deformat only these selected exceptions
+      deformattedSelectedExceptions = this.deformatExceptions(selectedExceptions);
+    }
+  
     if (this.customSchedule) {
       await this.modalController.dismiss({
         'personName': this.personName,
         'personSurName': this.personSurName,
-        'scheduleExceptions': this.deformatExceptions(this.scheduleExceptions),
+        'scheduleExceptions': deformattedSelectedExceptions,
         'days': this.scheduleToReturn,
         'image': this.image,
       });
@@ -188,16 +203,13 @@ export class AddPersonPage implements OnInit {
       await this.modalController.dismiss({
         'personName': this.personName,
         'personSurName': this.personSurName,
-        'scheduleExceptions': this.deformatExceptions(this.scheduleExceptions),
+        'scheduleExceptions': deformattedSelectedExceptions,
         'days': this.businessSchedule,
         'image': this.image,
-
       });
     }
-
-
-
   }
+  
 
 
   goBack() {
@@ -445,7 +457,7 @@ export class AddPersonPage implements OnInit {
 
 
   handleClick() {
-    if (this.scheduleExceptions.length === 0) {
+    if (this.scheduleExceptions?.length === 0 || this.scheduleExceptions === null) {
       this.openDateTimePicker();
     }
   }
@@ -465,11 +477,17 @@ export class AddPersonPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-
+    console.log("THE DATA RETURNED")
+    console.log(data)
     if (data) {
       const formattedException = this.formatException(data);
-      this.scheduleExceptions.push(formattedException);
-      this.daysControl.setValue(this.scheduleExceptions); 
+      if (this.scheduleExceptions) {
+        this.scheduleExceptions.push(formattedException);
+        this.daysControl.setValue(this.scheduleExceptions); 
+
+    } else {
+        console.error("scheduleExceptions is not initialized");
+    }
 
       console.log("NEW EXCEPTIONs");
       console.log(this.scheduleExceptions);
@@ -513,6 +531,20 @@ export class AddPersonPage implements OnInit {
     });
   }
 
+
+  disabledSaveButton(): boolean {
+    return !this.personName?.trim() || !this.personSurName?.trim();
+}
+
+
+validateInput() {
+  if (this.personName) {
+      this.personName = this.personName.replace(/\s+/g, '');
+  }
+  if (this.personSurName) {
+      this.personSurName = this.personSurName.replace(/\s+/g, '');
+  }
+}
 
 
 
