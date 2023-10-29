@@ -153,6 +153,6 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button  (click)="save()"  class="capsoff ion-no-margin" expand="full"
+  <ion-button [disabled]="isSaveButtonDisabled()" (click)="save()"  class="capsoff ion-no-margin" expand="full"
     color="primary">{{getSaveButtonText()}}</ion-button>
 </ion-footer>

@@ -1114,7 +1114,7 @@ export class UserService {
 
 
 
-  newAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string): Observable<any> {
+  saveAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string,appointmentId:string|null): Observable<any> {
     const body = {
       servicesEmployees: servicesEmployees,
       bookingDate: theDate,
@@ -1122,7 +1122,7 @@ export class UserService {
       selectedClientId: selectedClientId
     };
 
-    return this.http.post(beautyAuthenticated_API_URL + "new-appointment", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.post(beautyAuthenticated_API_URL + "save-appointment?appointmentId="+appointmentId, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }

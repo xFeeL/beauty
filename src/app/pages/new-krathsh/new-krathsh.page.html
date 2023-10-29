@@ -121,10 +121,10 @@
 
 
 
-        <h4 *ngIf="timeSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
+        <h4 *ngIf="timeSelected && !editing" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Πελάτη</b></ion-text>
         </h4>
-        <ion-item *ngIf="timeSelected" class="border ion-margin-bottom ion-margin-end" (click)="presentClientPop()">
+        <ion-item *ngIf="timeSelected && !editing" class="border ion-margin-bottom ion-margin-end" (click)="presentClientPop()">
           <ion-label class="full-width-label"> <ion-item lines="none" *ngIf="selectedClientImage!=''">
               <ion-avatar class="custAvatarHed2">
                 <ion-img src="data:image/jpeg;base64,{{selectedClientImage}}"></ion-img>

@@ -167,10 +167,13 @@ export class KrathshPage implements OnInit {
   }
 
   async editReservation() {
+    console.log("Opening edit with data: " + this.appointment_id + " " + this.appointment_data)
+    console.log(this.appointment_data)
     const modal = await this.modalController.create({
       component: NewKrathshPage,
       componentProps: {
-        'appointment_id': this.appointment_id
+        'appointment_id': this.appointment_id,
+        'appointment_data': this.appointment_data,
       },
       backdropDismiss: false
 

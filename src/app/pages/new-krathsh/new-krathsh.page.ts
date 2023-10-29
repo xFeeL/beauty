@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, Renderer2 } from '@angular/core';
-import { IonContent, IonModal, IonPopover, ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild, Renderer2, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { IonContent, IonModal, IonPopover, ModalController, NavParams } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { PopoverController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -35,7 +35,7 @@ export class NewKrathshPage implements OnInit {
   isLoading: boolean = false;
   selectedClient!: any;
   selectedClientPhone!: any;
-  theDate!: string;
+  theDate!: string|undefined;
   dayValues!: string;
   minDate: string;
   previous!: any;
@@ -57,9 +57,13 @@ export class NewKrathshPage implements OnInit {
   canSelectDate: boolean = false;
   availableDays: any;
   allEmployeeIds: string = "";
+  editing: boolean = false;
+  appointment_data: any;
+  dataChanged =false;
+  appointmentId :string|null=null;
 
 
-  constructor(private modalController: ModalController, private userService: UserService) {
+  constructor(private modalController: ModalController, private userService: UserService, private navParams: NavParams, private _cd: ChangeDetectorRef) {
     this.minDate = new Date().toISOString().split('T')[0];
     this.animationState = 'in';
   }
@@ -77,6 +81,47 @@ export class NewKrathshPage implements OnInit {
 
 
   ionViewWillEnter() {
+    console.log(this.theDate)
+    if (this.navParams.get("appointment_data") != undefined) {
+      this.editing = true
+      this.appointment_data = this.navParams.get("appointment_data")
+      console.log("THE DATA")
+      console.log(this.appointment_data)
+      this.appointmentId= this.appointment_data.appointmentId
+      this.theDate = this.appointment_data.date
+      this.selectedServices = this.appointment_data.services.map((service: any) => ({
+        ...service,
+        isSelected: true
+      }));
+      let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
+
+      this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
+        // Loop through each service in selectedServices
+        for (let service of this.selectedServices) {
+          // Check if the service ID exists in the response
+          if (response[service.id]) {
+            service.employees = response[service.id];
+          } else {
+            service.employees = []; // If no employees are found for the service, initialize an empty array
+          }
+        }
+        if (this.selectedServices && this.selectedServices.length > 0) {
+          this.currentService = this.selectedServices[0];
+
+
+        }
+        this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
+        this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
+        this.servicesEmployees = {};
+        this.selectedServices.forEach(service => {
+          this.servicesEmployees[service.id] = service.selectedEmployeeId;
+        });
+        this.onMonthChange();
+
+
+      }, err => {
+      });
+    }
 
   }
   goBack() {
@@ -86,6 +131,7 @@ export class NewKrathshPage implements OnInit {
 
 
   selectEmployee(service: any, employeeId: string) {
+    this.resetView();
     service.selectedEmployeeId = employeeId;
 
     // Find the index of the current service
@@ -103,7 +149,6 @@ export class NewKrathshPage implements OnInit {
         this.servicesEmployees[service.id] = service.selectedEmployeeId;
       });
       this.onMonthChange();
-
 
     }
 
@@ -147,11 +192,11 @@ export class NewKrathshPage implements OnInit {
                       let availableDates = data || [];
 
                       that.dayValues = availableDates.join(',');
-                      console.log("Available days");
-                      console.log(that.dayValues);
-                      this.scrollToBottomSetTimeout(150);
+                      if(!this.editing){
+                        this.scrollToBottomSetTimeout(150);
+
+                      }
                     }, err => {
-                      console.log(err);
                     });
                   }
                 }
@@ -163,6 +208,9 @@ export class NewKrathshPage implements OnInit {
       const observer = new MutationObserver(callback);
       observer.observe(targetNode, config);
     }, 0);
+    if (this.editing && !this.dataChanged) {
+      this.dateChanged();
+    }
   }
 
   dateChanged() {
@@ -171,8 +219,7 @@ export class NewKrathshPage implements OnInit {
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
 
     this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees).subscribe(response => {
-      console.log(response);
-      
+
       // Populate the time_slots array with the start of the outerTimePeriods
       for (let i = 0; i < response.length; i++) {
         let slot = {
@@ -181,11 +228,69 @@ export class NewKrathshPage implements OnInit {
         };
         this.time_slots.push(slot);
       }
-      
+
       this.dateSelected = true;
-      this.scrollToBottomSetTimeout(150);
+      if (this.editing && !this.dataChanged) {
+        console.log("MPAASDASDASDASD")
+        // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
+        let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
+    
+        // Find the slot from the time_slots array that matches the converted time
+        let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
+        console.log(convertedTime)
+        console.log(this.appointment_data.time)
+        this.saveButtonEnabled = true
+        // If the slot is found, call slotSelected on it
+        if (foundSlot) {
+          console.log("Found slot")
+            this.slotSelected(foundSlot);
+        } else {
+          console.log("Not Found slot")
+
+            // If the slot is not found, add it to the time_slots array and select it
+            let newSlot = {
+                value: convertedTime,
+                selected: true
+            };
+            this.time_slots.push(newSlot);
+            this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
+    
+            // Sort the time_slots array to maintain order
+        }
+        console.log("Timne slots before sorting")
+        console.log(this.time_slots)
+        this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+          let [hourA, minuteA] = a.value.split(':').map(Number);
+          let [hourB, minuteB] = b.value.split(':').map(Number);
+          if (hourA !== hourB) return hourA - hourB;
+          return minuteA - minuteB;
+      });
+              console.log("Timne slots after sorting")
+        console.log(this.time_slots)
+
+    } 
+      else {
+        this.scrollToBottomSetTimeout(150);
+        this.timeSelected = false;
+        this.timeSlotSelected = null;
+
+      }
     });
+  }
+
+  convertTimeFormatForEdit(time: string): string {
+    let timeParts = time.split(' ');
+    let hourMinute = timeParts[0].split(':');
+    let hour = parseInt(hourMinute[0]);
+    // Convert to 24-hour format if it's PM (μ.μ.)
+    if (timeParts[1] && timeParts[1].toLowerCase() === 'μ.μ.' && hour !== 12) {
+        hour += 12;
+    }
+    // Ensure the leading zero for hours less than 10
+    let formattedHour = hour < 10 ? '0' + hour : '' + hour;
+    return `${formattedHour}:${hourMinute[1]}`;
 }
+
 
 
 
@@ -235,7 +340,6 @@ export class NewKrathshPage implements OnInit {
     this.selectedClient = `${this.newClientName} ${this.newClientSurname}`;
     this.selectedClientPhone = this.newClientPhone;
     this.userService.newManualClient(this.newClientName, this.newClientSurname, this.selectedClientPhone).subscribe(data => {
-      console.log(data)
       this.selectedClientId = data.clientId
       this.selectedClientImage = data.profileImage
       this.userService.presentToast("Ο νέος πελάτης καταχωρήθηκε!", "success")
@@ -279,7 +383,10 @@ export class NewKrathshPage implements OnInit {
     }
     this.timeSlotSelected = item;
     item.selected = true;
-    this.scrollToBottomSetTimeout(200);
+    if(!this.editing){
+      this.scrollToBottomSetTimeout(200);
+
+    }
 
   }
 
@@ -297,7 +404,7 @@ export class NewKrathshPage implements OnInit {
   saveKrathsh() {
     this.saveButtonEnabled = false;
 
-    this.userService.newAppointment(this.servicesEmployees, moment(this.theDate).format('YYYY-MM-DD'), this.timeSlotSelected.value, this.selectedClientId).subscribe(data => {
+    this.userService.saveAppointment(this.servicesEmployees, moment(this.theDate).format('YYYY-MM-DD'), this.timeSlotSelected.value, this.selectedClientId,this.appointmentId).subscribe(data => {
       this.userService.presentToast("Το ραντεβού αποθηκεύτηκε με επιτυχία.", "success")
       this.modalController.dismiss(true)
       this.saveButtonEnabled = true
@@ -315,8 +422,7 @@ export class NewKrathshPage implements OnInit {
   }
 
   async chooseServices() {
-    console.log("Opening")
-    console.log(this.selectedServices)
+
 
     const modal = await this.modalController.create({
       component: AddServicesPage,
@@ -331,7 +437,20 @@ export class NewKrathshPage implements OnInit {
     if (data) {
       // Now, the data variable contains the selected services
       this.selectedServices = data;
+      this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
+      console.log("Can select date: " + this.canSelectDate)
+      console.log(this.canSelectDate)
+      if(this.editing && this.canSelectDate){
+        this.dateSelected=true
 
+      }else{
+        this.dateSelected=false
+        this.time_slots = [];
+        this.timeSelected = false;
+        this.timeSlotSelected = null;
+        this.dataChanged = true;
+        this.theDate = undefined;
+      }
       let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
@@ -350,9 +469,7 @@ export class NewKrathshPage implements OnInit {
           this.scrollToBottomSetTimeout(150)
 
         }
-        console.log(this.selectedServices);
       }, err => {
-        console.log(err);
       });
     }
   }
@@ -363,6 +480,24 @@ export class NewKrathshPage implements OnInit {
 
     if (this.selectedServices.includes(service)) {
       this.selectedServices = this.selectedServices.filter((s: any) => s !== service);
+    }
+     this.resetView();
+
+  
+    
+  }
+
+  resetView() {
+    this.dateSelected=false
+    this.time_slots = [];
+    this.timeSelected = false;
+    this.timeSlotSelected = null;
+    this.dataChanged = true;
+    this.theDate = undefined;
+    if(this.selectedServices.length!=0){
+      this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
+    }else{
+      this.canSelectDate=false
     }
   }
 

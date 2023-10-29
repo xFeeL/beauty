@@ -680,7 +680,12 @@ export class TeamServicesPage implements OnInit {
     this.userService.saveServices(this.services, this.serviceCategories).subscribe(data => {
       this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.", "success")
     }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
+      if(err.error=="Empty categories"){
+        this.userService.presentToast("Κάποια κατηγορία δεν έχει υπηρεσίες.", "danger")
+      }else{
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
+
+      }
     })
   }
 
