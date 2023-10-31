@@ -127,6 +127,10 @@ const routes: Routes = [
     path: 'team-services',
     loadChildren: () => import('./pages/team-services/team-services.module').then( m => m.TeamServicesPageModule)
   },
+  {
+    path: 'test',
+    loadChildren: () => import('./pages/test/test.module').then( m => m.TestPageModule)
+  },
   
   
  

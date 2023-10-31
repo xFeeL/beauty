@@ -1,44 +1,63 @@
-<mat-toolbar>
-  <button mat-icon-button (click)="currentDate.setDate(currentDate.getDate() - 1)">
-    <mat-icon>keyboard_arrow_left</mat-icon>
-  </button>
-  
-  {{ currentDate | date:'medium' }}
+<ion-header>  <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start" >
+      <ion-icon name="arrow-back" color="light"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">{{title}}</ion-title>
+</ion-toolbar></ion-header><ion-content>
+<ion-grid class="ion-padding-top">  <ion-segment [(ngModel)]="segment" mode="ios" >
+  <ion-segment-button value="desktop">
+    <ion-label>Από Υπολογιστή</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="mobile">
+    <ion-label>Από Κινητό / Tablet</ion-label>
+  </ion-segment-button>
+</ion-segment>
+</ion-grid>
+<ion-card *ngIf="segment === 'desktop'">
+<ion-card-header>
+  <ion-card-title>Οδηγός για Υπολογιστή</ion-card-title>
+</ion-card-header>
+<ion-card-content>
+  <h2 class="ion-margin-top ion-padding-top">Video με τα βήματα (Facebook και Instagram)</h2>
+  <iframe width="560" height="315" [src]="desktopVideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>   </ion-card-content>
 
-  <button mat-icon-button (click)="currentDate.setDate(currentDate.getDate() + 1)">
-    <mat-icon>keyboard_arrow_right</mat-icon>
-  </button>
-  
-  <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker (dateChange)="changeDate($event)"></mat-datepicker>
-</mat-toolbar>
-
-<!-- ... Toolbar HTML ... -->
-
-<mat-table [dataSource]="times" class="table">
-  <!-- Time Column -->
-  <ng-container matColumnDef="time">
-    <mat-header-cell *matHeaderCellDef class="time-column"> Time </mat-header-cell>
-    <mat-cell *matCellDef="let time" class="time-column"> {{time}} </mat-cell>
-  </ng-container>
-
-  <!-- Generate columns for each employee -->
-  <ng-container *ngFor="let employee of employees; let i = index" matColumnDef="employee{{i}}">
-    <mat-header-cell *matHeaderCellDef class="employee-column"> 
-      <img src="" alt="{{employee.name}}" width="50" height="50">
-      {{employee.name}}
-    </mat-header-cell>
-    <mat-cell *matCellDef="let _" class="employee-column"> 
-      <!-- Placeholder for future appointment data or interactions -->
-    </mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;" 
-  (click)="debugRow(row)"
-  [class.current-time-row]="shouldShowCurrentTimeLine(row)">
-</mat-row>
-
-
-</mat-table>
-
+  <ion-list>
+    <ion-item *ngFor="let step of desktopSteps">
+              <ion-grid class="full-width">
+        <ion-row class="full-width">
+          <ion-col class="full-width">
+            <div class="text-container">
+              <h2 class="title">{{step.title}}</h2>
+              <ion-note [innerHTML]="step.description"></ion-note>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  </ion-card>  <ion-card *ngIf="segment === 'mobile'">
+  <ion-card-header>
+    <ion-card-title>Οδηγός Κινητού</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <h2 class="ion-margin-top ion-padding-top">Video με τα βήματα (Facebook και Instagram)</h2>
+    <iframe width="560" height="315" [src]="mobileVideoUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>      
+    <ion-list>
+      <ion-item *ngFor="let step of mobileSteps">          
+        <ion-grid class="full-width">
+          <ion-row class="full-width">
+            <ion-col class="full-width">
+              <div class="text-container">
+                <h2 class="title">{{step.title}}</h2>
+                <ion-note [innerHTML]="step.description"></ion-note>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+</ion-content>

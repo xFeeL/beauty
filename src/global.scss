@@ -94,6 +94,11 @@ ion-item {
   font-size: 30px;
 }
 
+.force-wrap{
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
 .float {
   position: fixed;
   bottom: 5%;

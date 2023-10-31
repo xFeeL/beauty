@@ -978,11 +978,11 @@ export class UserService {
    * @param scheduleExceptions Schedule exceptions to save
    * @returns Observable of the response
    */
-  saveScheduleExceptions(scheduleExceptions: any): Observable<any> {
+  saveScheduleExceptions(scheduleExceptions: any,safeToSave:boolean,cancelAllFutureOverlappedAppointments:boolean): Observable<any> {
     const body = {
       exceptions: scheduleExceptions,
     };
-    return this.http.post(beautyAuthenticated_API_URL + "save-schedule-exceptions", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.post(beautyAuthenticated_API_URL + "save-schedule-exceptions?safeToSave="+safeToSave+"&cancelAllFutureOverlappedAppointments="+cancelAllFutureOverlappedAppointments, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }

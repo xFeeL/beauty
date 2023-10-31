@@ -79,8 +79,7 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
-      console.log("HERE")
-      console.log(data)
+     
       this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
       this.time = data.time
       this.profile_image = data.image;
@@ -90,7 +89,6 @@ export class KrathshPage implements OnInit {
       this.appointment_data = data;
       this.status = data.status;
       this.services=data.services
-      console.log(this.services)
       this.checkedIn = data.checkedIn
       this.note = data.note
       if (data.status == "Αποδεκτή") {
@@ -167,8 +165,8 @@ export class KrathshPage implements OnInit {
   }
 
   async editReservation() {
-    console.log("Opening edit with data: " + this.appointment_id + " " + this.appointment_data)
-    console.log(this.appointment_data)
+   
+    
     const modal = await this.modalController.create({
       component: NewKrathshPage,
       componentProps: {
@@ -176,11 +174,17 @@ export class KrathshPage implements OnInit {
         'appointment_data': this.appointment_data,
       },
       backdropDismiss: false
-
     });
+  
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data === true) {
+        // Do something when the modal returns true
+        this.ionViewWillEnter()
+      }
+    });
+  
     return await modal.present();
   }
-
 
   async editReservationDialog() {
     const alert = await this.alertController.create({
@@ -239,7 +243,6 @@ export class KrathshPage implements OnInit {
   }
 
   goBack() {
-    console.log("be")
     this.modalController.dismiss()
   }
 

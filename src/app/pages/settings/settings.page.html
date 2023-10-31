@@ -9,17 +9,17 @@
   </ion-toolbar>
 </ion-header><ion-content [fullscreen]="true" class="background">
   <ion-segment mode="md" class="no-capitalize" color="primary" [(ngModel)]="selectedSegment">
-    <ion-segment-button value="reservations" (click)="loadKrathseisSettings()" class="mr5">
-      <ion-label>Κρατήσεις</ion-label>
+    <ion-segment-button value="general" (click)="loadKrathseisSettings()" class="mr5">
+      <ion-label>Γενικές</ion-label>
     </ion-segment-button>
     <ion-segment-button value="social-media" class="mr5">
       <ion-label>Social Media</ion-label>
     </ion-segment-button>
     <ion-segment-button value="wrario" (click)="loadWrarioData()" class="mr5">
       <ion-label>Ωράριο</ion-label>
-    </ion-segment-button> 
+    </ion-segment-button>
   </ion-segment>
-  <div *ngIf="selectedSegment === 'reservations'"> <ion-grid class="ion-margin custom-grid max-height">
+  <div *ngIf="selectedSegment === 'general'"> <ion-grid class="ion-margin custom-grid max-height">
       <!--<ion-row class="ion-justify-content-center">
         <ion-col size-xl="7" size="12">
           <ion-input type="number" [(ngModel)]="maxReservationMinutes" label="Μέγιστη διάρκεια κράτησης (λεπτά)"
@@ -47,6 +47,12 @@
             <ion-toggle [(ngModel)]="isVisible " #toggleElement [enableOnOffLabels]="true"
               labelPlacement="start">Ενεργοποίηση online κρατήσεων</ion-toggle>
           </ion-item>
+        </ion-col> </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+        <ion-col size-xl="8" class="ion-justify-content-center">
+          <ion-button (click)="editPassword()" fill="outline" class="capsoff">Αλλαγή κωδικού</ion-button>
+
         </ion-col> </ion-row>
     </ion-grid> </div>
 
@@ -283,7 +289,7 @@
 
 
 
- 
+
   <div *ngIf="selectedSegment === 'wrario'">
     <ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
         <ion-col size-xl="8" class="ion-justify-content-center">
@@ -338,8 +344,8 @@
       </div>
     </ion-list>
   </div>
- 
- 
+
+
 </ion-content>
 <ion-footer class="ion-no-padding" *ngIf="selectedSegment!='social-media'">
   <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary" (click)="saveSegmentSettings()">

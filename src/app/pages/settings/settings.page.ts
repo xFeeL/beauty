@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonAlert, IonDatetime, IonModal, IonPopover, ModalController } from '@ionic/angular';
+import { AlertController, IonAlert, IonDatetime, IonModal, IonPopover, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -10,6 +10,7 @@ import { AddScheduleExceptionPage } from '../add-schedule-exception/add-schedule
 import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/facebook-login';
 import { GuidePage } from '../guide/guide.page';
 import { ExternalService } from 'src/app/services/external.service';
+import { ChangePasswordPage } from '../change-password/change-password.page';
 
 @Component({
   selector: 'app-settings',
@@ -48,8 +49,9 @@ export class SettingsPage implements OnInit {
   hidePageDescription: boolean = false;
   facebookPageAccessToken: any = "";
   facebookPageId: any;
+  needRefresh: boolean=false;
 
-  constructor(private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
+  constructor(private alertController:AlertController,private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
 
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
@@ -67,11 +69,11 @@ export class SettingsPage implements OnInit {
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
   firstDayTemplate: any[] = [];
-  firstDayToggled: any = null; selectedSegment: string = 'reservations';  // Default selected segment
+  firstDayToggled: any = null; selectedSegment: string = 'general';  // Default selected segment
   @ViewChild('deleteAlert') deleteAlert!: IonAlert;
   daysControl = new FormControl();
   days = ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  saveButtonText = "Αποθήκευση ρυθμίσεων κράτησης"
+  saveButtonText = "Αποθήκευση ρυθμίσεων"
   ngOnInit() {
     this.loadKrathseisSettings();
   }
@@ -151,7 +153,8 @@ export class SettingsPage implements OnInit {
 
 
   goBack() {
-    this.modalController.dismiss()
+    console.log("going back with:"+this.needRefresh)
+    this.modalController.dismiss(this.needRefresh)
   }
 
   get hasScheduleExceptions(): boolean {
@@ -331,15 +334,8 @@ formatException(exception: { start: moment.MomentInput; end: moment.MomentInput;
         repeat: exception.repeat === "Επαναλαμβανόμενο" // This will return true if the condition is met, otherwise false
     }));
     
-
-      // Send the selected exceptions to the backend
-      this.userService.saveScheduleExceptions(exceptionsToSend).subscribe(data => {
-        this.userService.presentToast("Οι εξαιρέσεις αποθηκεύτηκαν με επιτυχία.", "success");
-        this.scheduleExceptions = []
-        this.getScheduleExceptions()
-      }, err => {
-        this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
-      });
+    this.saveScheduleExceptions(exceptionsToSend)
+    
 
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση του ωραρίου.", "danger");
@@ -348,6 +344,66 @@ formatException(exception: { start: moment.MomentInput; end: moment.MomentInput;
 
 
 
+  saveScheduleExceptions(exceptionsToSend: any) {
+    this.userService.saveScheduleExceptions(exceptionsToSend, false, false).subscribe(data => {
+      this.userService.presentToast("Οι εξαιρέσεις αποθηκεύτηκαν με επιτυχία.", "success");
+      this.scheduleExceptions = [];
+      this.getScheduleExceptions();
+    }, err => {
+      if (err.status === 406 && err.error && err.error["Overlapping appointments"]) { 
+        this.presentAlertWithChoices(exceptionsToSend, err.error["Overlapping appointments"]);
+      } else {
+        this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
+      }
+    });
+  }
+  
+async presentAlertWithChoices(exceptionsToSend:any, overlappingDates: string) {
+    const alert = await this.alertController.create({
+      header: 'Προσοχή!',
+      message: 'Υπάρχουν κρατήσεις που δεν έχουν ολοκληρωθει τις ημερομηνίες: ' + overlappingDates,
+      buttons: [
+        {
+          text: 'ακυρωση ολων',
+          handler: () => {
+            console.log("PREPEI NA EINAI TRUE")
+            this.needRefresh=true
+            console.log(this.needRefresh)
+            this.saveScheduleExceptionsWithParams(exceptionsToSend, true, true);
+          }
+        },
+        {
+          text: 'καμια ακυρωση',
+          handler: () => {
+            this.saveScheduleExceptionsWithParams(exceptionsToSend, true, false);
+          }
+        },
+        {
+          text: 'πισω',
+          role: 'cancel'
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  
+  saveScheduleExceptionsWithParams(exceptionsToSend:any,param1: boolean, param2: boolean) {
+    this.userService.saveScheduleExceptions(exceptionsToSend, param1, param2).subscribe(data => {
+      this.userService.presentToast("Οι εξαιρέσεις αποθηκεύτηκαν με επιτυχία.", "success");
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
+    });
+  }
+  
+
+
+  async editPassword() {
+    const modal = await this.modalController.create({
+        component: ChangePasswordPage,
+    });
+    return await modal.present();
+}
 
 
 
@@ -359,7 +415,7 @@ formatException(exception: { start: moment.MomentInput; end: moment.MomentInput;
 
 
   loadKrathseisSettings() {
-    this.saveButtonText = "Αποθήκευση ρυθμίσεων κράτησης"
+    this.saveButtonText = "Αποθήκευση ρυθμίσεων"
 
     this.userService.getAppointmentsSettings().subscribe(data => {
       console.log("THE DATA");
@@ -391,7 +447,7 @@ formatException(exception: { start: moment.MomentInput; end: moment.MomentInput;
 
   saveSegmentSettings() {
     switch (this.selectedSegment) {
-      case 'reservations':
+      case 'general':
         this.saveKrathseisSettings();
         break;
       case 'wrario':
@@ -710,5 +766,6 @@ formatException(exception: { start: moment.MomentInput; end: moment.MomentInput;
     return await modal.present();
   }
 
+  
 
 }

@@ -120,6 +120,10 @@ export class NewKrathshPage implements OnInit {
 
 
       }, err => {
+        if(err.error=="Service doesn't exist"){
+          console.log("MPIKA")
+          this.selectedServices=[]
+        }
       });
     }
 
@@ -454,6 +458,7 @@ export class NewKrathshPage implements OnInit {
       let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
+        console.log("MPIKA EDW")
         // Loop through each service in selectedServices
         for (let service of this.selectedServices) {
           // Check if the service ID exists in the response
@@ -470,6 +475,12 @@ export class NewKrathshPage implements OnInit {
 
         }
       }, err => {
+        console.log("THE ERROR")
+        console.log(err)
+        if(err.error=="Service doesn't exist"){
+          console.log("MPIKA")
+          this.selectedServices=[]
+        }
       });
     }
   }

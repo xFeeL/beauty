@@ -383,7 +383,6 @@ export class KrathseisPage implements OnInit {
   }
 
   getColorForStatus(status: string): string {
-    console.log(status)
     switch (status) {
       case 'Ακυρώθηκε':
         return 'danger-line cursor w100 rad ion-margin-bottom ';

@@ -1,0 +1,43 @@
+/* Dark border for the sticky header row and its children */
+.sticky-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #ffffff;
+    border-bottom: 2px solid darkgray; /* Dark border at the bottom of the sticky header row */
+  
+    /* Nested columns inside the sticky header row */
+    ion-col {
+      border-right: 2px solid darkgray; /* Dark border for right side of each column */
+    }
+  
+    /* The last child should not have a right border to avoid a double-thick border on the far right */
+    ion-col:last-child {
+      border-right: none;
+    }
+  }
+  
+  /* Dark border for the time column */
+ 
+  
+  /* Light gray borders for the rest */
+  ion-grid ion-row {
+    ion-col {
+      border-right: 1px solid lightgray;
+      border-bottom: 1px solid lightgray;
+    }
+  
+    ion-col:last-child {
+      border-right: none;
+    }
+  }
+  
+  /* Overwrite for the time column so it doesn't get a double border */
+  ion-grid ion-row .time-column {
+    border-right: 2px solid darkgray;
+  }
+  
+  .flexible-time-column {
+    width: 60px;
+    max-width: 60px;
+}
