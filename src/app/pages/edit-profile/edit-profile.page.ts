@@ -55,6 +55,8 @@ export class EditProfilePage {
   @ViewChild('_fileInput') _fileInput: any;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
   needReferesh: any = false;
+  expert_categories: any=[];
+  all_categories: any=[];
 
   constructor(
 
@@ -65,11 +67,7 @@ export class EditProfilePage {
   }
 
   ngOnInit() {
-    type userData =
-      | string
-      | string
-      | string
-      | string
+   
   }
 
   ionViewWillEnter() {
@@ -102,6 +100,18 @@ export class EditProfilePage {
     }
     );
 
+    this.userService.getExpertCategories().subscribe(data => {
+
+      this.expert_categories = data
+    }, err => {
+    })
+
+    this.userService.getBeautyCategories().subscribe(data => {
+
+      this.all_categories = data
+    }, err => {
+    })
+
   }
 
 
@@ -112,8 +122,9 @@ export class EditProfilePage {
 
 
   save() {
+    console.log(this.expert_categories)
     this.needReferesh = true
-
+    this.dataExpert.categories = this.expert_categories.join(',');
     this.dataExpert.businessName = this.name
     this.dataExpert.displayedPhone = this.displayed_phone
     this.dataExpert.new_image = this.new_image
@@ -174,12 +185,20 @@ export class EditProfilePage {
       this.businessNameItemClass = "ion-margin invalidBorderItem"
 
     }
-    if (this.resultBusinessNameCheck && this.resultPhoneCheck) {
+    console.log(this.expert_categories)
+    
+  }
+
+  
+
+  saveButtonDisabled(){
+    if (this.resultBusinessNameCheck && this.resultPhoneCheck && this.expert_categories.length > 0) {
       this.saveButtonEnabled = true;
     } else {
       this.saveButtonEnabled = false;
 
     }
+    return this.saveButtonEnabled;
   }
 
 

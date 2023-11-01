@@ -38,12 +38,20 @@
                 <ion-input disabled="false" [value]="address"></ion-input>
                 <ion-icon class="ion-margin-top pt7" slot="end" name="checkmark-outline" color="success"></ion-icon>
               </ion-item>
+              <ion-select [multiple]="true" label="Κατηγορίες" label-placement="floating" fill="solid"
+                class="ion-padding-start ion-padding-end ion-margin-top ion-margin-bottom" okText="Επιλογη" cancelText="Ακυρο"
+                [(ngModel)]="expert_categories">
+                <ion-select-option *ngFor="let category of all_categories"
+                  [value]="category.name">{{category.name}}</ion-select-option>
+              </ion-select>
               <ion-item [class]="phoneDisplayedItemClass" (ionChange)="mobileCheck()" (keyup)="mobileCheck()">
                 <ion-label position="floating">Εμφανιζόμενο Τηλέφωνο</ion-label>
                 <ion-input disabled="false" [(ngModel)]="displayed_phone" [value]="displayed_phone"></ion-input>
                 <ion-icon [class]="phoneVariableClass" slot="end" [name]="phoneIconName" [color]="phoneColor"
                   *ngIf="displayed_phone!=null && displayed_phone.length>0"></ion-icon>
               </ion-item>
+              
+
               <ion-item class="ion-margin ">
                 <ion-label position="floating">E-mail</ion-label>
                 <ion-input disabled="true" [value]="email"></ion-input>
@@ -56,7 +64,7 @@
         </ion-grid></ion-col>
     </ion-row>
   </ion-grid></ion-content>
-<ion-footer (click)="save()"> <ion-button [disabled]="!saveButtonEnabled" expand="full" color="primary"
+<ion-footer (click)="save()"> <ion-button [disabled]="!saveButtonDisabled()" expand="full" color="primary"
     class="ion-no-margin">
     <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
   </ion-button></ion-footer>

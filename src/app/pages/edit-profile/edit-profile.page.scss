@@ -65,3 +65,12 @@
     --highlight-color-valid: var(--ion-color-success);
     --border-color: var(--ion-color-success);
   }
+
+  ion-select {
+    --border-color:var(--ion-color-success) !important;
+    --highlight-color-focused:var(--ion-color-primary) !important;
+    --highlight-color-valid:var(--ion-color-success) !important;
+    --highlight-color-invalid:var(--ion-color-danger) !important;
+    --background:white ;
+  }
+  

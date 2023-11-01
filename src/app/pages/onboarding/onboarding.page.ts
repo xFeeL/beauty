@@ -71,6 +71,7 @@ export class OnboardingPage {
   new_image: string = "false";
   pagesToChoose: any;
   addressEntered: boolean = false;
+  parent_categories: any=[];
   constructor(private alertController:AlertController,private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
     private _cd: ChangeDetectorRef, private actionSheetController: ActionSheetController) {
     // Initialize start and end times for each day
@@ -86,21 +87,25 @@ export class OnboardingPage {
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string | undefined;
   address = ""
-  omorfia_categories = [
-    { title: 'Κομμωτήριο', selected: false },
-    { title: 'Ινστιτούτο Ομορφιάς', selected: false },
-    { title: 'Studio Νυχιών', selected: false },
-
-    { title: 'Barber Shop', selected: false },
-    //{title: 'Spa'},
-  ];
+  omorfia_categories: any[] = [];
+ 
 
 
   @ViewChild('swiperElRef') swiperContainer!: ElementRef;
   private swiper!: Swiper;
 
   ionViewWillEnter() {
-
+    this.userService.getBeautyCategories().subscribe(data => {
+      this.omorfia_categories = data.map((category: { name: any; }) => {
+        return {
+          title: category.name,  // assuming 'name' is the field in the returned data
+          selected: false
+        };
+      });
+    });
+    this.userService.getBeautyParentCategories().subscribe(data => {
+      this.parent_categories=data
+    });
     this.swiper = new Swiper(this.swiperContainer.nativeElement, {
 
       scrollbar: {

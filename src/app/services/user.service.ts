@@ -190,6 +190,7 @@ export class UserService {
     if (error.status === 403 && !error.skipRefresh && localStorage.getItem('authenticated') == "true") {
       return this.getNewJwtWithRefreshToken().pipe(
         mergeMap(() => {
+          console.log("The method is " + method)
           if (method === 'POST') {
             return this.http.post(error.url, body, { headers: this.getHeaders(), withCredentials: true });
           } else {
@@ -206,6 +207,11 @@ export class UserService {
           return throwError(refreshError);
         })
       );
+    } else if(error.status === 403){
+      window.location.href = '/login';
+      localStorage.setItem('authenticated', "false");
+      this._isAuthenticated.next(false);
+      return throwError(error);
     } else {
       console.log("Den mpika");
       console.error('API Error:', error);
@@ -239,6 +245,25 @@ export class UserService {
      */
   getPendingAppointmentsNumber(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "find-pending-appointments-number", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+
+  getBeautyCategories(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-beauty-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  getBeautyParentCategories(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-beauty-parent-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  getExpertCategories(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-expert-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }
