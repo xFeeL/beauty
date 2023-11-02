@@ -71,7 +71,6 @@ export class OnboardingPage {
   new_image: string = "false";
   pagesToChoose: any;
   addressEntered: boolean = false;
-  parent_categories: any=[];
   constructor(private alertController:AlertController,private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
     private _cd: ChangeDetectorRef, private actionSheetController: ActionSheetController) {
     // Initialize start and end times for each day
@@ -103,9 +102,7 @@ export class OnboardingPage {
         };
       });
     });
-    this.userService.getBeautyParentCategories().subscribe(data => {
-      this.parent_categories=data
-    });
+   
     this.swiper = new Swiper(this.swiperContainer.nativeElement, {
 
       scrollbar: {

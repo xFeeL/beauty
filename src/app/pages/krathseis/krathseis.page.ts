@@ -385,15 +385,15 @@ export class KrathseisPage implements OnInit {
   getColorForStatus(status: string): string {
     switch (status) {
       case 'Ακυρώθηκε':
-        return 'danger-line cursor w100 rad ion-margin-bottom ';
+        return 'danger-line cursor w100 rad10 ion-margin-bottom ';
       case 'Ολοκληρωμένη':
-        return 'warning-line cursor w100 rad ion-margin-bottom ';
+        return 'warning-line cursor w100 rad10 ion-margin-bottom ';
       case 'Αποδεκτή':
-        return 'success-line cursor w100 rad ion-margin-bottom';
+        return 'success-line cursor w100 rad10 ion-margin-bottom';
       case 'Εκκρεμεί':
-        return 'pending-line cursor w100 rad ion-margin-bottom';
+        return 'pending-line cursor w100 rad10 ion-margin-bottom';
       default:
-        return 'pending-line cursor w100 rad ion-margin-bottom';
+        return 'pending-line cursor w100 rad10 ion-margin-bottom';
     }
   }
 

@@ -256,11 +256,6 @@ export class UserService {
     );
   }
 
-  getBeautyParentCategories(): Observable<any> {
-    return this.http.get(Authenticated_API_URL + "get-beauty-parent-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error))
-    );
-  }
 
   getExpertCategories(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-expert-categories", { headers: this.getHeaders(), withCredentials: true }).pipe(

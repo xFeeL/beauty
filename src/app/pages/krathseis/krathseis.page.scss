@@ -360,25 +360,26 @@ ion-icon[name="arrow-back"] {
 
 
 .warning-line {
-  border-left: 20px solid var(--ion-color-warning);
-  /* Adjust the color and width as needed */
+  border-left: 10px solid var(--ion-color-warning);
 
 }
 
 .success-line {
-  border-left: 20px solid var(--ion-color-success);
-  /* Adjust the color and width as needed */
+  border-left: 10px solid var(--ion-color-success);
 }
 
 
 .pending-line {
-  border-left: 20px solid var(--ion-color-primary);
-  /* Adjust the color and width as needed */
+  border-left: 10px solid var(--ion-color-primary);
 }
 
 .danger-line {
-  border-left: 20px solid var(--ion-color-danger);
-  /* Adjust the color and width as needed */
+  border-left: 10px solid var(--ion-color-danger);
+
+}
+
+.rad10{
+  border-radius: 10px;
 
 }
 
