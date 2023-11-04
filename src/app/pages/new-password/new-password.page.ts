@@ -32,11 +32,13 @@ export class NewPasswordPage implements OnInit {
     private loadingCtrl: LoadingController,private navCtrl: NavController, private toastCtrl: ToastController,private user: UserService,private userService:UserService) { }
 
   ngOnInit() {
+    this.the_password="";
+    this.repeated_password="";
     this.signUpForm=this.userService.getNavData();
   }
 
   newPassword(){
-    
+   
     this.actRouter.queryParams
       .subscribe(params => {
         this.token = params['token'];
@@ -47,11 +49,11 @@ export class NewPasswordPage implements OnInit {
     this.user.setNewPassword(this.the_password,this.repeated_password,this.token).subscribe(data => {
       this.userService.presentToast("Η αλλαγή κωδικού ήταν επιτυχής.", "success");
       //Wait 1 second, then redirect it to home page.
-     
+      this.route.navigate(['login']);  
+
     }, err => {
       this.userService.presentToast("Η αλλαγή κωδικού απέτυχε", "danger");
     });
-    this.route.navigate(['login']);  
   }else {
     this.signup_user.app="beauty"
 

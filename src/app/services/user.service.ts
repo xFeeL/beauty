@@ -601,7 +601,7 @@ export class UserService {
    * @returns An Observable that resolves to the expert slug.
    */
   getExpertSlug(): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-expert-slug", { withCredentials: true }).pipe(
+    return this.http.get(beautyAuthenticated_API_URL + "get-expert-slug", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }

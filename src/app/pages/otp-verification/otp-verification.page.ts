@@ -74,7 +74,7 @@ export class OtpVerificationPage implements OnInit {
           }, err => {
             if(err.error=="Mobile"){
               this.userService.requestOTP(user.username).subscribe(data=>{
-                this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "primary");
+                this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
               this.userService.setNavData([user.username,user.password]);
               this.rout.navigate(['/otp-verification']);      
               },err=>{
@@ -95,7 +95,7 @@ export class OtpVerificationPage implements OnInit {
           },err=>{         
               if(err.error=="Mobile"){
                 this.userService.requestOTP(user.username).subscribe(data=>{
-                  this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "primary");
+                  this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
                   this.userService.setNavData([user.username,user.password,"google"]);
                   this.rout.navigate(['/otp-verification']);
                 },err=>{
@@ -165,7 +165,7 @@ submit(){
 
 resendOTP(){
   this.userService.requestOTP(this.navData[0]).subscribe(data=>{
-    this.userService.presentToast("Εισάγετε τον αριθμό που λάβατε στο κινητό σας.", "primary");
+    this.userService.presentToast("Εισάγετε τον αριθμό που λάβατε στο κινητό σας.", "warning");
       
   },err=>{
   });    }

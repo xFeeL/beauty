@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
     }, err => {
       if(err.error=="Mobile"){
         this.userService.requestOTP(this.user.username).subscribe(data=>{
-          this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "primary");
+          this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
         this.userService.setNavData([this.user.username,this.user.password,"ordinary"]);
 
         this.router.navigate(['/otp-verification']);
@@ -182,7 +182,7 @@ passwordChange(){
         },err=>{         
             if(err.error=="Mobile"){
               this.userService.requestOTP(user.email).subscribe(data=>{
-                this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "primary");
+                this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
                 this.userService.setNavData([user.email,user.authentication.idToken,"google"]);
                 this.router.navigate(['/otp-verification']);
               },err=>{
