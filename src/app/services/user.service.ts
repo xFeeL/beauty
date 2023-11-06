@@ -91,7 +91,6 @@ export class UserService {
   getEventSource(url: string): EventSource {
     return new EventSource(url, { withCredentials: true });
   }
-
   /**
    * Emits a message received event.
    * @type {EventEmitter<any>}
@@ -633,7 +632,10 @@ export class UserService {
     return this.http.post(Authenticated_API_URL + "logout", "", { headers: this.getHeaders(), withCredentials: true }).pipe(
       tap(() => {
         // If the request is successful, redirect to login page
+        localStorage.setItem('authenticated', 'false');
+        this._isAuthenticated.next(false);
         window.location.href = '/login';
+      
       }),
       catchError(error => this.handleError(error, 'POST', ""))
     );

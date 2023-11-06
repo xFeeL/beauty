@@ -71,7 +71,6 @@ export class AppComponent implements WithStyles  {
   
   logout(){
     this.userService.logout().subscribe(data => console.log(data),err=>{});
-    this.rout.navigate(['login']);   
 
   }
  
