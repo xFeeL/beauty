@@ -721,13 +721,16 @@
   }
   
   .light-blue-background {
-    background-color: #dfecff;
+    background-color: #E3F0F9;
     /* Light blue color. Adjust as needed. */
   }
   
   .custom-segment {
     width: 70%;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right:auto;
+    margin-top:16px;
+    margin-bottom:16px;
   }
   
   ion-segment-button {
@@ -762,7 +765,10 @@
     }
   }
 
- 
+ ion-segment{
+  --ion-background-color: white;
+
+ }
   .warning-line {
     width: 4px; /* Adjust width as desired */
     height: 100%; /* Take full height of the ion-item */
