@@ -20,7 +20,7 @@
 
 
   <div *ngIf="selectedSegment === 'team'">
-   
+
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row> <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
           <ion-grid>
@@ -40,18 +40,19 @@
                       </button>
                     </mat-menu>
                   </div>
-                
+
                   <div class="avatar-container">
                     <ion-avatar class="custAv">
                       <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
                     </ion-avatar>
                   </div>
-                  
+
                   <ion-card-header class="centered-header ion-margin-bottom">
-                    <ion-card-subtitle text-wrap ><ion-note text-wrap>{{person.surname}} {{person.name}}</ion-note></ion-card-subtitle>
+                    <ion-card-subtitle text-wrap><ion-note text-wrap>{{person.surname}}
+                        {{person.name}}</ion-note></ion-card-subtitle>
                   </ion-card-header>
                 </ion-card>
-                
+
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -59,14 +60,14 @@
       </ion-row>
     </ion-grid>
     <ion-fab class="float fabButton" (click)="managePerson()">
-      <ion-chip class="ion-padding bg" >
+      <ion-chip class="ion-padding bg">
         <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
-        <ion-label color="light">Νέο</ion-label>
+        <ion-label color="light">Προσθήκη</ion-label>
       </ion-chip>
     </ion-fab>
-    
-    
-    
+
+
+
   </div>
 
 
@@ -76,9 +77,39 @@
         <ion-col size="11">
 
 
-          <ion-grid class="w100 w80 custRow " *ngIf="serviceCategories.length!=0">
+          <ion-grid class="w100 w80 custRow "  *ngIf="serviceCategories.length!=0">
             <ion-row>
               <ion-col size="12">
+                <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom">
+                  <ion-row *ngIf="packages.length > 0">
+                    <ion-col>
+                      <h4 class="ml13" style="text-align: left">Πακέτα</h4> <!-- Display category name -->
+                    </ion-col>
+                  
+                  </ion-row>
+                  <ion-row *ngIf="packages.length > 0">
+                    <ion-list lines="inset" class="ion-no-padding servicesList">
+                      <ng-container >
+                        <ion-item class="cursor" *ngFor="let package of packages"
+                          (click)="editPackage(package)">
+                          <div class="package-line"></div>
+                          <ion-grid>
+                            <ion-row>
+                              <ion-col>
+                                <ion-label>{{ package.name }}</ion-label>
+                              </ion-col>
+
+                            </ion-row>
+                            <ion-row class="mt9">
+                              <ion-note>Τιμή: €{{ package.price }} • {{package.services.length}} υπηρεσίες</ion-note>
+                            </ion-row>
+                          </ion-grid>
+                        </ion-item>
+                      </ng-container>
+                     
+                    </ion-list>
+                  </ion-row>
+                </ion-grid>
                 <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom"
                   *ngFor="let category of serviceCategories">
                   <ion-row>
@@ -136,16 +167,17 @@
     <ion-fab class="float fabButton">
       <ion-chip class="ion-padding bg" [matMenuTriggerFor]="menu">
         <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
-        <ion-label color="light">Νέα</ion-label>
+        <ion-label color="light">Προσθήκη</ion-label>
       </ion-chip>
     </ion-fab>
-    
+
     <mat-menu #menu="matMenu" xPosition="before" yPosition="above">
-      <button mat-menu-item (click)="newCategory()">Κατηγορία</button>
-      <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσία</button>
+      <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>
+      <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου</button>
+      <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσίας</button>
     </mat-menu>
 
-   
+
   </div>
 
 
@@ -153,6 +185,6 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button [disabled]="isSaveButtonDisabled()" (click)="save()"  class="capsoff ion-no-margin" expand="full"
+  <ion-button [disabled]="isSaveButtonDisabled()" (click)="save()" class="capsoff ion-no-margin" expand="full"
     color="primary">{{getSaveButtonText()}}</ion-button>
 </ion-footer>

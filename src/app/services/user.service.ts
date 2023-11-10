@@ -929,8 +929,8 @@ export class UserService {
   }
 
 
-  saveServices(services: any, serviceCategories: any): Observable<any> {
-    const body = { services: services, serviceCategories: serviceCategories };
+  saveServices(packages:any,services: any, serviceCategories: any): Observable<any> {
+    const body = { packages:packages,services: services, serviceCategories: serviceCategories };
     console.log(body)
     return this.http.post(beautyAuthenticated_API_URL + "save-services", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))

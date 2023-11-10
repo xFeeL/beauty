@@ -11,6 +11,7 @@ import { FileInfo, Filesystem } from '@capacitor/filesystem';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { ClientProfilePage } from '../client-profile/client-profile.page';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 
 export class ChatPage implements OnInit {
   showTime = false
-
+  sendingMessageLoading = false
   userId: any;
   user: any;
   initialized: boolean = false;
@@ -175,20 +176,28 @@ export class ChatPage implements OnInit {
     this.modalController.dismiss()
   }
 
-  goToUserProfile() {
-    this.route.navigate(
-      ['/client-profile'],
-      { queryParams: { user_id: this.userId } }
-    );
+
+  async goToUserProfile() {
+    const modal = await this.modalController.create({
+      component: ClientProfilePage,
+      componentProps: {
+        user_id: this.userId,
+      }
+    });
+
+    await modal.present();
 
   }
 
+
+
   sendMessage() {
+    this.sendingMessageLoading = true
     const now = new Date();
     let mes = new Message();
     if (this.mode == "text") {
       mes.content = this.to_send;
-      if(mes.content==undefined){
+      if (mes.content == undefined) {
         return
       }
     } else {
@@ -239,6 +248,11 @@ export class ChatPage implements OnInit {
       this.messages[this.messages.length] = mes;
       this.scrollToBottomSetTimeOut(300);
       this.imagesToSend = []
+      this.sendingMessageLoading = false
+    }, err => {
+      this.sendingMessageLoading = false
+      this.userService.presentToast("Προέκυψε κάποιο σφάλμα", "danger")
+
     });
 
 
@@ -392,18 +406,8 @@ export class ChatPage implements OnInit {
 
         }
       }
-
-
     })
   }
-
-
-
-
-
-
-
-
 
 }
 

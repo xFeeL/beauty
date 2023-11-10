@@ -79,6 +79,7 @@ export class NewKrathshPage implements OnInit {
 
   }
 
+  
 
   ionViewWillEnter() {
     console.log(this.theDate)

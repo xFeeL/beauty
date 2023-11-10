@@ -1,0 +1,37 @@
+.whiteBackground{
+    background:white;
+}
+
+ion-checkbox::part(container) {
+    --background: transparent;
+    --border-color: transparent;
+  }
+  
+  ion-checkbox::part(marker) {
+    display: none; /* Hide default checkmark */
+  }
+  
+  ion-checkbox.checked::after {
+    content: attr(data-number); /* Display the number */
+    position: absolute;
+    /* Additional styling for positioning and appearance */
+  }
+  
+  .mr10{
+    margin-right: 10px !important;
+  }
+
+  .ml12{
+    margin-left: 12px !important;
+  }
+
+  .ml6{
+    margin-left: 6px !important;
+  }
+
+  .mt10{
+    margin-top: 10px !important;
+  }
+
+
+

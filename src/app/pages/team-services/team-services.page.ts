@@ -3,6 +3,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { NewServicePage } from '../new-service/new-service.page';
 import { UserService } from 'src/app/services/user.service';
 import { AddPersonPage } from '../add-person/add-person.page';
+import { NewPackagePage } from '../new-package/new-package.page';
 
 @Component({
   selector: 'app-team-services',
@@ -26,6 +27,7 @@ export class TeamServicesPage implements OnInit {
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
   reloadAppointments: any=false;
+  packages: any=[];
 
   constructor(private modalController: ModalController, private alertController: AlertController, private userService: UserService, private _cd: ChangeDetectorRef) { }
 
@@ -507,14 +509,28 @@ export class TeamServicesPage implements OnInit {
   handleModalDismiss(data: any, service: any) {
     if (data?.deletedServiceName) {
       this.deleteService(data.deletedServiceName);
+      this.updatePackagesAfterServiceChange(data.deletedServiceName, null);
     } else if (data) {
       const processedService = this.processServiceData(data, service);
       this.updateService(processedService, service);
+      this.updatePackagesAfterServiceChange(service.name, processedService.name);
     }
-
-
   }
-
+  
+  updatePackagesAfterServiceChange(oldServiceName: string, newServiceName: string | null) {
+    this.packages.forEach((pkg: { services: string[]; }) => { // 'pkg' is used instead of 'package'
+      const serviceIndex = pkg.services.indexOf(oldServiceName);
+      if (serviceIndex !== -1) {
+        if (newServiceName) {
+          pkg.services[serviceIndex] = newServiceName;
+        } else {
+          pkg.services.splice(serviceIndex, 1);
+        }
+      }
+    });
+  }
+  
+  
   deleteService(deletedServiceName: string) {
     const serviceIndex = this.services.findIndex((s) => s.name === deletedServiceName);
     if (serviceIndex !== -1) {
@@ -677,7 +693,7 @@ export class TeamServicesPage implements OnInit {
   
 
   saveServices() {
-    this.userService.saveServices(this.services, this.serviceCategories).subscribe(data => {
+    this.userService.saveServices(this.packages,this.services, this.serviceCategories).subscribe(data => {
       this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.", "success")
     }, err => {
       if(err.error=="Empty categories"){
@@ -688,5 +704,58 @@ export class TeamServicesPage implements OnInit {
       }
     })
   }
+
+ 
+  async newPackage() {
+    const modal = await this.modalController.create({
+      component: NewPackagePage,
+      componentProps: { services: this.services }
+    });
+  
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data && dataReturned.data.newPackage) {
+        // Add the new package to the packages array
+        this.packages.push(dataReturned.data.newPackage);
+        console.log("Package added:", dataReturned.data.newPackage);
+      }
+    });
+  
+    return modal.present();
+  }
+
+  async editPackage(packageToEdit: any) {
+    const modal = await this.modalController.create({
+      component: NewPackagePage, // Replace with your actual edit package page component
+      componentProps: { 
+        package: packageToEdit,
+        services: this.services 
+      }
+    });
+  
+    modal.onDidDismiss().then((dataReturned) => {
+      console.log("Modal dismissed with data:", dataReturned);
+  
+      if (dataReturned.data && dataReturned.data.newPackage) {
+        // Find the index of the package to edit in this.packages based on the name
+        const index = this.packages.findIndex((p: { name: any; }) => p.name === packageToEdit.name);
+  
+        console.log("Index found:", index);
+        if (index !== -1) {
+          // Replace the old package data with the edited package data
+          this.packages[index] = dataReturned.data.newPackage;
+          console.log("Package edited:", this.packages[index]);
+        } else {
+          console.log("No package found with the name:", packageToEdit.name);
+        }
+      }
+    });
+  
+    return modal.present();
+  }
+  
+  
+  
+  
+  
 
 }

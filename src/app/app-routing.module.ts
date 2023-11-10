@@ -135,6 +135,10 @@ const routes: Routes = [
     path: 'forget-password',
     loadChildren: () => import('./pages/forget-password/forget-password.module').then( m => m.ForgetPasswordPageModule)
   },
+  {
+    path: 'new-package',
+    loadChildren: () => import('./pages/new-package/new-package.module').then( m => m.NewPackagePageModule)
+  },
   
   
  

@@ -37,7 +37,7 @@ export class NewServicePage implements OnInit {
     this.categories = this.navParams.get('categories');
     this.editing = this.navParams.get('editing');
     this.services = this.navParams.get('services');
-    this.serviceCategory=this.navParams.get('serviceCategory');
+    this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
     console.log("The categories are")
     console.log(this.serviceCategory)
@@ -171,33 +171,19 @@ export class NewServicePage implements OnInit {
 
   onInput(ev: any) {
     const value = ev.target!.value;
-
-    // Remove all characters except numbers and a comma
     let filteredValue = value.replace(/[^0-9.]+/g, '');
-
-    // If more than one comma exists, keep only the first comma
     const allCommas = filteredValue.split('.');
     if (allCommas.length > 2) {
       filteredValue = allCommas[0] + '.' + allCommas.slice(1).join('');
     }
-
-    // Check if the string has a comma and make sure only two numbers follow it
     const parts = filteredValue.split('.');
-
     if (parts.length > 1 && parts[1].length > 2) {
-      // If there are more than two characters after the comma, truncate them
       filteredValue = parts[0] + '.' + parts[1].slice(0, 2);
     }
-
-    // Remove trailing ,0 or ,00
     if (filteredValue.endsWith('.0') || filteredValue.endsWith('.00')) {
       filteredValue = parts[0];
     }
-
-    // Set the value of the input field to the filtered value
     ev.target.value = filteredValue;
-
-    console.log(filteredValue);
   }
 
   selectAll: boolean = true; // Default checked for "Select All"

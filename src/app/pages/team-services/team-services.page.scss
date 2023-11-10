@@ -42,10 +42,17 @@
   }
   
   .success-line {
-    width: 4px; /* Adjust width as desired */
-    height: 100%; /* Take full height of the ion-item */
+    width: 4px; 
+    height: 100%; 
     background: var(--ion-color-primary);
-    margin-right: 10px; /* Space between the line and the label */
+    margin-right: 10px; 
+  }
+
+  .package-line{
+    width: 4px; 
+    height: 100%; 
+    background: var(--ion-color-warning);
+    margin-right: 10px; 
   }
 
   .mt9{
