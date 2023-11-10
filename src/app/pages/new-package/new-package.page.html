@@ -13,74 +13,84 @@
 
 <ion-content class="background">
 
-  <ion-grid class="whiteBackground ion-margin rad">
-    <ion-row class="mt10">
-      <ion-col size="12">
-        <ion-title size="large">Βασικές Πληροφορίες</ion-title> <!-- Grid Title -->
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
-      <ion-col size="12" size-xl="8">
-        <ion-input label="Όνομα πακέτου" label-placement="floating" fill="solid" [(ngModel)]="packageName"></ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-row class=" ion-margin-top ion-margin-start ion-margin-end">
-      <ion-col size="12" size-xl="8">
-        <ion-textarea label="Περιγραφή (προαιρετικό)" label-placement="floating" fill="solid"
-          [(ngModel)]="packageDescription"></ion-textarea>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid class="whiteBackground ion-margin rad">
-    <ion-row class="mt10">
-      <ion-col size="12">
-        <ion-title size="large">Υπηρεσίες</ion-title> <!-- Grid Title -->
-      </ion-col>
-    </ion-row>
-    <ion-row class=" ion-margin-top ">
-      <ion-col size="12" size-xl="8">
-        <!-- Hidden ion-select -->
-        <ion-select okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
-          label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
-          (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
-          <ion-select-option *ngFor="let service of services" [value]="service.name">
-            {{ service.name }}
-          </ion-select-option>
-        </ion-select>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-xl="8">
 
 
-        <ion-list class="ion-no-padding ml6">
-          <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
-            <ion-item *ngFor="let selectedService of selectedServices">
-              <ion-label>{{ selectedService }}</ion-label>
-              <ion-reorder slot="end"></ion-reorder>
-            </ion-item>
-          </ion-reorder-group>
-        </ion-list>
+        <ion-grid class="whiteBackground ion-margin rad">
+          <ion-row class="mt10">
+            <ion-col size="12">
+              <ion-title size="large">Βασικές Πληροφορίες</ion-title> <!-- Grid Title -->
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
+            <ion-col size="12">
+              <ion-input [counter]="true" maxlength="50" label="Όνομα πακέτου" label-placement="floating" fill="solid"
+                [(ngModel)]="packageName"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row class=" ion-margin-top ion-margin-start ion-margin-end">
+            <ion-col size="12" >
+              <ion-textarea [counter]="true" maxlength="70" [autoGrow]="true" label="Περιγραφή πακέτου"
+                label-placement="floating" fill="solid" helperText="Προαιρετικό"
+                [(ngModel)]="packageDescription"></ion-textarea>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-grid class="whiteBackground ion-margin rad">
+          <ion-row class="mt10">
+            <ion-col size="12">
+              <ion-title size="large">Υπηρεσίες</ion-title> <!-- Grid Title -->
+            </ion-col>
+          </ion-row>
+          <ion-row class=" ion-margin-top ">
+            <ion-col size="12" >
+              <!-- Hidden ion-select -->
+              <ion-select okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
+                label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
+                (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
+                <ion-select-option *ngFor="let service of services" [value]="service.name">
+                  {{ service.name }}
+                </ion-select-option>
+              </ion-select>
 
-        <ion-item class="ml12" (click)="openServiceSelect()" class="cursor mr10" lines="none">
-          <ion-icon aria-hidden="true" name="add-circle" color="primary" slot="start" class="mr10"></ion-icon>
-          <ion-label> Επιλογή υπηρεσιών</ion-label>
-        </ion-item>
+
+              <ion-list class="ion-no-padding ml6">
+                <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
+                  <ion-item *ngFor="let selectedService of selectedServices">
+                    <ion-label>{{ selectedService }}</ion-label>
+                    <ion-reorder slot="end"></ion-reorder>
+                  </ion-item>
+                </ion-reorder-group>
+              </ion-list>
+
+              <ion-item class="ml12" (click)="openServiceSelect()" class="cursor mr10" lines="none">
+                <ion-icon aria-hidden="true" name="add-circle" color="primary" slot="start" class="mr10"></ion-icon>
+                <ion-label> Επιλογή υπηρεσιών</ion-label>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid class="whiteBackground ion-margin rad">
+          <ion-row class="mt10">
+            <ion-col size="12">
+              <ion-title size="large">Τιμή</ion-title> <!-- Grid Title -->
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
+            <ion-col size="12" >
+              <ion-input label="Τιμή πακέτου (€)" label-placement="floating" fill="solid" placeholder="0.00"
+                (ionInput)="onInput($event)" [(ngModel)]="packagePrice"></ion-input>
+
+
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
       </ion-col>
     </ion-row>
-  </ion-grid>
-
-  <ion-grid class="whiteBackground ion-margin rad">
-    <ion-row class="mt10">
-      <ion-col size="12">
-        <ion-title size="large">Τιμή</ion-title> <!-- Grid Title -->
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
-      <ion-col size="12" size-xl="8">
-        <ion-input label="Τιμή πακέτου (€)" label-placement="floating" fill="solid" placeholder="0.00"
-          (ionInput)="onInput($event)" [(ngModel)]="packagePrice"></ion-input>
-
-
-      </ion-col>
-    </ion-row>
-
   </ion-grid>
 </ion-content>
 <ion-footer>

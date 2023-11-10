@@ -49,9 +49,12 @@
 
           </ion-row>
           <ion-row>
-            <ion-textarea labelPlacement="floating" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
+            <ion-col  size="12">
+              <ion-textarea labelPlacement="floating" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
               color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
               labelPlacement="floating" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
+            </ion-col>
+          
           </ion-row>
 
           <!-- ... (existing content) ... -->
