@@ -58,7 +58,8 @@
 
             <div class="navigator ion-padding">
               <ion-button color="primary" [disabled]="!(expertName!='' && expertName!=undefined)" class="beginButton"
-                no-caps (click)="nextSlide($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                no-caps (click)="nextSlide($event)"><ion-icon
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide3"> <ion-item lines="none"
@@ -257,22 +258,23 @@
                   <ion-grid class=" ion-no-padding">
                     <ion-row class="person-row ion-no-padding">
                       <ion-col>
-                        <ion-label text-wrap class="ion-no-margin f15 align-left">{{person.surname}}&nbsp;{{ person.name }} </ion-label>
+                        <ion-label text-wrap class="ion-no-margin f15 align-left">{{person.surname}}&nbsp;{{ person.name
+                          }} </ion-label>
                       </ion-col>
                       <ion-col size="auto">
                         <ion-buttons class="align-right">
-                         
-                          <mat-icon  [matMenuTriggerFor]="menu">more_vert</mat-icon>
-                        <mat-menu #menu="matMenu">
-                          <button mat-menu-item (click)="managePerson(person)">
-                            <mat-icon>edit</mat-icon>
-                            <span>Αλλαγή</span>
-                          </button>
-                          <button mat-menu-item (click)="deletePerson(person)">
-                            <mat-icon>delete</mat-icon>
-                            <span>Διαγραφή</span>
-                          </button>
-                        </mat-menu>
+
+                          <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="managePerson(person)">
+                              <mat-icon>edit</mat-icon>
+                              <span>Αλλαγή</span>
+                            </button>
+                            <button mat-menu-item (click)="deletePerson(person)">
+                              <mat-icon>delete</mat-icon>
+                              <span>Διαγραφή</span>
+                            </button>
+                          </mat-menu>
                         </ion-buttons>
                       </ion-col>
                     </ion-row>
@@ -310,12 +312,43 @@
             <!-- Menu definition -->
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>
+              <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου</button>
               <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσίας</button>
             </mat-menu>
-            <ion-grid class="w100 w80 custRow ion-margin-start" *ngIf="serviceCategories.length!=0">
+            <ion-grid class="w100 w80 custRow " *ngIf="serviceCategories.length!=0">
               <ion-row>
                 <ion-col size="12">
-                  <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom" *ngFor="let category of serviceCategories">
+                  <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom">
+                    <ion-row *ngIf="packages.length > 0">
+                      <ion-col>
+                        <h4 class="ml13" style="text-align: left">Πακέτα</h4> <!-- Display category name -->
+                      </ion-col>
+
+                    </ion-row>
+                    <ion-row *ngIf="packages.length > 0">
+                      <ion-list lines="inset" class="ion-no-padding servicesList">
+                        <ng-container>
+                          <ion-item class="cursor" *ngFor="let package of packages" (click)="editPackage(package)">
+                            <div class="package-line"></div>
+                            <ion-grid>
+                              <ion-row>
+                                <ion-col>
+                                  <ion-label>{{ package.name }}</ion-label>
+                                </ion-col>
+
+                              </ion-row>
+                              <ion-row class="mt9">
+                                <ion-note>Τιμή: €{{ package.price }} • {{package.services.length}} υπηρεσίες</ion-note>
+                              </ion-row>
+                            </ion-grid>
+                          </ion-item>
+                        </ng-container>
+
+                      </ion-list>
+                    </ion-row>
+                  </ion-grid>
+                  <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom"
+                    *ngFor="let category of serviceCategories">
                     <ion-row>
                       <ion-col>
                         <h4 class="ml13" style="text-align: left">{{ category }}</h4> <!-- Display category name -->
@@ -334,7 +367,7 @@
                         </mat-menu>
                       </ion-col>
                     </ion-row>
-                    <ion-row >
+                    <ion-row>
                       <ion-list lines="inset" class="ion-no-padding servicesList">
                         <ng-container *ngIf="getServicesForCategory(category).length > 0; else noServices">
                           <ion-item class="cursor" *ngFor="let service of getServicesForCategory(category)"
@@ -375,7 +408,7 @@
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
-                (click)="sendData()">Τέλος</ion-button>
+                (click)="saveData()">Τέλος</ion-button>
             </div>
           </swiper-slide>
         </swiper-container>
@@ -412,14 +445,14 @@
             </ion-header>
             <ion-content class="ion-padding"> <ion-card>
                 <ion-accordion-group [value]="['first']">
-                  <ion-accordion value="first" class="bgL bdl" >
+                  <ion-accordion value="first" class="bgL bdl">
                     <ion-item lines="none" slot="header" class="padd">
                       <ion-avatar slot="start">
                         <ion-img src="../../../assets/categories/Υπηρεσίες Ομορφιάς.png"></ion-img>
                       </ion-avatar>
                       <ion-label>Υπηρεσίες Ομορφιάς</ion-label>
                     </ion-item>
-                    <div  slot="content">
+                    <div slot="content">
                       <ion-list class="ion-no-padding">
                         <ion-item *ngFor="let item of omorfia_categories">
                           <!--<a href="/experts?category={{item.name}}">--> <ion-text

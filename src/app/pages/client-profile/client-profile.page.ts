@@ -83,17 +83,25 @@ export class ClientProfilePage implements OnInit {
   }
 
   getReservations() {
-
     this.userService.getUserReservations(this.page, this.userId).subscribe(data => {
-      for (let k = 0; k < data.length; k++) {
-        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a')
-        data[k][5] = data[k][5].replace(/,/g, ", ");
-        this.krathseis.push(data[k])
-      }
-    }, err => {
+        for (let k = 0; k < data.length; k++) {
+            data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
 
-    })
-  }
+            let services = data[k][5].split(',');
+            if (services.length === 1) {
+                data[k][5] = services[0].trim();
+            } else {
+                data[k][5] = services.length + " υπηρεσίες";
+            }
+
+            this.krathseis.push(data[k]);
+        }
+    }, err => {
+        // Handle the error here
+    });
+}
+
+
 
   getDate(datetime: string): string {
     return moment(datetime).locale('el').format('D-MMM-YY');

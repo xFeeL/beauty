@@ -17,7 +17,7 @@ ion-toolbar {
     width: 97%;
     margin-left: 2.5%;
     margin-right: 2.5%;
-    border-radius: 20px;
+    border-radius: 10px;
     border: 1px #dfdfdf solid;
     --padding-start: 8px;
   }
@@ -47,7 +47,7 @@ ion-item {
 
 ion-badge {
   padding: 6px 6px;
-  border-radius: 20px;
+  border-radius: 10px;
   font-weight: 400;
   font-size: 15px;
   box-shadow: 1px 1px 3px#00000029;
@@ -98,7 +98,7 @@ ion-badge {
   margin-right: 20px;
   border: 1px solid #0083FD;
   box-shadow: 0px 4px 28px rgba(0, 0, 0, 0.04);
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .colimg {

@@ -15,6 +15,7 @@ export class NewPackagePage implements OnInit {
   packagePrice: any="";
   packageToEdit: any=[];
   editMode: boolean=false;
+  packageId: any;
   constructor(private changeDetectorRef: ChangeDetectorRef,private navParams: NavParams, private modalController: ModalController) { }
   @ViewChild('serviceSelect') serviceSelect!: IonSelect;
 
@@ -34,6 +35,7 @@ export class NewPackagePage implements OnInit {
     if(this.packageToEdit.services.length>0){
       this.editMode=true
       this.packageName=this.packageToEdit.name;
+      this.packageId=this.packageToEdit.id;
       this.packageDescription=this.packageToEdit.description;
       this.packagePrice=this.packageToEdit.price;
       this.selectedServices=this.packageToEdit.services;
@@ -87,7 +89,8 @@ export class NewPackagePage implements OnInit {
       name: this.packageName,
       description: this.packageDescription,
       price: this.packagePrice,
-      services: this.selectedServices
+      services: this.selectedServices,
+      id:this.packageId
     }
     console.log("The new package is:", newPackage)
     this.modalController.dismiss({
@@ -100,5 +103,11 @@ export class NewPackagePage implements OnInit {
       return true;
     }
     return false;
+  }
+
+  deletePackage(){
+    this.modalController.dismiss({
+      'deletePackage': true
+    });
   }
 }

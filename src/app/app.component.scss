@@ -130,7 +130,7 @@ ion-menu ion-content {
   
   .login_button {
     width: 60%;
-    --border-radius: 20px;
+    --border-radius: 10px;
   }
   
   .theContent {
@@ -196,7 +196,7 @@ ion-menu ion-content {
   ion-split-pane {
     --side-width: 300px;
     --side-max-width: 300px;
-    //border-radius: 20px;
+    //border-radius: 10px;
     //border: 3px solid #c42e2e; /* Increase border width and use the 'solid' descriptor for clarity */      }      ion-menu {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;

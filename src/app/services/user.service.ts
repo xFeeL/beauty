@@ -577,7 +577,7 @@ export class UserService {
    * @param floors The expert's floors.
    * @returns An Observable that resolves to the server response.
    */
-  onBoarding(name: string, expertCategories: string, address: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[]): Observable<any> {
+  onBoarding(name: string, expertCategories: string, address: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[],packages:any[]): Observable<any> {
     const body = {
       name: name,
       expertCategories: expertCategories,
@@ -586,7 +586,8 @@ export class UserService {
       expertWP: days,
       people: people,
       services: services,
-      servicesCategories: servicesCategories
+      servicesCategories: servicesCategories,
+      packages:packages
     };
     console.log(body)
     return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
@@ -1225,6 +1226,12 @@ export class UserService {
 
   getServices(category: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-services?category=" + category, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  getPackages(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-packages", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }

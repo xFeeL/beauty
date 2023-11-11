@@ -19,6 +19,7 @@ selectedServices :any= [];
 services: Array<any> = new Array<any>;
 
 initialized=false;
+  packages: any;
 
   constructor(private userService:UserService,private modalController:ModalController,private navParams:NavParams) { }
 
@@ -39,6 +40,7 @@ initialized=false;
     console.log(this.selectedServices)
     this.userService.getServiceCategories().subscribe(data => {
       this.serviceCategories = data;
+      this.getPackages();
       this.getServices("all");
       this.initialized = true;
 
@@ -48,6 +50,15 @@ initialized=false;
     });
   }
   
+  
+  getPackages(){
+    this.userService.getPackages().subscribe(data => {
+      this.packages=data
+      console.log("The packages are")
+      console.log(this.packages)
+    }, err => {
+    })
+  }
 
   getServices(category: any): Observable<void> {
     // Create a Subject to notify completion

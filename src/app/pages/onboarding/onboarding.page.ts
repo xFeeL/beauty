@@ -18,6 +18,7 @@ import { InstagramImagesPage } from '../instagram-images/instagram-images.page';
 import { AddPersonPage } from '../add-person/add-person.page';
 import { NewServicePage } from '../new-service/new-service.page';
 import { BASE64_STRING } from 'src/assets/icon/default-image';
+import { NewPackagePage } from '../new-package/new-package.page';
 @Component({
   selector: 'app-onboarding',
   templateUrl: './onboarding.page.html',
@@ -71,7 +72,7 @@ export class OnboardingPage {
   new_image: string = "false";
   pagesToChoose: any;
   addressEntered: boolean = false;
-  constructor(private alertController:AlertController,private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
+  constructor(private alertController: AlertController, private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
     private _cd: ChangeDetectorRef, private actionSheetController: ActionSheetController) {
     // Initialize start and end times for each day
 
@@ -87,7 +88,9 @@ export class OnboardingPage {
   name: string | undefined;
   address = ""
   omorfia_categories: any[] = [];
- 
+
+  packages: any = [];
+
 
 
   @ViewChild('swiperElRef') swiperContainer!: ElementRef;
@@ -102,7 +105,7 @@ export class OnboardingPage {
         };
       });
     });
-   
+
     this.swiper = new Swiper(this.swiperContainer.nativeElement, {
 
       scrollbar: {
@@ -121,7 +124,7 @@ export class OnboardingPage {
     console.log('Considering deletion of person', person);
 
     // Identify the services that will be affected
-    const affectedServices = this.services.filter(service => 
+    const affectedServices = this.services.filter(service =>
       service.people.includes(person.name) && service.people.length === 1
     );
 
@@ -152,22 +155,22 @@ export class OnboardingPage {
       // If no services are affected, proceed directly with the deletion of the person
       this.performDeletion(person);
     }
-}
+  }
 
-performDeletion(person: any, affectedServices: any[] = []) {
-  // Remove the person from the people array
-  this.people = this.people.filter(r => r !== person);
+  performDeletion(person: any, affectedServices: any[] = []) {
+    // Remove the person from the people array
+    this.people = this.people.filter(r => r !== person);
 
-  // Remove affected services
-  this.services = this.services.filter(s => !affectedServices.includes(s));
+    // Remove affected services
+    this.services = this.services.filter(s => !affectedServices.includes(s));
 
-  // For unaffected services, just remove the person from their people array
-  this.services.forEach(service => {
-    service.people = service.people.filter((servicePerson: any) => servicePerson !== person.name);
-  });
+    // For unaffected services, just remove the person from their people array
+    this.services.forEach(service => {
+      service.people = service.people.filter((servicePerson: any) => servicePerson !== person.name);
+    });
 
-  console.log('Το άτομο διαγράφηκε. Επηρεασμένες υπηρεσίες:', affectedServices);
-}
+    console.log('Το άτομο διαγράφηκε. Επηρεασμένες υπηρεσίες:', affectedServices);
+  }
 
 
   deleteService(service: any) {
@@ -179,7 +182,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
   async deleteCategory(category: any) {
     // Check if there are any services associated with this category
     const servicesWithCategory = this.services.filter(r => r.selectedCategory === category);
-  
+
     if (servicesWithCategory.length > 0) {
       // Present a warning alert
       const alert = await this.alertController.create({
@@ -204,15 +207,15 @@ performDeletion(person: any, affectedServices: any[] = []) {
           }
         ]
       });
-  
+
       await alert.present();
     } else {
       // If no services are associated with the category, just delete the category
       this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
     }
   }
-  
-  
+
+
 
 
 
@@ -404,12 +407,12 @@ performDeletion(person: any, affectedServices: any[] = []) {
   }
 
 
-  sendData() {
+  saveData() {
     // Check if every category has at least one service associated with it
     for (let category of this.serviceCategories) {
       let hasService = this.services.some(service => service.selectedCategory === category);
       if (!hasService) {
-        this.userService.presentToast("Κάποιες κατηγορίες δεν έχουν υπηρεσίες.","danger")
+        this.userService.presentToast("Κάποιες κατηγορίες δεν έχουν υπηρεσίες.", "danger")
         return // Disable the button if a category has no associated service
       }
     }
@@ -422,7 +425,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
       }
     }
-    this.userService.onBoarding(this.expertName, expertCategories, this.address, this.expertImage, this.days, this.people, this.services,this.serviceCategories).subscribe(data => {
+    this.userService.onBoarding(this.expertName, expertCategories, this.address, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
       this.userService.presentToast("Τα στοιχεία σας καταχωρήθηκαν με επιτυχία!", "success")
       localStorage.setItem('authenticated', "true");
       this.userService._isAuthenticated.next(true);
@@ -467,7 +470,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
 
   isScheduleDefault(personschedule: any[]): boolean {
-    
+
     // create a deep copy of the default schedule and filter for open days
     const defaultScheduleCopy = JSON.parse(JSON.stringify(this.days)).filter((day: { open: boolean; }) => day.open);
 
@@ -509,8 +512,8 @@ performDeletion(person: any, affectedServices: any[] = []) {
 
     const defaultComponentProps = {
       data: this.days,
-      isEditing:false,
-      onboarding:true
+      isEditing: false,
+      onboarding: true
 
     };
 
@@ -520,8 +523,8 @@ performDeletion(person: any, affectedServices: any[] = []) {
       personSurName: person.surname,
       image: person.image,
       toggled: !this.isScheduleDefault(person.schedule),
-      onboarding:true,
-      isEditing:true
+      onboarding: true,
+      isEditing: true
 
     } : {};
     const modal = await this.modalController.create({
@@ -535,7 +538,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
     if (data) {
       const processedPerson = {
         name: data.personName,
-        surname:data.personSurName,
+        surname: data.personSurName,
         image: data.image,
         schedule: data.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
           const mappedDay = day.name;
@@ -562,7 +565,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
     // Transform the people array to contain only names and selected attributes
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
-      surname:person.surname,
+      surname: person.surname,
       selected: person.selected
     }));
     console.log("The categories")
@@ -579,14 +582,14 @@ performDeletion(person: any, affectedServices: any[] = []) {
         categories: this.serviceCategories,
         serviceCategory: service.selectedCategory,
         editing: true,
-        services:this.services
+        services: this.services
       }
     });
-  
+
     await modal.present();
-    
+
     const { data } = await modal.onDidDismiss();
-  
+
     if (data?.deletedServiceName) {
       // Handle deletion of service
       const serviceIndex = this.services.findIndex((s) => s.name === data.deletedServiceName);
@@ -603,18 +606,18 @@ performDeletion(person: any, affectedServices: any[] = []) {
         people: data.people,
         selectedCategory: data.selectedCategory,
       };
-    
+
       // Find and update the service in the services array
       const serviceIndex = this.services.findIndex((s) => s.name === service.name);
       if (serviceIndex !== -1) {
         this.services[serviceIndex] = processedService;
       }
     }
-  
+
     console.log("Actions on service completed");
     console.log(this.services);
   }
-  
+
 
 
   isMobile() {
@@ -642,17 +645,17 @@ performDeletion(person: any, affectedServices: any[] = []) {
             console.log('Category Attempt:', data.categoryName);
             if (this.categoryExists(data.categoryName)) {
               // Present a toast to the user
-             this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.","danger")
-             return false;
+              this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger")
+              return false;
             } else {
               console.log('Category Added:', data.categoryName);
               this.serviceCategories.push(data.categoryName);
-              return true; 
+              return true;
 
             }
           }
         }
-        
+
       ]
     });
 
@@ -662,7 +665,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
   categoryExists(categoryName: string): boolean {
     return this.serviceCategories.includes(categoryName);
   }
-  
+
 
   async editCategory(currentCategory: string) {
     const alert = await this.alertController.create({
@@ -683,56 +686,56 @@ performDeletion(person: any, affectedServices: any[] = []) {
         {
           text: 'Ενημερωση',
           handler: (data: { categoryName: any; }) => {
-            
+
             // Check if the new category name already exists, but not counting the currentCategory being edited
             if (data.categoryName !== currentCategory && this.serviceCategories.includes(data.categoryName)) {
               this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
               return false; // Keep the alert open
             }
-  
+
             console.log('Category Updated:', data.categoryName);
-  
+
             // Find the index of the category to replace
             const index = this.serviceCategories.indexOf(currentCategory);
             if (index > -1) {
               this.serviceCategories[index] = data.categoryName;
             }
-  
+
             // Update the selectedCategory for services
             this.services.forEach(service => {
               if (service.selectedCategory === currentCategory) {
                 service.selectedCategory = data.categoryName;
               }
             });
-            return true; 
+            return true;
 
           }
         }
       ]
     });
-  
+
     await alert.present();
   }
-  
+
 
   async addService() {
     console.log(this.serviceCategories);
-  
+
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
       surname: person.surname,
 
     }));
-  
+
     const modal = await this.modalController.create({
       component: NewServicePage,
-      componentProps: { people: transformedPeople, categories: this.serviceCategories,services:this.services }
+      componentProps: { people: transformedPeople, categories: this.serviceCategories, services: this.services }
     });
     await modal.present();
-  
+
     const { data } = await modal.onDidDismiss();
     console.log(data);
-  
+
     if (data) {
       const service = {
         name: data.name,
@@ -743,7 +746,7 @@ performDeletion(person: any, affectedServices: any[] = []) {
         people: data.people,
       };
       this.services.push(service);
-      this.serviceCategories=data.categories
+      this.serviceCategories = data.categories
 
       console.log("After closing newService")
       console.log(service)
@@ -751,11 +754,11 @@ performDeletion(person: any, affectedServices: any[] = []) {
     }
     this._cd.detectChanges();
   }
-  
+
 
   getServicesForCategory(categoryName: string): any[] {
     return this.services.filter(service => service.selectedCategory === categoryName);
-}
+  }
 
 
   openCropperDialog(imageURL: string | undefined) {
@@ -878,9 +881,9 @@ performDeletion(person: any, affectedServices: any[] = []) {
   }
 
 
- 
+
   isEndButtonDisabled(): boolean {
-   
+
 
     if (this.services.length == 0 || this.serviceCategories.length == 0) {
       return true;
@@ -895,15 +898,69 @@ performDeletion(person: any, affectedServices: any[] = []) {
     }
     for (let category of this.serviceCategories) {
       if (!categoriesWithServices.has(category)) {
-        return true; 
+        return true;
       }
     }
 
     return false;
-}
+  }
 
 
-  
+
+  async newPackage() {
+    const modal = await this.modalController.create({
+      component: NewPackagePage,
+      componentProps: { services: this.services }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data && dataReturned.data.newPackage) {
+        const newPackage = dataReturned.data.newPackage;
+        const nameExists = this.packages.some((p: { name: any; }) => p.name === newPackage.name);
+        if (nameExists) {
+          this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger")
+        } else {
+          this.packages.push(newPackage);
+          console.log("Package added:", newPackage);
+        }
+      }
+    });
+
+    return modal.present();
+  }
+
+  async editPackage(packageToEdit: any) {
+    const modal = await this.modalController.create({
+      component: NewPackagePage,
+      componentProps: {
+        package: packageToEdit,
+        services: this.services
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        if (dataReturned.data.deletePackage) {
+          this.packages = this.packages.filter((p: { name: any; }) => p.name !== packageToEdit.name);
+
+        } else if (dataReturned.data.newPackage) {
+          const editedPackage = dataReturned.data.newPackage;
+          const nameExists = this.packages.some((p: { name: any; }) => p.name === editedPackage.name && p.name !== packageToEdit.name);
+
+          if (nameExists) {
+            this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger");
+          } else {
+            const index = this.packages.findIndex((p: { name: any; }) => p.name === packageToEdit.name);
+            if (index !== -1) {
+              this.packages[index] = editedPackage;
+            }
+          }
+        }
+      }
+    });
+
+    return modal.present();
+  }
+
 }
 
 

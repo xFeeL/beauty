@@ -1,19 +1,19 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-        <ion-button (click)="goBack()">
-          <ion-icon color="light" name="arrow-back"></ion-icon>
-        </ion-button>
+      <ion-button (click)="goBack()">
+        <ion-icon color="light" name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
 
     <ion-title color="light" text-wrap>Νέα Υπηρεσία</ion-title>
 
-    
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="background">
-  <ion-grid >
+  <ion-grid>
     <ion-row class="ion-justify-content-center">
 
       <ion-col size-lg="8">
@@ -38,23 +38,25 @@
           <ion-row>
             <ion-col size="12">
 
-              
-                
-                <ion-select label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
-                  <ion-select-option  *ngFor="let category of categories" [value]="category">{{category}}</ion-select-option>
-                  
-                </ion-select>
+
+
+              <ion-select label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
+                cancelText="Ακυρο" [(ngModel)]="serviceCategory">
+                <ion-select-option *ngFor="let category of categories"
+                  [value]="category">{{category}}</ion-select-option>
+
+              </ion-select>
 
             </ion-col>
 
           </ion-row>
           <ion-row>
-            <ion-col  size="12">
+            <ion-col size="12">
               <ion-textarea labelPlacement="floating" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
-              color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
-              labelPlacement="floating" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
+                color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
+                labelPlacement="floating" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
             </ion-col>
-          
+
           </ion-row>
 
           <!-- ... (existing content) ... -->
@@ -99,7 +101,7 @@
         </ion-button>
       </ion-col>
       <ion-col [size]="editing==true?'6':'12'" class="ion-no-padding">
-        <ion-button  size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
+        <ion-button size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
           Αποθήκευση
         </ion-button>
       </ion-col>

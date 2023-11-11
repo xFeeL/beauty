@@ -26,8 +26,8 @@ export class TeamServicesPage implements OnInit {
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
-  reloadAppointments: any=false;
-  packages: any=[];
+  reloadAppointments: any = false;
+  packages: any = [];
 
   constructor(private modalController: ModalController, private alertController: AlertController, private userService: UserService, private _cd: ChangeDetectorRef) { }
 
@@ -56,11 +56,11 @@ export class TeamServicesPage implements OnInit {
 
   async managePerson(person?: any) {
     const isEditing = !!person; // if 'person' is provided, we are in editing mode
-   
+
     const defaultComponentProps = {
       data: this.days,
-      onboarding:false,
-      isEditing:false
+      onboarding: false,
+      isEditing: false
     };
 
     const editingComponentProps = isEditing ? {
@@ -70,7 +70,7 @@ export class TeamServicesPage implements OnInit {
       image: this.addBase64Prefix(person.image),
       toggled: !this.isScheduleDefault(person.schedule),
       scheduleExceptions: person.exceptions,
-      isEditing:true
+      isEditing: true
     } : {};
 
     const modal = await this.modalController.create({
@@ -105,9 +105,9 @@ export class TeamServicesPage implements OnInit {
 
       } else {
         this.team.push(processedPerson);
-    
+
       }
-    
+
     }
   }
 
@@ -163,6 +163,7 @@ export class TeamServicesPage implements OnInit {
 
     this.userService.getServiceCategories().subscribe(data => {
       this.serviceCategories = data;
+      this.getPackages();
       this.getServices("all");
       this.initialized = true;
 
@@ -172,6 +173,14 @@ export class TeamServicesPage implements OnInit {
     });
   }
 
+  getPackages() {
+    this.packages = [];
+    this.userService.getPackages().subscribe(packages => {
+      this.packages = packages;
+    }, err => {
+    });
+
+  }
 
   getServices(category: any) {
     this.services = [];
@@ -188,7 +197,7 @@ export class TeamServicesPage implements OnInit {
         }
         delete service.serviceCategory;
       });
-      
+
       const serviceIds = this.services.map(service => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(employeesData => {
@@ -224,33 +233,33 @@ export class TeamServicesPage implements OnInit {
 
   goToTeam() {
     this.userService.getEmployeesOfExpert().subscribe(data => {
-        this.team = data;
+      this.team = data;
 
-        let employeeIds = this.team.map(employee => employee.id).join(",");
+      let employeeIds = this.team.map(employee => employee.id).join(",");
 
-        this.userService.getEmployeeWorkingPlans(employeeIds).subscribe(workingPlans => {
-            // For each employee, find their corresponding working plan and attach it
-            this.team.forEach(employee => {
-                let matchingPlan = workingPlans.find((plan: any) => plan.objectId === employee.id);
-                if (matchingPlan) {
-                    employee.schedule = matchingPlan.personSchedule;
-                    employee.exceptions = matchingPlan.exceptions;
-                }
-            });
-
-            this.initialized = true;
-          
-        }, err => {
+      this.userService.getEmployeeWorkingPlans(employeeIds).subscribe(workingPlans => {
+        // For each employee, find their corresponding working plan and attach it
+        this.team.forEach(employee => {
+          let matchingPlan = workingPlans.find((plan: any) => plan.objectId === employee.id);
+          if (matchingPlan) {
+            employee.schedule = matchingPlan.personSchedule;
+            employee.exceptions = matchingPlan.exceptions;
+          }
         });
 
+        this.initialized = true;
+
+      }, err => {
+      });
+
     }, err => {
-        // Handle error here
+      // Handle error here
     });
 
     this.userService.getWrario().subscribe(data => {
       const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
       const dayNames = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή'];
-      
+
       this.days = daysOfWeek.map((day, index) => {
         const dayData = data[day];
         return {
@@ -262,11 +271,11 @@ export class TeamServicesPage implements OnInit {
           })) : []
         };
       });
-     
+
     }, err => {
     });
-    
-}
+
+  }
 
 
   goBack() {
@@ -364,7 +373,7 @@ export class TeamServicesPage implements OnInit {
               }
             });
 
-          
+
             return true;
           }
         }
@@ -516,7 +525,7 @@ export class TeamServicesPage implements OnInit {
       this.updatePackagesAfterServiceChange(service.name, processedService.name);
     }
   }
-  
+
   updatePackagesAfterServiceChange(oldServiceName: string, newServiceName: string | null) {
     this.packages.forEach((pkg: { services: string[]; }) => { // 'pkg' is used instead of 'package'
       const serviceIndex = pkg.services.indexOf(oldServiceName);
@@ -529,8 +538,8 @@ export class TeamServicesPage implements OnInit {
       }
     });
   }
-  
-  
+
+
   deleteService(deletedServiceName: string) {
     const serviceIndex = this.services.findIndex((s) => s.name === deletedServiceName);
     if (serviceIndex !== -1) {
@@ -573,29 +582,29 @@ export class TeamServicesPage implements OnInit {
   }
 
   isSaveButtonDisabled(): boolean {
-    if(this.selectedSegment != "team"){
-    if (this.services.length == 0 || this.serviceCategories.length == 0) {
-      return true;
-    }
-    let categoriesWithServices = new Set();
-    for (let service of this.services) {
-      if (typeof service.serviceCategoryName === 'string') {
-        categoriesWithServices.add(service.serviceCategoryName);
-      }
-    }
-    for (let category of this.serviceCategories) {
-      if (!categoriesWithServices.has(category.id) && !categoriesWithServices.has(category.name)) {
+    if (this.selectedSegment != "team") {
+      if (this.services.length == 0 || this.serviceCategories.length == 0) {
         return true;
       }
-    }
+      let categoriesWithServices = new Set();
+      for (let service of this.services) {
+        if (typeof service.serviceCategoryName === 'string') {
+          categoriesWithServices.add(service.serviceCategoryName);
+        }
+      }
+      for (let category of this.serviceCategories) {
+        if (!categoriesWithServices.has(category.id) && !categoriesWithServices.has(category.name)) {
+          return true;
+        }
+      }
 
-    return false;
-  }else{
-    if(this.team.length == 0){
-      return true;
+      return false;
+    } else {
+      if (this.team.length == 0) {
+        return true;
+      }
+      return false;
     }
-    return false;
-  }
   }
 
 
@@ -620,20 +629,20 @@ export class TeamServicesPage implements OnInit {
       }
     });
   }
-  
+
   async presentChoiceAlert(errorObj: any) {
     let message: string = "Unknown error";  // Set a default value
-    let buttonText: string="";
+    let buttonText: string = "";
     let handlerFn;
-  
-    if (errorObj.deletedEmployee) { 
+
+    if (errorObj.deletedEmployee) {
       message = errorObj.deletedEmployee;
       buttonText = 'Ακυρωση ολων';
       handlerFn = () => {
         this.userService.saveTeam(this.team, true, true, false).subscribe(
           data => {
             this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
-            this.reloadAppointments= true;
+            this.reloadAppointments = true;
 
           },
           err => {
@@ -648,7 +657,7 @@ export class TeamServicesPage implements OnInit {
         this.userService.saveTeam(this.team, true, false, true).subscribe(
           data => {
             this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
-            this.reloadAppointments= true;
+            this.reloadAppointments = true;
           },
           err => {
             this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -656,7 +665,7 @@ export class TeamServicesPage implements OnInit {
         );
       };
     }
-  
+
     const alert = await this.alertController.create({
       header: 'Προσοχή!',
       message: message,
@@ -687,65 +696,73 @@ export class TeamServicesPage implements OnInit {
         },
       ]
     });
-  
+
     await alert.present();
   }
-  
+
 
   saveServices() {
-    this.userService.saveServices(this.packages,this.services, this.serviceCategories).subscribe(data => {
+    this.userService.saveServices(this.packages, this.services, this.serviceCategories).subscribe(data => {
       this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.", "success")
     }, err => {
-      if(err.error=="Empty categories"){
+      if (err.error == "Empty categories") {
         this.userService.presentToast("Κάποια κατηγορία δεν έχει υπηρεσίες.", "danger")
-      }else{
+      } else {
         this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
 
       }
     })
   }
 
- 
+
   async newPackage() {
     const modal = await this.modalController.create({
       component: NewPackagePage,
       componentProps: { services: this.services }
     });
-  
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data && dataReturned.data.newPackage) {
-        // Add the new package to the packages array
-        this.packages.push(dataReturned.data.newPackage);
-        console.log("Package added:", dataReturned.data.newPackage);
+        const newPackage = dataReturned.data.newPackage;
+        const nameExists = this.packages.some((p: { name: any; }) => p.name === newPackage.name);
+        if (nameExists) {
+          this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger")
+        } else {
+          this.packages.push(newPackage);
+          console.log("Package added:", newPackage);
+        }
       }
     });
-  
+
     return modal.present();
   }
 
+
   async editPackage(packageToEdit: any) {
     const modal = await this.modalController.create({
-      component: NewPackagePage, // Replace with your actual edit package page component
-      componentProps: { 
+      component: NewPackagePage,
+      componentProps: {
         package: packageToEdit,
-        services: this.services 
+        services: this.services
       }
     });
   
     modal.onDidDismiss().then((dataReturned) => {
-      console.log("Modal dismissed with data:", dataReturned);
+      if (dataReturned.data) {
+        if (dataReturned.data.deletePackage) {
+          this.packages = this.packages.filter((p: { name: any; }) => p.name !== packageToEdit.name);
+          
+        } else if (dataReturned.data.newPackage) {
+          const editedPackage = dataReturned.data.newPackage;
+          const nameExists = this.packages.some((p: { name: any; }) => p.name === editedPackage.name && p.name !== packageToEdit.name);
   
-      if (dataReturned.data && dataReturned.data.newPackage) {
-        // Find the index of the package to edit in this.packages based on the name
-        const index = this.packages.findIndex((p: { name: any; }) => p.name === packageToEdit.name);
-  
-        console.log("Index found:", index);
-        if (index !== -1) {
-          // Replace the old package data with the edited package data
-          this.packages[index] = dataReturned.data.newPackage;
-          console.log("Package edited:", this.packages[index]);
-        } else {
-          console.log("No package found with the name:", packageToEdit.name);
+          if (nameExists) {
+            this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger");
+          } else {
+            const index = this.packages.findIndex((p: { name: any; }) => p.name === packageToEdit.name);
+            if (index !== -1) {
+              this.packages[index] = editedPackage;
+            }
+          }
         }
       }
     });
@@ -753,9 +770,11 @@ export class TeamServicesPage implements OnInit {
     return modal.present();
   }
   
-  
-  
-  
-  
+
+
+
+
+
+
 
 }
