@@ -15,27 +15,36 @@
   </ion-toolbar></ion-header>
 <ion-content *ngIf="initialized==true">
   <ion-grid class="servicesGrid">
-   
+
 
     <ion-row class="ion-padding">
 
       <ion-segment [(ngModel)]="categoryServiceSegment" scrollable value="all" mode="ios" class="small-segment">
-        <ion-segment-button value="all" (click)="getServices('all')">
+        <ion-segment-button value="all" (click)="onAllSegmentClicked()">
           <ion-label>Όλες</ion-label>
         </ion-segment-button>
-        <ion-segment-button [value]="category.id" *ngFor="let category of serviceCategories" (click)="getServices(category)">
+        <ion-segment-button value="packages" (click)="goToPackages()">
+          <ion-label>Πακέτα</ion-label>
+        </ion-segment-button>
+        <ion-segment-button [value]="category.id" *ngFor="let category of serviceCategories"
+          (click)="getServices(category)">
           <ion-label>{{category.name}} </ion-label>
         </ion-segment-button>
-         </ion-segment>
+      </ion-segment>
     </ion-row>
     <ion-row *ngIf="isSearching" class="ion-margin-top mb30">
       <ion-list lines="inset" class="ion-no-padding servicesList ">
-                  <ion-item class="cursor" *ngFor="let service of filteredServices" (click)="toggleSelectService(service)">
+        <ion-item class="cursor" *ngFor="let service of filteredServices" (click)="toggleSelectService(service)">
 
-          <div class="normal-line"></div>
+          <div [class]="service.type=='package'?'package-line':'normal-line'"></div>
           <ion-label>
             <h2>{{ service.name }}</h2>
-            <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+              λεπτά</ion-note>
+            <ion-note *ngIf="service.type == 'package'">
+              Τιμή: €{{ service.price }} • {{ service.services.length }}
+              {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
+            </ion-note>
           </ion-label>
           <ion-icon *ngIf="!service.isSelected" name="add-circle-outline" slot="end"
             (click)="toggleSelectService(service)"></ion-icon>
@@ -44,45 +53,52 @@
       </ion-list>
     </ion-row>
     <ion-row class="ion-margin-top">
-      <!-- ... your segments code remains unchanged ... -->
-
-
       <ion-list lines="inset" class="ion-no-padding servicesList scrollable-list" *ngIf="!isSearching">
         <ion-item class="cursor" *ngFor="let service of services" (click)="toggleSelectService(service)">
-          <div class="normal-line"></div>
+          <ion-item *ngFor="let item of combinedList" (click)="toggleSelectService(item)"></ion-item>
+          <div [class]="service.type=='package'?'package-line':'normal-line'"></div>
           <ion-label>
             <h2>{{ service.name }}</h2>
-            <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+              λεπτά</ion-note>
+            <ion-note *ngIf="service.type == 'package'">
+              Τιμή: €{{ service.price }} • {{ service.services.length }}
+              {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
+            </ion-note>
+
           </ion-label>
           <ion-icon *ngIf="!service.isSelected" name="add-circle-outline" slot="end"
             (click)="toggleSelectService(service)"></ion-icon>
 
         </ion-item>
-        <!-- ... Repeat for other items ... -->
       </ion-list>
 
-     
-
     </ion-row>
-    <ion-row class="ion-margin-top mt30" *ngIf="selectedServices && selectedServices.length != 0">
+    <ion-row class="ion-margin-top mt30" *ngIf="selectedServicesAndPackages && selectedServicesAndPackages.length != 0">
       <ion-list lines="inset" class="ion-no-padding servicesList">
-        <ion-item class="cursor" *ngFor="let service of selectedServices" (click)="toggleSelectService(service)">
+        <ion-item class="cursor" *ngFor="let service of selectedServicesAndPackages"
+          (click)="toggleSelectService(service)">
           <div class="success-line"></div>
           <ion-label>
             <h2>{{ service.name }}</h2>
-            <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+              λεπτά</ion-note>
+            <ion-note *ngIf="service.type == 'package'">
+              Τιμή: €{{ service.price }} • {{ service.services.length }}
+              {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
+            </ion-note>
           </ion-label>
-          <ion-icon color="primary" class="cursor" *ngIf="!service.isSelected" name="add-circle-outline" slot="end"
-            ></ion-icon>
-          <ion-icon color="danger" class="cursor" *ngIf="service.isSelected" name="remove-circle-outline" slot="end"
-          ></ion-icon>
+          <ion-icon color="primary" class="cursor" *ngIf="!service.isSelected" name="add-circle-outline"
+            slot="end"></ion-icon>
+          <ion-icon color="danger" class="cursor" *ngIf="service.isSelected" name="remove-circle-outline"
+            slot="end"></ion-icon>
         </ion-item>
         <!-- ... Repeat for other items ... -->
       </ion-list>
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer (click)="saveServices()"> <ion-button class="ion-no-margin" [disabled]="selectedServices.length==0"
-    expand="full" color="primary">
+<ion-footer (click)="saveServices()"> <ion-button class="ion-no-margin"
+    [disabled]="selectedServicesAndPackages.length==0" expand="full" color="primary">
     <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
   </ion-button></ion-footer>

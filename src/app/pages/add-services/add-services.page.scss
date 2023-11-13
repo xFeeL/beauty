@@ -23,6 +23,13 @@
     margin-right: 10px; /* Space between the line and the label */
   }
 
+  .package-line {
+    width: 4px; /* Adjust width as desired */
+    height: 100%; /* Take full height of the ion-item */
+    background: var(--ion-color-warning);
+    margin-right: 10px; /* Space between the line and the label */
+  }
+
   .success-line {
     width: 4px; /* Adjust width as desired */
     height: 100%; /* Take full height of the ion-item */

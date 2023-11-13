@@ -202,12 +202,24 @@ export class TeamServicesPage implements OnInit {
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(employeesData => {
         this.services.forEach(service => {
-          const employeesForService = employeesData[service.id] || [];
-          service.people = employeesForService.map((person: { image: any; }) => {
-            delete person.image;
-            return person;
-          });
+            // Find the corresponding object in employeesData based on serviceId
+            const serviceData = employeesData.find((data: { serviceId: any; }) => data.serviceId === service.id);
+            console.log('serviceData for serviceId ' + service.id + ':', serviceData);
+    
+            // Access the employees directly
+            if (serviceData && serviceData.employees) {
+                service.people = serviceData.employees.map((person: { [x: string]: any; image: any; }) => {
+                    const { image, ...rest } = person;  // Destructure to separate 'image' and the rest of the properties
+                    return rest;  // Return the rest of the properties, effectively omitting 'image'
+                });
+            } else {
+                console.log('No employees data found for serviceId:', service.id);
+                service.employees = [];
+            }
         });
+  
+    
+      
 
 
 
@@ -470,7 +482,8 @@ export class TeamServicesPage implements OnInit {
   }
   async editService(service: any) {
     const modalData = this.prepareDataForModal(service);
-
+    console.log("THe modal data")
+    console.log(modalData)
     const modal = await this.createServiceModal(service, modalData);
     await modal.present();
 
@@ -481,6 +494,8 @@ export class TeamServicesPage implements OnInit {
   }
 
   prepareDataForModal(service: any) {
+    console.log("Preparing data for modal")
+    console.log()
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
       surname: person.surname,
@@ -492,7 +507,8 @@ export class TeamServicesPage implements OnInit {
 
     const concatenatedNames = service.people.map((person: any) => `${person.name} ${person.surname}`);
     const categoryNames = this.serviceCategories.map((category: any) => category.name);
-
+    console.log("Concatenated names")
+    console.log(concatenatedNames)
     return { transformedPeople, categoryName, concatenatedNames, categoryNames };
   }
 

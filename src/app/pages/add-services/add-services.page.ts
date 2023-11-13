@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, forkJoin } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -9,150 +9,246 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./add-services.page.scss'],
 })
 export class AddServicesPage implements OnInit {
-searchTerm = '';
-categoryServiceSegment="all"
+  searchTerm = '';
+  categoryServiceSegment = "all"
 
-isSearching: boolean = false;
-filteredServices: any[] = [];
-selectedServices :any= [];
+  isSearching: boolean = false;
+  filteredServices: any[] = [];
+  selectedServicesAndPackages: any = [];
   serviceCategories: any;
-services: Array<any> = new Array<any>;
 
-initialized=false;
-  packages: any;
-
-  constructor(private userService:UserService,private modalController:ModalController,private navParams:NavParams) { }
+  initialized = false;
+  services: any[] = [];
+  packages: any[] = [];
+  combinedList: any[] = []; // This will hold both services and packages
+  
+  constructor(private userService: UserService, private modalController: ModalController, private navParams: NavParams) { }
 
   ngOnInit(): void {
-    
+
   }
   ionViewWillEnter() {
-   
+    this.resetState();
+    this.loadInitialData();
+  }
+  
+  private resetState() {
     this.initialized = false;
-    this.selectedServices = []; // Default initialization
-  
-    // Get selectedServices from navParams and assign it only if it exists
-    const servicesFromNav = this.navParams.get('selectedServices');
-    if (servicesFromNav) {
-      this.selectedServices = servicesFromNav;
-    }
-    console.log("Opened with")
-    console.log(this.selectedServices)
-    this.userService.getServiceCategories().subscribe(data => {
-      this.serviceCategories = data;
-      this.getPackages();
-      this.getServices("all");
-      this.initialized = true;
-
-    
-    }, err => {
-      // Handle error here (e.g., show an error message or log it)
-    });
-  }
-  
-  
-  getPackages(){
-    this.userService.getPackages().subscribe(data => {
-      this.packages=data
-      console.log("The packages are")
-      console.log(this.packages)
-    }, err => {
-    })
-  }
-
-  getServices(category: any): Observable<void> {
-    // Create a Subject to notify completion
-    const completionSubject = new Subject<void>();
-  
     this.services = [];
-    let categoryToSend;
-    if(category=="all"){
-      categoryToSend="all"
-    }else{
-      categoryToSend=category.id
-      this.categoryServiceSegment=category.name
+    this.selectedServicesAndPackages = [];
+    this.categoryServiceSegment = "all";
+  
+    const servicesFromNav = this.navParams.get('selectedServicesAndPackages');
+    if (servicesFromNav) {
+      this.selectedServicesAndPackages = servicesFromNav;
     }
-    this.userService.getServices(categoryToSend).subscribe(data => {
-        this.services = data
-            // Filter out services that are already in selectedServices
-            .filter((service: any) => !this.selectedServices.some((selectedService: { id: any; }) => selectedService.id === service.id))
-            // Map over the filtered services to set isSelected property to false
-            .map((service: any) => ({
-                ...service,
-                isSelected: false
-            }));
+  }
 
-        // Notify that we're done
-        completionSubject.next();
-        completionSubject.complete();
-    }, err => {
-        // Handle the error (optional: you might also want to notify the caller of the error)
-        completionSubject.error(err);
-    });
-
-    // Return the observable
-    return completionSubject.asObservable();
-}
+  onAllSegmentClicked() {
+    this.loadInitialData();
+  }
+  
+  
+  private loadInitialData() {
+    forkJoin({
+      serviceCategories: this.userService.getServiceCategories(),
+      services: this.userService.getServices("all"),
+      packages: this.userService.getPackages()
+    }).subscribe(
+      data => this.handleDataLoadSuccess(data),
+      err => this.handleDataLoadError(err)
+    );
+  }
+  
+  private handleDataLoadSuccess(data: { serviceCategories: any, services: any, packages: any }) {
+    this.serviceCategories = data.serviceCategories;
+    this.packages = this.transformPackages(data.packages);
+    this.services = this.combineServicesAndPackages(data.services, this.packages);
+    this.initialized = true;
+  }
+  
+  private transformPackages(packages: any[]): any[] {
+    return packages.map(pkg => ({
+      ...pkg,
+      isSelected: false,
+      type: 'package'
+    }));
+  }
+  
+  private combineServicesAndPackages(services: any[], packages: any[]): any[] {
+    return [...packages, ...services].filter(item => 
+      !this.selectedServicesAndPackages.some((selected: { id: any; }) => selected.id === item.id)
+    ).map(item => ({
+      ...item,
+      isSelected: this.selectedServicesAndPackages.some((selected: { id: any; }) => selected.id === item.id)
+    }));
+  }
+  
+  private handleDataLoadError(err: any) {
+    // Handle error here (e.g., show an error message or log it)
+    console.error("Error loading data:", err);
+  }
+  
   
 
-  goBack(){
+
+  goToPackages() {
+    this.services = []
+    this.getPackages();
+
+  }
+  getPackages() {
+    this.userService.getPackages().subscribe(data => {
+      this.packages = data
+        .filter((pkg: any) => !this.selectedServicesAndPackages.some((selectedService: { id: any; }) => selectedService.id === pkg.id))
+        .map((pkg: any) => ({
+          ...pkg,
+          isSelected: false,
+          type: 'package' // Add type property for package
+        }));
+  
+      this.updateCombinedList();
+    }, err => {
+      // Handle error here
+    });
+  }
+
+  private updateCombinedList() {
+    // Combine packages and services, with packages at the start
+    this.services = [...this.packages, ...this.services].filter(item =>
+      !this.selectedServicesAndPackages.some((selected: { id: any; }) => selected.id === item.id)
+    ).map(item => ({
+      ...item,
+      isSelected: this.selectedServicesAndPackages.some((selected: { id: any; }) => selected.id === item.id)
+    }));
+  
+    console.log("The combined list is", this.services);
+  }
+  
+  
+
+
+ getServices(category: any): Observable<void> {
+  const completionSubject = new Subject<void>();
+
+  let categoryToSend = category === "all" ? "all" : category.id;
+  this.categoryServiceSegment = category === "all" ? "all" : category.name;
+
+  this.userService.getServices(categoryToSend).subscribe(data => {
+    this.services = data
+      .filter((service: any) => !this.selectedServicesAndPackages.some((selectedService: { id: any; }) => selectedService.id === service.id))
+      .map((service: any) => ({
+        ...service,
+        isSelected: false,
+        type: 'service' 
+      }));
+
+    this.updateCombinedList();
+    completionSubject.next();
+    completionSubject.complete();
+  }, err => {
+    completionSubject.error(err);
+  });
+
+  return completionSubject.asObservable();
+}
+
+  
+
+  goBack() {
     this.modalController.dismiss()
   }
 
   onSearch(event: any) {
     if (this.categoryServiceSegment != "all") {
-        this.categoryServiceSegment = "all";
-        this.getServices("all").subscribe(() => {  // Assuming getServices returns an Observable
-            this.performSearch(event.target.value.toLowerCase());
-        });
-    } else {
+      this.categoryServiceSegment = "all";
+      this.getServices("all").subscribe(() => {  // Assuming getServices returns an Observable
         this.performSearch(event.target.value.toLowerCase());
-    }
-}
-
-performSearch(searchTerm: string) {
-    if (searchTerm && searchTerm.trim() !== '') {
-        this.isSearching = true;
-        this.filteredServices = this.services.filter(service => {
-            return service.name.toLowerCase().includes(searchTerm);
-        });
+      });
     } else {
-        this.isSearching = false;
-        this.filteredServices = this.services;
+      this.performSearch(event.target.value.toLowerCase());
     }
-}
+  }
 
+  performSearch(searchTerm: string) {
+    if (searchTerm && searchTerm.trim() !== '') {
+      this.isSearching = true;
+      this.filteredServices = this.services.filter(service => {
+        return service.name.toLowerCase().includes(searchTerm);
+      });
+    } else {
+      this.isSearching = false;
+      this.filteredServices = this.services;
+    }
+  }
+
+
+
+
+  toggleSelectService(item: any) {
+    item.isSelected = !item.isSelected; // Toggle the isSelected property
+ 
+   if (item.type === 'package') {
+      this.updatePackageSelection(item);
+    }else{
+      this.updateServiceSelection(item);
+
+    }
+  }
   
-
-  
-  toggleSelectService(service: any) {
-    service.isSelected = !service.isSelected; // Toggle the isSelected property
-
+  private updateServiceSelection(service: any) {
     if (this.services.includes(service) || this.filteredServices.includes(service)) {
-        // Remove from services and filteredServices, then add to selectedServices
-        this.services = this.services.filter(s => s !== service);
-        this.filteredServices = this.filteredServices.filter(s => s !== service);
-        this.selectedServices.push(service);
-    } else if (this.selectedServices.includes(service)) {
-        // Remove from selectedServices
-        this.selectedServices = this.selectedServices.filter((s: any) => s !== service);
-        
-        // Add back to services only if the category matches this.categoryServiceSegment
-        if (service.serviceCategory === this.categoryServiceSegment || this.categoryServiceSegment=="all") {
-            this.services.push(service);
-        }
-
-        // If searching is active, push the service back to filteredServices as well
-        if (this.isSearching) {
-            this.filteredServices.push(service);
-        }
+      this.removeFromLists(service);
+      this.selectedServicesAndPackages.push(service);
+    } else {
+      this.reintegrateService(service);
     }
-}
-
+  }
+  
+  private updatePackageSelection(pkg: any) {
+    if (this.services.includes(pkg) || this.filteredServices.includes(pkg)) {
+      this.removeFromLists(pkg);
+      this.selectedServicesAndPackages.push(pkg);
+    } else {
+      this.reintegratePackage(pkg);
+    }
+  }
+  
+  
+  private removeFromLists(item: any) {
+    this.services = this.services.filter(s => s !== item);
+    this.filteredServices = this.filteredServices.filter(s => s !== item);
+  }
+  
+  private reintegrateService(service: any) {
+    this.removeFromSelectedServices(service);
+    if (this.categoryServiceSegment === 'all' || service.serviceCategory === this.categoryServiceSegment) {
+      this.services.push(service);
+      if (this.isSearching) {
+        this.filteredServices.push(service);
+      }
+    }
+  }
+  
+  private reintegratePackage(pkg: any) {
+    this.removeFromSelectedServices(pkg);
+    if (this.categoryServiceSegment === 'all' || this.categoryServiceSegment== "packages") {
+      this.services.push(pkg);
+      if (this.isSearching) {
+        this.filteredServices.push(pkg);
+      }
+    }
+  }
+  
+  private removeFromSelectedServices(item: any) {
+    this.selectedServicesAndPackages = this.selectedServicesAndPackages.filter((s: any) => s !== item);
+  }
   
 
-saveServices(){
-  this.modalController.dismiss(this.selectedServices)
-}
+
+
+  saveServices() {
+    this.modalController.dismiss(this.selectedServicesAndPackages)
+  }
 
 }

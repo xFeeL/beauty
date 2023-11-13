@@ -50,7 +50,7 @@
               <ion-select okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
                 label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
                 (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
-                <ion-select-option *ngFor="let service of services" [value]="service.name">
+                <ion-select-option *ngFor="let service of services" [value]="service.id">
                   {{ service.name }}
                 </ion-select-option>
               </ion-select>
@@ -59,11 +59,12 @@
               <ion-list class="ion-no-padding ml6">
                 <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
                   <ion-item *ngFor="let selectedService of selectedServices">
-                    <ion-label>{{ selectedService }}</ion-label>
+                    <ion-label>{{ getSelectedServiceName(selectedService) }}</ion-label>
                     <ion-reorder slot="end"></ion-reorder>
                   </ion-item>
                 </ion-reorder-group>
               </ion-list>
+              
 
               <ion-item class="ml12" (click)="openServiceSelect()" class="cursor mr10" lines="none">
                 <ion-icon aria-hidden="true" name="add-circle" color="primary" slot="start" class="mr10"></ion-icon>

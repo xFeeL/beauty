@@ -11,9 +11,9 @@
         <h4><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Υπηρεσιών</b></ion-text>
         </h4>
-        <ion-button *ngIf="selectedServices?.length==0" fill="outline" color="primary" (click)="chooseServices()"
-          class="capsoff"> Προσθήκη</ion-button>
-        <ion-grid class="customGrid" *ngIf="selectedServices.length!=0">
+        <ion-button *ngIf="selectedServicesAndPackages?.length==0" fill="outline" color="primary"
+          (click)="chooseServices()" class="capsoff"> Προσθήκη</ion-button>
+        <ion-grid class="customGrid" *ngIf="selectedServicesAndPackages.length!=0">
           <ion-row>
             <ion-segment>
 
@@ -21,11 +21,19 @@
           </ion-row>
           <ion-row class="ion-margin-top">
             <ion-list lines="inset" class="ion-no-padding servicesList">
-              <ion-item *ngFor="let service of selectedServices">
+              <ion-item *ngFor="let service of selectedServicesAndPackages">
                 <div class="success-line"></div>
                 <ion-label>
                   <h2>{{ service.name }}</h2>
-                  <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+                  <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration
+                    }} λεπτά</ion-note>
+                  <ion-note *ngIf="service.type=='package'">
+                    Τιμή: €{{ service.price }} • Διάρκεια:
+                    {{ calculateTotalDuration(service) }} λεπτά
+                    
+                  </ion-note>
+
+
                 </ion-label>
 
                 <ion-icon color="danger" class="cursor" *ngIf="service.isSelected" name="remove-circle-outline"
@@ -47,10 +55,11 @@
 
         <ion-grid class="customGrid" *ngIf="selectedServices.length>0" [@moveToBottom]="'*'">
           <ion-row>
-            <ion-accordion-group [value]="currentService" class="ion-margin custom-accordion">
+            <ion-accordion-group [value]="currentService" class="ion-padding custom-accordion">
               <ion-accordion *ngFor="let service of selectedServices" [value]="service" class="custom-accordion-item">
                 <ion-item slot="header" class="custom-accordion-header">
-                  <ion-label>{{service.name}}</ion-label>
+                  <ion-label>{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
+                      }})</span></ion-label>
                 </ion-item>
                 <div slot="content" class="horizontal-scroll">
 
@@ -65,14 +74,14 @@
                   </div>
 
                   <!-- Display other team members -->
-                    <div *ngFor="let person of service.employees" class="person-item ion-margin">
-                      <div class="person-avatar" (click)="selectEmployee(service, person.id)">
-                        <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for each employee -->
-                        <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === person.id">
-                          <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
-                        </ion-avatar>
-                        <ion-note>{{person.name}}</ion-note>
-                      </div>
+                  <div *ngFor="let person of service.employees" class="person-item ion-margin">
+                    <div class="person-avatar" (click)="selectEmployee(service, person.id)">
+                      <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for each employee -->
+                      <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === person.id">
+                        <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
+                      </ion-avatar>
+                      <ion-note>{{person.name}}</ion-note>
+                    </div>
                   </div>
                   <ion-note *ngIf="service.employees?.length==0" class="ion-margin">
                     Δεν υπάρχουν άτομα που να εξυπηρετούν τη συγκεκριμένη υπηρεσία.
@@ -121,10 +130,12 @@
 
 
 
-        <h4 *ngIf="timeSelected && !editing" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
+        <h4 *ngIf="timeSelected && !editing" [@moveToBottom]="'*'"><ion-text
+            color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Πελάτη</b></ion-text>
         </h4>
-        <ion-item *ngIf="timeSelected && !editing" class="border ion-margin-bottom ion-margin-end" (click)="presentClientPop()">
+        <ion-item *ngIf="timeSelected && !editing" class="border ion-margin-bottom ion-margin-end"
+          (click)="presentClientPop()">
           <ion-label class="full-width-label"> <ion-item lines="none" *ngIf="selectedClientImage!=''">
               <ion-avatar class="custAvatarHed2">
                 <ion-img src="data:image/jpeg;base64,{{selectedClientImage}}"></ion-img>

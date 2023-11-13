@@ -61,6 +61,10 @@ export class NewPackagePage implements OnInit {
     console.log('Reordered services:', this.selectedServices);
   }
   
+  getSelectedServiceName(serviceId: string): string {
+    const service = this.services.find((s: { id: string; }) => s.id === serviceId);
+    return service ? service.name : 'Unknown';
+}
 
 
   openServiceSelect() {
