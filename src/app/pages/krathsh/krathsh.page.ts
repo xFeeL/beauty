@@ -79,7 +79,8 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
-     
+     console.log("RETRIEVEED")
+     console.log(data)
       this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
       this.time = data.time
       this.profile_image = data.image;

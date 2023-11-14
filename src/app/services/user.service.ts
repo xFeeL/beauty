@@ -930,13 +930,31 @@ export class UserService {
   }
 
 
-  saveServices(packages:any,services: any, serviceCategories: any): Observable<any> {
-    const body = { packages:packages,services: services, serviceCategories: serviceCategories };
-    console.log(body)
-    return this.http.post(beautyAuthenticated_API_URL + "save-services", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', body))
+  saveServices(packages: any, services: any, serviceCategories: any): Observable<any> {
+    // Adding an index to each service in packages and renaming the services property
+    const indexedPackages = packages.map((packageItem: { services: any[]; }, packageIndex: any) => ({
+        ...packageItem,
+        servicesWithIndex: packageItem.services.map((serviceId: any, serviceIndex: any) => ({ // Renamed property
+            id: serviceId,
+            index: serviceIndex // Adding an index here
+        })),
+        services: packageItem.services // Keep original services if needed, else remove this line
+    }));
+
+    // Preparing the body with indexedPackages
+    const body = { packages: indexedPackages, services: services, serviceCategories: serviceCategories };
+    console.log(body);
+
+    return this.http.post(beautyAuthenticated_API_URL + "save-services", body, {
+        headers: this.getHeaders(),
+        withCredentials: true
+    }).pipe(
+        catchError(error => this.handleError(error, 'POST', body))
     );
-  }
+}
+
+
+
 
   saveTeam(team: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {
     return this.http.post(beautyAuthenticated_API_URL + "save-team?safeDelete="+safeDelete+"&cancelAllForDeletedEmployees="+cancelAllForDeletedEmployees+"&cancelAllForNewException="+cancelAllForNewException, team, { headers: this.getHeaders(), withCredentials: true }).pipe(

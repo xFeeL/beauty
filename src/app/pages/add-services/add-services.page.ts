@@ -47,6 +47,8 @@ export class AddServicesPage implements OnInit {
   onAllSegmentClicked() {
     this.loadInitialData();
   }
+
+ 
   
   
   private loadInitialData() {
