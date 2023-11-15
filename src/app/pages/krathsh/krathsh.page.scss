@@ -330,13 +330,36 @@
     border-radius: 10px;
   }
 
+  ion-item {
+    display: flex; /* Align items in a row */
+    align-items: center; /* Center items vertically */
+  }
+  
+  .item-content {
+    flex-grow: 1; /* Let the content take up the remaining space */
+  }
+  
+  .normal-line, .package-line {
+    width: 4px;
+    height: 100%;
+    margin-right: 10px;
+  }
+  
   .normal-line {
-    width: 4px; /* Adjust width as desired */
-    height: 100%; /* Take full height of the ion-item */
     background: var(--ion-color-primary);
-    margin-right: 10px; /* Space between the line and the label */
+  }
+  
+  .package-line {
+    background: var(--ion-color-warning);
   }
 
   .customFontNote{
     font-size:14px;
+  }
+
+  .align-right {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0px;
+    text-align: right;
   }

@@ -91,21 +91,48 @@ export class NewKrathshPage implements OnInit {
       console.log(this.appointment_data)
       this.appointmentId = this.appointment_data.appointmentId
       this.theDate = this.appointment_data.date
-      this.selectedServices = this.appointment_data.services.map((service: any) => ({
+      // Map services with isSelected and indexOrder
+      const mappedServices = this.appointment_data.services.map((service: any) => ({
         ...service,
-        isSelected: true
+        isSelected: true,
+        indexOrder: service.indexOrder // assuming indexOrder is a property of service
       }));
+
+      // Map packages and their services, copying the package's indexOrder, packageId, and packageName to its services
+      const packages = this.appointment_data.packages || [];
+      const packageServices = packages.flatMap((pkg: any) => {
+        return (pkg.services || []).map((service: any) => ({
+          ...service,
+          isSelected: true,
+          indexOrder: pkg.indexOrder, // copying indexOrder from package to its services
+          packageId: pkg.id, // assuming the package ID is stored in pkg.id
+          packageName: pkg.name // assuming the package name is stored in pkg.name
+        }));
+      });
+
+      // Combine services from both individual services and package services
+      this.selectedServices = [...mappedServices, ...packageServices]
+        .sort((a, b) => a.indexOrder - b.indexOrder);
+
+
+      // If you still need the mappedPackages for other purposes, map them separately
+      const mappedPackages = packages.map((pkg: any) => ({
+        ...pkg,
+        isSelected: true,
+        indexOrder: pkg.indexOrder, // assuming indexOrder is a property of package
+        services: pkg.services || []
+      }));
+
+      // Combine mapped services and packages for any other usage
+      this.selectedServicesAndPackages = [...mappedServices, ...mappedPackages]
+        .sort((a, b) => a.indexOrder - b.indexOrder);
       let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
         // Loop through each service in selectedServices
         for (let service of this.selectedServices) {
-          // Check if the service ID exists in the response
-          if (response[service.id]) {
-            service.employees = response[service.id];
-          } else {
-            service.employees = []; // If no employees are found for the service, initialize an empty array
-          }
+          let matchingServiceResponse = response.find((res: { serviceId: any; }) => res.serviceId === service.id);
+          service.employees = matchingServiceResponse ? matchingServiceResponse.employees : [];
         }
         if (this.selectedServices && this.selectedServices.length > 0) {
           this.currentService = this.selectedServices[0];
@@ -114,10 +141,18 @@ export class NewKrathshPage implements OnInit {
         }
         this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
-        this.servicesEmployees = {};
-        this.selectedServices.forEach(service => {
-          this.servicesEmployees[service.id] = service.selectedEmployeeId;
+        this.servicesEmployees = [];
+        this.selectedServices.forEach((service, index) => {
+          let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
+
+          if (service.packageId) {
+            serviceEmployeeEntry.packageId = service.packageId;
+          }
+
+          this.servicesEmployees.push(serviceEmployeeEntry);
         });
+        console.log("the selected services")
+        console.log(this.selectedServices)
         this.onMonthChange();
 
 
@@ -147,15 +182,15 @@ export class NewKrathshPage implements OnInit {
       this.servicesEmployees = [];
       this.selectedServices.forEach((service, index) => {
         let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
-    
+
         if (service.packageId) {
-            serviceEmployeeEntry.packageId = service.packageId;
+          serviceEmployeeEntry.packageId = service.packageId;
         }
-    
+
         this.servicesEmployees.push(serviceEmployeeEntry);
-    });
-    
-    
+      });
+
+
       this.onMonthChange();
 
     }
@@ -438,7 +473,7 @@ export class NewKrathshPage implements OnInit {
     this.processSelectedServices(this.selectedServicesAndPackages)
     // Finish the reorder and position the item in the DOM
     ev.detail.complete();
-}
+  }
 
 
 
@@ -452,17 +487,17 @@ export class NewKrathshPage implements OnInit {
         'selectedServicesAndPackages': this.selectedServicesAndPackages
       }
     });
-  
+
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
       this.processSelectedServices(data);
     }
   }
-  
-  processSelectedServices(data:any) {
+
+  processSelectedServices(data: any) {
     this.selectedServicesAndPackages = data;
-  
+
     this.selectedServices = data.reduce((acc: any[], item: { serviceObjects: any[]; id: any; name: any; }) => {
       if (item.serviceObjects && Array.isArray(item.serviceObjects)) {
         acc.push(...item.serviceObjects.map((service: any) => ({
@@ -475,22 +510,22 @@ export class NewKrathshPage implements OnInit {
       }
       return acc;
     }, []);
-  
+
     console.log("Selected Services:", this.selectedServices);
     console.log("Selected Services And Packages:", this.selectedServicesAndPackages);
-  
+
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
     console.log("Can select date:", this.canSelectDate);
-  
+
     if (this.editing && this.canSelectDate) {
       this.dateSelected = true;
     } else {
       this.resetDateAndTimeSelection();
     }
-  
+
     this.fetchEmployeeData();
   }
-  
+
   resetDateAndTimeSelection() {
     this.dateSelected = false;
     this.time_slots = [];
@@ -499,7 +534,7 @@ export class NewKrathshPage implements OnInit {
     this.dataChanged = true;
     this.theDate = undefined;
   }
-  
+
   fetchEmployeeData() {
     let serviceIds = this.selectedServices.map(service => service.id).join(',');
     this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
@@ -507,12 +542,12 @@ export class NewKrathshPage implements OnInit {
         let matchingServiceResponse = response.find((res: { serviceId: any; }) => res.serviceId === service.id);
         service.employees = matchingServiceResponse ? matchingServiceResponse.employees : [];
       }
-  
+
       if (this.selectedServices && this.selectedServices.length > 0) {
         this.currentService = this.selectedServices[0];
         this.scrollToBottomSetTimeout(150);
       }
-  
+
     }, err => {
       console.log("Error:", err);
       if (err.error == "Service doesn't exist") {
@@ -520,21 +555,21 @@ export class NewKrathshPage implements OnInit {
       }
     });
   }
-  
-  
+
+
 
 
   toggleSelectService(service: any) {
     console.log("TOGGLE SELECT SERVICE");
     console.log(service);
-  
+
     service.isSelected = !service.isSelected; // Toggle the isSelected property
-  
+
     // Check if the service is a package
     if (service.type === "package") {
       // Remove services with matching packageId from selectedServices
       this.selectedServices = this.selectedServices.filter((s: any) => s.packageId !== service.id);
-  
+
       // Remove the package from selectedServicesAndPackages if it's already selected
       if (this.selectedServicesAndPackages.includes(service)) {
         this.selectedServicesAndPackages = this.selectedServicesAndPackages.filter((s: any) => s !== service);
@@ -545,15 +580,15 @@ export class NewKrathshPage implements OnInit {
       if (index !== -1) {
         this.selectedServices.splice(index, 1);
       }
-  
+
       if (this.selectedServicesAndPackages.includes(service)) {
         this.selectedServicesAndPackages = this.selectedServicesAndPackages.filter((s: any) => s !== service);
       }
     }
-  
+
     this.resetView();
   }
-  
+
 
 
 

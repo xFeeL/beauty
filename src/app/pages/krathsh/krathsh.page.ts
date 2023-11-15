@@ -46,7 +46,9 @@ export class KrathshPage implements OnInit {
   text_color: string = "";
   initialized = false;
   appointment_data: any;
-  services: any = new Array<any>;
+  services: any = []
+  packages: any = []
+  combinedList: any = []
   booking_confirmed: string = "";
   booking_confirmed_class: string = "";
   booking_confirmed_text: string = "";
@@ -79,8 +81,8 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
-     console.log("RETRIEVEED")
-     console.log(data)
+      console.log("RETRIEVEED")
+      console.log(data)
       this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
       this.time = data.time
       this.profile_image = data.image;
@@ -89,7 +91,21 @@ export class KrathshPage implements OnInit {
       this.price = data.price
       this.appointment_data = data;
       this.status = data.status;
-      this.services=data.services
+      const servicesWithType = data.services.map((service: any) => ({ ...service, type: 'service' }));
+
+      let packagesWithType = [];
+      if (data.packages !== undefined) {
+        packagesWithType = data.packages.map((packageItem: any) => ({ ...packageItem, type: 'package' }));
+      }
+
+      this.combinedList = [...servicesWithType, ...packagesWithType];
+      this.combinedList.sort((a: { indexOrder: number; }, b: { indexOrder: number; }) => a.indexOrder - b.indexOrder);
+      this.services = data.services;
+
+      console.log("combinedList")
+      console.log(this.combinedList)
+      this.packages = data.packages
+
       this.checkedIn = data.checkedIn
       this.note = data.note
       if (data.status == "Αποδεκτή") {
@@ -166,8 +182,8 @@ export class KrathshPage implements OnInit {
   }
 
   async editReservation() {
-   
-    
+
+
     const modal = await this.modalController.create({
       component: NewKrathshPage,
       componentProps: {
@@ -176,14 +192,14 @@ export class KrathshPage implements OnInit {
       },
       backdropDismiss: false
     });
-  
+
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data === true) {
         // Do something when the modal returns true
         this.ionViewWillEnter()
       }
     });
-  
+
     return await modal.present();
   }
 
