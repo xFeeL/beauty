@@ -158,7 +158,9 @@ export class TeamServicesPage implements OnInit {
 
   goToServices() {
     this.initialized = false;
-
+    this.packages=[]
+    this.serviceCategories=[]
+    this.services=[]
     this.getEmployeesForServices();
 
     this.userService.getServiceCategories().subscribe(data => {
@@ -202,24 +204,24 @@ export class TeamServicesPage implements OnInit {
 
       this.userService.getEmployeesOfServices(serviceIds).subscribe(employeesData => {
         this.services.forEach(service => {
-            // Find the corresponding object in employeesData based on serviceId
-            const serviceData = employeesData.find((data: { serviceId: any; }) => data.serviceId === service.id);
-            console.log('serviceData for serviceId ' + service.id + ':', serviceData);
-    
-            // Access the employees directly
-            if (serviceData && serviceData.employees) {
-                service.people = serviceData.employees.map((person: { [x: string]: any; image: any; }) => {
-                    const { image, ...rest } = person;  // Destructure to separate 'image' and the rest of the properties
-                    return rest;  // Return the rest of the properties, effectively omitting 'image'
-                });
-            } else {
-                console.log('No employees data found for serviceId:', service.id);
-                service.employees = [];
-            }
+          // Find the corresponding object in employeesData based on serviceId
+          const serviceData = employeesData.find((data: { serviceId: any; }) => data.serviceId === service.id);
+          console.log('serviceData for serviceId ' + service.id + ':', serviceData);
+
+          // Access the employees directly
+          if (serviceData && serviceData.employees) {
+            service.people = serviceData.employees.map((person: { [x: string]: any; image: any; }) => {
+              const { image, ...rest } = person;  // Destructure to separate 'image' and the rest of the properties
+              return rest;  // Return the rest of the properties, effectively omitting 'image'
+            });
+          } else {
+            console.log('No employees data found for serviceId:', service.id);
+            service.employees = [];
+          }
         });
-  
-    
-      
+
+
+
 
 
 
@@ -326,7 +328,12 @@ export class TeamServicesPage implements OnInit {
                 name: data.categoryName,
                 expertId: null
               };
-              this.serviceCategories.push(newCategory);
+              this.userService.saveServiceCategory(newCategory).subscribe(response => {
+                this.serviceCategories.push(newCategory);
+                this.userService.presentToast("Η κατηγορία προστέθηκε επιτυχώς.", "success");
+              }, err => {
+                this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+              })
               return true;
             }
           }
@@ -363,31 +370,38 @@ export class TeamServicesPage implements OnInit {
         {
           text: 'Ενημερωση',
           handler: (data: { categoryName: any; }) => {
-
-            // Check if the new category name already exists, but not counting the currentCategory being edited
             const categoryExists = this.serviceCategories.some(category => category.name === data.categoryName);
             if (data.categoryName !== currentCategory && categoryExists) {
-              this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
-              return false; // Keep the alert open
+                this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
+                return false; // Keep the alert open
             }
-
-
+        
             // Find the category object to replace
             const categoryToUpdate = this.serviceCategories.find(category => category.name === currentCategory);
             if (categoryToUpdate) {
-              categoryToUpdate.name = data.categoryName;
+                categoryToUpdate.name = data.categoryName;
             }
-
-            // Update the serviceCategory for services
-            this.services.forEach(service => {
-              if (service.serviceCategoryName === currentCategory) {
-                service.serviceCategoryName = data.categoryName;
-              }
+        
+            console.log("THE CATEGORY");
+            console.log(categoryToUpdate);
+        
+            // Use a Promise to handle the asynchronous operation
+            return new Promise((resolve, reject) => {
+                this.userService.saveServiceCategory(categoryToUpdate).subscribe(response => {
+                    // Update the serviceCategory for services
+                    this.services.forEach(service => {
+                        if (service.serviceCategoryName === currentCategory) {
+                            service.serviceCategoryName = data.categoryName;
+                        }
+                    });
+                    this.userService.presentToast("Η κατηγορία ενημερώθηκε επιτυχώς.", "success");
+                    resolve(true);
+                }, err => {
+                    reject(false);
+                });
             });
-
-
-            return true;
-          }
+        }
+        
         }
       ]
     });
@@ -403,15 +417,12 @@ export class TeamServicesPage implements OnInit {
       surname: person.surname,
     }));
 
-    const categoryNames = this.serviceCategories.map((category: any) => category.name);
-
-    const modal = await this.showNewServiceModal(transformedPeople, categoryNames);
+    const modal = await this.showNewServiceModal(transformedPeople, this.serviceCategories);
 
     const { data } = await modal.onDidDismiss();
 
-    if (data) {
-      this.processAndAddService(data);
-      this._cd.detectChanges();
+    if (data.edited) {
+      this.goToServices()
     }
   }
 
@@ -425,22 +436,7 @@ export class TeamServicesPage implements OnInit {
     });
   }
 
-  processAndAddService(data: any) {
-    const newService = {
-      id: null,
-      name: data.name,
-      price: data.price,
-      duration: data.duration,
-      description: data.description,
-      serviceCategoryName: data.selectedCategory,
-      people: data.people.map((personStr: string) => {
-        const [name, surname] = personStr.split(' ');
-        return this.people.find((person: any) => person.name === name && person.surname === surname);
-      })
-    };
 
-    this.services.push(newService);
-  }
 
 
   getServicesForCategory(categoryName: string): any[] {
@@ -452,64 +448,46 @@ export class TeamServicesPage implements OnInit {
     const servicesWithCategory = this.services.filter(r => r.serviceCategoryName === category.name);
 
     if (servicesWithCategory.length > 0) {
-      // Present a warning alert
-      const alert = await this.alertController.create({
-        header: 'Προσοχή!',
-        message: 'Εάν διαγράψετε αυτήν την κατηγορία, όλες οι υπηρεσίες που ανήκουν σε αυτήν θα διαγραφούν επίσης. Είστε σίγουροι ότι θέλετε να συνεχίσετε;',
-        buttons: [
-          {
-            text: 'Ακυρο',
-            role: 'cancel',
-            handler: () => {
-            }
-          },
-          {
-            text: 'Διαγραφη',
-            handler: () => {
-              // Delete the category and its associated services
-              this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
-              this.services = this.services.filter(r => r.serviceCategoryName !== category);
-            }
-          }
-        ]
-      });
-
-      await alert.present();
+        // If there are services associated with the category, show a toast message
+        this.userService.presentToast('Αυτή η κατηγορία δεν μπορεί να διαγραφεί επειδή έχει συσχετισμένες υπηρεσίες. Διαγράψτε τις υπηρεσίες ή αντιστοιχίστε τις σε άλλη κατηγορία πρώτα.', 'warning');
     } else {
-      // If no services are associated with the category, just delete the category
-      this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
+        // If no services are associated with the category, just delete the category
+        if(category.id!=null || category.id!=undefined){
+          this.userService.deleteServiceCategory(category.id).subscribe(response => {
+            this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
+            this.userService.presentToast("Η κατηγορία διαγράφηκε επιτυχώς.", "success");
+          }, err => {
+            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+          });
+        }else{
+          this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
+          this.userService.presentToast("Η κατηγορία διαγράφηκε επιτυχώς.", "success");
+
+        }
+       
     }
-  }
+}
+
+
   async editService(service: any) {
     const modalData = this.prepareDataForModal(service);
-    console.log("THe modal data")
-    console.log(modalData)
     const modal = await this.createServiceModal(service, modalData);
     await modal.present();
-
     const { data } = await modal.onDidDismiss();
-    console.log("Service dismissed with data: ", data)
     this.handleModalDismiss(data, service);
-    this._cd.detectChanges();
   }
 
   prepareDataForModal(service: any) {
-    console.log("Preparing data for modal")
-    console.log()
+  
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
       surname: person.surname,
       selected: person.selected
     }));
-
     const category = this.serviceCategories.find(category => category.name === service.serviceCategoryName);
     const categoryName = category ? category.name : undefined;
-
     const concatenatedNames = service.people.map((person: any) => `${person.name} ${person.surname}`);
-    const categoryNames = this.serviceCategories.map((category: any) => category.name);
-    console.log("Concatenated names")
-    console.log(concatenatedNames)
-    return { transformedPeople, categoryName, concatenatedNames, categoryNames };
+    return { transformedPeople, categoryName, concatenatedNames };
   }
 
   async createServiceModal(service: any, modalData: any) {
@@ -522,69 +500,22 @@ export class TeamServicesPage implements OnInit {
         servicePeople: modalData.concatenatedNames,
         serviceDuration: service.duration,
         serviceDescription: service.description,
-        categories: modalData.categoryNames,
+        categories: this.serviceCategories,
         serviceCategory: modalData.categoryName,  // Accessing categoryName from modalData here
-        editing: true,
-        services: this.services
+        services: this.services,
+        serviceId: service.id
       }
     });
   }
 
 
   handleModalDismiss(data: any, service: any) {
-    if (data?.deletedServiceName) {
-      this.deleteService(data.deletedServiceName);
-      this.updatePackagesAfterServiceChange(data.deletedServiceName, null);
-    } else if (data) {
-      const processedService = this.processServiceData(data, service);
-      this.updateService(processedService, service);
-      this.updatePackagesAfterServiceChange(service.name, processedService.name);
+    if (data.edited) {
+      this.goToServices();
     }
   }
 
-  updatePackagesAfterServiceChange(oldServiceName: string, newServiceName: string | null) {
-    this.packages.forEach((pkg: { services: string[]; }) => { // 'pkg' is used instead of 'package'
-      const serviceIndex = pkg.services.indexOf(oldServiceName);
-      if (serviceIndex !== -1) {
-        if (newServiceName) {
-          pkg.services[serviceIndex] = newServiceName;
-        } else {
-          pkg.services.splice(serviceIndex, 1);
-        }
-      }
-    });
-  }
-
-
-  deleteService(deletedServiceName: string) {
-    const serviceIndex = this.services.findIndex((s) => s.name === deletedServiceName);
-    if (serviceIndex !== -1) {
-      this.services.splice(serviceIndex, 1);
-    }
-  }
-
-  processServiceData(data: any, service: any) {
-    const processedService = {
-      id: service.id,
-      name: data.name,
-      price: data.price,
-      duration: data.duration,
-      description: data.description,
-      people: data.people.map((personStr: string) => {
-        const [name, surname] = personStr.split(' ');
-        return this.people.find((person: any) => person.name === name && person.surname === surname);
-      }),
-      serviceCategoryName: data.selectedCategory
-    };
-    return processedService;
-  }
-
-  updateService(processedService: any, service: any) {
-    const serviceIndex = this.services.findIndex((s) => s.name === service.name);
-    if (serviceIndex !== -1) {
-      this.services[serviceIndex] = processedService;
-    }
-  }
+  
 
   getSaveButtonText(): string {
     switch (this.selectedSegment) {
@@ -594,41 +525,6 @@ export class TeamServicesPage implements OnInit {
         return 'Αποθήκευση υπηρεσιών';
       default:
         return 'Αποθήκευση'; // Default text
-    }
-  }
-
-  isSaveButtonDisabled(): boolean {
-    if (this.selectedSegment != "team") {
-      if (this.services.length == 0 || this.serviceCategories.length == 0) {
-        return true;
-      }
-      let categoriesWithServices = new Set();
-      for (let service of this.services) {
-        if (typeof service.serviceCategoryName === 'string') {
-          categoriesWithServices.add(service.serviceCategoryName);
-        }
-      }
-      for (let category of this.serviceCategories) {
-        if (!categoriesWithServices.has(category.id) && !categoriesWithServices.has(category.name)) {
-          return true;
-        }
-      }
-
-      return false;
-    } else {
-      if (this.team.length == 0) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-
-  save() {
-    if (this.selectedSegment == "team") {
-      this.saveTeam();
-    } else {
-      this.saveServices();
     }
   }
 
@@ -717,22 +613,6 @@ export class TeamServicesPage implements OnInit {
   }
 
 
-  saveServices() {
-    this.userService.saveServices(this.packages, this.services, this.serviceCategories).subscribe(data => {
-      this.userService.presentToast("Οι υπηρεσίες αποθηκεύτηκαν επιτυχώς.", "success")
-    }, err => {
-      if (err.error == "Empty categories") {
-        this.userService.presentToast("Κάποια κατηγορία δεν έχει υπηρεσίες.", "danger")
-      } else {
-        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger")
-
-      }
-    })
-  }
-
-   
-
-
   async newPackage() {
     const modal = await this.modalController.create({
       component: NewPackagePage,
@@ -763,16 +643,16 @@ export class TeamServicesPage implements OnInit {
         services: this.services
       }
     });
-  
+
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
         if (dataReturned.data.deletePackage) {
           this.packages = this.packages.filter((p: { name: any; }) => p.name !== packageToEdit.name);
-          
+
         } else if (dataReturned.data.newPackage) {
           const editedPackage = dataReturned.data.newPackage;
           const nameExists = this.packages.some((p: { name: any; }) => p.name === editedPackage.name && p.name !== packageToEdit.name);
-  
+
           if (nameExists) {
             this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger");
           } else {
@@ -784,10 +664,10 @@ export class TeamServicesPage implements OnInit {
         }
       }
     });
-  
+
     return modal.present();
   }
-  
+
 
 
 

@@ -128,7 +128,10 @@ export class AddServicesPage implements OnInit {
   }
   
   
-
+  getServicesSegment(category:any){
+    this.packages=[]
+    this.getServices(category);
+  }
 
  getServices(category: any): Observable<void> {
   const completionSubject = new Subject<void>();

@@ -101,12 +101,12 @@ export class NewKrathshPage implements OnInit {
       // Map packages and their services, copying the package's indexOrder, packageId, and packageName to its services
       const packages = this.appointment_data.packages || [];
       const packageServices = packages.flatMap((pkg: any) => {
-        return (pkg.services || []).map((service: any) => ({
+        return (pkg.serviceObjects || []).map((service: any) => ({
           ...service,
           isSelected: true,
           indexOrder: pkg.indexOrder, // copying indexOrder from package to its services
           packageId: pkg.id, // assuming the package ID is stored in pkg.id
-          packageName: pkg.name // assuming the package name is stored in pkg.name
+          packageName: pkg.name,
         }));
       });
 
@@ -120,7 +120,9 @@ export class NewKrathshPage implements OnInit {
         ...pkg,
         isSelected: true,
         indexOrder: pkg.indexOrder, // assuming indexOrder is a property of package
-        services: pkg.services || []
+        servicesObjects: pkg.serviceObjects || [],
+        type: 'package'
+
       }));
 
       // Combine mapped services and packages for any other usage
@@ -141,16 +143,7 @@ export class NewKrathshPage implements OnInit {
         }
         this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
-        this.servicesEmployees = [];
-        this.selectedServices.forEach((service, index) => {
-          let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
-
-          if (service.packageId) {
-            serviceEmployeeEntry.packageId = service.packageId;
-          }
-
-          this.servicesEmployees.push(serviceEmployeeEntry);
-        });
+        this.updateServiceEmployees()
         console.log("the selected services")
         console.log(this.selectedServices)
         this.onMonthChange();
@@ -179,16 +172,7 @@ export class NewKrathshPage implements OnInit {
       this.currentService = this.selectedServices[currentIndex + 1];
     } else {
       this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
-      this.servicesEmployees = [];
-      this.selectedServices.forEach((service, index) => {
-        let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
-
-        if (service.packageId) {
-          serviceEmployeeEntry.packageId = service.packageId;
-        }
-
-        this.servicesEmployees.push(serviceEmployeeEntry);
-      });
+     
 
 
       this.onMonthChange();
@@ -265,7 +249,7 @@ export class NewKrathshPage implements OnInit {
     this.time_slots = [];
 
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
-
+    this.updateServiceEmployees()
     this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees).subscribe(response => {
 
       // Populate the time_slots array with the start of the outerTimePeriods
@@ -469,14 +453,33 @@ export class NewKrathshPage implements OnInit {
     this.selectedServicesAndPackages.splice(ev.detail.to, 0, itemToMove);
 
     console.log('Item to Move:', itemToMove);
-
     this.processSelectedServices(this.selectedServicesAndPackages)
-    // Finish the reorder and position the item in the DOM
+    this.updateServiceEmployees()
+    console.log("The date")
+    console.log(this.theDate)
+    if(this.theDate!=undefined){
+      this.dateChanged()
+    }else{
+
+    }
+
     ev.detail.complete();
   }
 
 
+   updateServiceEmployees() {
+    this.servicesEmployees = [];
+    this.selectedServices.forEach((service, index) => {
+      let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
 
+      if (service.packageId) {
+        serviceEmployeeEntry.packageId = service.packageId;
+      }
+
+      this.servicesEmployees.push(serviceEmployeeEntry);
+    });
+  }
+  
 
 
 
@@ -496,20 +499,33 @@ export class NewKrathshPage implements OnInit {
   }
 
   processSelectedServices(data: any) {
+    // Store the previous selectedServices in a temporary variable
+    const previousSelectedServices = this.selectedServices ? [...this.selectedServices] : [];
+
     this.selectedServicesAndPackages = data;
 
     this.selectedServices = data.reduce((acc: any[], item: { serviceObjects: any[]; id: any; name: any; }) => {
       if (item.serviceObjects && Array.isArray(item.serviceObjects)) {
-        acc.push(...item.serviceObjects.map((service: any) => ({
-          ...service,
-          packageId: item.id,
-          packageName: item.name
-        })));
+        acc.push(...item.serviceObjects.map((service: any) => {
+          // Find the matching service in the previous selectedServices
+          const previousService = previousSelectedServices.find(prev => prev.id === service.id);
+
+          return {
+            ...service,
+            // Copy the selectedEmployeeId from the previous service, if it exists
+            selectedEmployeeId: previousService?.selectedEmployeeId ?? null,
+            packageId: item.id,
+            packageName: item.name
+          };
+        }));
       } else {
+        // For services not in serviceObjects, retain them as they are
         acc.push(item);
       }
       return acc;
     }, []);
+
+
 
     console.log("Selected Services:", this.selectedServices);
     console.log("Selected Services And Packages:", this.selectedServicesAndPackages);
@@ -517,7 +533,7 @@ export class NewKrathshPage implements OnInit {
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
     console.log("Can select date:", this.canSelectDate);
 
-    if (this.editing && this.canSelectDate) {
+    if (this.editing && this.canSelectDate ) {
       this.dateSelected = true;
     } else {
       this.resetDateAndTimeSelection();
@@ -532,7 +548,6 @@ export class NewKrathshPage implements OnInit {
     this.timeSelected = false;
     this.timeSlotSelected = null;
     this.dataChanged = true;
-    this.theDate = undefined;
   }
 
   fetchEmployeeData() {
@@ -598,6 +613,7 @@ export class NewKrathshPage implements OnInit {
     this.timeSelected = false;
     this.timeSlotSelected = null;
     this.dataChanged = true;
+    
     this.theDate = undefined;
     if (this.selectedServices.length != 0) {
       this.canSelectDate = this.selectedServices.every((s: { selectedEmployeeId: any; }) => s.selectedEmployeeId);

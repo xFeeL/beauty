@@ -43,7 +43,7 @@
               <ion-select label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
                 cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
-                  [value]="category">{{category}}</ion-select-option>
+                  [value]="category.name">{{category.name}}</ion-select-option>
 
               </ion-select>
 
@@ -95,12 +95,12 @@
 <ion-footer>
   <ion-grid class="ion-no-padding">
     <ion-row>
-      <ion-col size="6" (click)="deleteService()" class="ion-no-padding" *ngIf="editing==true">
+      <ion-col size="6" (click)="deleteService()" class="ion-no-padding" *ngIf="service_id!=null">
         <ion-button size="full" color="danger" class="capsoff ion-no-margin">
           Διαγραφή
         </ion-button>
       </ion-col>
-      <ion-col [size]="editing==true?'6':'12'" class="ion-no-padding">
+      <ion-col [size]="service_id!=null?'6':'12'" class="ion-no-padding">
         <ion-button size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
           Αποθήκευση
         </ion-button>

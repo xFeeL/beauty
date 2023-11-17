@@ -22,9 +22,9 @@ export class NewServicePage implements OnInit {
   categories: any = [];
   serviceCategory: string = '';
   newCategory: string = '';
-  editing = false;
   services: any = [];
   originalServiceName: any;
+  service_id: any = null;
 
   constructor(private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
   }
@@ -35,7 +35,8 @@ export class NewServicePage implements OnInit {
     console.log("THE PEOPLE")
     console.log(this.people)
     this.categories = this.navParams.get('categories');
-    this.editing = this.navParams.get('editing');
+    this.service_id = this.navParams.get('serviceId');
+
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
@@ -72,7 +73,7 @@ export class NewServicePage implements OnInit {
     console.log("Opening New Service Modal");
     console.log(this.people)
     console.log(servicePeople)
-    if (!this.editing) {
+    if (this.service_id == null) {
       this.selectAll = true
       this.selectAllPeople();
     } else {
@@ -98,20 +99,28 @@ export class NewServicePage implements OnInit {
     console.log(this.serviceName)
     console.log(this.serviceDuration)
     if (this.servicePrice == undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
-      this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα  πεδία.', "danger");
+      this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα πεδία.', "danger");
       return;
     }
+    console.log('Categories:', this.categories);
+    console.log('Selected Category Name:', this.serviceCategory);
+    
+    // Find the category object based on the serviceCategoryName
+    const category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
 
     // Check if selected category exists in categories
-    if (!this.categories.includes(this.serviceCategory)) {
+    if (!category) {
       this.userService.presentToast('Παρακαλώ επιλέξτε κατηγορία.', "danger");
       return;
     }
+    const serviceCategoryId = category.id;
+
+    // Filter to get selected people objects
     const selectedPeople = this.people.filter((person: { selected: any; }) => person.selected);
     const selectedPeopleNames = selectedPeople.map((person: { name: string; surname: string; }) => `${person.name} ${person.surname}`);
 
     // Check if no people are selected
-    if (selectedPeopleNames.length === 0) {
+    if (selectedPeople.length === 0) {
       this.userService.presentToast('Παρακαλώ επιλέξτε τουλάχιστον ένα άτομο.', "danger");
       return;
     }
@@ -122,17 +131,26 @@ export class NewServicePage implements OnInit {
       return;
     }
 
-    await this.modalController.dismiss({
-      'name': this.serviceName,
-      'price': this.servicePrice,
-      'people': selectedPeopleNames,  // Using the names only array here
-      'duration': this.serviceDuration,
-      'description': this.serviceDescription,
-      'selectedCategory': this.serviceCategory,
-      'categories': this.categories
-    });
-
+    let body = {
+      "name": this.serviceName,
+      "price": this.servicePrice,
+      "duration": this.serviceDuration,
+      "description": this.serviceDescription,
+      "serviceCategoryName": this.serviceCategory,
+      "serviceCategoryId": serviceCategoryId,
+      "people": selectedPeople, // Sending the whole objects of selected people
+      "id": this.service_id
+    }
+    this.userService.saveService(body).subscribe((res: any) => {
+      this.userService.presentToast("Η υπηρεσία αποθηκεύτηκε επιτυχώς.", "success")
+      this.modalController.dismiss({
+        'edited': true
+      });
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
+    })
   }
+
 
   serviceExists(serviceName: string, originalServiceName?: string): boolean {
     for (const service of this.services) {
@@ -148,9 +166,15 @@ export class NewServicePage implements OnInit {
   }
 
   deleteService() {
-    this.modalController.dismiss({
-      'deletedServiceName': this.serviceName // assuming this.serviceName contains the name of the service you want to delete
-    });
+    this.userService.deleteService(this.service_id).subscribe((res: any) => {
+      this.userService.presentToast("Η υπηρεσία διαγράφηκε επιτυχώς.", "success")
+      this.modalController.dismiss({
+        'edited':true
+      });
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
+    })
+   
   }
 
 

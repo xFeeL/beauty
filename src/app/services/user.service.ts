@@ -282,6 +282,41 @@ export class UserService {
     );
   }
 
+  
+  saveService(body: any): Observable<any> {
+    
+    return this.http.post(beautyAuthenticated_API_URL + "save-service", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+
+  }
+
+  saveServiceCategory(category: any): Observable<any> {
+    const body = { 
+      id: category.id,
+      name: category.name 
+    };
+    return this.http.post(beautyAuthenticated_API_URL + "save-service-category", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+
+  }
+
+  deleteService(service: any): Observable<any> {
+  
+    return this.http.post(beautyAuthenticated_API_URL + "delete-service?service_id="+service, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+
+  }
+
+  deleteServiceCategory(category: any): Observable<any> {
+  
+    return this.http.post(beautyAuthenticated_API_URL + "delete-service-category?category_id="+category, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+
+  }
 
   /**
    * Gets the navigation data.
