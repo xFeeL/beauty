@@ -290,7 +290,15 @@ export class UserService {
     );
 
   }
+ 
 
+  saveEmployee(body: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {
+    return this.http.post(beautyAuthenticated_API_URL + "save-employee?safeDelete="+safeDelete+"&cancelAllForDeletedEmployees="+cancelAllForDeletedEmployees+"&cancelAllForNewException="+cancelAllForNewException, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+
+  
   savePackage(body: any): Observable<any> {
     
     return this.http.post(beautyAuthenticated_API_URL + "save-package", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
@@ -995,16 +1003,6 @@ export class UserService {
         catchError(error => this.handleError(error, 'POST', body))
     );
 }
-
-
-
-
-  saveTeam(team: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {
-    return this.http.post(beautyAuthenticated_API_URL + "save-team?safeDelete="+safeDelete+"&cancelAllForDeletedEmployees="+cancelAllForDeletedEmployees+"&cancelAllForNewException="+cancelAllForNewException, team, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', team))
-    );
-  }
-
   
 
   /**

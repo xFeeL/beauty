@@ -1,6 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, ModalController, NavParams } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, NavParams } from '@ionic/angular';
 import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
 import { FacebookImagesPage } from '../facebook-images/facebook-images.page';
@@ -67,10 +67,11 @@ export class AddPersonPage implements OnInit {
   onboarding: boolean = false;
   scheduleExceptions: any[] = [];
   daysControl = new FormControl();
-  isEditing: any=false;
+  isEditing: any = false;
+  addedExceptions: boolean=false;
 
 
-  constructor(private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
+  constructor(private alertController: AlertController, private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
       this.hours.push(this.formatHour(i, '30'));
@@ -104,7 +105,7 @@ export class AddPersonPage implements OnInit {
         console.log("THE EXCEPTIONS2");
         console.log(this.scheduleExceptions);
         this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
-      }else{
+      } else {
         this.scheduleExceptions = [];
       }
     }
@@ -179,37 +180,157 @@ export class AddPersonPage implements OnInit {
       this.userService.presentToast('Το όνομα του ατόμου δεν μπορεί να είναι κενό.', "danger");
       return;
     }
-  
+
     this.scheduleToReturn = this.customSchedule ? this.days : this.businessSchedule;
-  
+
     let deformattedSelectedExceptions = [];
     if (!this.onboarding) {
       // Fetch only the selected exceptions
       const selectedExceptions = this.daysControl.value;
-  
+
       // Deformat only these selected exceptions
-      deformattedSelectedExceptions = this.deformatExceptions(selectedExceptions);
+      console.log("THE SELECTED EXCEPTIONS");
+      console.log(selectedExceptions);
+      if (selectedExceptions != null) {
+        deformattedSelectedExceptions = this.deformatExceptions(selectedExceptions);
+
+      }
     }
-  
-    if (this.customSchedule) {
-      await this.modalController.dismiss({
-        'personName': this.personName,
-        'personSurName': this.personSurName,
-        'scheduleExceptions': deformattedSelectedExceptions,
-        'days': this.scheduleToReturn,
-        'image': this.image,
-      });
-    } else {
-      await this.modalController.dismiss({
-        'personName': this.personName,
-        'personSurName': this.personSurName,
-        'scheduleExceptions': deformattedSelectedExceptions,
-        'days': this.businessSchedule,
-        'image': this.image,
-      });
-    }
+
+    let body = {
+      id: this.navParams.get('personId'),
+      name: this.personName,
+      surname: this.personSurName,
+      image: this.image?.split(",")[1] ?? '', // Add nullish coalescing operator
+      exceptions: deformattedSelectedExceptions,
+      schedule: this.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
+        const mappedDay = day.name;
+        return {
+          day: mappedDay,
+          intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
+        }
+      }),
+    };
+    this.saveEmployee(body)
+
   }
-  
+
+  dismissModalAfterEdit(){
+    this.modalController.dismiss({
+      'edited': true
+    });
+  }
+
+  saveEmployee(body: any) {
+    this.userService.saveEmployee(body, this.addedExceptions, false, false).subscribe(data => {
+      this.userService.presentToast("Το άτομο αποθηκεύτηκε επιτυχώς.", "success");
+      this.dismissModalAfterEdit()
+    }, err => {
+      if (err.status === 409) {
+        console.log("THE ERROR");
+        console.log(err.error);
+        this.presentChoiceAlert(err.error, body);
+      } else {
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+      }
+    });
+  }
+
+  async presentChoiceAlert(errorObj: any, body: any) {
+    let message: string = "Unknown error";  // Set a default value
+    let buttonText: string = "";
+    let handlerFn;
+
+    if (errorObj.deletedEmployee) {
+      message = errorObj.deletedEmployee;
+      buttonText = 'Ακυρωση ολων';
+      handlerFn = () => {
+        this.userService.saveEmployee(body, true, true, false).subscribe(
+          data => {
+            this.dismissModalAfterEdit()
+
+            this.userService.presentToast("Το άτομο αποθηκεύτηκε επιτυχώς.", "success");
+
+          },
+          err => {
+            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+          }
+        );
+      };
+    } else if (errorObj.newException) {
+      message = errorObj.newException;
+      buttonText = 'Ακυρωση ολων';
+      handlerFn = () => {
+        this.userService.saveEmployee(body, true, false, true).subscribe(
+          data => {
+            this.dismissModalAfterEdit()
+
+            this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
+          },
+          err => {
+            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+          }
+        );
+      };
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Προσοχή!',
+      message: message,
+      buttons: [
+        {
+          text: buttonText,
+          handler: handlerFn
+        },
+        {
+          text: 'Καμια Ακυρωση',
+          handler: () => {
+            this.userService.saveEmployee(body, true, false, false).subscribe(
+              data => {
+                this.dismissModalAfterEdit()
+
+                this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς χωρίς καμία ακύρωση.", "success");
+              },
+              err => {
+                this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+              }
+            );
+          }
+        },
+        {
+          text: 'πισω',
+          role: 'cancel', // This makes it dismiss the dialog
+          handler: () => {
+            // Dismisses the dialog without any further action
+          }
+        },
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  /*
+      if (this.customSchedule) {
+        await this.modalController.dismiss({
+          'personName': this.personName,
+          'personSurName': this.personSurName,
+          'scheduleExceptions': deformattedSelectedExceptions,
+          'days': this.scheduleToReturn,
+          'image': this.image,
+        });
+      } else {
+        await this.modalController.dismiss({
+          'personName': this.personName,
+          'personSurName': this.personSurName,
+          'scheduleExceptions': deformattedSelectedExceptions,
+          'days': this.businessSchedule,
+          'image': this.image,
+        });
+      }*/
+
+
 
 
   goBack() {
@@ -483,11 +604,11 @@ export class AddPersonPage implements OnInit {
       const formattedException = this.formatException(data);
       if (this.scheduleExceptions) {
         this.scheduleExceptions.push(formattedException);
-        this.daysControl.setValue(this.scheduleExceptions); 
-
-    } else {
+        this.daysControl.setValue(this.scheduleExceptions);
+        this.addedExceptions=true
+      } else {
         console.error("scheduleExceptions is not initialized");
-    }
+      }
 
       console.log("NEW EXCEPTIONs");
       console.log(this.scheduleExceptions);
@@ -534,17 +655,17 @@ export class AddPersonPage implements OnInit {
 
   disabledSaveButton(): boolean {
     return !this.personName?.trim() || !this.personSurName?.trim();
-}
+  }
 
 
-validateInput() {
-  if (this.personName) {
+  validateInput() {
+    if (this.personName) {
       this.personName = this.personName.replace(/\s+/g, '');
-  }
-  if (this.personSurName) {
+    }
+    if (this.personSurName) {
       this.personSurName = this.personSurName.replace(/\s+/g, '');
+    }
   }
-}
 
 
 

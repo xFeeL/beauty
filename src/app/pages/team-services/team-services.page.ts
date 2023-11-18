@@ -64,6 +64,7 @@ export class TeamServicesPage implements OnInit {
     };
 
     const editingComponentProps = isEditing ? {
+      personId: person.id,
       personSchedule: person.schedule,
       personName: person.name,
       personSurName: person.surname,
@@ -81,32 +82,8 @@ export class TeamServicesPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    if (data) {
-      const processedPerson = {
-        id: person.id,
-        name: data.personName,
-        surname: data.personSurName,
-        image: data.image.split(",")[1],
-        exceptions: data.scheduleExceptions,
-        schedule: data.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
-          const mappedDay = day.name;
-          return {
-            day: mappedDay,
-            intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
-          }
-        }),
-      };
-
-      if (isEditing) {
-        let peopleIndex = this.team.findIndex(r => r.name === person.name);
-        if (peopleIndex !== -1) {
-          this.team[peopleIndex] = processedPerson;
-        }
-
-      } else {
-        this.team.push(processedPerson);
-
-      }
+    if (data.edited) {
+      this.goToTeam();
 
     }
   }
@@ -531,7 +508,7 @@ export class TeamServicesPage implements OnInit {
     }
   }
 
-  saveTeam() {
+  /*saveTeam() {
     this.userService.saveTeam(this.team, false, false, false).subscribe(data => {
       this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
     }, err => {
@@ -613,7 +590,7 @@ export class TeamServicesPage implements OnInit {
     });
 
     await alert.present();
-  }
+  }*/
 
 
   async newPackage() {
