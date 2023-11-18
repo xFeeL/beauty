@@ -84,8 +84,8 @@
             <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>
             <ion-note *ngIf="service.type == 'package'">
-              Τιμή: €{{ service.price }} • {{ service.services.length }}
-              {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
+              Τιμή: €{{ service.price }} • {{ service.serviceObjects.length }}
+              {{ service.serviceObjects.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>
           </ion-label>
           <ion-icon color="primary" class="cursor" *ngIf="!service.isSelected" name="add-circle-outline"

@@ -250,7 +250,7 @@ export class NewKrathshPage implements OnInit {
 
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
     this.updateServiceEmployees()
-    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees).subscribe(response => {
+    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees,this.appointmentId).subscribe(response => {
 
       // Populate the time_slots array with the start of the outerTimePeriods
       for (let i = 0; i < response.length; i++) {
@@ -494,6 +494,10 @@ export class NewKrathshPage implements OnInit {
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
+      if(this.editing){
+      this.dateChanged();
+      }
+      this._cd.detectChanges();
       this.processSelectedServices(data);
     }
   }

@@ -331,6 +331,7 @@ export class TeamServicesPage implements OnInit {
               this.userService.saveServiceCategory(newCategory).subscribe(response => {
                 this.serviceCategories.push(newCategory);
                 this.userService.presentToast("Η κατηγορία προστέθηκε επιτυχώς.", "success");
+                this.goToServices();
               }, err => {
                 this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
               })
@@ -413,6 +414,7 @@ export class TeamServicesPage implements OnInit {
 
   async addService() {
     const transformedPeople = this.people.map((person: any) => ({
+      id: person.id,
       name: person.name,
       surname: person.surname,
     }));
@@ -480,6 +482,7 @@ export class TeamServicesPage implements OnInit {
   prepareDataForModal(service: any) {
   
     const transformedPeople = this.people.map((person: any) => ({
+      id: person.id,
       name: person.name,
       surname: person.surname,
       selected: person.selected
@@ -619,15 +622,8 @@ export class TeamServicesPage implements OnInit {
       componentProps: { services: this.services }
     });
     modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data && dataReturned.data.newPackage) {
-        const newPackage = dataReturned.data.newPackage;
-        const nameExists = this.packages.some((p: { name: any; }) => p.name === newPackage.name);
-        if (nameExists) {
-          this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger")
-        } else {
-          this.packages.push(newPackage);
-          console.log("Package added:", newPackage);
-        }
+      if (dataReturned.data && dataReturned.data.edited) {
+        this.goToServices();
       }
     });
 
@@ -645,34 +641,13 @@ export class TeamServicesPage implements OnInit {
     });
 
     modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        if (dataReturned.data.deletePackage) {
-          this.packages = this.packages.filter((p: { name: any; }) => p.name !== packageToEdit.name);
-
-        } else if (dataReturned.data.newPackage) {
-          const editedPackage = dataReturned.data.newPackage;
-          const nameExists = this.packages.some((p: { name: any; }) => p.name === editedPackage.name && p.name !== packageToEdit.name);
-
-          if (nameExists) {
-            this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger");
-          } else {
-            const index = this.packages.findIndex((p: { name: any; }) => p.name === packageToEdit.name);
-            if (index !== -1) {
-              this.packages[index] = editedPackage;
-            }
-          }
-        }
+      if (dataReturned.data && dataReturned.data.edited) {
+        this.goToServices();
       }
     });
 
     return modal.present();
   }
-
-
-
-
-
-
 
 
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IonSelect, ItemReorderEventDetail, ModalController, NavParams } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-new-package',
@@ -15,8 +16,8 @@ export class NewPackagePage implements OnInit {
   packagePrice: any="";
   packageToEdit: any=[];
   editMode: boolean=false;
-  packageId: any;
-  constructor(private changeDetectorRef: ChangeDetectorRef,private navParams: NavParams, private modalController: ModalController) { }
+  packageId: any=null;
+  constructor(private userService:UserService,private changeDetectorRef: ChangeDetectorRef,private navParams: NavParams, private modalController: ModalController) { }
   @ViewChild('serviceSelect') serviceSelect!: IonSelect;
 
   ngOnInit() {
@@ -89,18 +90,33 @@ export class NewPackagePage implements OnInit {
   }
 
   savePackage() {
-    const newPackage = {
+    const packageData = {
+      id: this.packageId,
       name: this.packageName,
       description: this.packageDescription,
       price: this.packagePrice,
       services: this.selectedServices,
-      id:this.packageId
-    }
-    console.log("The new package is:", newPackage)
-    this.modalController.dismiss({
-      'newPackage': newPackage
+      servicesWithIndex: this.selectedServices.map((serviceId, index) => ({
+        id: serviceId,
+        index
+      }))
+    };
+  
+    console.log("THE BODY IS");
+    console.log(packageData);
+  
+    this.userService.savePackage(packageData).subscribe((res: any) => {
+      this.userService.presentToast("Το πακέτο αποθηκεύτηκε με επιτυχία","success")
+      this.modalController.dismiss({
+        'edited': true
+      });
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.","danger")
+
+      console.error('Error saving package:', err);
     });
   }
+  
 
   canSavePackage(){
     if(this.packageName!="" && this.packagePrice!="" && this.selectedServices.length > 0){

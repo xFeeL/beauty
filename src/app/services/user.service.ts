@@ -291,6 +291,14 @@ export class UserService {
 
   }
 
+  savePackage(body: any): Observable<any> {
+    
+    return this.http.post(beautyAuthenticated_API_URL + "save-package", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+
+  }
+
   saveServiceCategory(category: any): Observable<any> {
     const body = { 
       id: category.id,
@@ -1171,9 +1179,14 @@ export class UserService {
   }
 
 
-  getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }): Observable<any> {
-    // Set the date as a query parameter
-    const params = new HttpParams().set('date', date);
+  getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }, appointmentId?: string|null): Observable<any> {
+    // Start with the date as a query parameter
+    let params = new HttpParams().set('date', date);
+
+    // Add appointment_id to the parameters only if it is not null
+    if (appointmentId != null) {
+        params = params.set('appointment_id', appointmentId);
+    }
 
     // Use the provided servicesEmployeesMap as the body directly
     const body = servicesEmployeesMap;
@@ -1183,10 +1196,11 @@ export class UserService {
       params: params,
       withCredentials: true
     })
-      .pipe(
+    .pipe(
         catchError(error => this.handleError(error, 'POST', body))
-      );
-  }
+    );
+}
+
 
 
 

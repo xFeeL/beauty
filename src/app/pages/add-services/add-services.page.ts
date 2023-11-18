@@ -41,6 +41,7 @@ export class AddServicesPage implements OnInit {
     const servicesFromNav = this.navParams.get('selectedServicesAndPackages');
     if (servicesFromNav) {
       this.selectedServicesAndPackages = servicesFromNav;
+      console.log(servicesFromNav)
     }
   }
 
