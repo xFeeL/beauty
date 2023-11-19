@@ -197,21 +197,51 @@ export class AddPersonPage implements OnInit {
       }
     }
 
+   if(!this.onboarding){
     let body = {
       id: this.navParams.get('personId'),
       name: this.personName,
       surname: this.personSurName,
       image: this.image?.split(",")[1] ?? '', // Add nullish coalescing operator
       exceptions: deformattedSelectedExceptions,
-      schedule: this.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
-        const mappedDay = day.name;
-        return {
-          day: mappedDay,
-          intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
-        }
-      }),
+      schedule: this.customSchedule 
+        ? this.scheduleToReturn
+          .filter((day: { open: any; }) => day.open)
+          .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({ 
+            day: name, 
+            intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`) 
+          }))
+        : this.businessSchedule.map((day: { name: any; timeIntervals: any[]; }) => {
+            const mappedDay = day.name;
+            return {
+              day: mappedDay,
+              intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
+            };
+          }),
     };
+    console.log("The body")
+    console.log(body)
     this.saveEmployee(body)
+   }else{
+    if (this.customSchedule) {
+      await this.modalController.dismiss({
+        'personName': this.personName,
+        'personSurName': this.personSurName,
+        'scheduleExceptions': deformattedSelectedExceptions,
+        'days': this.scheduleToReturn,
+        'image': this.image,
+      });
+    } else {
+      await this.modalController.dismiss({
+        'personName': this.personName,
+        'personSurName': this.personSurName,
+        'scheduleExceptions': deformattedSelectedExceptions,
+        'days': this.businessSchedule,
+        'image': this.image,
+      });
+   }
+  }
+    
 
   }
 
@@ -309,26 +339,6 @@ export class AddPersonPage implements OnInit {
 
     await alert.present();
   }
-
-
-  /*
-      if (this.customSchedule) {
-        await this.modalController.dismiss({
-          'personName': this.personName,
-          'personSurName': this.personSurName,
-          'scheduleExceptions': deformattedSelectedExceptions,
-          'days': this.scheduleToReturn,
-          'image': this.image,
-        });
-      } else {
-        await this.modalController.dismiss({
-          'personName': this.personName,
-          'personSurName': this.personSurName,
-          'scheduleExceptions': deformattedSelectedExceptions,
-          'days': this.businessSchedule,
-          'image': this.image,
-        });
-      }*/
 
 
 

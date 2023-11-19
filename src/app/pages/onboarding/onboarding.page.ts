@@ -582,7 +582,8 @@ export class OnboardingPage {
         categories: this.serviceCategories,
         serviceCategory: service.selectedCategory,
         editing: true,
-        services: this.services
+        services: this.services,
+        onboarding:true
       }
     });
 
@@ -729,7 +730,8 @@ export class OnboardingPage {
 
     const modal = await this.modalController.create({
       component: NewServicePage,
-      componentProps: { people: transformedPeople, categories: this.serviceCategories, services: this.services }
+      componentProps: { people: transformedPeople, categories: this.serviceCategories, services: this.services, onboarding:true
+      }
     });
     await modal.present();
 
@@ -910,7 +912,9 @@ export class OnboardingPage {
   async newPackage() {
     const modal = await this.modalController.create({
       component: NewPackagePage,
-      componentProps: { services: this.services }
+      componentProps: { services: this.services,
+        onboarding:true
+      }
     });
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data && dataReturned.data.newPackage) {
@@ -933,7 +937,8 @@ export class OnboardingPage {
       component: NewPackagePage,
       componentProps: {
         package: packageToEdit,
-        services: this.services
+        services: this.services,
+        onboarding:true
       }
     });
 

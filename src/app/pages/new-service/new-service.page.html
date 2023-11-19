@@ -40,10 +40,16 @@
 
 
 
-              <ion-select label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
+              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
                 cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
                   [value]="category.name">{{category.name}}</ion-select-option>
+
+              </ion-select>
+              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
+                cancelText="Ακυρο" [(ngModel)]="serviceCategory">
+                <ion-select-option *ngFor="let category of categories"
+                  [value]="category">{{category}}</ion-select-option>
 
               </ion-select>
 

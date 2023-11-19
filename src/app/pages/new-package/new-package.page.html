@@ -47,10 +47,17 @@
           <ion-row class=" ion-margin-top ">
             <ion-col size="12">
               <!-- Hidden ion-select -->
-              <ion-select okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
+              <ion-select *ngIf="onboarding!=true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
                 label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
                 (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
                 <ion-select-option *ngFor="let service of services" [value]="service.id">
+                  {{ service.name }}
+                </ion-select-option>
+              </ion-select>
+              <ion-select *ngIf="onboarding==true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
+                label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
+                (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
+                <ion-select-option *ngFor="let service of services" [value]="service.name">
                   {{ service.name }}
                 </ion-select-option>
               </ion-select>
@@ -59,7 +66,9 @@
               <ion-list class="ion-no-padding ml6">
                 <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
                   <ion-item *ngFor="let selectedService of selectedServices">
-                    <ion-label>{{ getSelectedServiceName(selectedService) }}</ion-label>
+                    <ion-label *ngIf="onboarding!=true">{{ getSelectedServiceName(selectedService) }}</ion-label>
+                    <ion-label *ngIf="onboarding==true">{{ selectedService}}</ion-label>
+
                     <ion-reorder slot="end"></ion-reorder>
                   </ion-item>
                 </ion-reorder-group>

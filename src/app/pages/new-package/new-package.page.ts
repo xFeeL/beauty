@@ -17,6 +17,7 @@ export class NewPackagePage implements OnInit {
   packageToEdit: any=[];
   editMode: boolean=false;
   packageId: any=null;
+  onboarding: any=false;
   constructor(private userService:UserService,private changeDetectorRef: ChangeDetectorRef,private navParams: NavParams, private modalController: ModalController) { }
   @ViewChild('serviceSelect') serviceSelect!: IonSelect;
 
@@ -24,6 +25,7 @@ export class NewPackagePage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.onboarding=this.navParams.get('onboarding');
     this.services = this.navParams.get('services');
     console.log("The services before modification:", this.services);
     this.services = this.services.map((service: any) => ({
@@ -49,7 +51,15 @@ export class NewPackagePage implements OnInit {
   }
 
   updateSelectedServices(event: any) {
+    console.log("The pick is:")
+    console.log(this.services)
+    console.log(this.selectedServices)
+
     this.selectedServices = event.detail.value;
+    console.log("The pick is:")
+    console.log(this.services)
+    console.log(this.selectedServices)
+
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
     // Perform the reorder in the array
@@ -90,6 +100,7 @@ export class NewPackagePage implements OnInit {
   }
 
   savePackage() {
+    if(!this.onboarding){
     const packageData = {
       id: this.packageId,
       name: this.packageName,
@@ -115,6 +126,22 @@ export class NewPackagePage implements OnInit {
 
       console.error('Error saving package:', err);
     });
+  }else{
+    const newPackage = {
+      name: this.packageName,
+      description: this.packageDescription,
+      price: this.packagePrice,
+      services: this.selectedServices,
+      servicesWithIndex: this.selectedServices.map((serviceId, index) => ({
+        id: serviceId,
+        index
+      }))
+    }
+    console.log("The new package is:", newPackage)
+    this.modalController.dismiss({
+      'newPackage': newPackage
+    });
+  }
   }
   
 

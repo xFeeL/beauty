@@ -326,6 +326,16 @@ export class UserService {
 
   }
 
+  deleteEmployee(employee: any,safeDelete:boolean,cancelAllForDeletedEmployee:boolean): Observable<any> {
+  
+    return this.http.post(beautyAuthenticated_API_URL + "delete-employee?employee_id="+employee+"&safeDelete="+safeDelete+"&cancelAllForDeletedEmployee="+cancelAllForDeletedEmployee, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+
+  }
+
+  
+
   deleteServiceCategory(category: any): Observable<any> {
   
     return this.http.post(beautyAuthenticated_API_URL + "delete-service-category?category_id="+category, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(

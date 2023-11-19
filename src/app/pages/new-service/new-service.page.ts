@@ -25,18 +25,21 @@ export class NewServicePage implements OnInit {
   services: any = [];
   originalServiceName: any;
   service_id: any = null;
+  onboarding: any=false;
 
   constructor(private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
   }
   ngOnInit() { }
 
   ionViewWillEnter() {
+    this.onboarding = this.navParams.get('onboarding');
+
     this.people = this.navParams.get('people');
     console.log("THE PEOPLE")
     console.log(this.people)
     this.categories = this.navParams.get('categories');
     this.service_id = this.navParams.get('serviceId');
-
+    console.log(this.categories)
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
@@ -106,7 +109,14 @@ export class NewServicePage implements OnInit {
     console.log('Selected Category Name:', this.serviceCategory);
     
     // Find the category object based on the serviceCategoryName
-    const category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
+    let category;
+    if(!this.onboarding){
+       category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
+
+    }else{
+       category = this.categories.find((cat:any) => cat === this.serviceCategory);
+
+    }
 
     // Check if selected category exists in categories
     if (!category) {
@@ -130,7 +140,7 @@ export class NewServicePage implements OnInit {
       this.userService.presentToast('Η υπηρεσία με αυτό το όνομα υπάρχει ήδη.', "danger");
       return;
     }
-
+if(!this.onboarding){
     let body = {
       "name": this.serviceName,
       "price": this.servicePrice,
@@ -149,6 +159,17 @@ export class NewServicePage implements OnInit {
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
     })
+  }else{
+    await this.modalController.dismiss({
+      'name': this.serviceName,
+      'price': this.servicePrice,
+      'people': selectedPeopleNames,  // Using the names only array here
+      'duration': this.serviceDuration,
+      'description': this.serviceDescription,
+      'selectedCategory': this.serviceCategory,
+      'categories': this.categories
+    });
+  }
   }
 
 

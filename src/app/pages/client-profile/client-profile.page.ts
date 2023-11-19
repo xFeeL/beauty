@@ -280,7 +280,7 @@ export class ClientProfilePage implements OnInit {
           name: 'phone',
           type: 'tel',
           placeholder: 'Τηλέφωνο Πελάτη',
-          value: this.userData[1] // or wherever you store the client's current phone number
+          value: this.userData.phone // or wherever you store the client's current phone number
         }
       ],
       buttons: [
@@ -299,7 +299,7 @@ export class ClientProfilePage implements OnInit {
               this.name[0] = data.name.split(" ")[0];
               this.name[1] = data.name.split(" ")[1];
 
-              this.userData[1] = data.phone;
+              this.userData.phone = data.phone;
               this.userService.presentToast("Οι αλλαγές αποθηκεύτηκαν με επιτυχία.", "success")
               this.needReload = true
             }, err => {

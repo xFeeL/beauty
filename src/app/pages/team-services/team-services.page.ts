@@ -41,10 +41,79 @@ export class TeamServicesPage implements OnInit {
 
 
 
-  deleteEmployee(employee: any) {
-    this.team = this.team.filter(r => r !== employee);
-  }
+async deleteEmployee(employee: any) {
+  const confirmAlert = await this.alertController.create({
+    header: 'Διαγραφή ατόμου',
+    message: 'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το άτομο από την ομάδα σας;',
+    buttons: [
+      {
+        text: 'Ακυρο',
+        role: 'cancel',
+        cssClass: 'secondary'
+      }, {
+        text: 'Επιβεβαιωση',
+        handler: () => {
+          this.userService.deleteEmployee(employee.id, false, false).subscribe(
+            data => {
+              this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
+              this.goToTeam();
+            },
+            async err => {
+              if (err.status === 409) { // Conflict status code
+                const conflictAlert = await this.alertController.create({
+                  header: 'Εκκρεμείς κρατήσεις',
+                  message: 'Το άτομο έχει μη ολοκληρωμένες κρατήσεις. Επιλέξτε ενέργεια:',
+                  buttons: [
+                    {
+                      text: 'Πισω',
+                      handler: () => {
+                      }
+                    },
+                    {
+                      text: 'Ακυρωση ολων',
+                      handler: () => {
+                        this.userService.deleteEmployee(employee.id, true, true).subscribe(
+                          successData => {
+                            this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
+                            this.goToTeam();
+                          },
+                          errorData => {
+                            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+                          }
+                        );
+                      }
+                    },
+                    {
+                      text: 'Χωρις ακυρωση',
+                      handler: () => {
+                        this.userService.deleteEmployee(employee.id, true, false).subscribe(
+                          successData => {
+                            this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
+                            this.goToTeam();
+                          },
+                          errorData => {
+                            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+                          }
+                        );
+                      }
+                    }
+                  ]
+                });
+                await conflictAlert.present();
+              } else {
+                this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+              }
+            }
+          );
+        }
+      }
+    ]
+  });
 
+  await confirmAlert.present();
+}
+
+  
 
   addBase64Prefix(image: string) {
     if (image && !image.startsWith("data:")) {
@@ -88,49 +157,54 @@ export class TeamServicesPage implements OnInit {
     }
   }
 
-  isScheduleDefault(personschedule: any[]): boolean {
-
-    // Return false if personschedule is empty or its length differs from this.days
-    if (!personschedule.length || this.days.length !== personschedule.length) {
-      return false;
-    }
-
-    // Loop through each day in the default schedule
-    for (let defaultDay of this.days) {
-      let personDay = personschedule.find(day => day.day === defaultDay.name);
-
-      // If the default day is open but isn't present in personschedule, return false
-      if (defaultDay.open && !personDay) {
+  isScheduleDefault(personschedule: any[]) {
+    console.log("PERSON SCHEDULE");
+    console.log(personschedule);
+    console.log("DAYS");
+    console.log(this.days);
+  
+    const personScheduleMap = new Map(personschedule.map(day => [day.day, day]));
+  
+    const openDefaultDays = this.days.filter(day => day.open);
+  
+    for (let defaultDay of openDefaultDays) {
+      const personDay = personScheduleMap.get(defaultDay.name) as any; // Type assertion
+  
+      if (!personDay) {
         return false;
       }
-
-      // If the day is not open in the default schedule and also not present in personschedule, continue to the next day
-      if (!defaultDay.open && !personDay) {
-        continue;
+  
+      let defaultIntervals = defaultDay.timeIntervals.map(interval => interval.start + '-' + interval.end);
+      defaultIntervals.sort();
+  
+      // Type assertion for personDay.intervals
+      const personIntervals = personDay.intervals as string[]; 
+  
+      if (!personIntervals || defaultIntervals.length !== personIntervals.length) {
+        return false;
       }
-
-      // Compare time intervals if the day is open
-      if (defaultDay.open) {
-        let defaultIntervals = defaultDay.timeIntervals.map(interval => interval.start + '-' + interval.end);
-
-        // If the number of time intervals differs, return false
-        if (defaultIntervals.length !== personDay.intervals.length) {
+  
+      personIntervals.sort();
+      for (let i = 0; i < defaultIntervals.length; i++) {
+        if (defaultIntervals[i] !== personIntervals[i]) {
           return false;
-        }
-
-        // Sort and compare each time interval
-        defaultIntervals.sort();
-        personDay.intervals.sort();
-        for (let i = 0; i < defaultIntervals.length; i++) {
-          if (defaultIntervals[i] !== personDay.intervals[i]) {
-            return false;
-          }
         }
       }
     }
-
+  
+    for (let personDay of personschedule) {
+      const personDayEntry = personDay as any; // Type assertion
+  
+      if (!this.days.find(defaultDay => defaultDay.name === personDayEntry.day && defaultDay.open)) {
+        return false;
+      }
+    }
+  
     return true;
   }
+  
+  
+  
 
 
   goToServices() {
@@ -627,4 +701,9 @@ export class TeamServicesPage implements OnInit {
   }
 
 
+}
+
+interface ScheduleDay {
+  day: string;
+  intervals: string[];
 }
