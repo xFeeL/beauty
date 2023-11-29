@@ -32,7 +32,7 @@ export class AddServicesPage implements OnInit {
     this.loadInitialData();
   }
   
-  private resetState() {
+  resetState() {
     this.initialized = false;
     this.services = [];
     this.selectedServicesAndPackages = [];
@@ -40,8 +40,8 @@ export class AddServicesPage implements OnInit {
   
     const servicesFromNav = this.navParams.get('selectedServicesAndPackages');
     if (servicesFromNav) {
-      this.selectedServicesAndPackages = servicesFromNav;
-      console.log(servicesFromNav)
+      this.selectedServicesAndPackages = JSON.parse(JSON.stringify(servicesFromNav));
+      console.log("Services from Nav:", servicesFromNav);
     }
   }
 

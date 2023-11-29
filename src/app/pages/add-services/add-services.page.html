@@ -74,6 +74,9 @@
       </ion-list>
 
     </ion-row>
+    <ion-row  class="ion-margin-top ion-margin-start" *ngIf="selectedServicesAndPackages && selectedServicesAndPackages.length != 0">
+      <h4>Προστέθηκαν</h4>
+    </ion-row>
     <ion-row class="ion-margin-top mt30" *ngIf="selectedServicesAndPackages && selectedServicesAndPackages.length != 0">
       <ion-list lines="inset" class="ion-no-padding servicesList">
         <ion-item class="cursor" *ngFor="let service of selectedServicesAndPackages"

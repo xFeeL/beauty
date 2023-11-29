@@ -83,6 +83,7 @@ export class NewKrathshPage implements OnInit {
 
 
   ionViewWillEnter() {
+   
     console.log(this.theDate)
     if (this.navParams.get("appointment_data") != undefined) {
       this.editing = true
