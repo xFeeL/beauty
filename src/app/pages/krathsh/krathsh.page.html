@@ -5,9 +5,9 @@
       </ion-button>
     </ion-buttons>
     <ion-title color="light">Κράτηση</ion-title>
-    <ion-buttons slot="end" *ngIf="status=='Αποδεκτή'" class="ion-margin-end"> <ion-button class="rounded-btn"
+    <ion-buttons slot="end" *ngIf="status=='accepted'" class="ion-margin-end"> <ion-button class="rounded-btn"
         [ngClass]="{'expanded': checkedIn=='checked_in'}"
-        [@buttonAnimation]="checkedIn=='true' ? 'expanded' : 'collapsed'" *ngIf="checkedIn != 'Εκκρεμεί'"
+        [@buttonAnimation]="checkedIn=='true' ? 'expanded' : 'collapsed'" *ngIf="checkedIn != 'pending'"
         [fill]="checkedIn=='true' ? 'solid' : 'outline'" size="small" [class.green-border]="checkedIn!='true'"
         [color]="checkedIn=='true'?'success':'light'" (click)="checkIn(); $event.stopPropagation();"
         style="text-transform: none; border-radius: 100px !important;">
@@ -171,7 +171,7 @@
           </ion-row>
           <ion-row class="bgL">
             <ion-col size="2" class="bordB ion-text-center">
-              <div *ngIf="status=='Αποδεκτή'">
+              <div *ngIf="status=='accepted'">
                 <svg width="48" height="209" viewBox="0 0 48 209" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g filter="url(#filter0_d_872_263)">
                     <path
@@ -268,7 +268,7 @@
                   </defs>
                 </svg>
               </div>
-              <div *ngIf="status=='Ακυρώθηκε'">
+              <div *ngIf="status=='canceled'">
                 <svg width="48" height="132" viewBox="0 0 48 132" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g filter="url(#filter0_d_872_271)">
                     <path d="M23 40H25V84H23V40Z" fill="#FF3E01" />
@@ -337,7 +337,7 @@
                   </defs>
                 </svg>
               </div>
-              <div *ngIf="status=='Ολοκληρωμένη'">
+              <div *ngIf="status=='completed'">
                 <svg width="48" height="213" viewBox="0 0 48 213" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g filter="url(#filter0_d_872_277)">
                     <rect x="23" y="123" width="2" height="44" fill="#0FCE16" />
@@ -445,7 +445,7 @@
                   </defs>
                 </svg>
               </div>
-              <div *ngIf="status=='Εκκρεμεί'">
+              <div *ngIf="status=='pending'">
                 <svg width="48" height="209" viewBox="0 0 48 209" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g filter="url(#filter0_d_872_270)">
                     <path
@@ -546,7 +546,7 @@
                     </ion-badge>
                   </ion-col>
                   <ion-col size="12" class="h30 ion-padding-top"> </ion-col>
-                  <ion-col size="12" class="h30 ion-padding-top" *ngIf="status!='Ακυρώθηκε'">
+                  <ion-col size="12" class="h30 ion-padding-top" *ngIf="status!='canceled'">
                     <ion-badge [class]="booking_completed_class"> <ion-text [color]="booking_completed_color"
                         class="mr2">{{booking_completed_text}}</ion-text>
                     </ion-badge>
@@ -561,17 +561,17 @@
 <ion-footer> <ion-grid class="ion-no-padding">
     <ion-row class="ion-no-padding">
       <ion-col size="6" class="ion-no-padding">
-        <ion-button class="ion-no-margin" *ngIf="status=='Αποδεκτή'" color="danger" expand="block"
+        <ion-button class="ion-no-margin" *ngIf="status=='accepted'" color="danger" expand="block"
           (click)="openRejectionPopover()">
           Ακύρωση Κράτησης
         </ion-button>
       </ion-col>
       <ion-col size="6" class="ion-no-padding">
-        <ion-button class="ion-no-margin" *ngIf="status=='Αποδεκτή'" expand="block" color="primary"
+        <ion-button class="ion-no-margin" *ngIf="status=='accepted'" expand="block" color="primary"
           (click)="editReservation()">
           Τροποποίηση Κράτησης
         </ion-button>
-      </ion-col> <ion-col size="6" *ngIf="status=='Εκκρεμεί'">
+      </ion-col> <ion-col size="6" *ngIf="status=='pending'">
         <ion-button fill="outline" color="danger" expand="block" (click)="cancelAppointment()">
           <ion-icon style="margin-right:3px;" name="close-circle-outline"></ion-icon>
           Απόρριψη
@@ -600,7 +600,7 @@
             </ion-button>
           </ion-footer> </ng-template>
       </ion-popover>
-      <ion-col size="6" *ngIf="status=='Εκκρεμεί'"> <ion-button fill="solid" color="success" expand="block"
+      <ion-col size="6" *ngIf="status=='pending'"> <ion-button fill="solid" color="success" expand="block"
           (click)="acceptAppointment()">
           <ion-icon name="checkmark-circle-outline" style="margin-right:3px;"></ion-icon>
           Αποδοχή

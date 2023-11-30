@@ -368,7 +368,7 @@ export class HomePage implements OnInit {
         el[3] = moment(el[3]).locale("el").format('Do MMM, h:mm a');
         el[4] = el[4].split('$')[0] + " " + el[4].split('$')[1];
         this.krathseis.push(el);
-        if (el[2] === "Αποδεκτή") {
+        if (el[2] === "accepted") {
           el[2] = el[5] === "false" ? "not_checked_in" : "checked_in";
         }
 
@@ -449,13 +449,13 @@ export class HomePage implements OnInit {
 
   getColorForStatus(status: string): string {
     switch (status) {
-      case 'Ακυρώθηκε':
+      case 'canceled':
         return 'danger';
-      case 'Ολοκληρωμένη':
+      case 'completed':
         return 'warning';
-      case 'Αποδεκτή':
+      case 'accepted':
         return 'success';
-      case 'Εκκρεμεί':
+      case 'pending':
         return 'primary';
       default:
         return 'medium';
@@ -494,7 +494,7 @@ export class HomePage implements OnInit {
     event.stopPropagation();
     this.userService.acceptAppointment(appointment.id).subscribe(data => {
       appointment.status = "not_checked_in"
-      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
+      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
 
       setTimeout(() => {
         const index = this.dataSource.findIndex(e => e.id === appointment.id);
@@ -564,7 +564,7 @@ export class HomePage implements OnInit {
     this.userService.rejectAppointment(appointment_id, this.cancelReason).subscribe(data => {
       this.getKrathseis(this.statusChosen);
       this.getPendingAppointmentsNumber;
-      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
+      this.userService.presentToast("Η κράτηση canceled!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 

@@ -194,13 +194,13 @@ export class ClientProfilePage implements OnInit {
 
   getColorForStatus(status: string): string {
     switch (status) {
-      case 'Ακυρώθηκε':
+      case 'canceled':
         return 'danger-line';
-      case 'Ολοκληρωμένη':
+      case 'completed':
         return 'warning-line';
-      case 'Αποδεκτή':
+      case 'accepted':
         return 'success-line';
-      case 'Εκκρεμεί':
+      case 'pending':
         return 'pending-line';
       default:
         return 'pending-line';
@@ -220,11 +220,11 @@ export class ClientProfilePage implements OnInit {
     this.userService.acceptAppointment(appointment).subscribe(data => {
       for (let i = 0; i < this.krathseis.length; i++) {
         if (appointment == this.krathseis[i][0]) {
-          this.krathseis[i][2] = "Αποδεκτή"
+          this.krathseis[i][2] = "accepted"
           break;
         }
       }
-      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
+      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 
@@ -245,11 +245,11 @@ export class ClientProfilePage implements OnInit {
     this.userService.rejectAppointment(appointment, this.cancelReason).subscribe(data => {
       for (let i = 0; i < this.krathseis.length; i++) {
         if (appointment == this.krathseis[i][0]) {
-          this.krathseis[i][2] = "Ακυρώθηκε"
+          this.krathseis[i][2] = "canceled"
           break;
         }
       }
-      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
+      this.userService.presentToast("Η κράτηση canceled!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 

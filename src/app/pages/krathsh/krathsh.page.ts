@@ -108,7 +108,7 @@ export class KrathshPage implements OnInit {
 
       this.checkedIn = data.checkedIn
       this.note = data.note
-      if (data.status == "Αποδεκτή") {
+      if (data.status == "accepted") {
 
         this.text_color = "#2dd36f"
         this.booking_status = "Η κράτηση έχει επιβεβαιωθεί.";
@@ -125,7 +125,7 @@ export class KrathshPage implements OnInit {
         this.booking_completed_color = "medium"
         this.booking_completed_text = "Αναμονή για ολοκλήρωση.";
         this.second_symbol = "M30.5102 103.051L18.931 114.765L13.4902 109.262L13.4901 109.262C13.092 108.86 12.4454 108.86 12.0473 109.262L12.0471 109.263C11.651 109.664 11.6509 110.313 12.0472 110.714L12.0472 110.714L18.208 116.948L18.2081 116.948C18.6065 117.351 19.2527 117.351 19.6511 116.948L19.6512 116.948L31.9528 104.503L31.9529 104.503C32.349 104.102 32.3491 103.453 31.9528 103.052L31.9525 103.051C31.7558 102.853 31.4867 102.744 31.2075 102.75L31.2075 102.75C30.9449 102.756 30.6955 102.864 30.5105 103.051L30.5102 103.051Z";
-      } else if (data.status == "Ακυρώθηκε") {
+      } else if (data.status == "canceled") {
         this.booking_status = "Η κράτηση έχει ακυρωθεί.";
         this.booking_status_color = "danger";
         this.booking_status_icon = "close-circle-outline";
@@ -136,8 +136,8 @@ export class KrathshPage implements OnInit {
         this.booking_confirmed_class = "custBadge2 p7 cusItemOrang";
         this.booking_confirmed_text = "Η κράτηση έχει ακυρωθεί.";
         this.second_symbol = "M23.441 198.239L30.9995 205.798L29.797 207L22.2385 199.442L14.68 207L13.4775 205.798L21.036 198.239L13.4775 190.681L14.68 189.478L22.2385 197.037L29.797 189.478L30.9995 190.681L23.441 198.239Z";
-      } else if (data.status == "Εκκρεμεί") {
-        this.booking_status = "Εκκρεμεί επιβεβαίωση";
+      } else if (data.status == "pending") {
+        this.booking_status = "pending επιβεβαίωση";
         this.booking_status_color = "primary";
         this.booking_status_icon = "time-outline";
         this.booking_status_class = "custBadge p7 cusItemSuccess";
@@ -150,7 +150,7 @@ export class KrathshPage implements OnInit {
         this.booking_completed_text = "Αναμονή για ολοκλήρωση.";
         this.second_symbol = "M30.5102 103.051L18.931 114.765L13.4902 109.262L13.4901 109.262C13.092 108.86 12.4454 108.86 12.0473 109.262L12.0471 109.263C11.651 109.664 11.6509 110.313 12.0472 110.714L12.0472 110.714L18.208 116.948L18.2081 116.948C18.6065 117.351 19.2527 117.351 19.6511 116.948L19.6512 116.948L31.9528 104.503L31.9529 104.503C32.349 104.102 32.3491 103.453 31.9528 103.052L31.9525 103.051C31.7558 102.853 31.4867 102.744 31.2075 102.75L31.2075 102.75C30.9449 102.756 30.6955 102.864 30.5105 103.051L30.5102 103.051Z";
 
-      } else if (data.status == "Ολοκληρωμένη") {
+      } else if (data.status == "completed") {
         this.booking_status = "Η κράτηση έχει ολοκληρωθεί.";
         this.booking_status_color = "warning";
         this.booking_status_icon = "checkmark-circle-outline";
@@ -273,8 +273,8 @@ export class KrathshPage implements OnInit {
 
   applyRejectPopover() {
     this.userService.rejectAppointment(this.appointment_id, this.cancelReason).subscribe(data => {
-      this.status = "Ακυρώθηκε"
-      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
+      this.status = "canceled"
+      this.userService.presentToast("Η κράτηση canceled!", "success")
       this.booking_status = "Η κράτηση έχει ακυρωθεί.";
       this.booking_status_color = "danger";
       this.booking_status_icon = "close-circle-outline";
@@ -300,8 +300,8 @@ export class KrathshPage implements OnInit {
 
   acceptAppointment() {
     this.userService.acceptAppointment(this.appointment_id).subscribe(data => {
-      this.status = "Αποδεκτή"
-      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
+      this.status = "accepted"
+      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
       this.text_color = "#2dd36f"
       this.booking_status = "Η κράτηση έχει επιβεβαιωθεί.";
       this.booking_status_color = "success";

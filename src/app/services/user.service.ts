@@ -118,7 +118,7 @@ export class UserService {
             this.presentToast("Μία νέα εργασία είναι διαθέσιμη για εσάς. Δώστε την προσφορά σας!", "primary")
           } else if (type == "Proposal Accepted") {
             this.newNotification = true
-            this.presentToast("Μία προσφορά σας έγινε αποδεκτή! Δείτε λεπτομέρειες στις ειδοποιήσεις.", "success")
+            this.presentToast("Μία προσφορά σας έγινε accepted! Δείτε λεπτομέρειες στις ειδοποιήσεις.", "success")
           }
           observer.next(event);
         });

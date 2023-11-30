@@ -61,7 +61,7 @@ async deleteEmployee(employee: any) {
             async err => {
               if (err.status === 409) { // Conflict status code
                 const conflictAlert = await this.alertController.create({
-                  header: 'Εκκρεμείς κρατήσεις',
+                  header: 'pendingς κρατήσεις',
                   message: 'Το άτομο έχει μη ολοκληρωμένες κρατήσεις. Επιλέξτε ενέργεια:',
                   buttons: [
                     {

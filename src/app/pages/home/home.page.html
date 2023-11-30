@@ -159,13 +159,13 @@
                       <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ενέργεια</th>
                         <td mat-cell *matCellDef="let element" class="custom-cell">
-                          <ion-chip class="thechip cancelChip" *ngIf="element.status == 'Ακυρώθηκε'"
+                          <ion-chip class="thechip cancelChip" *ngIf="element.status == 'canceled'"
                             [color]="getColorForStatus(element.status)">
-                            Ακυρώθηκε
+                            canceled
                           </ion-chip>
                           <ion-button [ngClass]="{'expanded': element.status=='checked_in'}"
                             [@buttonAnimation]="element.status=='checked_in' ? 'expanded' : 'collapsed'"
-                            *ngIf="element.status != 'Εκκρεμεί' && element.status != 'Ακυρώθηκε'"
+                            *ngIf="element.status != 'pending' && element.status != 'canceled'"
                             [fill]="element.status=='checked_in'? 'solid' : 'outline'" size="small"
                             [class.green-border]="element.status=='not_checked_in'"
                             [color]="element.status=='checked_in'?'success':'medium'"
@@ -174,7 +174,7 @@
                               name="checkmark-outline" style="padding-right: 10px;"></ion-icon>
                             Έφτασε
                           </ion-button>
-                          <ng-container *ngIf="element.status === 'Εκκρεμεί'">
+                          <ng-container *ngIf="element.status === 'pending'">
                             <ion-icon color="success" name="checkmark-circle-outline" title="Αποδοχή"
                               (click)="acceptAppointment($event, element)" class="icon-spacing"></ion-icon>
                             <ion-icon color="danger" name="close-circle-outline" title="Απόρριψη"
