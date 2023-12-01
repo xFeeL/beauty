@@ -282,6 +282,14 @@ export class UserService {
     );
   }
 
+  noShow(appointment_id: string): Observable<any> {
+    
+    return this.http.post(beautyAuthenticated_API_URL + "no-show?appointment_id="+appointment_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+  }
+
+
   
   saveService(body: any): Observable<any> {
     

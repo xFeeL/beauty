@@ -15,7 +15,7 @@ export class ClientProfilePage implements OnInit {
   userId: any;
   type: any = 'projects'
   prosfores: Array<any> = new Array<any>;
-  userData:any = new Array<any>;
+  userData: any = new Array<any>;
   reviews: Array<any> = new Array<any>;
   initialized = false;
   name: any;
@@ -84,22 +84,22 @@ export class ClientProfilePage implements OnInit {
 
   getReservations() {
     this.userService.getUserReservations(this.page, this.userId).subscribe(data => {
-        for (let k = 0; k < data.length; k++) {
-            data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
+      for (let k = 0; k < data.length; k++) {
+        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
 
-            let services = data[k][5].split(',');
-            if (services.length === 1) {
-                data[k][5] = services[0].trim();
-            } else {
-                data[k][5] = services.length + " υπηρεσίες";
-            }
-
-            this.krathseis.push(data[k]);
+        let services = data[k][5].split(',');
+        if (services.length === 1) {
+          data[k][5] = services[0].trim();
+        } else {
+          data[k][5] = services.length + " υπηρεσίες";
         }
+
+        this.krathseis.push(data[k]);
+      }
     }, err => {
-        // Handle the error here
+      // Handle the error here
     });
-}
+  }
 
 
 
@@ -202,10 +202,32 @@ export class ClientProfilePage implements OnInit {
         return 'success-line';
       case 'pending':
         return 'pending-line';
+      case 'noshow':
+        return 'noshow-line';
       default:
         return 'pending-line';
     }
   }
+
+  getStatusTextInGreek(status: string): string {
+    switch (status) {
+      case 'canceled':
+        return 'Ακυρώθηκε';
+      case 'completed':
+        return 'Ολοκληρώθηκε';
+      case 'accepted':
+        return 'Εγκρίθηκε';
+      case 'pending':
+        return 'Εκκρεμεί';
+      case 'noshow':
+        return 'Δεν εμφανίστηκε';
+      default:
+        return ''; // Or any default text
+    }
+  }
+
+
+
   openAcceptPopover() {
     this.cancelReason = ""
 

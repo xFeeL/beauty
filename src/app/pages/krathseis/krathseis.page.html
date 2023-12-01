@@ -21,7 +21,7 @@
       <ng-template>
         <ion-list class="backgroundGrid">
           <ion-item *ngFor="let item of itemsKrathsh" (click)="toggleItem(item)">
-            <ion-label text-wrap>{{ item.value }}</ion-label>
+            <ion-label text-wrap>{{ getStatusTextInGreek(item.value) }}</ion-label>
             <ion-checkbox slot="end" [checked]="item.selected" ></ion-checkbox>
           </ion-item> </ion-list>
         <div class="button-container">

@@ -1,346 +1,351 @@
 <ion-content class="background"> <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-  <ion-refresher-content></ion-refresher-content>
-</ion-refresher>
-<ion-grid>
-  <ion-row class="ion-justify-content-center">
-    <ion-col size="12" sizeXs="12" sizeSm="12" sizeMd="11" sizeLg="12" sizeXl="9" class="ion-no-padding">
-      <ion-grid class="desktopGrid">
-        <ion-toolbar class="ion-margin-bottom ion-margin-top"> <ion-buttons slot="start">
-            <ion-menu-button class="gray-menu"></ion-menu-button>
-          </ion-buttons>
-          <ion-img slot="start" class="logo-image" src="../../../assets/imgs/FYX-logo.jpg"></ion-img> <ion-button
-            [size]="!isMobile ? '' : 'small'" shape="round" slot="end" class="capsoff"
-            [ngStyle]="!isMobile ? {'margin-end': 'var(--ion-margin)'} : {'margin-right': '5px'}"
-            (click)="newKrathsh()">
-            <ion-icon name="add"></ion-icon>
-            <ion-label class="ion-margin-start" *ngIf="!isMobile">Νέα Κράτηση</ion-label>
-          </ion-button> <button (click)="goToNotifications()" class="notif" slot="end">
-            <svg *ngIf="newNotification()==false || newNotification()==undefined" width="22" height="22"
-              viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
-                fill="#B0B0B0" />
-              <path
-                d="M23.7249 20.3161L23.4793 20.0995C22.7827 19.4788 22.1729 18.767 21.6665 17.9834C21.1135 16.9019 20.782 15.7208 20.6915 14.5095V10.9417C20.6886 10.5083 20.6499 10.0759 20.576 9.64893C19.3526 9.39748 18.2537 8.731 17.4654 7.76232C16.677 6.79365 16.2476 5.58231 16.2499 4.33337V3.87837C15.4958 3.50729 14.6856 3.26326 13.8521 3.15615V2.24615C13.8521 1.99044 13.7505 1.7452 13.5697 1.56438C13.3889 1.38356 13.1436 1.28198 12.8879 1.28198C12.6322 1.28198 12.387 1.38356 12.2061 1.56438C12.0253 1.7452 11.9237 1.99044 11.9237 2.24615V3.19226C10.0573 3.45555 8.34916 4.38519 7.11463 5.80955C5.8801 7.2339 5.20255 9.0568 5.20708 10.9417V14.5095C5.11663 15.7208 4.78514 16.9019 4.23208 17.9834C3.73439 18.7651 3.13444 19.4767 2.44819 20.0995L2.20264 20.3161V22.3528H23.7249V20.3161Z"
-                fill="#B0B0B0 " />
-              <path
-                d="M21.6668 7.94439C23.6611 7.94439 25.2779 6.32764 25.2779 4.33328C25.2779 2.33892 23.6611 0.722168 21.6668 0.722168C19.6724 0.722168 18.0557 2.33892 18.0557 4.33328C18.0557 6.32764 19.6724 7.94439 21.6668 7.94439Z"
-                fill="#B0B0B0" />
-            </svg>
-            <svg *ngIf="newNotification()==true" class="ringing-bell" width="22" height="22" viewBox="0 0 26 26"
-              fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
-                fill="#B0B0B0" />
-              <path
-                d="M23.7249 20.3161L23.4793 20.0995C22.7827 19.4788 22.1729 18.767 21.6665 17.9834C21.1135 16.9019 20.782 15.7208 20.6915 14.5095V10.9417C20.6886 10.5083 20.6499 10.0759 20.576 9.64893C19.3526 9.39748 18.2537 8.731 17.4654 7.76232C16.677 6.79365 16.2476 5.58231 16.2499 4.33337V3.87837C15.4958 3.50729 14.6856 3.26326 13.8521 3.15615V2.24615C13.8521 1.99044 13.7505 1.7452 13.5697 1.56438C13.3889 1.38356 13.1436 1.28198 12.8879 1.28198C12.6322 1.28198 12.387 1.38356 12.2061 1.56438C12.0253 1.7452 11.9237 1.99044 11.9237 2.24615V3.19226C10.0573 3.45555 8.34916 4.38519 7.11463 5.80955C5.8801 7.2339 5.20255 9.0568 5.20708 10.9417V14.5095C5.11663 15.7208 4.78514 16.9019 4.23208 17.9834C3.73439 18.7651 3.13444 19.4767 2.44819 20.0995L2.20264 20.3161V22.3528H23.7249V20.3161Z"
-                fill="#B0B0B0" />
-              <path
-                d="M21.6668 7.94439C23.6611 7.94439 25.2779 6.32764 25.2779 4.33328C25.2779 2.33892 23.6611 0.722168 21.6668 0.722168C19.6724 0.722168 18.0557 2.33892 18.0557 4.33328C18.0557 6.32764 19.6724 7.94439 21.6668 7.94439Z"
-                fill="red" />
-            </svg> </button> </ion-toolbar>
-      </ion-grid> 
-      <ion-grid class="desktopGrid mlr0">
-        <ion-row>
-          <ion-col size-xl="12" size-sm="12">
-            <ion-grid class="white mlr0">
-              <ion-row>
-                <ion-col>
-                  <div class="content-container ">
-                    <h3 class="left-text mt0 "><ion-text color="primary"><b>Επερχόμενες</b></ion-text>
-                      <ion-text class="title_space" color="dark"><b>Κρατήσεις</b></ion-text>
-                    </h3>
-                  </div>
-                </ion-col>
-                <ion-col class="right-align-button p10" *ngIf="hideNewReservationButton==false"> </ion-col>
-                <ion-col size-xl="1.2" size-sm="0" size-xs="0" *ngIf="hideNewReservationButton==false"></ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col> 
-                  <ion-segment [(ngModel)]="activeSegment" scrollable value="all" mode="ios"
-                    class="small-segment"> <ion-segment-button value="all" (click)="getKrathseis('0,0,0,0')">
-                      <ion-label>Όλες</ion-label>
-                    </ion-segment-button>
-                    <ion-segment-button value="pending" (click)="getKrathseis('1,0,0,0')">
-                      <ion-label>Εκκρεμούν <b>({{pendingAppointments}})</b></ion-label>
-                    </ion-segment-button>
-                    <ion-segment-button value="accepted" (click)="getKrathseis('0,0,1,0')">
-                      <ion-label>Αποδεκτές</ion-label>
-                    </ion-segment-button>
-                    <ion-segment-button value="canceled" (click)="getKrathseis('0,0,0,1')">
-                      <ion-label>Ακυρωμένες</ion-label>
-                    </ion-segment-button> </ion-segment>
-                </ion-col> </ion-row>
-              <ion-row>
-                <ion-col size="12" class="ion-no-padding">
-                  <div class="table-container">
-                    <table mat-table [dataSource]="dataSource" class=" demo-table "
-                      *ngIf="initialized && dataSource.length!=0"> 
-                      <ng-container *ngIf="shouldDisplayBadgeColumn()"
-                        matColumnDef="badge" sticky>
-                        <th mat-header-cell *matHeaderCellDef></th>
-                        <td mat-cell *matCellDef="let element" class="badge-column">
-                          <ion-badge *ngIf="isDatePassed(element.date)" #tooltip="matTooltip"
-                            (click)="tooltip.toggle()" color="danger"
-                            matTooltip="Πατήστε 'Έφτασε' ή η κράτηση θα ακυρωθεί αυτόματα σε {{ getTooltipHoursLeft(element.date) }}."
-                            matTooltipPosition="above" matTooltipShowDelay="0" matTooltipHideDelay="100"
-                            (click)="$event.stopPropagation();" class="cancel-badge">
-                            {{ getHoursLeft(element.date) }}
-                          </ion-badge>
-                        </td>
-                      </ng-container> <ng-container matColumnDef="avatar" sticky >
-                        <th mat-header-cell *matHeaderCellDef class="avatar-column"></th>
-                        <td mat-cell *matCellDef="let element" class="avatar-column ion-text-center">
-                          <!-- Container div for the badge and the avatar --> <!-- Avatar -->
-                          <ion-avatar class="custAvatarHedTable">
-                            <ion-img src="data:image/jpeg;base64,{{element.avatar}}"></ion-img>
-                          </ion-avatar>
-                        </td>
-                      </ng-container> <ng-container matColumnDef="name" sticky>
-                        <th mat-header-cell *matHeaderCellDef class="pl0 table-column border border-column">Όνομα</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell table-column textLeft">{{element.name}}</td>
-                      </ng-container> <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ημερ/Ώρα</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">{{element.date}}</td>
-                      </ng-container>
-                      
-                      <ng-container matColumnDef="employee">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Εξυπηρέτηση</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">
-                            <ng-container *ngIf="getEmployees(element.employee).length > 0">
-                                <!-- Display the first employee and if there are more employees, display +n -->
-                                
-                                <ion-chip [outline]="true" class="no-wrap ion-no-margin" color="primary"
-                                          (click)="toggleTooltip(tooltipChip, $event)"
-                                          #tooltipChip="matTooltip" 
-                                          [matTooltip]="element.serviceEmployeeMapping"
-                                          matTooltipPosition="above"
-                                          matTooltipShowDelay="0"
-                                          matTooltipHideDelay="1500" >
-                                    <ion-note color="primary" class="employeeChip">{{ getEmployees(element.employee)[0] }}</ion-note>
-                                    <ng-container *ngIf="getEmployees(element.employee).length > 1">
-                                        <ion-note color="primary" class="plusChip"> +{{ getEmployees(element.employee).length - 1 }} </ion-note>
-                                    </ng-container>
-                                </ion-chip>
-                            </ng-container>
-                        </td>
-                    </ng-container>
-                    
-                    
-                    
-                    
-                    
-                    <ng-container matColumnDef="service">
-                      <th mat-header-cell *matHeaderCellDef class="pl0 table-column border-column">Υπηρεσίες</th>
-                      <td mat-cell *matCellDef="let element" class="custom-cell">
-                          <ng-container *ngIf="element.service.split(',').length > 0">
-                              <!-- Display the first service and if there are more services, display +n -->
-                              <ion-chip [outline]="true" [class]="isMobile==true?'chipHeight ion-no-margin':'ion-no-margin'" color="primary"
-                                        (click)="toggleTooltip(serviceTooltip, $event)"
-                                        #serviceTooltip="matTooltip" 
-                                        [matTooltip]="element.serviceEmployeeMapping"
-                                        matTooltipPosition="above"
-                                        matTooltipShowDelay="0"
-                                        matTooltipHideDelay="1500">
-                                 
-                                  <ion-note color="primary" class="employeeChip"> {{ element.service.split(',')[0].trim() }}</ion-note>
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" sizeXs="12" sizeSm="12" sizeMd="11" sizeLg="12" sizeXl="9" class="ion-no-padding">
+        <ion-grid class="desktopGrid">
+          <ion-toolbar class="ion-margin-bottom ion-margin-top"> <ion-buttons slot="start">
+              <ion-menu-button class="gray-menu"></ion-menu-button>
+            </ion-buttons>
+            <ion-img slot="start" class="logo-image" src="../../../assets/imgs/FYX-logo.jpg"></ion-img> <ion-button
+              [size]="!isMobile ? '' : 'small'" shape="round" slot="end" class="capsoff"
+              [ngStyle]="!isMobile ? {'margin-end': 'var(--ion-margin)'} : {'margin-right': '5px'}"
+              (click)="newKrathsh()">
+              <ion-icon name="add"></ion-icon>
+              <ion-label class="ion-margin-start" *ngIf="!isMobile">Νέα Κράτηση</ion-label>
+            </ion-button> <button (click)="goToNotifications()" class="notif" slot="end">
+              <svg *ngIf="newNotification()==false || newNotification()==undefined" width="22" height="22"
+                viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
+                  fill="#B0B0B0" />
+                <path
+                  d="M23.7249 20.3161L23.4793 20.0995C22.7827 19.4788 22.1729 18.767 21.6665 17.9834C21.1135 16.9019 20.782 15.7208 20.6915 14.5095V10.9417C20.6886 10.5083 20.6499 10.0759 20.576 9.64893C19.3526 9.39748 18.2537 8.731 17.4654 7.76232C16.677 6.79365 16.2476 5.58231 16.2499 4.33337V3.87837C15.4958 3.50729 14.6856 3.26326 13.8521 3.15615V2.24615C13.8521 1.99044 13.7505 1.7452 13.5697 1.56438C13.3889 1.38356 13.1436 1.28198 12.8879 1.28198C12.6322 1.28198 12.387 1.38356 12.2061 1.56438C12.0253 1.7452 11.9237 1.99044 11.9237 2.24615V3.19226C10.0573 3.45555 8.34916 4.38519 7.11463 5.80955C5.8801 7.2339 5.20255 9.0568 5.20708 10.9417V14.5095C5.11663 15.7208 4.78514 16.9019 4.23208 17.9834C3.73439 18.7651 3.13444 19.4767 2.44819 20.0995L2.20264 20.3161V22.3528H23.7249V20.3161Z"
+                  fill="#B0B0B0 " />
+                <path
+                  d="M21.6668 7.94439C23.6611 7.94439 25.2779 6.32764 25.2779 4.33328C25.2779 2.33892 23.6611 0.722168 21.6668 0.722168C19.6724 0.722168 18.0557 2.33892 18.0557 4.33328C18.0557 6.32764 19.6724 7.94439 21.6668 7.94439Z"
+                  fill="#B0B0B0" />
+              </svg>
+              <svg *ngIf="newNotification()==true" class="ringing-bell" width="22" height="22" viewBox="0 0 26 26"
+                fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
+                  fill="#B0B0B0" />
+                <path
+                  d="M23.7249 20.3161L23.4793 20.0995C22.7827 19.4788 22.1729 18.767 21.6665 17.9834C21.1135 16.9019 20.782 15.7208 20.6915 14.5095V10.9417C20.6886 10.5083 20.6499 10.0759 20.576 9.64893C19.3526 9.39748 18.2537 8.731 17.4654 7.76232C16.677 6.79365 16.2476 5.58231 16.2499 4.33337V3.87837C15.4958 3.50729 14.6856 3.26326 13.8521 3.15615V2.24615C13.8521 1.99044 13.7505 1.7452 13.5697 1.56438C13.3889 1.38356 13.1436 1.28198 12.8879 1.28198C12.6322 1.28198 12.387 1.38356 12.2061 1.56438C12.0253 1.7452 11.9237 1.99044 11.9237 2.24615V3.19226C10.0573 3.45555 8.34916 4.38519 7.11463 5.80955C5.8801 7.2339 5.20255 9.0568 5.20708 10.9417V14.5095C5.11663 15.7208 4.78514 16.9019 4.23208 17.9834C3.73439 18.7651 3.13444 19.4767 2.44819 20.0995L2.20264 20.3161V22.3528H23.7249V20.3161Z"
+                  fill="#B0B0B0" />
+                <path
+                  d="M21.6668 7.94439C23.6611 7.94439 25.2779 6.32764 25.2779 4.33328C25.2779 2.33892 23.6611 0.722168 21.6668 0.722168C19.6724 0.722168 18.0557 2.33892 18.0557 4.33328C18.0557 6.32764 19.6724 7.94439 21.6668 7.94439Z"
+                  fill="red" />
+              </svg> </button> </ion-toolbar>
+        </ion-grid>
+        <ion-grid class="desktopGrid mlr0">
+          <ion-row>
+            <ion-col size-xl="12" size-sm="12">
+              <ion-grid class="white mlr0">
+                <ion-row>
+                  <ion-col>
+                    <div class="content-container ">
+                      <h3 class="left-text mt0 "><ion-text color="primary"><b>Επερχόμενες</b></ion-text>
+                        <ion-text class="title_space" color="dark"><b>Κρατήσεις</b></ion-text>
+                      </h3>
+                    </div>
+                  </ion-col>
+                  <ion-col class="right-align-button p10" *ngIf="hideNewReservationButton==false"> </ion-col>
+                  <ion-col size-xl="1.2" size-sm="0" size-xs="0" *ngIf="hideNewReservationButton==false"></ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-segment [(ngModel)]="activeSegment" scrollable value="all" mode="ios" class="small-segment">
+                      <ion-segment-button value="all" (click)="getKrathseis('0,0,0,0')">
+                        <ion-label>Όλες</ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button value="pending" (click)="getKrathseis('1,0,0,0')">
+                        <ion-label>Εκκρεμούν <b>({{pendingAppointments}})</b></ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button value="accepted" (click)="getKrathseis('0,0,1,0')">
+                        <ion-label>Αποδεκτές</ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button value="canceled" (click)="getKrathseis('0,0,0,1')">
+                        <ion-label>Ακυρωμένες</ion-label>
+                      </ion-segment-button> </ion-segment>
+                  </ion-col> </ion-row>
+                <ion-row>
+                  <ion-col size="12" class="ion-no-padding">
+                    <div class="table-container">
+                      <table mat-table [dataSource]="dataSource" class=" demo-table "
+                        *ngIf="initialized && dataSource.length!=0">
+                        <ng-container matColumnDef="avatar" sticky>
+                          <th mat-header-cell *matHeaderCellDef class="avatar-column"></th>
+                          <td mat-cell *matCellDef="let element" class="avatar-column ion-text-center">
+                            <!-- Container div for the badge and the avatar --> <!-- Avatar -->
+                            <ion-avatar class="custAvatarHedTable">
+                              <ion-img src="data:image/jpeg;base64,{{element.avatar}}"></ion-img>
+                            </ion-avatar>
+                          </td>
+                        </ng-container> <ng-container matColumnDef="name" sticky>
+                          <th mat-header-cell *matHeaderCellDef class="pl0 table-column border border-column">Όνομα</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell table-column textLeft">
+                            {{element.name}}</td>
+                        </ng-container> <ng-container matColumnDef="date">
+                          <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ημερ/Ώρα</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell">{{element.date}}</td>
+                        </ng-container>
 
-                                  <ng-container *ngIf="element.service.split(',').length > 1">
-                                      <ion-note color="primary" class="plusChip"> +{{ element.service.split(',').length - 1 }} </ion-note>
-                                  </ng-container>
+                        <ng-container matColumnDef="employee">
+                          <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Εξυπηρέτηση</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell">
+                            <ng-container *ngIf="getEmployees(element.employee).length > 0">
+                              <!-- Display the first employee and if there are more employees, display +n -->
+
+                              <ion-chip [outline]="true" class="no-wrap ion-no-margin" color="primary"
+                                (click)="toggleTooltip(tooltipChip, $event)" #tooltipChip="matTooltip"
+                                [matTooltip]="element.serviceEmployeeMapping" matTooltipPosition="above"
+                                matTooltipShowDelay="0" matTooltipHideDelay="1500">
+                                <ion-note color="primary" class="employeeChip">{{ getEmployees(element.employee)[0]
+                                  }}</ion-note>
+                                <ng-container *ngIf="getEmployees(element.employee).length > 1">
+                                  <ion-note color="primary" class="plusChip"> +{{ getEmployees(element.employee).length
+                                    - 1 }} </ion-note>
+                                </ng-container>
                               </ion-chip>
-                          </ng-container>
-                      </td>
-                  </ng-container>
-                  
-                 
-                  
-                  
-                      <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ενέργεια</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">
-                          <ion-chip class="thechip cancelChip" *ngIf="element.status == 'canceled'"
-                            [color]="getColorForStatus(element.status)">
-                            canceled
-                          </ion-chip>
-                          <ion-button [ngClass]="{'expanded': element.status=='checked_in'}"
-                            [@buttonAnimation]="element.status=='checked_in' ? 'expanded' : 'collapsed'"
-                            *ngIf="element.status != 'pending' && element.status != 'canceled'"
-                            [fill]="element.status=='checked_in'? 'solid' : 'outline'" size="small"
-                            [class.green-border]="element.status=='not_checked_in'"
-                            [color]="element.status=='checked_in'?'success':'medium'"
-                            (click)="checkIn(element); $event.stopPropagation();" style="text-transform: none;">
-                            <ion-icon *ngIf="element.status=='checked_in'" [@checkmarkAnimation]
-                              name="checkmark-outline" style="padding-right: 10px;"></ion-icon>
-                            Έφτασε
-                          </ion-button>
-                          <ng-container *ngIf="element.status === 'pending'">
-                            <ion-icon color="success" name="checkmark-circle-outline" title="Αποδοχή"
-                              (click)="acceptAppointment($event, element)" class="icon-spacing"></ion-icon>
-                            <ion-icon color="danger" name="close-circle-outline" title="Απόρριψη"
-                              (click)="openRejectionPopover($event, element)" class="icon-spacing"></ion-icon>
-                            <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
-                              <ng-template>
-                                <ion-header>
-                                  <ion-title class="ion-padding-top ion-padding-bottom">
-                                    Απόρριψη κράτησης
-                                  </ion-title>
-                                </ion-header>
-                                <ion-content>
-                                  <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true"
-                                    class="cancelReason ion-padding" label="Λόγος απόρριψης" labelPlacement="floating"
-                                    fill="outline" [value]="cancelReason"></ion-textarea>
-                                  <div class="scrolling-wrapper reasonChips">
-                                    <ion-chip outline color="primary" style="font-size: 12px;"
-                                      (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">Μη
-                                      διαθέσιμη ώρα</ion-chip>
-                                    <ion-chip outline color="secondary" style="font-size: 12px;"
-                                      (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">Αναπάντεχο
-                                      συμβάν</ion-chip>
-                                  </div>
-                                </ion-content>
-                                <ion-footer class="ion-no-padding" (click)="applyRejectPopover(element.id)">
-                                  <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
-                                    <ion-label class="ion-no-padding"
-                                      class="ion-text-center capsoff">Αποθήκευση</ion-label>
-                                  </ion-button>
-                                </ion-footer> </ng-template>
-                            </ion-popover>
-                          </ng-container>
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="price" sticky>
-                        <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Τιμή</th>
-                        <td mat-cell *matCellDef="let element" class="custom-cell">{{element.price}}</td>
-                      </ng-container>
-                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                      <tr mat-row [@tableAnimation] (click)="goToKrathsh(row)"
-                        [class.demo-row-is-clicked]="clickedRows.has(row)"
-                        *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                  </div>
-                  <ion-item class="ion-padding " lines="none" *ngIf="dataSource.length==0">
-                    <ion-grid>
-                      <ion-row>
-                        <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"></ion-img>
-                      </ion-row>
-                      <ion-row> <ion-note class="no_results_header">
-                          Δεν υπάρχουν κρατήσεις αυτής της κατηγορίας
-                        </ion-note>
-                      </ion-row>
-                    </ion-grid> </ion-item>
-                </ion-col>
-              </ion-row>
-              <ion-row *ngIf="dataSource.length!=0">
-                <ion-note button class="ion-margin-top ion-margin-start cursor" color="primary"
-                  (click)="goToKrathseis()">Προβολή όλων</ion-note> </ion-row>
-            </ion-grid>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" size-md="5.9" class="desktopGrid ">
-            <div class="content-container  ion-margin-top">
-              <h3 class="left-text mt0 ion-text-center"><ion-text color="primary"><b>Στατιστικά </b></ion-text>
-                <ion-text class="stats_right pl5" [matMenuTriggerFor]="menu">
-                  {{ selectedTimeFrame }}
-                  <mat-icon class="pt4">arrow_drop_down</mat-icon> <mat-menu #menu="matMenu">
-                    <button mat-menu-item *ngIf="selectedTimeFrame !== 'μήνα'"
-                      (click)="updateSelectedTimeFrame('μήνα')">
-                      <span>μήνα</span>
-                    </button>
-                    <button mat-menu-item *ngIf="selectedTimeFrame !== 'εβδομάδας'"
-                      (click)="updateSelectedTimeFrame('εβδομάδας')">
-                      <span>εβδομάδας</span>
-                    </button>
-                    <button mat-menu-item *ngIf="selectedTimeFrame !== 'χρονιάς'"
-                      (click)="updateSelectedTimeFrame('χρονιάς')">
-                      <span>χρονιάς</span>
-                    </button>
-                  </mat-menu>
-                </ion-text>
-              </h3>
-            </div>
-            <ion-grid class="ion-margin-top ion-margin-bottom">
-              <ion-row>
-                <ion-col offset="2" size="4">
-                  <h3 class="stat-number" *ngIf="!statsNumberLoading">
-                    {{totalAppointments}}
-                    <ion-note class="stat-label block-display">Κρατήσεις</ion-note>
-                    <ion-spinner color="primary" *ngIf="statsNumberLoading" name="circular"></ion-spinner>
-                  </h3>
-                </ion-col>
-                <ion-col size="4">
-                  <h3 class="stat-number" *ngIf="!statsNumberLoading">
-                    €{{totalRevenue}}
-                    <ion-note class="stat-label block-display">Έσοδα</ion-note>
-                    <ion-spinner color="primary" *ngIf="statsNumberLoading" name="circular"></ion-spinner>
-                  </h3>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-            <canvas baseChart class="chart" [datasets]="lineChartData" [labels]="lineChartLabels"
-              [options]="lineChartOptions" [type]="lineChartType"></canvas>
-          </ion-col>
-          <ion-col size="12" offset="0.2" size-md="5.9" class="desktopGrid ">
-            <div class="content-container ion-margin-start ion-margin-top ">
-              <h3 class="left-text mt0 ion-text-center "><ion-text color="primary"><b>Κορυφαίοι</b></ion-text>
-                <ion-text class="title_space" color="dark"><b>πελάτες</b></ion-text>
-              </h3>
-            </div>
-            <ion-item class="ion-padding " lines="none" *ngIf="topClients.length==0">
-              <ion-grid>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+
+
+
+
+
+                        <ng-container matColumnDef="service">
+                          <th mat-header-cell *matHeaderCellDef class="pl0 table-column border-column">Υπηρεσίες</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell">
+                            <ng-container *ngIf="element.service.split(',').length > 0">
+                              <!-- Display the first service and if there are more services, display +n -->
+                              <ion-chip [outline]="true"
+                                [class]="isMobile==true?'chipHeight ion-no-margin':'ion-no-margin'" color="primary"
+                                (click)="toggleTooltip(serviceTooltip, $event)" #serviceTooltip="matTooltip"
+                                [matTooltip]="element.serviceEmployeeMapping" matTooltipPosition="above"
+                                matTooltipShowDelay="0" matTooltipHideDelay="1500">
+
+                                <ion-note color="primary" class="employeeChip"> {{ element.service.split(',')[0].trim()
+                                  }}</ion-note>
+
+                                <ng-container *ngIf="element.service.split(',').length > 1">
+                                  <ion-note color="primary" class="plusChip"> +{{ element.service.split(',').length - 1
+                                    }} </ion-note>
+                                </ng-container>
+                              </ion-chip>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="price" sticky>
+                          <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Τιμή</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell">{{element.price}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="status">
+                          <th mat-header-cell *matHeaderCellDef class="pl0 border-column">Ενέργειες</th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell">
+                            <ion-chip class="thechip cancelChip" *ngIf="element.status == 'canceled'"
+                              [color]="getColorForStatus(element.status)">
+                              Ακυρώθηκε
+                            </ion-chip>
+                            <ion-chip class="thechip cancelChip" *ngIf="element.status == 'noshow'"
+                              [color]="getColorForStatus(element.status)">
+                              Δεν εμφανίστηκε
+                            </ion-chip>
+                            <div *ngIf="element.status != 'pending' && element.status != 'canceled'"
+                              class="center-icon">
+                              <mat-icon [matMenuTriggerFor]="menu"
+                                (click)="$event.stopPropagation();">more_vert</mat-icon>
+                              <mat-menu #menu="matMenu">
+                                <button *ngIf="!element.checkedIn" mat-menu-item [disabled]="isAfterOneHourAgo(element)"
+                                  (click)="checkIn(element)"
+                                  [matTooltip]="isAfterOneHourAgo(element) ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+                                  Έφτασε
+                                </button>
+                                <button *ngIf="element.checkedIn" mat-menu-item (click)="checkIn(element)"
+                                  [matTooltip]="isAfterOneHourAgo(element) ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+                                  Αναίρεση άφιξης
+                                </button>
+                                <button *ngIf="status!='noshow'" mat-menu-item [disabled]="isAfterOneHourAgo(element)"
+                                  (click)="noShow(element)"
+                                  [matTooltip]="isAfterOneHourAgo(element) ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+                                  Δεν εμφανίστηκε
+                                </button>
+                                <button *ngIf="status=='noshow'" mat-menu-item (click)="noShow(element)"
+                                  [matTooltip]="isAfterOneHourAgo(element) ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+                                  Αναίρεση μη εμφάνισης
+                                </button>
+                              </mat-menu>
+                            </div>
+                            <ng-container *ngIf="element.status === 'pending'">
+                              <ion-icon color="success" name="checkmark-circle-outline" title="Αποδοχή"
+                                (click)="acceptAppointment($event, element)" class="icon-spacing"></ion-icon>
+                              <ion-icon color="danger" name="close-circle-outline" title="Απόρριψη"
+                                (click)="openRejectionPopover($event, element)" class="icon-spacing"></ion-icon>
+                              <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
+                                <ng-template>
+                                  <ion-header> <ion-title class="ion-margin-top ion-margin-bottom">
+                                      Αιτία απόρριψης
+                                    </ion-title>
+                                  </ion-header>
+                                  <ion-content>
+                                    <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true"
+                                      class="cancelReason ion-padding" label="Λόγος απόρριψης" labelPlacement="floating"
+                                      fill="outline" [value]="cancelReason"></ion-textarea>
+                                    <div class="scrolling-wrapper reasonChips">
+                                      <ion-chip outline color="primary" style="font-size: 12px;"
+                                        (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">Μη
+                                        διαθέσιμη ώρα</ion-chip>
+                                      <ion-chip outline color="secondary" style="font-size: 12px;"
+                                        (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">Αναπάντεχο
+                                        συμβάν</ion-chip>
+                                    </div>
+                                  </ion-content>
+                                  <ion-footer class="ion-no-padding" (click)="applyRejectPopover(element.id)">
+                                    <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
+                                      <ion-label class="ion-no-padding"
+                                        class="ion-text-center capsoff">Αποθήκευση</ion-label>
+                                    </ion-button>
+                                  </ion-footer> </ng-template>
+                              </ion-popover>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row [@tableAnimation] (click)="goToKrathsh(row)"
+                          [class.demo-row-is-clicked]="clickedRows.has(row)"
+                          *matRowDef="let row; columns: displayedColumns;"></tr>
+                      </table>
+                    </div>
+                    <ion-item class="ion-padding " lines="none" *ngIf="dataSource.length==0">
+                      <ion-grid>
+                        <ion-row>
+                          <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"></ion-img>
+                        </ion-row>
+                        <ion-row> <ion-note class="no_results_header">
+                            Δεν υπάρχουν κρατήσεις αυτής της κατηγορίας
+                          </ion-note>
+                        </ion-row>
+                      </ion-grid> </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="dataSource.length!=0">
+                  <ion-note button class="ion-margin-top ion-margin-start cursor" color="primary"
+                    (click)="goToKrathseis()">Προβολή όλων</ion-note> </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-md="5.9" class="desktopGrid ">
+              <div class="content-container  ion-margin-top">
+                <h3 class="left-text mt0 ion-text-center"><ion-text color="primary"><b>Στατιστικά </b></ion-text>
+                  <ion-text class="stats_right pl5" [matMenuTriggerFor]="menu">
+                    {{ selectedTimeFrame }}
+                    <mat-icon class="pt4">arrow_drop_down</mat-icon> <mat-menu #menu="matMenu">
+                      <button mat-menu-item *ngIf="selectedTimeFrame !== 'μήνα'"
+                        (click)="updateSelectedTimeFrame('μήνα')">
+                        <span>μήνα</span>
+                      </button>
+                      <button mat-menu-item *ngIf="selectedTimeFrame !== 'εβδομάδας'"
+                        (click)="updateSelectedTimeFrame('εβδομάδας')">
+                        <span>εβδομάδας</span>
+                      </button>
+                      <button mat-menu-item *ngIf="selectedTimeFrame !== 'χρονιάς'"
+                        (click)="updateSelectedTimeFrame('χρονιάς')">
+                        <span>χρονιάς</span>
+                      </button>
+                    </mat-menu>
+                  </ion-text>
+                </h3>
+              </div>
+              <ion-grid class="ion-margin-top ion-margin-bottom">
                 <ion-row>
-                  <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"></ion-img>
+                  <ion-col offset="2" size="4">
+                    <h3 class="stat-number" *ngIf="!statsNumberLoading">
+                      {{totalAppointments}}
+                      <ion-note class="stat-label block-display">Κρατήσεις</ion-note>
+                      <ion-spinner color="primary" *ngIf="statsNumberLoading" name="circular"></ion-spinner>
+                    </h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3 class="stat-number" *ngIf="!statsNumberLoading">
+                      €{{totalRevenue}}
+                      <ion-note class="stat-label block-display">Έσοδα</ion-note>
+                      <ion-spinner color="primary" *ngIf="statsNumberLoading" name="circular"></ion-spinner>
+                    </h3>
+                  </ion-col>
                 </ion-row>
-                <ion-row> <ion-note class="no_results_header">
-                    Δεν υπάρχουν ακόμη πελάτες
-                  </ion-note>
-                </ion-row>
-              </ion-grid> </ion-item>
-            <ion-list lines="full" class="ion-no-padding ion-margin-bottom " style="background-color: white;"  *ngIf="topClients.length!=0">
-              <!-- Header Columns -->
-              <ion-grid>
-                <ion-row>
-                  <ion-col offset="1" size="7">
-                    <ion-label style="margin-left:35px; ">Όνομα</ion-label> </ion-col>
-                  <ion-col size="4" class="ion-text-center">
-                    <ion-label>Έσοδα</ion-label> </ion-col>
-                </ion-row>
-              </ion-grid> <!-- Client List -->
-              <ion-grid>
-                <ion-row *ngFor="let client of topClients; let i = index" class="ion-padding-top borderBottom cursor"
-                  (click)="goToClient(client.user_id)">
-                  <ion-col offset="1" size="7">
-                    <div style="display: flex; align-items: center;">
-                      <ion-label class="ion-margin-end" [ngClass]="{
+              </ion-grid>
+              <canvas baseChart class="chart" [datasets]="lineChartData" [labels]="lineChartLabels"
+                [options]="lineChartOptions" [type]="lineChartType"></canvas>
+            </ion-col>
+            <ion-col size="12" offset="0.2" size-md="5.9" class="desktopGrid ">
+              <div class="content-container ion-margin-start ion-margin-top ">
+                <h3 class="left-text mt0 ion-text-center "><ion-text color="primary"><b>Κορυφαίοι</b></ion-text>
+                  <ion-text class="title_space" color="dark"><b>πελάτες</b></ion-text>
+                </h3>
+              </div>
+              <ion-item class="ion-padding " lines="none" *ngIf="topClients.length==0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"></ion-img>
+                  </ion-row>
+                  <ion-row> <ion-note class="no_results_header">
+                      Δεν υπάρχουν ακόμη πελάτες
+                    </ion-note>
+                  </ion-row>
+                </ion-grid> </ion-item>
+              <ion-list lines="full" class="ion-no-padding ion-margin-bottom " style="background-color: white;"
+                *ngIf="topClients.length!=0">
+                <!-- Header Columns -->
+                <ion-grid>
+                  <ion-row>
+                    <ion-col offset="1" size="7">
+                      <ion-label style="margin-left:35px; ">Όνομα</ion-label> </ion-col>
+                    <ion-col size="4" class="ion-text-center">
+                      <ion-label>Έσοδα</ion-label> </ion-col>
+                  </ion-row>
+                </ion-grid> <!-- Client List -->
+                <ion-grid>
+                  <ion-row *ngFor="let client of topClients; let i = index" class="ion-padding-top borderBottom cursor"
+                    (click)="goToClient(client.user_id)">
+                    <ion-col offset="1" size="7">
+                      <div style="display: flex; align-items: center;">
+                        <ion-label class="ion-margin-end" [ngClass]="{
                                   'first-rank': i === 0,
                                   'second-rank': i === 1,
                                   'third-rank': i === 2
                                 }">
-                        {{ i + 1 }}.
-                      </ion-label>
-                      <ion-avatar class="no-shrink" style="width: 35px; height: 35px; margin-right:10px;">
-                        <img src="data:image/jpeg;base64,{{client.profile_image}}" alt="Client Avatar">
-                      </ion-avatar>
-                      <ion-label class="f400"
-                        style="display: flex; justify-content: space-between; align-items: center;" [ngClass]="{
+                          {{ i + 1 }}.
+                        </ion-label>
+                        <ion-avatar class="no-shrink" style="width: 35px; height: 35px; margin-right:10px;">
+                          <img src="data:image/jpeg;base64,{{client.profile_image}}" alt="Client Avatar">
+                        </ion-avatar>
+                        <ion-label class="f400"
+                          style="display: flex; justify-content: space-between; align-items: center;" [ngClass]="{
                                 'first-rank': i === 0,
                                 'second-rank': i === 1,
                                 'third-rank': i === 2
                               }">
-                        {{client.name}}
-                      </ion-label>
-                    </div>
-                  </ion-col>
-                  <ion-col size="4" class="ion-text-center">
-                    <ion-note>
-                      €{{client.total_revenue}}
-                    </ion-note>
-                  </ion-col>
-                </ion-row>
-              </ion-grid> </ion-list>
-          </ion-col> </ion-row>
-      </ion-grid> </ion-col>
-  </ion-row> </ion-grid></ion-content>
+                          {{client.name}}
+                        </ion-label>
+                      </div>
+                    </ion-col>
+                    <ion-col size="4" class="ion-text-center">
+                      <ion-note>
+                        €{{client.total_revenue}}
+                      </ion-note>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid> </ion-list>
+            </ion-col> </ion-row>
+        </ion-grid> </ion-col>
+    </ion-row> </ion-grid></ion-content>

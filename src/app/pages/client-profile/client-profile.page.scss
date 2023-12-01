@@ -784,6 +784,13 @@
     background: var(--ion-color-primary);
     margin-right: 10px; /* Space between the line and the label */}
 
+
+    .noshow-line {
+      width: 4px; /* Adjust width as desired */
+      height: 100%; /* Take full height of the ion-item */
+      background: var(--ion-color-dark);
+      margin-right: 10px; /* Space between the line and the label */}
+
   .danger-line {
     width: 4px; /* Adjust width as desired */
     height: 100%; /* Take full height of the ion-item */

@@ -60,6 +60,7 @@ export class KrathseisPage implements OnInit {
     { value: 'completed', selected: false },
     { value: 'accepted', selected: false },
     { value: 'canceled', selected: false },
+    { value: 'noshow', selected: false },
 
   ];
   tempItemsKrathsh = [
@@ -67,12 +68,14 @@ export class KrathseisPage implements OnInit {
     { value: 'completed', selected: false },
     { value: 'accepted', selected: false },
     { value: 'canceled', selected: false },
+    { value: 'noshow', selected: false },
+
   ];
 
 
   allChipClass: string = "selected-chip";
   krathshChip: string = "not-selected-chip"
-  krathseistatus = "0,0,0,0"
+  krathseistatus = "0,0,0,0,0"
 
   @ViewChild('krathshPop') krathshPop!: IonPopover;
   @ViewChild('acceptPop') acceptPop!: IonPopover;
@@ -101,7 +104,7 @@ export class KrathseisPage implements OnInit {
     this.userService.sseConnect(window.location.toString());
     this.krathseis = []
     this.krathshIds = []
-    this.krathseistatus = "0,0,0,0"
+    this.krathseistatus = "0,0,0,0,0"
 
     this.disableInfiniteScroll = false;
     this.page = 0
@@ -203,7 +206,8 @@ export class KrathseisPage implements OnInit {
     });
     modal.onWillDismiss().then((dataReturned) => {
       // Your logic here, 'dataReturned' is the data returned from modal
-      if (this.userService.getNavData() == true) {
+      if (dataReturned && dataReturned.data) {
+        this.reloadAppointments=true
         this.page = 0;
         this.krathseis = []
         this.getKrathseis();
@@ -374,7 +378,7 @@ export class KrathseisPage implements OnInit {
     this.krathseis = []
     this.allChipClass = "selected-chip";
     this.krathshChip = "not-selected-chip"
-    this.krathseistatus = "0,0,0,0"
+    this.krathseistatus = "0,0,0,0,0"
     for (let i = 0; i < this.itemsKrathsh.length; i++) {
       this.itemsKrathsh[i].selected = false;
       this.tempItemsKrathsh[i].selected = false
@@ -382,7 +386,27 @@ export class KrathseisPage implements OnInit {
     this.getKrathseis();
   }
 
+  getStatusTextInGreek(status: string): string {
+    switch (status) {
+      case 'canceled':
+        return 'Ακυρώθηκε';
+      case 'completed':
+        return 'Ολοκληρώθηκε';
+      case 'accepted':
+        return 'Εγκρίθηκε';
+      case 'pending':
+        return 'Εκκρεμεί';
+      case 'noshow':
+        return 'Δεν εμφανίστηκε';
+      default:
+        return ''; // Or any default text
+    }
+  }
+
+   
+
   getColorForStatus(status: string): string {
+    console.log(status)
     switch (status) {
       case 'canceled':
         return 'danger-line cursor w100 rad10 ion-margin-bottom ';
@@ -392,11 +416,12 @@ export class KrathseisPage implements OnInit {
         return 'success-line cursor w100 rad10 ion-margin-bottom';
       case 'pending':
         return 'pending-line cursor w100 rad10 ion-margin-bottom';
+      case 'noshow':
+        return 'noshow-line cursor w100 rad10 ion-margin-bottom';
       default:
         return 'pending-line cursor w100 rad10 ion-margin-bottom';
     }
   }
-
   getDate(datetime: string): string {
     return moment(datetime, 'Do MMM, h:mm a', 'el').format('D MMM, YYYY');
   }

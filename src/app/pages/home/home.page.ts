@@ -24,14 +24,14 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 
 export interface PeriodicElement {
-  badge: string;
   avatar: string;
   name: string;
   date: string;
   employee: string;
   service: string;
-  status: string;
   price: string,
+
+  status: string;
 
   id: string;
   serviceEmployeeMapping?: string // This will map each service to its respective employee
@@ -112,7 +112,7 @@ export class HomePage implements OnInit {
   initialized: boolean = false;
   cancelReason: string = "";
   statsNumberLoading = false;
-  displayedColumns: string[] = ['avatar', 'name', 'date', 'employee', 'service', 'status', 'price'];
+  displayedColumns: string[] = ['avatar', 'name', 'date', 'employee', 'service', 'price', 'status'];
   dataSource = ELEMENT_DATA;
   clickedRows = new Set<PeriodicElement>();
   resizeListener: any;
@@ -122,7 +122,7 @@ export class HomePage implements OnInit {
   topClients: any = [];
   statsLoading: boolean = false;
   activeSegment: string = 'all'; // default value
-  statusChosen: string = "0,0,0,0";
+  statusChosen: string = "0,0,0,0,0";
   maxMinutesPerReservation: number = 180;
   hideNewReservationButton: boolean = false;
   constructor(private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) { }
@@ -365,6 +365,7 @@ export class HomePage implements OnInit {
       console.log(data)
       for (let k = 0; k < data.length; k++) {
         let el = data[k];
+        el[11]=el[3]
         el[3] = moment(el[3]).locale("el").format('Do MMM, h:mm a');
         el[4] = el[4].split('$')[0] + " " + el[4].split('$')[1];
         this.krathseis.push(el);
@@ -375,7 +376,6 @@ export class HomePage implements OnInit {
         let uniqueNames = Array.from(new Set(el[6].split(',').map((name: string) => name.trim()))).join(', ');
         if (k < 5) {
           const periodicElement: PeriodicElement = {
-            badge: '',
             avatar: el[10],
             name: el[4],
             date: el[3],
@@ -391,21 +391,8 @@ export class HomePage implements OnInit {
         }
       }
 
-      // Check once after your loop, and add 'badge' to displayedColumns only if it isn't already there.
-      if (this.shouldDisplayBadgeColumn() && !this.displayedColumns.includes('badge') && !this.isMobile) {
-        this.displayedColumns.unshift('badge');
-      }
 
-      // Check if on mobile and remove avatar column if present
-      /*if (this.isMobile && this.displayedColumns.includes('avatar')) {
-        //const index = this.displayedColumns.indexOf('avatar');
-        //this.displayedColumns.splice(index, 1);
-      }
-      // Add avatar column if not on mobile and not already present
-      else if (!this.isMobile && !this.displayedColumns.includes('avatar')) {
-        //this.displayedColumns.unshift('avatar');
-      }*/
-
+   
       this.cdr.detectChanges();
 
 
@@ -444,8 +431,56 @@ export class HomePage implements OnInit {
     return result.join(', ');
   }
 
+  noShow(appointment:any){
+    this.userService.noShow(appointment.id).subscribe(data => {
+      setTimeout(() => {
+        const index = this.dataSource.findIndex(e => e.id === appointment.id);
+        if (index !== -1) {
+          this.dataSource.splice(index, 1);
+          // Since dataSource is an array, re-assign it for Angular to detect the change:
+          this.dataSource = [...this.dataSource];
+        }
+     
+        this.getKrathseis(this.statusChosen);
+
+      }, 0);
+      this.userService.presentToast("Η κράτηση ενημερώθηκε!", "success")
+
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+
+    })
+  }
 
 
+  isAfterOneHourAgo(appointment: any): boolean {
+    const foundAppointment = this.krathseis.find(a => a[0] === appointment.id);
+    if (!foundAppointment) {
+        return false;
+    }
+    const appointmentStartTime = new Date(foundAppointment[11]);
+    console.log(appointmentStartTime)
+    const currentDate = new Date();
+    const appointmentStartTimeMinusOneHour = new Date(appointmentStartTime.getTime() - 3600000);
+    const isAfterToday = appointmentStartTime.getFullYear() > currentDate.getFullYear() ||
+                         (appointmentStartTime.getFullYear() === currentDate.getFullYear() && appointmentStartTime.getMonth() > currentDate.getMonth()) ||
+                         (appointmentStartTime.getFullYear() === currentDate.getFullYear() && appointmentStartTime.getMonth() === currentDate.getMonth() && appointmentStartTime.getDate() > currentDate.getDate());
+    if (isAfterToday) {
+        return true;
+    }
+    const isCurrentTimeAfterAppointmentTimeMinusOneHour = currentDate.getTime() > appointmentStartTimeMinusOneHour.getTime();
+    if (isCurrentTimeAfterAppointmentTimeMinusOneHour) {
+        return false;
+    }
+    return true;
+}
+
+  
+  
+  
+  
+
+  
 
   getColorForStatus(status: string): string {
     switch (status) {
@@ -530,13 +565,7 @@ export class HomePage implements OnInit {
           // Since dataSource is an array, re-assign it for Angular to detect the change:
           this.dataSource = [...this.dataSource];
         }
-        if (!this.shouldDisplayBadgeColumn() && this.displayedColumns.includes('badge')) {
-          const index = this.displayedColumns.indexOf('badge');
-          if (index > -1) {
-            this.displayedColumns.splice(index, 1);
-          }
-        }
-
+       
         this.getKrathseis(this.statusChosen);
 
       }, 700);

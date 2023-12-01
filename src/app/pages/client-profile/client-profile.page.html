@@ -1,153 +1,153 @@
 <ion-header> <ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-      <ion-icon name="arrow-back"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-  <ion-title color="light">Προφίλ Πελάτη</ion-title>
-  <ion-buttons slot="end">
-    <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
-      *ngIf="userData.source!='manual_clients'">
-      <ion-icon color="light" name="chatbox"></ion-icon>
-    </ion-button>
-    <!-- Material Menu Trigger -->
-    <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
-      *ngIf="userData.source=='manual_clients'"></ion-icon>
-  </ion-buttons>
-</ion-toolbar> <!-- Material Menu Content -->
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="editClient()">
-    Επεξεργασία
-  </button> </mat-menu></ion-header>
-  <ion-content *ngIf="initialized==true">
-<ion-grid class="ion-no-padding">
-  <ion-row class="ion-justify-content-center">
-    <ion-col size="12" class="ion-no-padding"> 
-      <ion-item lines="none"
-        class="w100 ion-no-padding ion-item2 ion-margin-bottom light-blue-background ion-padding-bottom ion-padding-top">
-        <div class="centered-content">
-          <ion-avatar class="custAvatarHed2">
-            <ion-img src="data:image/jpeg;base64,{{userData.profile_image}}"></ion-img>
-          </ion-avatar>
-          <h4 class="p5 ion-no-margin">
-            <b>{{name[0]}} {{name[1]}}</b>
-          </h4>
-          <ion-note class="p5">{{userData.phone}} | {{userData.source === 'manual_clients' ? 'Δεν υπάρχει e-mail' :
-            userData.source }}</ion-note>
-        </div>
-      </ion-item> 
-      <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.source!='manual_clients'"
-        class="custom-segment ">
-        <ion-segment-button value="projects">
-          <ion-label>Κρατήσεις <ion-note color="dark"></ion-note></ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="reviews" (click)="getReviewsByUserId()">
-          <ion-label>Κριτικές</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-      <div [ngSwitch]="type">
-        <div *ngSwitchCase="'projects'" cla>
-          
-          <ion-item>
-            <ion-label class="text-center">
-                <ion-note>
-                    Σύνολο εσόδων: €{{userData.revenue}} ({{userData.jobs_reservations}})
-                </ion-note>
-            </ion-label>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Προφίλ Πελάτη</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
+        *ngIf="userData.source!='manual_clients'">
+        <ion-icon color="light" name="chatbox"></ion-icon>
+      </ion-button>
+      <!-- Material Menu Trigger -->
+      <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
+        *ngIf="userData.source=='manual_clients'"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar> <!-- Material Menu Content -->
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="editClient()">
+      Επεξεργασία
+    </button> </mat-menu></ion-header>
+<ion-content *ngIf="initialized==true">
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" class="ion-no-padding">
+        <ion-item lines="none"
+          class="w100 ion-no-padding ion-item2  light-blue-background ion-padding-bottom ion-padding-top">
+          <div class="centered-content">
+            <ion-avatar class="custAvatarHed2">
+              <ion-img src="data:image/jpeg;base64,{{userData.profile_image}}"></ion-img>
+            </ion-avatar>
+            <h4 class="p5 ion-no-margin">
+              <b>{{name[0]}} {{name[1]}}</b>
+            </h4>
+            <ion-note class="p5">{{userData.phone}} | {{userData.source === 'manual_clients' ? 'Δεν υπάρχει e-mail' :
+              userData.source }}</ion-note>
+          </div>
         </ion-item>
-        
-        
-          <ion-item  class=" cursor w100" *ngFor="let krathsh of krathseis; let i = index" (click)="goToKrathsh(krathsh[0])">
-            <div [class]="getColorForStatus(krathsh[2])"></div>
+        <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.source!='manual_clients'" class="custom-segment ">
+          <ion-segment-button value="projects">
+            <ion-label>Κρατήσεις <ion-note color="dark"></ion-note></ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="reviews" (click)="getReviewsByUserId()">
+            <ion-label>Κριτικές</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <div [ngSwitch]="type">
+          <div *ngSwitchCase="'projects'" cla>
 
-            <ion-label text-wrap>
-              <h3 class="customFontHeader">{{krathsh[3]}}</h3>
-              <ion-note class="customFontNote" text-wrap>{{krathsh[5]}}</ion-note>
+            <ion-item>
+              <ion-label class="text-center">
+                <ion-note>
+                  Ολοκληρωμένες κρατήσεις: {{userData.jobs_reservations}}
+                </ion-note>
+              </ion-label>
+              <ion-label slot="end" >€{{userData.revenue}}</ion-label>
+            </ion-item>
 
-            </ion-label>
-            <div class="align-right" >
-              <ion-label>€{{krathsh[4]}}</ion-label>
-               
-            </div>
-          </ion-item>
-          <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)"
-            [disabled]="disableInfiniteScroll">
-            <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
-            </ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </div> <ion-grid *ngSwitchCase="'reviews'" class="bgL ion-margin-top"> <ion-row>
-            <ion-card class="bgL ion-padding-bottom w100 shadow" *ngFor="let item of reviews">
-              <ion-grid>
-                <ion-row>
-                  <ion-col size="7.5">
-                    <ion-item lines="none" class="cusItem ion-no-padding ion-margin-bottom"> <ion-avatar
-                        class="custAvatar">
-                        <ion-img src="data:image/jpeg;base64,{{userData.profile_image}}"></ion-img> </ion-avatar>
-                      <ion-label class="name_reviews nameCol" text-wrap>{{name[0]}} {{name[1]}}</ion-label>
-                    </ion-item> </ion-col>
-                  <ion-grid>
-                    <ion-row>
-                      <ion-note class="alignRight dateNote">{{item[2]}}</ion-note> </ion-row>
-                    <ion-row>
-                      <ion-chip class=" ion-text-center" outline="true" color="primary" class="alignRight">
-                        <ion-label class="w100">
-                          <ion-icon name="star" *ngFor="let item2 of numSequence(item[0])"></ion-icon>
-                          <ion-icon name="star-outline" *ngFor="let item2 of numSequence(5-item[0])"></ion-icon>
-                        </ion-label>
-                      </ion-chip>
-                    </ion-row>
-                  </ion-grid> </ion-row>
-                <ion-row class="ion-padding-bottom ion-padding-start ion-padding-end relative"> <ion-note
-                    *ngIf="item[1].length>70">
-                    {{ item[10] ? item[1] : item[1].substr(0, 70) + '...' }} </ion-note>
-                  <ion-note *ngIf="item[1].length<=70">
-                    {{ item[1]}} </ion-note>
-                  <ion-note color="primary" *ngIf="!item[10] && item[1].length > 70" class="show-more-button"
-                    (click)="item[10] = true">Προβολή κριτικής</ion-note>
-                  <ion-note color="primary" *ngIf="item[10]" class="show-less-button"
-                    (click)="item[10] = false">Απόκρυψη</ion-note> </ion-row>
-                <ion-row>
-                  <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
-                    *ngIf="item[3]!=null">
-                    <ion-row class="bgPshadeP">
-                      <ion-col size="12">
-                        <ion-item lines="none" class="cusItem">
-                          <ion-avatar slot="start">
-                            <ion-img src="data:image/jpeg;base64,{{expertImage}}"></ion-img>
-                          </ion-avatar>
-                          <ion-label text-wrap class="name_reviews"> {{expertReviewsData[0][0]}}</ion-label>
-                          <ion-note slot="end">{{item[7]}}</ion-note>
-                        </ion-item>
-                      </ion-col>
-                      <ion-col size="12" class="ion-padding">
-                        <ion-note>
-                          {{item[3]}}
-                        </ion-note>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid> <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
-                    *ngIf="item[3]==null">
-                    <ion-row class="backgroundWhite">
-                      <ion-col size="12">
-                        <ion-item lines="none" class="cusItem">
-                          <ion-avatar slot="start">
-                            <ion-img src="data:image/jpeg;base64,{{expertImage}}"></ion-img>
-                          </ion-avatar>
-                          <ion-item fill="outline" class="responseItem">
-                            <ion-label position="floating" class="f15">Απαντήστε στην κριτική</ion-label>
-                            <ion-textarea rows="1" [(ngModel)]="item[9]"></ion-textarea>
-                            <ion-button slot="end" expand="block" class="sendButton" (click)="sendResponse(item)"
-                              *ngIf="item[9].length>0">
-                              <ion-icon name="send"></ion-icon>
-                            </ion-button>
-                          </ion-item> </ion-item>
-                      </ion-col> </ion-row>
-                  </ion-grid> </ion-row>
-              </ion-grid> </ion-card> </ion-row>
-        </ion-grid>
-      </div>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+
+            <ion-item class=" cursor w100" *ngFor="let krathsh of krathseis; let i = index"
+              (click)="goToKrathsh(krathsh[0])">
+              <div [class]="getColorForStatus(krathsh[2])"></div>
+
+              <ion-label text-wrap>
+                <h3 class="customFontHeader">{{krathsh[3]}}</h3>
+                <ion-note class="customFontNote" text-wrap>{{krathsh[5]}}</ion-note>
+
+              </ion-label>
+              <div class="align-right">
+                <ion-label>€{{krathsh[4]}}</ion-label>
+
+              </div>
+            </ion-item>
+            <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
+              <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div> <ion-grid *ngSwitchCase="'reviews'" class="bgL ion-margin-top"> <ion-row>
+              <ion-card class="bgL ion-padding-bottom w100 shadow" *ngFor="let item of reviews">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="7.5">
+                      <ion-item lines="none" class="cusItem ion-no-padding ion-margin-bottom"> <ion-avatar
+                          class="custAvatar">
+                          <ion-img src="data:image/jpeg;base64,{{userData.profile_image}}"></ion-img> </ion-avatar>
+                        <ion-label class="name_reviews nameCol" text-wrap>{{name[0]}} {{name[1]}}</ion-label>
+                      </ion-item> </ion-col>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-note class="alignRight dateNote">{{item[2]}}</ion-note> </ion-row>
+                      <ion-row>
+                        <ion-chip class=" ion-text-center" outline="true" color="primary" class="alignRight">
+                          <ion-label class="w100">
+                            <ion-icon name="star" *ngFor="let item2 of numSequence(item[0])"></ion-icon>
+                            <ion-icon name="star-outline" *ngFor="let item2 of numSequence(5-item[0])"></ion-icon>
+                          </ion-label>
+                        </ion-chip>
+                      </ion-row>
+                    </ion-grid> </ion-row>
+                  <ion-row class="ion-padding-bottom ion-padding-start ion-padding-end relative"> <ion-note
+                      *ngIf="item[1].length>70">
+                      {{ item[10] ? item[1] : item[1].substr(0, 70) + '...' }} </ion-note>
+                    <ion-note *ngIf="item[1].length<=70">
+                      {{ item[1]}} </ion-note>
+                    <ion-note color="primary" *ngIf="!item[10] && item[1].length > 70" class="show-more-button"
+                      (click)="item[10] = true">Προβολή κριτικής</ion-note>
+                    <ion-note color="primary" *ngIf="item[10]" class="show-less-button"
+                      (click)="item[10] = false">Απόκρυψη</ion-note> </ion-row>
+                  <ion-row>
+                    <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
+                      *ngIf="item[3]!=null">
+                      <ion-row class="bgPshadeP">
+                        <ion-col size="12">
+                          <ion-item lines="none" class="cusItem">
+                            <ion-avatar slot="start">
+                              <ion-img src="data:image/jpeg;base64,{{expertImage}}"></ion-img>
+                            </ion-avatar>
+                            <ion-label text-wrap class="name_reviews"> {{expertReviewsData[0][0]}}</ion-label>
+                            <ion-note slot="end">{{item[7]}}</ion-note>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col size="12" class="ion-padding">
+                          <ion-note>
+                            {{item[3]}}
+                          </ion-note>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid> <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
+                      *ngIf="item[3]==null">
+                      <ion-row class="backgroundWhite">
+                        <ion-col size="12">
+                          <ion-item lines="none" class="cusItem">
+                            <ion-avatar slot="start">
+                              <ion-img src="data:image/jpeg;base64,{{expertImage}}"></ion-img>
+                            </ion-avatar>
+                            <ion-item fill="outline" class="responseItem">
+                              <ion-label position="floating" class="f15">Απαντήστε στην κριτική</ion-label>
+                              <ion-textarea rows="1" [(ngModel)]="item[9]"></ion-textarea>
+                              <ion-button slot="end" expand="block" class="sendButton" (click)="sendResponse(item)"
+                                *ngIf="item[9].length>0">
+                                <ion-icon name="send"></ion-icon>
+                              </ion-button>
+                            </ion-item> </ion-item>
+                        </ion-col> </ion-row>
+                    </ion-grid> </ion-row>
+                </ion-grid> </ion-card> </ion-row>
+          </ion-grid>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 <ion-footer> </ion-footer>
