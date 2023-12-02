@@ -690,7 +690,7 @@ export class HomePage implements OnInit {
 
   lineChartData: ChartDataset[] = [
     {
-      data: [], label: 'Κρατήσεις', borderColor: 'lightblue',
+      data: [], label: 'Έσοδα (€)', borderColor: 'lightblue',
       backgroundColor: 'rgba(0, 123, 255, 0.1)',
       fill: true, pointBorderColor: 'rgba(61,162,255,1)',       // This sets the border color of the points to blue.
       pointBackgroundColor: 'rgba(61,162,255,1)',
@@ -709,15 +709,7 @@ export class HomePage implements OnInit {
       y: {
         position: 'left',
       },
-      y1: {
-        position: 'right',
-        grid: {
-          color: 'rgba(61,162,255,0.3)',
-        },
-        ticks: {
-          color: 'lightblue',
-        },
-      },
+    
     },
 
     plugins: {

@@ -35,7 +35,7 @@ export class NewPackagePage implements OnInit {
     this.packageToEdit=this.navParams.get('package');
     console.log("The services after modification:", this.services);
     console.log("The package to edit is:", this.packageToEdit);
-    if(this.packageToEdit.services.length>0){
+    if(this.packageToEdit.name!=""){
       this.editMode=true
       this.packageName=this.packageToEdit.name;
       this.packageId=this.packageToEdit.id;
@@ -153,8 +153,15 @@ export class NewPackagePage implements OnInit {
   }
 
   deletePackage(){
-    this.modalController.dismiss({
-      'deletePackage': true
+    this.userService.deletePackage(this.packageId).subscribe((res: any) => {
+      this.userService.presentToast("Το πακέτο διαγράφηκε με επιτυχία","success")
+      this.modalController.dismiss({
+        'edited': true
+      });
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.","danger")
+
     });
+   
   }
 }

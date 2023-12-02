@@ -298,6 +298,15 @@ export class UserService {
     );
 
   }
+
+  deletePackage(package_id: string): Observable<any> {
+    
+    return this.http.post(beautyAuthenticated_API_URL + "delete-package?package_id="+package_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+
+  }
+ 
  
 
   saveEmployee(body: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {

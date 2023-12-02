@@ -120,7 +120,7 @@ export class KrathshPage implements OnInit {
         this.booking_status_class = "custBadge p7 cusItemOrang"
         this.text_color = "#eb445a"
        } else if (data.status == "pending") {
-        this.booking_status = "pending επιβεβαίωση";
+        this.booking_status = "Εκκρεμεί επιβεβαίωση";
         this.booking_status_color = "primary";
         this.booking_status_icon = "time-outline";
         this.booking_status_class = "custBadge p7 cusItemSuccess";

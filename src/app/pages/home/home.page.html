@@ -58,16 +58,16 @@
                 <ion-row>
                   <ion-col>
                     <ion-segment [(ngModel)]="activeSegment" scrollable value="all" mode="ios" class="small-segment">
-                      <ion-segment-button value="all" (click)="getKrathseis('0,0,0,0')">
+                      <ion-segment-button value="all" (click)="getKrathseis('0,0,0,0,0')">
                         <ion-label>Όλες</ion-label>
                       </ion-segment-button>
-                      <ion-segment-button value="pending" (click)="getKrathseis('1,0,0,0')">
+                      <ion-segment-button value="pending" (click)="getKrathseis('1,0,0,0,0')">
                         <ion-label>Εκκρεμούν <b>({{pendingAppointments}})</b></ion-label>
                       </ion-segment-button>
-                      <ion-segment-button value="accepted" (click)="getKrathseis('0,0,1,0')">
+                      <ion-segment-button value="accepted" (click)="getKrathseis('0,0,1,0,0')">
                         <ion-label>Αποδεκτές</ion-label>
                       </ion-segment-button>
-                      <ion-segment-button value="canceled" (click)="getKrathseis('0,0,0,1')">
+                      <ion-segment-button value="canceled" (click)="getKrathseis('0,0,0,1,0')">
                         <ion-label>Ακυρωμένες</ion-label>
                       </ion-segment-button> </ion-segment>
                   </ion-col> </ion-row>
