@@ -72,6 +72,7 @@ export class OnboardingPage {
   new_image: string = "false";
   pagesToChoose: any;
   addressEntered: boolean = false;
+  coordinates: string="";
   constructor(private alertController: AlertController, private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
     private _cd: ChangeDetectorRef, private actionSheetController: ActionSheetController) {
     // Initialize start and end times for each day
@@ -425,7 +426,7 @@ export class OnboardingPage {
 
       }
     }
-    this.userService.onBoarding(this.expertName, expertCategories, this.address, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
+    this.userService.onBoarding(this.expertName, expertCategories, this.address,this.coordinates, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
       this.userService.presentToast("Τα στοιχεία σας καταχωρήθηκαν με επιτυχία!", "success")
       localStorage.setItem('authenticated', "true");
       this.userService._isAuthenticated.next(true);
@@ -460,7 +461,8 @@ export class OnboardingPage {
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
         this.addressEntered = true;
-        this.address = data.data
+        this.address = data.data.address
+        this.coordinates=data.data.longitude+","+data.data.latitude
 
       }
       // Do something with the data returned from the modal

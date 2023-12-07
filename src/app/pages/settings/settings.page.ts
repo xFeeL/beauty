@@ -602,7 +602,7 @@ async presentAlertWithChoices(exceptionsToSend:any, overlappingDates: string) {
     this.userService.getExpertSlug().subscribe(slug => {
       this.expertSlug = slug.slug
 
-      this.expertReservationLink = "https://www.fyx.gr/" + this.expertSlug
+      this.expertReservationLink = "https://www.fyx.gr/book/" + this.expertSlug
 
       this.autoGreeting = "Ευχαριστούμε πολύ για το μήνυμα σας! Αν επιθυμείτε να κάνετε κράτηση, παρακαλούμε κάντε κλικ στον παρακάτω σύνδεσμο: " + this.expertReservationLink
       if (this.selectedSegment == "facebook") {
@@ -635,7 +635,7 @@ async presentAlertWithChoices(exceptionsToSend:any, overlappingDates: string) {
       this.currentMenuCallToActions = menu?.data?.[0]?.persistent_menu?.[0]?.call_to_actions ?? [];
 
       // Define the specific URL you are looking for
-      const specificUrl = "https://www.fyx.gr/" + this.expertSlug
+      const specificUrl = "https://www.fyx.gr/book/" + this.expertSlug
 
       // Check each CTA in currentMenuCallToActions for the specific URL
       for (const action of this.currentMenuCallToActions) {
@@ -653,7 +653,7 @@ async presentAlertWithChoices(exceptionsToSend:any, overlappingDates: string) {
         const newAction = {
           type: 'web_url',
           title: 'Online Κράτηση',
-          url: "https://www.fyx.gr/" + this.expertSlug, // Ensure this is a full URL
+          url: "https://www.fyx.gr/book/" + this.expertSlug, // Ensure this is a full URL
           webview_height_ratio: 'full' // Or whatever you prefer
         };
 
@@ -674,15 +674,15 @@ async presentAlertWithChoices(exceptionsToSend:any, overlappingDates: string) {
       console.log(data2)
       if (data2.about != undefined) {
         this.currentPageDescription = data2.about
-        if (this.currentPageDescription.includes("https://www.fyx.gr/" + this.expertSlug)) {
+        if (this.currentPageDescription.includes("https://www.fyx.gr/book/" + this.expertSlug)) {
           this.hidePageDescription = true;
           this.proposedFacebookDescription = this.currentPageDescription
         } else {
-          this.proposedFacebookDescription = ("Online Κρατήσεις: " + "https://www.fyx.gr/" + this.expertSlug + ". " + this.currentPageDescription).substring(0, 100);
+          this.proposedFacebookDescription = ("Online Κρατήσεις: " + "https://www.fyx.gr/book/" + this.expertSlug + ". " + this.currentPageDescription).substring(0, 100);
 
         }
       } else {
-        this.proposedFacebookDescription = ("Online Κρατήσεις: " + "https://www.fyx.gr/" + this.expertSlug + ".").substring(0, 100);
+        this.proposedFacebookDescription = ("Online Κρατήσεις: " + "https://www.fyx.gr/book/" + this.expertSlug + ".").substring(0, 100);
 
       }
 

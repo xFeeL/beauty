@@ -57,6 +57,7 @@ export class EditProfilePage {
   needReferesh: any = false;
   expert_categories: any=[];
   all_categories: any=[];
+  coordinates: string="";
 
   constructor(
 
@@ -89,7 +90,7 @@ export class EditProfilePage {
       this.phone = data[0][2];
       if (!this.updatedAddress) {
         this.address = data[0][4]
-
+        this.coordinates=data[0][5]
       }
       this.displayed_phone = data[0][3]
       this.initialized = true;
@@ -122,13 +123,13 @@ export class EditProfilePage {
 
 
   save() {
-    console.log(this.expert_categories)
     this.needReferesh = true
     this.dataExpert.categories = this.expert_categories.join(',');
     this.dataExpert.businessName = this.name
     this.dataExpert.displayedPhone = this.displayed_phone
     this.dataExpert.new_image = this.new_image
     this.dataExpert.address = this.address;
+    this.dataExpert.coordinates=this.coordinates
     this.dataExpert.image = this.image
     //this.dataUser.image=this.image
     this.userService.saveExpertData(this.dataExpert).subscribe(data => {
@@ -152,7 +153,9 @@ export class EditProfilePage {
     });
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
-        this.address = data.data
+        console.log(data.data)
+        this.address = data.data.address
+        this.coordinates=data.data.longitude+","+data.data.latitude
         this.needReferesh = true
       }
       // Do something with the data returned from the modal
@@ -185,7 +188,6 @@ export class EditProfilePage {
       this.businessNameItemClass = "ion-margin invalidBorderItem"
 
     }
-    console.log(this.expert_categories)
     
   }
 
@@ -255,7 +257,6 @@ export class EditProfilePage {
       allowEditing: false,
       resultType: CameraResultType.Uri,
     });
-    console.log(image)
     // do something with the captured image
     this.openCropperDialog(image.webPath)
   }
@@ -264,7 +265,6 @@ export class EditProfilePage {
 
 
   openCropperDialog(imageURL: string | undefined) {
-    console.log(imageURL)
     this.cropped = null!;
     this._dialog.open(CropperDialog, {
       data: imageURL,
@@ -353,8 +353,7 @@ export class EditProfilePage {
 
   goToCrop() {
 
-    console.log("THE IMAGE")
-    console.log(this.selectedImage)
+  
     this.openCropperDialog(this.selectedImage.imageLink)
 
   }
@@ -370,7 +369,6 @@ export class EditProfilePage {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the room's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
     }
   }
 
@@ -385,7 +383,6 @@ export class EditProfilePage {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the room's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
     }
   }
 

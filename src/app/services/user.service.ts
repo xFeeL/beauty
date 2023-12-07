@@ -655,11 +655,12 @@ export class UserService {
    * @param floors The expert's floors.
    * @returns An Observable that resolves to the server response.
    */
-  onBoarding(name: string, expertCategories: string, address: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[],packages:any[]): Observable<any> {
+  onBoarding(name: string, expertCategories: string, address: string,coordinates: string ,photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[],packages:any[]): Observable<any> {
     const body = {
       name: name,
       expertCategories: expertCategories,
       address: address,
+      coordinates: coordinates,
       photo: photo?.split(",")[1],
       expertWP: days,
       people: people,

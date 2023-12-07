@@ -459,7 +459,6 @@ export class HomePage implements OnInit {
         return false;
     }
     const appointmentStartTime = new Date(foundAppointment[11]);
-    console.log(appointmentStartTime)
     const currentDate = new Date();
     const appointmentStartTimeMinusOneHour = new Date(appointmentStartTime.getTime() - 3600000);
     const isAfterToday = appointmentStartTime.getFullYear() > currentDate.getFullYear() ||

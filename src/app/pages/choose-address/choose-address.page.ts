@@ -57,8 +57,7 @@ export class ChooseAddressPage implements OnInit {
 
 
   returnAddress(item: any) {
-    this.userService.setNavData(item);
-    localStorage.setItem('address', item);
+    localStorage.setItem('address', item.address);
 
     this.modalController.dismiss(item);
   }

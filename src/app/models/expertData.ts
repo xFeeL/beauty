@@ -5,5 +5,6 @@ export class expertData {
     new_image: string="";
     image: string|undefined="";
     address:string="";
+    coordinates:string="";
     categories:string="";
 }

@@ -236,7 +236,7 @@ isMobile(){
     if(localStorage.getItem('authenticated')=='true'){
       this.onMenuOpen();
       this.userService.getExpertSlug().subscribe(data=>{
-        this.urlToCopy="https://www.fyx.gr/"+data.slug
+        this.urlToCopy="https://www.fyx.gr/book/"+data.slug
       },err=>{
 
       })
