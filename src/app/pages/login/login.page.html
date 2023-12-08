@@ -37,6 +37,15 @@
          <h3 class="custH center"><b>Σύνδεση</b></h3> 
         </ion-card-title>
       </ion-card-header>
+      <ion-list class="ion-no-padding" class="list-width center">
+        <ion-item lines="none">
+          <ion-select aria-label="application" interface="action-sheet" value="beauty" cancelText="Ακύρωση" (ionChange)="onAppChange($event)">
+            <ion-select-option value="projects">Οικιακές & Τοπικές υπηρεσίες</ion-select-option>
+            <ion-select-option value="beauty">Υπηρεσίες Ομορφιάς</ion-select-option>
+            <ion-select-option value="foodent">Εστίαση & Ψυχαγωγία</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
        <ion-grid>
         <ion-row class="ion-text-center ion-justify-content-center">
           <ion-col  size="6" sizeXs="6"  sizeSm="6" sizeMd="6" sizeLg="6" sizeXl="5" class="ion-text-center">

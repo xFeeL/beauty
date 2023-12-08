@@ -82,6 +82,16 @@ export class LoginPage implements OnInit {
     });
   }
 
+  onAppChange(event: any) {
+    const selectedValue = event.detail.value;
+  
+    if (selectedValue !== 'beauty') {
+      const baseUrl = 'https://'+selectedValue+'.fyx.gr';
+      window.location.href = baseUrl;
+      }
+  }
+
+
 
   redirectPage(user:User) {
     if (!user) {
