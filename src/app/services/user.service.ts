@@ -584,7 +584,16 @@ export class UserService {
   */
   register(user: User): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.post(API_URL + 'registration', JSON.stringify(user), { headers: this.getHeaders() }).pipe(
+    const requestBody = {
+      email: user.username,
+      password: user.password,
+      repeated_password: user.repeated_password,
+      name: user.name,
+      phone: user.phone,
+      app: user.app,
+      // Add other fields as required by your backend
+    };
+    return this.http.post(API_URL + 'registration', requestBody, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
         if (error.status === 403) {
           localStorage.setItem('authenticated', "false");
