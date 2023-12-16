@@ -583,7 +583,6 @@ export class UserService {
   * @returns An Observable that resolves with the server response.
   */
   register(user: User): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const requestBody = {
       email: user.username,
       password: user.password,
@@ -591,7 +590,6 @@ export class UserService {
       name: user.name,
       phone: user.phone,
       app: user.app,
-      // Add other fields as required by your backend
     };
     return this.http.post(API_URL + 'registration', requestBody, { headers: this.getHeaders() }).pipe(
       catchError((error) => {

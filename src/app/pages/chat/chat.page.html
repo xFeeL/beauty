@@ -104,7 +104,7 @@
 
       <ion-button fill="clear" size="small" class="btns">
         <ion-spinner *ngIf="sendingMessageLoading" color="light"></ion-spinner>
-        <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <svg  *ngIf="!sendingMessageLoading" width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg"
           (click)="sendMessage()">
           <circle cx="21.5" cy="21.5" r="21.5" fill="#246EE9" />
           <path d="M12.01 31L33 22L12.01 13L12 20L27 22L12 24L12.01 31Z" fill="white" />

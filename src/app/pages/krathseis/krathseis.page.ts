@@ -136,7 +136,7 @@ export class KrathseisPage implements OnInit {
           break;
         }
       }
-      this.userService.presentToast("Η κράτηση canceled!", "success")
+      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 

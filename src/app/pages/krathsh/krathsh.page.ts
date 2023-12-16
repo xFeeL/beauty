@@ -275,7 +275,7 @@ noShow() {
   applyRejectPopover() {
     this.userService.rejectAppointment(this.appointment_id, this.cancelReason).subscribe(data => {
       this.status = "canceled"
-      this.userService.presentToast("Η κράτηση canceled!", "success")
+      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
       this.booking_status = "Η κράτηση έχει ακυρωθεί.";
       this.booking_status_color = "danger";
       this.booking_status_icon = "close-circle-outline";

@@ -129,7 +129,14 @@ export class ChatPage implements OnInit {
 
       this.messages = data3.reverse();
       let temp = this.messages.length - 1
-      this.messages[temp].addPadding = true;
+      if (this.messages.length > 0) {
+        if (this.messages[temp].id_sender == this.userId) {
+          this.messages[temp].addPadding = true;
+        } else {
+          this.messages[temp].addPadding = false;
+
+        }
+      }
       this.last_message = this.messages[temp]
 
       this.initialized = true;
@@ -237,15 +244,25 @@ export class ChatPage implements OnInit {
 
       }
 
-      let temp = this.messages.length - 1
-      if (this.messages[temp].id_sender == this.userId) {
-        this.messages[temp].addPadding = true;
+      let temp = this.messages.length - 1;
+      if (temp >= 0 && this.messages[temp]) {
+        if (this.messages[temp].id_sender == this.userId) {
+          this.messages[temp].addPadding = true;
+        } else {
+          this.messages[temp].addPadding = false;
+        }
       } else {
-        this.messages[temp].addPadding = false;
+        console.error('No messages available or temp index is out of bounds');
+      }
+
+      mes.addPadding = true;
+      if(temp>=0){
+        this.messages[this.messages.length] = mes;
+
+      }else{
+        this.messages[0] = mes;
 
       }
-      mes.addPadding = true;
-      this.messages[this.messages.length] = mes;
       this.scrollToBottomSetTimeOut(300);
       this.imagesToSend = []
       this.sendingMessageLoading = false
