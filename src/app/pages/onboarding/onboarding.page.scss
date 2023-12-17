@@ -111,25 +111,11 @@ swiper-container {
     padding-top: 25px;
   }
   
-  .name-input {
-    padding-top: 50px;
-  }
   
   ion-input {
     display: flex;
     justify-content: center;
   }
-  
-  .vcenter-icon {
-    vertical-align: middle; /* Vertically aligns the icon with adjacent inline elements */
-    padding-bottom: 3px;
-    font-size:17px;
-}
-
-.mt8{
-  margin-top:8px;
-}
-
   ion-col {
     max-width: none;
   }
@@ -173,20 +159,6 @@ swiper-container {
     background: white;
   }
   
-  .input-item {
-    margin-top: 20px;
-    /* adjust as needed */
-    width: 100%;
-  }
-  
-  .flex-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    /* Add desired margin between intervals */
-  }
-  
   .scheduleIcon {
     cursor: pointer;
     color: var(--ion-color-danger);
@@ -202,20 +174,10 @@ swiper-container {
     margin-left: 10px;
     font-size: 14px;
   }
-  
-  .width40 {
-    //flex: 0 0 55%;
-    margin-right: 10px;
-    /* adjust as needed */
-  }
+
   
   ion-select {
     width: 100%;
-  }
-  
-  .small-width .ion-select-label {
-    padding-left: 0;
-    padding-right: 0;
   }
   
   ion-toggle {
@@ -225,84 +187,7 @@ swiper-container {
     --handle-background: var(--ion-color-danger);
     --handle-background-checked: var(--ion-color-success);
   }
-  
-  .add-person-button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    //font-size: 16px;
-    margin-top: 50px;
-    margin-bottom: 10px;
-  }
-  
 
-  
-  .person-list {
-    margin-top: 20px;
-  }
-  
-  .person-list h4 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .person-list ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .person-list li {
-    margin-bottom: 15px;
-  }
-  
-  .person-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f8f8f8;
-    border-radius: 4px;
-  }
-  
-  .person-details {
-    flex-grow: 1;
-  }
-  
-  .person-name {
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-  
-  .person-opening-hours {
-    color: #555;
-  }
-  
-  .edit-person-button {
-    background-color: #28a745;
-    color: #fff;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .edit-person-button:hover {
-    background-color: #1d9239;
-  }
-  
-  .chipPr {
-    background-color: var(--ion-color-primary);
-    color: var(--ion-color-light);
-  }
-  
-  .shadow {
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.45);
-  }
-  
   .custRow {
     background-color: var(--ion-color-primary-contrast);
     border-radius: 15px;
@@ -319,10 +204,6 @@ swiper-container {
     
   }
 
-
-    
-  
-  
   .person-row {
     display: flex;
     justify-content: space-between;
@@ -330,10 +211,7 @@ swiper-container {
     margin-top:10px;
   }
   
-  .person-buttons {
-    padding-bottom: 3px;
-  }
-  
+
   .f12 {
     font-size: 12px;
   }
@@ -351,18 +229,6 @@ swiper-container {
     /* Adjust the maximum height as desired */
     overflow-y: auto;
     overflow-x: hidden;
-  }
-  
-  .person-grid {
-    max-height: 100%;
-  }
-  
-  .custom-accordion {
-    width: 100%;
-  }
-  
-  .restaurantIcon {
-    //padding-right:5px;
   }
   
   .theH {

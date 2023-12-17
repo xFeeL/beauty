@@ -9,9 +9,9 @@ import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
 
 
-let API_URL = "http://127.0.0.1:8080/api/common/";
-let Authenticated_API_URL = "http://127.0.0.1:8080/api/common-auth/"
-let beautyAuthenticated_API_URL = "http://127.0.0.1:8080/api/beauty-auth/"
+let API_URL = "http://127.0.0.1:8080/common/";
+let Authenticated_API_URL = "http://127.0.0.1:8080/common-auth/"
+let beautyAuthenticated_API_URL = "http://127.0.0.1:8080/beauty-auth/"
 
 @Injectable({
   providedIn: 'root'
@@ -185,8 +185,8 @@ export class UserService {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private requestsQueue: any[] = [];
 
-  private handleError(error: any, method: string = 'GET', body?: any): Observable<any> {
-    if (error.status === 403 && !error.skipRefresh && localStorage.getItem('authenticated') == "true") {
+  private handleError(error: any, method: string = 'GET', body?: any, onboarding: boolean = false): Observable<any> {
+        if (error.status === 403 && !error.skipRefresh && (localStorage.getItem('authenticated') == "true") || onboarding==true) {
       return this.getNewJwtWithRefreshToken().pipe(
         mergeMap(() => {
           console.log("The method is " + method)
@@ -677,7 +677,7 @@ export class UserService {
     };
     console.log(body)
     return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', body))
+      catchError(error => this.handleError(error, 'POST', body,true))
 
     );
   }

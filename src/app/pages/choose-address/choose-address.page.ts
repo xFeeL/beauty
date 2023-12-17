@@ -28,10 +28,10 @@ export class ChooseAddressPage implements OnInit {
     console.log('search', this.autocompleteInput);
     // whenever a search is triggered
     // a 1 second delay is set to avoid excesive calls to API
-    if (this.autocompleteInput.length < 1) {
+    /*if (this.autocompleteInput.length < 1) {
       console.log('query is too short, bye');
       return;
-    }
+    }*/
 
     if (!this.queryWait) {
       this.loadingOn = true;
@@ -49,7 +49,7 @@ export class ChooseAddressPage implements OnInit {
           this.loadingOn = false;
 
         })
-      }, 1000);
+      }, 0);
     } else {
       console.log('wait ...');
     }

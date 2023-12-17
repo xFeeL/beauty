@@ -15,10 +15,10 @@
     (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-grid class="ion-no-padding" class="backgroundGrid">
+  <ion-grid  class="backgroundGrid ion-no-padding">
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" class="ion-no-padding">
-        <ion-item class="ion-padding " lines="none" *ngIf="initialized==false || chats.length==0">
+        <ion-item class="ion-no-padding " lines="none" *ngIf="initialized==false || chats.length==0">
           <ion-grid>
             <ion-row>
               <ion-img class="no_results_item" src="../../../assets/imgs/nomessages.svg"> </ion-img>

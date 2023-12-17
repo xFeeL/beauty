@@ -8,7 +8,7 @@
 </ion-toolbar></ion-header>
 
 <ion-content class="background">
-<ion-grid>
+<ion-grid class="ion-no-padding">
   <ion-row class="ion-justify-content-center">
     <ion-col size="12" class="ion-no-padding">
       <ion-grid class="bgL ion-margin-top ion-margin-end ion-margin-start" *ngIf="reviews.length!=0">
@@ -53,9 +53,9 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-grid>
+      <ion-grid class="gridBackground ion-no-padding">
         <ion-row class="ion-justify-content-center">
-          <ion-item class="ion-padding " lines="none" *ngIf="reviews.length==0">
+          <ion-item class="ion-no-padding " lines="none" *ngIf="reviews.length==0">
             <ion-grid>
               <ion-row>
                 <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"> </ion-img>

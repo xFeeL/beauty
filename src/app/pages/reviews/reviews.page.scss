@@ -148,12 +148,15 @@
   
   .no_results_item {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+   
     padding-top: 20px;
     text-align: center;
   }
   
   .background {
     --background: #E3F0F9;
+  }
+
+  .gridBackground{
+    background:white;
   }

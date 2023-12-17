@@ -17,11 +17,11 @@
     </ion-row>
   </ion-grid>
 </ion-toolbar></ion-header><ion-content>
-<ion-spinner class="ion-padding-top" color="primary" *ngIf="loadingOn"></ion-spinner> <ion-grid>
+<ion-spinner class="ion-padding-top ion-margin-top" color="primary" *ngIf="loadingOn"></ion-spinner> <ion-grid>
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
-        <ion-row class="ion-justify-content-center custRow" *ngFor="let item of suggestions"
+        <ion-row class="ion-justify-content-center custRow cursor" *ngFor="let item of suggestions"
           (click)="returnAddress(item)">
           <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
             <ion-label>
