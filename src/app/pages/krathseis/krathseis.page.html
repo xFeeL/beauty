@@ -96,7 +96,7 @@
                   <ion-icon *ngIf="isMobile()" [color]="krathsh[5]=='true'?'success':'medium'" class="checkmark-icon"
                     name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
                    
-            <ion-button *ngIf="!isMobile()"
+            <ion-button *ngIf="!isMobile() && isAfterOneHourAgo(krathsh)"
                             class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[5]=='checked_in'}"
                             [@buttonAnimation]="krathsh[5]=='true' ? 'expanded' : 'collapsed'"
                             [fill]="krathsh[5]=='true' ? 'solid' : 'outline'" size="small"

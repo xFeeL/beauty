@@ -626,8 +626,8 @@ export class AddPersonPage implements OnInit {
   }
 
   formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
-    const formattedStart = moment(exception.start).locale('el').format('DD/MM/YY HH:mm');
-    const formattedEnd = moment(exception.end).locale('el').format('DD/MM/YY HH:mm');
+    const formattedStart = moment.utc(exception.start).locale('el').format('DD/MM/YY HH:mm');
+    const formattedEnd = moment.utc(exception.end).locale('el').format('DD/MM/YY HH:mm');
 
     return {
       formatted: `${formattedStart} - ${formattedEnd}`,

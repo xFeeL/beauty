@@ -363,10 +363,16 @@ export class HomePage implements OnInit {
     this.userService.getAppointments(this.statusChosen, this.page, "upcoming", false).subscribe(data => {
       this.dataSource = [];
       console.log(data)
+      console.log("HIIII2")
+
       for (let k = 0; k < data.length; k++) {
         let el = data[k];
         el[11]=el[3]
-        el[3] = moment(el[3]).locale("el").format('Do MMM, h:mm a');
+        el[3]= moment.utc(el[3]).locale("el").format('Do MMM, h:mm a');
+
+       
+        console.log("HIIII")
+        console.log(el[3].split('+')[0])
         el[4] = el[4].split('$')[0] + " " + el[4].split('$')[1];
         this.krathseis.push(el);
         if (el[2] === "accepted") {
@@ -497,11 +503,11 @@ export class HomePage implements OnInit {
   }
 
   getDate(datetime: string): string {
-    return moment(datetime, 'Do MMM, h:mm a', 'el').format('D MMM');
+    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('D MMM');
   }
 
   getTime(datetime: string): string {
-    return moment(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
+    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
   }
 
 

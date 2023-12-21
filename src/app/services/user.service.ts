@@ -9,9 +9,9 @@ import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
 
 
-let API_URL = "http://127.0.0.1:8080/common/";
-let Authenticated_API_URL = "http://127.0.0.1:8080/common-auth/"
-let beautyAuthenticated_API_URL = "http://127.0.0.1:8080/beauty-auth/"
+let API_URL = "https://api.fyx.gr/common/";
+let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +73,12 @@ export class UserService {
   sseConnect(call: string) {
     console.log("Getting called from " + call)
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("http://127.0.0.1:8080/api/common-auth/stream")
-      this.getServerSentEvent("http://127.0.0.1:8080/api/common-auth/stream").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream")
+      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
     } else {
       console.log(this.eventSource)
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("http://127.0.0.1:8080/api/common-auth/stream").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -133,8 +133,8 @@ export class UserService {
           console.log('SSE connection closed, reconnecting...');
           console.log('Trying...');
           setTimeout(() => {
-            this.eventSource = this.getEventSource("http://127.0.0.1:8080/api/common-auth/stream")
-            this.getServerSentEvent("http://127.0.0.1:8080/api/common-auth/stream").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream")
+            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -500,7 +500,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("http://10.0.2.2:8080/api/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 

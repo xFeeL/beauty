@@ -262,7 +262,8 @@ export class KrathseisPage implements OnInit {
   getKrathseis() {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
       for (let k = 0; k < data.length; k++) {
-        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a')
+        data[k][11]=data[k][3]
+        data[k][3] = moment.utc(data[k][3]).locale("el").format('Do MMM, h:mm a');
         data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
         this.krathseis.push(data[k])
       }
@@ -309,6 +310,41 @@ export class KrathseisPage implements OnInit {
     console.log(item)
     item.selected = !item.selected
   }
+
+  
+ 
+
+  isAfterOneHourAgo(appointment: any): boolean {
+    console.log("Starting isAfterOneHourAgo check");
+    const foundAppointment = this.krathseis.find(a => a[0] === appointment[0]);
+    if (!foundAppointment) {
+        console.log("Appointment not found for id:", appointment[0]);
+        return false;
+    }
+    const appointmentStartTime = new Date(foundAppointment[11]);
+    const currentDate = new Date(); // The current time
+    const oneHourFromNow = new Date(currentDate.getTime() + 3600000); // One hour from the current time
+
+    console.log("Current Date:", currentDate);
+    console.log("Appointment Start Time:", appointmentStartTime);
+    console.log("One Hour From Now:", oneHourFromNow);
+
+    // Check if the appointment start time is before or exactly at the current time or within the next hour
+    const hasAlreadyStarted = appointmentStartTime <= currentDate;
+    const isStartingSoon = appointmentStartTime > currentDate && appointmentStartTime <= oneHourFromNow;
+    const isStartingSoonOrAlreadyStarted = hasAlreadyStarted || isStartingSoon;
+    console.log("Is the appointment already started?:", hasAlreadyStarted);
+    console.log("Is the appointment starting soon?:", isStartingSoon);
+    console.log("Is the appointment starting soon or already started?:", isStartingSoonOrAlreadyStarted);
+
+    return isStartingSoonOrAlreadyStarted; // Return true if the appointment has already started or is about to start within the next hour
+}
+
+
+
+  
+
+
 
 
 
