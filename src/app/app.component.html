@@ -59,6 +59,12 @@
               <ion-label>Κριτικές</ion-label>
             </ion-item> 
             <ion-item routerDirection="root" routerLink="" lines="none" detail="true" class="menuOption"
+            (click)="goToStats()">
+            <ion-img src="../assets/icon/stats.png"  class="ion-margin-end menu-icon"></ion-img>
+            <ion-label>Στατιστικά</ion-label>
+            
+          </ion-item>
+            <ion-item routerDirection="root" routerLink="" lines="none" detail="true" class="menuOption"
               (click)="goToTeamServices()">
               <ion-img src="../assets/icon/work-team.png"  class="ion-margin-end menu-icon"></ion-img>
               <ion-label>Ομάδα & Υπηρεσίες</ion-label>

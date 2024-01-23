@@ -139,6 +139,10 @@ const routes: Routes = [
     path: 'new-package',
     loadChildren: () => import('./pages/new-package/new-package.module').then( m => m.NewPackagePageModule)
   },
+  {
+    path: 'stats',
+    loadChildren: () => import('./pages/stats/stats.module').then( m => m.StatsPageModule)
+  },
   
   
  

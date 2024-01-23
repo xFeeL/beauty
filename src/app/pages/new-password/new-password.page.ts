@@ -38,40 +38,55 @@ export class NewPasswordPage implements OnInit {
   }
 
   newPassword(){
-   
+    
     this.actRouter.queryParams
       .subscribe(params => {
         this.token = params['token'];
       }
     );
       if(this.token!=null){
+    
 
     this.user.setNewPassword(this.the_password,this.repeated_password,this.token).subscribe(data => {
       this.userService.presentToast("Η αλλαγή κωδικού ήταν επιτυχής.", "success");
       //Wait 1 second, then redirect it to home page.
-      this.route.navigate(['login']);  
+      setTimeout(() => {
+        this.route.navigate(['login']);  
 
+        //this.userService.pushSetup();
+      }, 1000);
     }, err => {
       this.userService.presentToast("Η αλλαγή κωδικού απέτυχε", "danger");
+      
     });
   }else {
-    this.signup_user.app="beauty"
+    console.log("THE SIGNUP FORM")
+    console.log(this.signUpForm)
 
     this.signup_user.password=this.the_password;
     this.signup_user.repeated_password=this.repeated_password;
-    this.signup_user.username=this.signUpForm[0];
+    this.signup_user.email=this.signUpForm[3];
     this.signup_user.name=this.signUpForm[1]+"$"+this.signUpForm[2];
-    this.signup_user.phone=this.signUpForm[3];
-    this.navData=[this.signUpForm[0],this.the_password]
+    this.signup_user.phone=this.signUpForm[0];
+    this.signup_user.app="beauty"
+    this.navData=[this.signUpForm[0],this.the_password, ,"", this.signup_user.email]
     this.userService.setNavData(this.navData);
     this.user.register(this.signup_user).subscribe(data => {
 
-      this.userService.presentToast("Η εγγραφή ήταν επιτυχής. Παρακαλούμε επαληθεύστε το τηλέφωνο σας.", "success");
-        this.userService.setNavData([ this.signup_user.username,this.signup_user.password,"ordinary"])
-        this.route.navigate(['otp-verification']);  
+      //this.presentToast("Η εγγραφή ήταν επιτυχής.", true);
+      //Wait 1 second, then redirect it to home page.
+     // setTimeout(() => {
+      //  this.dismiss();
+        //this.redirectPage(data);
+        //this.userService.pushSetup();
+     // }, 1000);
+     this.userService.presentToast("Η εγγραφή ήταν επιτυχής. Παρακαλούμε επαληθεύστε το τηλέφωνο σας.", "success");
+
+     this.userService.setNavData([ this.signup_user.phone,this.signup_user.password,"ordinary",this.signup_user.email])
+
+      this.route.navigate(['otp-verification']);  
     }, err => {
       console.log(err)
-
       if(err.error=="Phone exists"){
       this.userService.presentToast("Το τηλέφωνο που χρησιμοποιήσατε υπάρχει. Παρακαλώ επιλέξτε άλλο τηλέφωνο.", "danger");
       this.navCtrl.back();
@@ -79,13 +94,18 @@ export class NewPasswordPage implements OnInit {
       }else if(err.error=="Email exists"){
         this.userService.presentToast("Το E-mail που χρησιμοποιήσατε υπάρχει. Παρακαλώ επιλέξτε άλλο E-mail.", "danger");
         this.navCtrl.back();
-       
+
+      }else if(err.error=="OK"){
+        this.userService.presentToast("Η εγγραφή ήταν επιτυχής. Παρακαλούμε επαληθεύστε το τηλέφωνο σας.", "success");
+        this.userService.setNavData([ this.signup_user.phone,this.signup_user.password,"ordinary"])
+        this.route.navigate(['otp-verification']);  
 
       }else{
         this.userService.presentToast("Κάτι πήγε στραβά. Ελέγξτε τα στοιχεία που εισάγατε στη φόρμα.", "danger");
         this.navCtrl.back();
 
       }
+      
     });
 
   }

@@ -1,6 +1,6 @@
 export class User {
     id: number | undefined;
-    username: string = "";
+    email: string = "";
     password: string = "";
     repeated_password: string = "";
     firstName: string = "";

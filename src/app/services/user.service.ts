@@ -9,9 +9,9 @@ import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
 
 
-let API_URL = "https://api.fyx.gr/common/";
-let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
-let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
+let API_URL = "http://localhost:8080/common/";
+let Authenticated_API_URL = "http://localhost:8080/common-auth/"
+let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +73,12 @@ export class UserService {
   sseConnect(call: string) {
     console.log("Getting called from " + call)
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream")
-      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream")
+      this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
     } else {
       console.log(this.eventSource)
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -133,8 +133,8 @@ export class UserService {
           console.log('SSE connection closed, reconnecting...');
           console.log('Trying...');
           setTimeout(() => {
-            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream")
-            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream")
+            this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -500,7 +500,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("http://localhost:8080/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -533,11 +533,12 @@ export class UserService {
  * @returns {Observable<any>} - The Observable that emits the login response.
  */
   login(user: User): Observable<any> {
-    let to_send = btoa(user.username + ':' + user.password)
-    let username = btoa(user.username)
+    let phone = btoa(user.phone)
     let password = btoa(user.password)
     localStorage.clear();
-    const params = new HttpParams().append('username', username).append('password', password);
+    //this.pushSetup();
+    const params = new HttpParams().append('phone', phone).append('password', password);
+
     return this.http.post<any>(API_URL + 'login', params, { withCredentials: true }).pipe(
       tap(response => {
         if (response && response.statusCode === 200) {
@@ -584,7 +585,7 @@ export class UserService {
   */
   register(user: User): Observable<any> {
     const requestBody = {
-      email: user.username,
+      email: user.email,
       password: user.password,
       repeated_password: user.repeated_password,
       name: user.name,
@@ -631,12 +632,12 @@ export class UserService {
 
   /**
   * Sends an OTP for verification.
-  * @param email The email to send the OTP to.
+  * @param phone The email to send the OTP to.
   * @param otp The OTP to send.
   * @returns An Observable that resolves with the server response.
   */
-  sendOTP(email: string, otp: string): Observable<any> {
-    const params = new HttpParams().append('OTP', otp).append('email', email);
+  sendOTP(phone: string, otp: string): Observable<any> {
+    const params = new HttpParams().append('OTP', otp).append('phone', phone);
     return this.http.post<any>(API_URL + 'verify-otp', params).pipe(
       catchError(error => this.handleError(error))
     );

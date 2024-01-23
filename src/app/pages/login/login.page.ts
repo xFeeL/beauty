@@ -9,6 +9,7 @@ import {
   FacebookLogin,
   FacebookLoginResponse,
 } from '@capacitor-community/facebook-login';
+import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -26,6 +27,12 @@ export class LoginPage implements OnInit {
   variableDisabled:string | undefined;
   disabledButton="true";
   regex_email_test:any;
+  phoneMask: MaskitoOptions = {
+    mask: ['+', '3','0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
+  };
+  readonly options: MaskitoOptions = this.phoneMask;
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  
   constructor(
     private userService: UserService,
     private router: Router,
@@ -49,27 +56,35 @@ export class LoginPage implements OnInit {
   }
 
   login() {
+    
     this.userService.login(this.user).subscribe(data => {
     this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
    // this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
 
-    
+      //Wait 1 second, then redirect it to home page.
+      setTimeout(() => {
+        
+        //this.redirectPage(data);
+        //this.userService.pushSetup();
+      }, 1000);
+      
+      window.location.href = '/tabs/home';
       localStorage.setItem('authenticated',"true");
 
-      window.location.href = '/tabs/home';
-
-      //this.router.navigate(['/tabs/home']);
+      //this.router.navigate(['/tabs/arxikh']);
     }, err => {
       if(err.error=="Mobile"){
-        this.userService.requestOTP(this.user.username).subscribe(data=>{
+        this.userService.requestOTP(this.user.phone).subscribe(data=>{
           this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
-        this.userService.setNavData([this.user.username,this.user.password,"ordinary"]);
+        this.userService.setNavData([this.user.email,this.user.password,"ordinary",this.user.phone]);
+        
 
         this.router.navigate(['/otp-verification']);
 
         },err=>{
           
         });
+
       }else if(err.error=="Onboarding"){
              
         this.router.navigate(['/onboarding']);  //PREPEI NA TO KANEIS GIA KATHE REQUEST P KANEIS, PROTINW MESA STO USER SERVICE OLA TA RESPONSES CHECK OTI EXI TELIWSEI TO ONBOARDING
@@ -79,9 +94,9 @@ export class LoginPage implements OnInit {
         this.userService.presentToast("Το Email ή ο κωδικός είναι λάθος.", "danger");
 
       }
+      
     });
   }
-
   onAppChange(event: any) {
     const selectedValue = event.detail.value;
   
@@ -116,44 +131,10 @@ goToForgetPasswordPage(){
   this.router.navigate(['/forget-password']);
 }
 
-emailCheck(){
- 
-  const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-  this.regex_email_test = regexp.test(this.user.username);
- 
-  if (this.regex_email_test){
-  this.iconName="checkmark-outline"
-  this.iconColor="success"
-  this.variableClass="valid-item"
-  this.variableDisabled="false";
-  
 
-  }else if(!this.regex_email_test){
-    this.iconName="close-outline"
-    this.iconColor="danger"
-    this.variableClass="invalid-item"
-    this.variableDisabled="true";
-  }
-  if(this.user.username.length==0){
-    this.iconName="null";
-  }
-  if(this.user.password.length>0 && this.regex_email_test){
-    this.disabledButton="false";
-  }else{
-    this.disabledButton="true";
-
-  }
-  
-
-}
 
 passwordChange(){
-
-  if(this.regex_email_test==undefined){
-    this.emailCheck();
-
-  }
-  if(this.user.password.length>0 && this.regex_email_test){
+  if(this.user.password.length>0 && this.user.phone.length>0){
     this.disabledButton="false";
   }else{
     this.disabledButton="true";
@@ -188,6 +169,7 @@ passwordChange(){
       if (user) {
         this.userService.loginOAuth(user.authentication.idToken,"google").subscribe(data=>{
           window.location.href = '/tabs/home';
+          localStorage.setItem('authenticated',"true");
 
         },err=>{         
             if(err.error=="Mobile"){
@@ -223,6 +205,8 @@ passwordChange(){
       let user = { token: result.accessToken.token, userId: result.accessToken.userId }
       this.userService.loginOAuth(result.accessToken.token,"facebook").subscribe(data=>{
         window.location.href = '/tabs/home';
+        localStorage.setItem('authenticated',"true");
+
       })
     }
   }

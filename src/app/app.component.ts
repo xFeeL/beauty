@@ -15,6 +15,7 @@ import { MessagesPage } from './pages/messages/messages.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ChangePasswordPage } from './pages/change-password/change-password.page';
 import { TeamServicesPage } from './pages/team-services/team-services.page';
+import { StatsPage } from './pages/stats/stats.page';
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl `{
     body {
@@ -228,6 +229,14 @@ isMobile(){
     
   
   }
+
+   
+  async goToStats() {
+    const modal = await this.modalController.create({
+        component: StatsPage,
+    });
+    return await modal.present();
+}
 
   ngOnInit() {
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {

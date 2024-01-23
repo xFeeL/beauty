@@ -1,0 +1,132 @@
+.stats-container {
+    display: flex;
+    justify-content: space-between; /* if you want them spaced out evenly */
+    gap: 20px; /* you can adjust this value to change the gap */
+  }
+  
+  .stat-number {
+    font-weight: bold;
+    color: var(--ion-color-primary);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2px 0; /* Reduce margin value here */
+    gap: 10px;
+  }
+  
+  
+  .stat-block {
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-number {
+    font-weight: bold;
+    color: var(--ion-color-primary);
+    margin: 0;
+    display: flex;
+      flex-direction: column; /* stack children vertically */
+      align-items: center; /* center children horizontally */
+      justify-content: center; /* center children vertically */
+      margin: 4px 0; /* Adjust the value as needed */
+      gap:10px;
+  }
+  
+  .stat-label {
+    margin-top: 5px;
+    color: #777;
+    font-size: 14px;
+  }
+  
+  
+  .stats_right{
+    margin-top:0px;
+    margin-bottom:20px;
+  }
+
+  .content-container {
+    
+    padding: 10px;
+  }
+
+  .chart{
+    padding-bottom:10px;
+    padding-left:10px;
+    padding-right: 10px;
+  }
+
+  .no_results_item{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+    width:300px;
+    height:auto;
+  }
+
+  .no_results_header{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-family:serif
+    font-size 20px;
+  }
+
+  .title_space{
+    padding-left:9px;
+  }
+  
+  .background{
+    --background:none;
+  }
+
+  .first-rank {
+    color: rgb(240, 204, 0);
+    font-weight:550 !important;
+    
+  }
+  
+  .second-rank {
+    color: rgb(180, 180, 180);
+    font-weight:450 !important;
+  
+  }
+  
+  .third-rank {
+    color: #cd7f32;  /* bronze */
+    font-weight:400;
+  
+  }
+  
+
+  .whiteBackground{
+    background:white;
+   ;
+  }
+
+  .marginborder{
+    margin:15px;
+    border-radius: 20px
+  }
+
+  .blueBackground{
+    --background: #E3F0F9;
+
+  }
+
+  .no-shrink {
+    flex-shrink: 0;
+  }
+  

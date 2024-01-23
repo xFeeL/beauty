@@ -56,26 +56,41 @@ export class OtpVerificationPage implements OnInit {
     this.otp=this.field1+this.field2+this.field3+this.field4;
     this.buttonDisabled = false;
 
+    
     this.user.sendOTP(this.navData[0],this.otp).subscribe(data => {
       if(data!=null && data.message=="Wrong OTP"){
       this.userService.presentToast("Λάθος Κωδικός", "danger");
       
-    
+      //Wait 1 second, then redirect it to home page.
+      setTimeout(() => {
+        
+       // this.redirectPage(data);
+        //this.userService.pushSetup();
+      }, 1000);
     }else if(data==null){
-      this.login_user.username=this.navData[0];
+      this.login_user.phone=this.navData[0];
       this.login_user.password=this.navData[1];
       let user:User=new User();
-      user.username=this.navData[0];
+      user.phone=this.navData[0];
+      
+
       user.password=this.navData[1];
       if(this.navData[2]=="ordinary"){
         this.userService.login(user).subscribe(data => {
+          //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
       
-            window.location.href = '/tabs/home';
+            //Wait 1 second, then redirect it to home page.
+            setTimeout(() => {
+              
+              //this.redirectPage(data);
+              //this.userService.pushSetup();
+            }, 1000);
+            this.rout.navigate(['/tabs/arxikh']);
           }, err => {
             if(err.error=="Mobile"){
-              this.userService.requestOTP(user.username).subscribe(data=>{
+              this.userService.requestOTP(user.phone).subscribe(data=>{
                 this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
-              this.userService.setNavData([user.username,user.password]);
+              this.userService.setNavData([user.phone,user.password]);
               this.rout.navigate(['/otp-verification']);      
               },err=>{
               });              
@@ -88,15 +103,16 @@ export class OtpVerificationPage implements OnInit {
             else{
               this.userService.presentToast("Το Email ή ο κωδικός είναι λάθος.", "danger");      
             }
+            
           });
         }else{
           this.userService.loginOAuth(user.password,this.navData[2]).subscribe(data=>{
-            window.location.href = '/tabs/home';
+            this.rout.navigate(['/tabs/arxikh']);
           },err=>{         
               if(err.error=="Mobile"){
-                this.userService.requestOTP(user.username).subscribe(data=>{
+                this.userService.requestOTP(user.phone).subscribe(data=>{
                   this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
-                  this.userService.setNavData([user.username,user.password,"google"]);
+                  this.userService.setNavData([user.phone,user.password,"google"]);
                   this.rout.navigate(['/otp-verification']);
                 },err=>{
                 });
@@ -108,11 +124,15 @@ export class OtpVerificationPage implements OnInit {
               else{
                 this.userService.presentToast("Κάτι πήγε στραβά.", "danger");      
               }
+              
             });
         }
 
     
-            this.userService.presentToast("Η επαλήθευση αριθμού ολοκληρώθηκε με επιτυχία.", "success");
+      
+
+      
+      this.userService.presentToast("Η επαλήθευση αριθμού ολοκληρώθηκε με επιτυχία.", "success");
 
     }
     });
