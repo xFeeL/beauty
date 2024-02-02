@@ -46,9 +46,9 @@
               {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>
           </ion-label>
-          <ion-icon *ngIf="!service.isSelected" name="add-circle-outline" slot="end"
+          <ion-icon *ngIf="!service.isSelected && service.hasVariations!=true" name="add-circle-outline" slot="end"
             (click)="toggleSelectService(service)"></ion-icon>
-
+          <ion-icon  (click)="chooseVariation(service)" *ngIf="service.hasVariations==true && !service.isSelected" name="ellipsis-horizontal-circle-outline"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-row>
@@ -67,8 +67,10 @@
             </ion-note>
 
           </ion-label>
-          <ion-icon *ngIf="!service.isSelected" name="add-circle-outline" slot="end"
+          <ion-icon *ngIf="service.hasVariations!=true && !service.isSelected" name="add-circle-outline" slot="end"
             (click)="toggleSelectService(service)"></ion-icon>
+            <ion-icon class="cursor" *ngIf="service.hasVariations==true && !service.isSelected" name="ellipsis-horizontal-circle-outline" (click)="chooseVariation(service); $event.stopPropagation()"></ion-icon>
+
 
         </ion-item>
       </ion-list>
@@ -83,7 +85,9 @@
           (click)="toggleSelectService(service)">
           <div class="success-line"></div>
           <ion-label>
-            <h2>{{ service.name }}</h2>
+            <h2 *ngIf="service.variationName==null">{{ service.name }}</h2>
+            <h2 *ngIf="service.variationName!=null">{{ service.variationName }}</h2>
+
             <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>
             <ion-note *ngIf="service.type == 'package'">
@@ -91,8 +95,10 @@
               {{ service.serviceObjects.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>
           </ion-label>
-          <ion-icon color="primary" class="cursor" *ngIf="!service.isSelected" name="add-circle-outline"
+          <ion-icon color="primary" class="cursor" *ngIf="service.hasVariations!=true && !service.isSelected" name="add-circle-outline"
             slot="end"></ion-icon>
+            <ion-icon class="cursor" *ngIf="service.hasVariations==true && !service.isSelected" name="ellipsis-horizontal-circle-outline" (click)="chooseVariation(service); $event.stopPropagation()"></ion-icon>
+
           <ion-icon color="danger" class="cursor" *ngIf="service.isSelected" name="remove-circle-outline"
             slot="end"></ion-icon>
         </ion-item>

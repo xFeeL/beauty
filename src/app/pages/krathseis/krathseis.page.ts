@@ -78,7 +78,6 @@ export class KrathseisPage implements OnInit {
   krathseistatus = "0,0,0,0,0"
 
   @ViewChild('krathshPop') krathshPop!: IonPopover;
-  @ViewChild('acceptPop') acceptPop!: IonPopover;
   @ViewChild('rejectPop') rejectPop!: IonPopover;
 
 
@@ -116,33 +115,32 @@ export class KrathseisPage implements OnInit {
     return this.userService.isMobile();
   }
   appendToTextArea(reason: string) {
-    this.cancelReason = ""
-    this.cancelReason = reason;
-  }
+    this.cancelReason = ""; 
+    setTimeout(() => { this.cancelReason = reason; }, 0);
+}
 
   closeRejectPopover() {
     this.rejectPop.dismiss()
 
   }
-  openRejectionPopover() {
-    this.rejectPop.present()
-  }
+  openRejectionPopover(event: any, krathsh: any) {
+    event.stopPropagation(); 
+    this.rejectPop.present();
+}
 
-  applyRejectPopover(appointment: string) {
-    this.userService.rejectAppointment(appointment, this.cancelReason).subscribe(data => {
-      for (let i = 0; i < this.krathseis.length; i++) {
-        if (appointment == this.krathseis[i][0]) {
-          this.krathseis[i][2] = "canceled"
-          break;
-        }
-      }
+
+  applyRejectPopover(appointment: any) {
+    this.userService.rejectAppointment(appointment[0], this.cancelReason).subscribe(data => {
+    
+      appointment[2] = "canceled"
+       
+      
       this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 
     })
     this.rejectPop.dismiss();
-    this.acceptPop.dismiss();
 
   }
 
@@ -161,39 +159,13 @@ export class KrathseisPage implements OnInit {
     return this.userService.newNotification;
   }
 
-  openAcceptPopover() {
-    this.cancelReason = ""
 
-    this.acceptPop.present()
-  }
-
-  closeAcceptPopover() {
-    this.acceptPop.dismiss()
-
-
-  }
   goBack() {
     this.modalController.dismiss(this.reloadAppointments)
   }
 
 
 
-  applyAcceptPopover(appointment: string) {
-    this.userService.acceptAppointment(appointment).subscribe(data => {
-      for (let i = 0; i < this.krathseis.length; i++) {
-        if (appointment == this.krathseis[i][0]) {
-          this.krathseis[i][2] = "accepted"
-          break;
-        }
-      }
-      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
-
-    })
-    this.acceptPop.dismiss()
-
-  }
 
 
 
@@ -263,7 +235,7 @@ export class KrathseisPage implements OnInit {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
       for (let k = 0; k < data.length; k++) {
         data[k][11]=data[k][3]
-        data[k][3] = moment.utc(data[k][3]).locale("el").format('Do MMM, h:mm a');
+        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
         data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
         this.krathseis.push(data[k])
       }
@@ -488,6 +460,29 @@ export class KrathseisPage implements OnInit {
 
     }
   }
+
+
+  acceptAppointment(event: Event, appointment: any) {
+    event.stopPropagation();
+    console.log(appointment)
+    this.userService.acceptAppointment(appointment[0]).subscribe(data => {
+      appointment[2] = "accepted"
+      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
+
+    
+
+
+
+
+    }, err => {
+      this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
+
+    })
+
+  }
+
+
+  
 
 
 

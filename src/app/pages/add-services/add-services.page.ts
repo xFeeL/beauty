@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
+import { ChooseVariationPage } from '../choose-variation/choose-variation.page';
 
 @Component({
   selector: 'app-add-services',
@@ -49,7 +50,26 @@ export class AddServicesPage implements OnInit {
     this.loadInitialData();
   }
 
- 
+  
+  async chooseVariation(service: any) {
+    const modal = await this.modalController.create({
+      component: ChooseVariationPage,
+      componentProps: {
+        service_id: service.id
+      }
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+    if (data) {
+      console.log(data)
+      console.log(service)
+      service.variationName=service.name + " " +data.name
+      this.toggleSelectService(service)
+    } 
+  }
+
   
   
   private loadInitialData() {
@@ -192,8 +212,15 @@ export class AddServicesPage implements OnInit {
 
 
   toggleSelectService(item: any) {
+    if(item.hasVariations==true){
+      this.chooseVariation(item)
+      return
+    }
+    if(item.selected && item.variationName!=null){
+      item.variationName==null
+    }
+
     item.isSelected = !item.isSelected; // Toggle the isSelected property
- 
    if (item.type === 'package') {
       this.updatePackageSelection(item);
     }else{

@@ -1,16 +1,16 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon color="light" name="arrow-back"></ion-icon>
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
-
-    <ion-title color="light" text-wrap>Νέα Υπηρεσία</ion-title>
-
+    <ion-title color="light" text-wrap *ngIf="service_id==null">Νέα Υπηρεσία</ion-title>
+    <ion-title color="light" text-wrap *ngIf="service_id!=null">Αλλαγή Υπηρεσίας</ion-title>
 
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="background">
   <ion-grid>
@@ -40,14 +40,14 @@
 
 
 
-              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
-                cancelText="Ακυρο" [(ngModel)]="serviceCategory">
+              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid"
+                okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
                   [value]="category.name">{{category.name}}</ion-select-option>
 
               </ion-select>
-              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid" okText="Επιβεβαιωση"
-                cancelText="Ακυρο" [(ngModel)]="serviceCategory">
+              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid"
+                okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
                   [value]="category">{{category}}</ion-select-option>
 
@@ -96,7 +96,54 @@
       </ion-col>
     </ion-row>
 
+
   </ion-grid>
+
+  <ion-grid *ngFor="let variation of variations; let i = index">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-lg="8" offset-lg="1">
+        <ion-grid class="customGrid">
+          <ion-row class="ion-justify-content-center">
+            <ion-col size-lg="12" size-xs="12">
+              <ion-icon name="trash" slot="end" color="danger"></ion-icon>
+              <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Τιμολόγησης"
+                label-placement="floating" fill="solid" placeholder="π.χ. κοντά μαλλιά"
+                [(ngModel)]="variation.name"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size-lg="6" size-xs="6">
+              <ion-input color="primary" [(ngModel)]="variation.price" (ionInput)="onInput($event)" #ionInputEl
+                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="0.00"></ion-input>
+            </ion-col>
+            <ion-col size-lg="6" size-xs="6">
+              <ion-input color="primary" [(ngModel)]="variation.duration" (ionInput)="onDurationInput($event)"
+                label="Διάρκεια (λεπτά)" label-placement="floating" fill="solid" placeholder="15"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <ion-col size="1" class="icon-container">
+        <ion-icon name="trash-outline" color="danger" class="f20 cursor" (click)="deleteVariation(i)"></ion-icon>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid (click)="newVariation()">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-lg="8">
+        <div style="display: flex; align-items: center;" class="pl5 cursor">
+          <ion-icon name="add-circle-outline" color="primary" class="pr5"></ion-icon>
+          <ion-note color="primary">
+            Προσθήκη επιπλέον τρόπου τιμολόγησης
+          </ion-note>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
 </ion-content>
 <ion-footer>
   <ion-grid class="ion-no-padding">

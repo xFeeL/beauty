@@ -21,7 +21,7 @@
           </ion-row>
           <ion-row class="ion-margin-top">
             <ion-list lines="inset" class="ion-no-padding servicesList">
-              <ion-reorder-group  [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
+              <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
                 <ion-item *ngFor="let service of selectedServicesAndPackages">
                   <ion-reorder slot="start" class="mr16"></ion-reorder>
                   <div class="success-line"></div>

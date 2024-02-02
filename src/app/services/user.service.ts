@@ -438,6 +438,24 @@ export class UserService {
 
   }
 
+  getVariationsOfService(service_id: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-variations-of-service?service_id=" + service_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+
+  }
+
+
+  
+
+  getServiceVariations(serviceId: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-service-variations?service_id=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+
+  }
+  
+
 
   /**
    * Checks for new notifications.
@@ -643,6 +661,10 @@ export class UserService {
     );
   }
 
+
+    
+
+
   /**
    * Sends a password reset email.
    * @param email The email to send the reset to.
@@ -652,6 +674,7 @@ export class UserService {
     return this.http.post(API_URL + "forgot-password", email).toPromise();
   }
 
+  
 
   /**
    * Sends onboarding data to the server.

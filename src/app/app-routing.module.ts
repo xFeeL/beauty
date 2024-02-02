@@ -143,6 +143,11 @@ const routes: Routes = [
     path: 'stats',
     loadChildren: () => import('./pages/stats/stats.module').then( m => m.StatsPageModule)
   },
+  {
+    path: 'choose-variation',
+    loadChildren: () => import('./pages/choose-variation/choose-variation.module').then( m => m.ChooseVariationPageModule)
+  },
+ 
   
   
  

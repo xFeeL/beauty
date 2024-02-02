@@ -15,7 +15,10 @@ const routes: Routes = [
         path: 'krathseis',
         loadChildren: () => import('../pages/krathseis/krathseis.module').then(m => m.KrathseisPageModule)
       },
-   
+      {
+        path: 'notifications',
+        loadChildren: () => import('../pages/notifications/notifications.module').then(m => m.NotificationsPageModule)
+      },
       {
         path: 'messages',
         loadChildren: () => import('../pages/messages/messages.module').then(m => m.MessagesPageModule)

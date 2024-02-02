@@ -145,6 +145,9 @@ export class HomePage implements OnInit {
     });
   }
   ionViewWillEnter() {
+    if (this.userService.isMobile()) {
+      this.rout.navigate(['/tabs/krathseis']);
+    }
 
 
     this.projects = []

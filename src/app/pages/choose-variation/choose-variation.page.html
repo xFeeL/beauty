@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Λεπτομέρειες & Επιλογές</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <h2 >Κούρεμα Ανδρικό</h2>
+
+  <!-- Service Description -->
+  <div class="service-description">
+    <ion-note>Ανακαλύψτε την τέλεια εμφάνιση με τις υπηρεσίες κουρέματος μας. Προσφέρουμε μια ποικιλία από στυλ και τεχνικές για να ταιριάξουμε με κάθε προτίμηση και τύπο μαλλιών. Επιλέξτε το ιδανικό κούρεμα που αναδεικνύει το στυλ και την προσωπικότητά σας.</ion-note>
+  </div>
+
+  <!-- Choices with Radio Buttons -->
+  <ion-radio-group class="choices" >
+
+    <h4>Επιλογές Υπηρεσίας</h4>
+
+    <div class="choice" *ngFor="let variation of variations" (click)="select(variation)">
+      <ion-item lines="none" class="no-hover">
+        <ion-label>
+          <h3>{{variation.name}}</h3>
+          <ion-note>Διάρκεια: {{variation.duration}} λεπτά - Τιμή: {{variation.price}}</ion-note>
+        </ion-label>
+        <ion-radio slot="start" value="classic"></ion-radio>
+      </ion-item>
+    </div>
+
+
+  </ion-radio-group>
+
+</ion-content>
+<ion-footer (click)="saveChoice()"> <ion-button [disabled]="selectedVariation==null" expand="full" color="primary"
+  class="ion-no-margin">
+  <ion-label class="ion-text-center capsoff">Επιλογή</ion-label>
+</ion-button></ion-footer>

@@ -71,3 +71,27 @@ ion-content {
 .customPad {
     padding-left: 10px;
 }
+
+ion-header{
+    background: var(--ion-color-primary);
+  
+  }
+  
+  ion-toolbar{
+    --background: var(--ion-color-primary);
+  
+  }
+
+  ion-icon[name="arrow-back"] {
+    display: none;
+    /* Hide by default */
+  }
+  
+  /* Desktop screens */
+  @media only screen and (min-width: 992px) {
+    ion-icon[name="arrow-back"] {
+      display: inline-block;
+      /* Show only on desktop */
+    }
+  }
+  

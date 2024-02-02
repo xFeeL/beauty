@@ -1,9 +1,13 @@
-<ion-header> <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-      <ion-title color="light">Ειδοποιήσεις</ion-title> </ion-buttons> </ion-toolbar></ion-header><ion-content>
+<ion-header class=" ion-padding-top ion-padding-bottom"> <ion-toolbar>
+  <ion-buttons slot="start" class="ion-no-margin">
+    <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+  <ion-title color="light" class="ion-no-padding">
+    <div class="vertical-align-content">
+      <ion-icon color="light" (click)="goBack()" name="arrow-back"
+        class="ion-padding-end ion-margin-start"></ion-icon>
+      Ειδοποιήσεις
+    </div>
+  </ion-title> </ion-toolbar> </ion-header><ion-content>
   <ion-item class="ion-padding " lines="none" *ngIf="!(new_notifications.length!=0 || notifications.length!=0)">
     <ion-grid>
       <ion-row>

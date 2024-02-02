@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonInput, ModalController, NavParams } from '@ionic/angular';
+import { ActionSheetController, IonContent, IonInput, ModalController, NavParams } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { AlertController } from '@ionic/angular';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -13,21 +13,25 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 export class NewServicePage implements OnInit {
 
   serviceName = ""
-  people: any = new Array<any>;
-  servicePrice!: number;
-
-  @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
   serviceDuration: any;
   serviceDescription: any = "";
+  servicePrice!: number;
+
+  people: any = new Array<any>;
+
+  @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
+
   categories: any = [];
   serviceCategory: string = '';
   newCategory: string = '';
   services: any = [];
   originalServiceName: any;
   service_id: any = null;
-  onboarding: any=false;
+  onboarding: any = false;
+  variations: any = []
+  @ViewChild(IonContent, { static: false }) content!: IonContent;
 
-  constructor(private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
+  constructor(private alertController: AlertController,private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
   }
   ngOnInit() { }
 
@@ -35,47 +39,43 @@ export class NewServicePage implements OnInit {
     this.onboarding = this.navParams.get('onboarding');
 
     this.people = this.navParams.get('people');
-    console.log("THE PEOPLE")
-    console.log(this.people)
+
     this.categories = this.navParams.get('categories');
     this.service_id = this.navParams.get('serviceId');
-    console.log(this.categories)
+    this.userService.getServiceVariations(this.service_id).subscribe(data=>{
+      console.log(data)
+      this.variations=data;
+      console.log(this.variations)
+
+    },err=>{
+
+    })
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
-    console.log("The categories are")
-    console.log(this.serviceCategory)
+
     // Make all people unselected by default
     this.people.forEach((person: { selected: boolean; }) => person.selected = false);
 
     // Get the servicePeople from navParams
     let servicePeople = this.navParams.get('servicePeople');
-    console.log(this.people)
-    console.log(servicePeople)
+
     // If servicePeople is found in the navParams, mark those people as selected
 
     if (servicePeople && servicePeople.length) {
       servicePeople.forEach((servicePersonName: string) => {
-        console.log(`Looking for: ${servicePersonName}`);
         let person = this.people.find((p: { name: string; surname: string; }) => {
           const combinedName = `${p.name} ${p.surname}`;
-          console.log(`Checking against: ${combinedName}`);
           return combinedName === servicePersonName;
         });
 
         if (person) {
           person.selected = true;
         } else {
-          console.log(`Person not found for: ${servicePersonName}`);
         }
       });
     }
 
-
-
-    console.log("Opening New Service Modal");
-    console.log(this.people)
-    console.log(servicePeople)
     if (this.service_id == null) {
       this.selectAll = true
       this.selectAllPeople();
@@ -97,24 +97,20 @@ export class NewServicePage implements OnInit {
   }
 
   async saveService() {
-    console.log("Save service")
-    console.log(typeof (this.servicePrice))
-    console.log(this.serviceName)
-    console.log(this.serviceDuration)
+    
     if (this.servicePrice == undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
       this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα πεδία.', "danger");
       return;
     }
-    console.log('Categories:', this.categories);
-    console.log('Selected Category Name:', this.serviceCategory);
-    
+   
+
     // Find the category object based on the serviceCategoryName
     let category;
-    if(!this.onboarding){
-       category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
+    if (!this.onboarding) {
+      category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
 
-    }else{
-       category = this.categories.find((cat:any) => cat === this.serviceCategory);
+    } else {
+      category = this.categories.find((cat: any) => cat === this.serviceCategory);
 
     }
 
@@ -140,36 +136,40 @@ export class NewServicePage implements OnInit {
       this.userService.presentToast('Η υπηρεσία με αυτό το όνομα υπάρχει ήδη.', "danger");
       return;
     }
-if(!this.onboarding){
-    let body = {
-      "name": this.serviceName,
-      "price": this.servicePrice,
-      "duration": this.serviceDuration,
-      "description": this.serviceDescription,
-      "serviceCategoryName": this.serviceCategory,
-      "serviceCategoryId": serviceCategoryId,
-      "people": selectedPeople, // Sending the whole objects of selected people
-      "id": this.service_id
-    }
-    this.userService.saveService(body).subscribe((res: any) => {
-      this.userService.presentToast("Η υπηρεσία αποθηκεύτηκε επιτυχώς.", "success")
-      this.modalController.dismiss({
-        'edited': true
+    if (!this.onboarding) {
+      let body = {
+        "name": this.serviceName,
+        "price": this.servicePrice,
+        "duration": this.serviceDuration,
+        "description": this.serviceDescription,
+        "serviceCategoryName": this.serviceCategory,
+        "serviceCategoryId": serviceCategoryId,
+        "people": selectedPeople, // Sending the whole objects of selected people
+        "id": this.service_id,
+        "variations": this.variations.map((variation: { price: any; duration: any; }) => ({
+          ...variation,
+          price: Number(variation.price),
+          duration: Number(variation.duration)
+      }))      }
+      this.userService.saveService(body).subscribe((res: any) => {
+        this.userService.presentToast("Η υπηρεσία αποθηκεύτηκε επιτυχώς.", "success")
+        this.modalController.dismiss({
+          'edited': true
+        });
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
+      })
+    } else {
+      await this.modalController.dismiss({
+        'name': this.serviceName,
+        'price': this.servicePrice,
+        'people': selectedPeopleNames,  // Using the names only array here
+        'duration': this.serviceDuration,
+        'description': this.serviceDescription,
+        'selectedCategory': this.serviceCategory,
+        'categories': this.categories
       });
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
-    })
-  }else{
-    await this.modalController.dismiss({
-      'name': this.serviceName,
-      'price': this.servicePrice,
-      'people': selectedPeopleNames,  // Using the names only array here
-      'duration': this.serviceDuration,
-      'description': this.serviceDescription,
-      'selectedCategory': this.serviceCategory,
-      'categories': this.categories
-    });
-  }
+    }
   }
 
 
@@ -190,12 +190,12 @@ if(!this.onboarding){
     this.userService.deleteService(this.service_id).subscribe((res: any) => {
       this.userService.presentToast("Η υπηρεσία διαγράφηκε επιτυχώς.", "success")
       this.modalController.dismiss({
-        'edited':true
+        'edited': true
       });
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
     })
-   
+
   }
 
 
@@ -255,8 +255,50 @@ if(!this.onboarding){
   }
 
 
+  newVariation() {
+    const variation = {
+      name: '',
+      price:'' ,
+      duration:'' 
+    };
+    this.variations.push(variation);
+    this.scrollToBottomSetTimeOut(20)
+  }
 
+  scrollToBottomSetTimeOut(time: number) {
 
+    setTimeout(() => {
+      this.content.scrollToBottom();
+    }, time);
+  }
+
+  async deleteVariation(index: any) {
+    const alert = await this.alertController.create({
+      header: 'Επιβεβαίωση διαγραφής', // 'Delete Confirmation' in Greek
+      message: 'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τον τρόπο τιμολόγησης;', // 'Are you sure you want to delete this variation?' in Greek
+      buttons: [
+        {
+          text: 'Ακυρωση', // 'Cancel' in Greek
+          role: 'cancel',
+          handler: () => {
+            console.log('Deletion cancelled');
+          }
+        },
+        {
+          text: 'Διαγραφη', // 'Delete' in Greek
+          handler: () => {
+            // Check if the index is valid
+            if (index > -1 && index < this.variations.length) {
+              // Remove the variation at the specified index
+              this.variations.splice(index, 1);
+            }
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }
 
 }
 

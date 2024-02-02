@@ -108,6 +108,38 @@
                             Έφτασε
                           </ion-button>
                 </div>
+                <ng-container class="align-right" *ngIf="krathsh[2]=='pending'">
+                  <ion-icon color="success" name="checkmark-circle-outline" title="Αποδοχή"
+                    (click)="acceptAppointment($event, krathsh)" class="icon-spacing"></ion-icon>
+                  <ion-icon color="danger" name="close-circle-outline" title="Απόρριψη"
+                    (click)="openRejectionPopover($event, krathsh)" class="icon-spacing pl5"></ion-icon>
+                  <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
+                    <ng-template>
+                      <ion-header> <ion-title color="light" class="ion-padding-top ion-padding-bottom">
+                          Αιτία απόρριψης
+                        </ion-title>
+                      </ion-header>
+                      <ion-content>
+                        <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true"
+                          class="cancelReason ion-padding" label="Λόγος απόρριψης" labelPlacement="floating"
+                          fill="outline" [value]="cancelReason"></ion-textarea>
+                        <div class="scrolling-wrapper reasonChips">
+                          <ion-chip outline color="primary" style="font-size: 12px;"
+                            (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">Μη
+                            διαθέσιμη ώρα</ion-chip>
+                          <ion-chip outline color="secondary" style="font-size: 12px;"
+                            (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">Αναπάντεχο
+                            συμβάν</ion-chip>
+                        </div>
+                      </ion-content>
+                      <ion-footer class="ion-no-padding" (click)="applyRejectPopover(krathsh)">
+                        <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
+                          <ion-label class="ion-no-padding"
+                            class="ion-text-center capsoff">Αποθήκευση</ion-label>
+                        </ion-button>
+                      </ion-footer> </ng-template>
+                  </ion-popover>
+                </ng-container>
               </ion-item>
 
             </ng-container>

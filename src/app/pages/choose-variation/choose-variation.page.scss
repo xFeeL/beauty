@@ -1,0 +1,36 @@
+
+/* Service Description Styles */
+.service-description p {
+    color: var(--text-color);
+    padding: 0 15px;
+    text-align: justify;
+  }
+  
+  /* Choices Styles */
+  .choices {
+    margin-top: 20px;
+    padding: 0 15px;
+  }
+  
+  .choice {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 16px;
+  }
+  
+  .choice h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+  }
+  
+  .choice p {
+    color: var(--text-color);
+    margin: 5px 0;
+  }
+
+  ion-item {
+    --background-hover: none;
+
+  }

@@ -1,14 +1,18 @@
 <ion-tabs>  <ion-tab-bar slot="bottom">
-  <ion-tab-button tab="home">
-    <ion-img src="../../assets/icon/house.png" class="tab-icon"></ion-img>  
-          <ion-label>Αρχική</ion-label>
-  </ion-tab-button>    <ion-tab-button tab="krathseis">
+  <ion-tab-button tab="krathseis">
     <ion-img src="../../assets/icon/calendar.png" class="tab-icon"></ion-img>  
     <ion-label>Κρατήσεις</ion-label>
   </ion-tab-button>    <!--<ion-tab-button tab="prosfores">
     <ion-icon name="file-tray-full-outline"></ion-icon>
     <ion-label>Προσφορές</ion-label>
-  </ion-tab-button>-->    <ion-tab-button tab="messages">
+    
+  </ion-tab-button>-->  
+  <ion-tab-button tab="notifications">
+    <ion-badge  *ngIf="newNotification()" color="danger"></ion-badge>
+    <ion-img src="../../assets/icon/notification-bell.png" class="tab-icon"></ion-img>  
+        <ion-label>Ειδοποιήσεις</ion-label>
+  </ion-tab-button>
+    <ion-tab-button tab="messages">
     <ion-badge *ngIf="newMessage()" color="danger"></ion-badge>
     <ion-img src="../../assets/icon/messenger.png" class="tab-icon"></ion-img>  
         <ion-label>Μηνύματα</ion-label>
