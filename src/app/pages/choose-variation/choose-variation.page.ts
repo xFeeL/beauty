@@ -32,6 +32,7 @@ export class ChooseVariationPage implements OnInit {
 
   select(variation:any){
     console.log(variation)
+    
     this.selectedVariation=variation;
   }
 
@@ -40,8 +41,9 @@ export class ChooseVariationPage implements OnInit {
   }
 
 
-  saveChoice(){
-    console.log("returning with" + this.selectedVariation)
-    this.modalController.dismiss(this.selectedVariation)
+  saveChoice() {
+    console.log("Returning with", this.selectedVariation); // Ensure clear separation of text and object in logs
+    this.modalController.dismiss(this.selectedVariation); // Dismiss modal with the selectedVariation object
   }
+  
 }

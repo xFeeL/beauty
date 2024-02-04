@@ -146,7 +146,9 @@
                               <div class="ion-flex"
                                 style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                                 <ion-label>
-                                  <h2>{{item.name}}</h2>
+                                 
+                                  <h2 *ngIf="item.parentName!=null">{{item.parentName}} <ion-note>({{item.name}})</ion-note></h2>
+                                  <h2 *ngIf="item.parentName==null">{{item.name}}</h2>
                                   <p>{{item.duration}} λεπτά με {{item.employee}}</p>
                                 </ion-label>
                                 <ion-label class="align-right">€{{item.price}}</ion-label>

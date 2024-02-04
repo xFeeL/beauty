@@ -25,7 +25,7 @@
                 [(ngModel)]="serviceName"></ion-input>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row *ngIf="variations.length==0">
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
                 label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="0.00"></ion-input>
@@ -154,7 +154,7 @@
         </ion-button>
       </ion-col>
       <ion-col [size]="service_id!=null?'6':'12'" class="ion-no-padding">
-        <ion-button size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
+        <ion-button [disabled]="isSaveDisabled()" size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
           Αποθήκευση
         </ion-button>
       </ion-col>

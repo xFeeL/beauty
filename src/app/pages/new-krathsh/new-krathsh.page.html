@@ -26,9 +26,11 @@
                   <ion-reorder slot="start" class="mr16"></ion-reorder>
                   <div class="success-line"></div>
                   <ion-label>
-                    <h2>{{ service.name }}</h2>
-                    <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration
-                      }} λεπτά</ion-note>
+                    <h2 *ngIf="service.chosenVariation==null">{{ service.name }}</h2>
+                    <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{ service.chosenVariation.name }})</ion-note></h2>
+
+                    <ion-note *ngIf="service.type!='package' && service.chosenVariation==null">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration}} λεπτά</ion-note>
+                      <ion-note *ngIf="service.type!='package' && service.chosenVariation!=null">Τιμή: €{{ service.chosenVariation.price }} • Διάρκεια: {{ service.chosenVariation.duration}} λεπτά</ion-note>
                     <ion-note *ngIf="service.type=='package'">
                       Τιμή: €{{ service.price }} • Διάρκεια:
                       {{ calculateTotalDuration(service) }} λεπτά
@@ -60,8 +62,9 @@
             <ion-accordion-group [value]="currentService" class="ion-padding custom-accordion">
               <ion-accordion *ngFor="let service of selectedServices" [value]="service" class="custom-accordion-item">
                 <ion-item slot="header" class="custom-accordion-header">
-                  <ion-label>{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
+                  <ion-label  *ngIf="service.chosenVariation==null">{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
                       }})</span></ion-label>
+                      <ion-label *ngIf="service.chosenVariation!=null">{{service.name}} <ion-note>({{ service.chosenVariation.name }})</ion-note></ion-label>
                 </ion-item>
                 <div slot="content" class="horizontal-scroll">
 

@@ -1354,6 +1354,15 @@ export class UserService {
     );
   }
 
+
+
+  getAllServicesAndVariations(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-services-and-variations", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+
   getPackages(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-packages", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))

@@ -19,22 +19,22 @@
   </div>
 
   <!-- Choices with Radio Buttons -->
-  <ion-radio-group class="choices" >
+<ion-radio-group class="choices" [(ngModel)]="selectedVariation">
 
-    <h4>Επιλογές Υπηρεσίας</h4>
+  <h4>Επιλογές Υπηρεσίας</h4>
+  
+  <div class="choice" *ngFor="let variation of variations" >
+    <ion-item lines="none" class="no-hover">
+      <ion-label>
+        <h3>{{variation.name}}</h3>
+        <ion-note>Διάρκεια: {{variation.duration}} λεπτά - Τιμή: {{variation.price}}</ion-note>
+      </ion-label>
+      <ion-radio slot="start" [value]="variation"></ion-radio> <!-- Use a unique property here -->
+    </ion-item>
+  </div>
 
-    <div class="choice" *ngFor="let variation of variations" (click)="select(variation)">
-      <ion-item lines="none" class="no-hover">
-        <ion-label>
-          <h3>{{variation.name}}</h3>
-          <ion-note>Διάρκεια: {{variation.duration}} λεπτά - Τιμή: {{variation.price}}</ion-note>
-        </ion-label>
-        <ion-radio slot="start" value="classic"></ion-radio>
-      </ion-item>
-    </div>
+</ion-radio-group>
 
-
-  </ion-radio-group>
 
 </ion-content>
 <ion-footer (click)="saveChoice()"> <ion-button [disabled]="selectedVariation==null" expand="full" color="primary"

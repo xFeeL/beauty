@@ -468,20 +468,25 @@ export class NewKrathshPage implements OnInit {
   }
 
 
-   updateServiceEmployees() {
+  updateServiceEmployees() {
     this.servicesEmployees = [];
     this.selectedServices.forEach((service, index) => {
-      let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: service.id, employeeId: service.selectedEmployeeId };
-
+      // Determine the appropriate id to use based on whether chosenVariation is not null
+      const idToUse = service.chosenVariation ? service.chosenVariation.id : service.id;
+  
+      // Initialize the serviceEmployee entry with the determined id
+      let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: idToUse, employeeId: service.selectedEmployeeId };
+  
+      // Add packageId to the entry if it exists
       if (service.packageId) {
         serviceEmployeeEntry.packageId = service.packageId;
       }
-
+  
+      // Push the constructed entry to the servicesEmployees array
       this.servicesEmployees.push(serviceEmployeeEntry);
     });
   }
   
-
 
 
   async chooseServices() {

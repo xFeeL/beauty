@@ -583,6 +583,7 @@ export class OnboardingPage {
         serviceDescription: service.description,
         categories: this.serviceCategories,
         serviceCategory: service.selectedCategory,
+        variations:service.variations,
         editing: true,
         services: this.services,
         onboarding:true
@@ -608,6 +609,8 @@ export class OnboardingPage {
         description: data.description,
         people: data.people,
         selectedCategory: data.selectedCategory,
+        variations: data.variations,
+
       };
 
       // Find and update the service in the services array
@@ -748,6 +751,7 @@ export class OnboardingPage {
         description: data.description,
         selectedCategory: data.selectedCategory,
         people: data.people,
+        variations:data.variations
       };
       this.services.push(service);
       this.serviceCategories = data.categories

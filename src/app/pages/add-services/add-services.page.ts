@@ -65,8 +65,18 @@ export class AddServicesPage implements OnInit {
     if (data) {
       console.log(data)
       console.log(service)
-      service.variationName=service.name + " " +data.name
-      this.toggleSelectService(service)
+      service.chosenVariation=data
+      if(service.selected && service.chosenVariation!=null){
+        service.variationName==null
+      }
+  
+      service.isSelected = !service.isSelected; // Toggle the isSelected property
+     if (service.type === 'package') {
+        this.updatePackageSelection(service);
+      }else{
+        this.updateServiceSelection(service);
+  
+      }
     } 
   }
 

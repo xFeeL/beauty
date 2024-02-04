@@ -144,9 +144,19 @@
 
                             </ion-row>
                             <ion-row class="mt9">
-                              <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+                              <ion-note *ngIf="!service.hasVariations" class="custom-note">
+                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                              </ion-note>
+                              <ion-note *ngIf="service.hasVariations" class="custom-note">
+                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                              </ion-note>
                             </ion-row>
+                            
+                            
                           </ion-grid>
+                          <ion-text *ngIf="service.hasVariations" slot="end">Από €{{ service.price }}</ion-text>
+                          <ion-text *ngIf="!service.hasVariations" slot="end">€{{ service.price }}</ion-text>
+
                         </ion-item>
                       </ng-container>
                       <ng-template #noServices>

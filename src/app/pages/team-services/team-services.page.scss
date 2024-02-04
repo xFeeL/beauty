@@ -48,6 +48,16 @@
     margin-right: 10px; 
   }
 
+  .custom-note {
+    display: flex;
+    align-items: center;
+  }
+  .custom-icon {
+    margin-right: 5px; /* Adjust the space between the icon and text */
+    font-size:17px;
+  }
+  
+
   .package-line{
     width: 4px; 
     height: 100%; 

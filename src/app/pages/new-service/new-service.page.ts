@@ -37,19 +37,25 @@ export class NewServicePage implements OnInit {
 
   ionViewWillEnter() {
     this.onboarding = this.navParams.get('onboarding');
-
+    console.log("Entering with ")
     this.people = this.navParams.get('people');
 
     this.categories = this.navParams.get('categories');
     this.service_id = this.navParams.get('serviceId');
-    this.userService.getServiceVariations(this.service_id).subscribe(data=>{
-      console.log(data)
-      this.variations=data;
-      console.log(this.variations)
-
-    },err=>{
-
-    })
+    if(!this.onboarding){
+      this.userService.getServiceVariations(this.service_id).subscribe(data=>{
+        console.log(data)
+        this.variations=data;
+        console.log(this.variations)
+  
+      },err=>{
+  
+      })
+    }
+    
+    this.variations = this.navParams.get('variations') || [];
+    console.log("Entering with ")
+    console.log(this.variations)
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
@@ -167,7 +173,8 @@ export class NewServicePage implements OnInit {
         'duration': this.serviceDuration,
         'description': this.serviceDescription,
         'selectedCategory': this.serviceCategory,
-        'categories': this.categories
+        'categories': this.categories,
+        'variations':this.variations
       });
     }
   }
@@ -211,7 +218,23 @@ export class NewServicePage implements OnInit {
     console.log(filteredValue);
   }
 
-
+  isSaveDisabled() {
+    // Check if all required main service fields are filled out
+    const mainFields = [this.serviceName, this.servicePrice, this.serviceDuration, this.serviceCategory];
+    const areMainFieldsFilled = mainFields.every(field => field); // Every main field must be filled
+  
+    // Check variations only if there are any
+    let areVariationsValid = true; // Assume valid if there are no variations
+    if (this.variations.length > 0) {
+      // If there are variations, check that each one has a name, price, and duration filled out
+      areVariationsValid = this.variations.every((variation: { name: any; price: any; duration: any; }) => variation.name && variation.price && variation.duration);
+    }
+  
+    // Disable save if any main field is empty or if variations are present and not valid
+    return !areMainFieldsFilled || !areVariationsValid;
+  }
+  
+  
 
 
   onInput(ev: any) {
@@ -256,14 +279,28 @@ export class NewServicePage implements OnInit {
 
 
   newVariation() {
+    // Check if this is the first variation being created
+    if (this.variations.length === 0) {
+      // If yes, create a variation that copies values from this.servicePrice and this.serviceDuration
+      const initialVariation = {
+        name: '',
+        price: this.servicePrice,
+        duration: this.serviceDuration,
+      };
+      this.variations.push(initialVariation); 
+    }
+  
+    // Create the new variation with empty or default values
     const variation = {
       name: '',
-      price:'' ,
-      duration:'' 
+      price: '',
+      duration: '',
     };
-    this.variations.push(variation);
-    this.scrollToBottomSetTimeOut(20)
+    this.variations.push(variation); // Add the new variation to the variations array
+  
+    this.scrollToBottomSetTimeOut(20);
   }
+  
 
   scrollToBottomSetTimeOut(time: number) {
 

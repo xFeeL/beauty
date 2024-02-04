@@ -140,6 +140,8 @@ export class KrathshPage implements OnInit {
         this.text_color = "#000000"
 
       }
+      console.log("The combined list is")
+      console.log(this.combinedList)
       this.initialized = true;
     })
 

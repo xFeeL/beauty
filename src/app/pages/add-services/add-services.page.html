@@ -85,8 +85,8 @@
           (click)="toggleSelectService(service)">
           <div class="success-line"></div>
           <ion-label>
-            <h2 *ngIf="service.variationName==null">{{ service.name }}</h2>
-            <h2 *ngIf="service.variationName!=null">{{ service.variationName }}</h2>
+            <h2 *ngIf="service.chosenVariation==null">{{ service.name }}</h2>
+            <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{ service.chosenVariation.name }})</ion-note></h2>
 
             <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>

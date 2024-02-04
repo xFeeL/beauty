@@ -26,7 +26,17 @@ export class NewPackagePage implements OnInit {
 
   ionViewWillEnter() {
     this.onboarding=this.navParams.get('onboarding');
-    this.services = this.navParams.get('services');
+    if(this.onboarding){
+      this.services = this.navParams.get('services');
+
+    }else{
+      this.userService.getAllServicesAndVariations().subscribe(data=>{
+        console.log(data)
+        this.services=data
+      },err=>{
+
+      })
+    }
     console.log("The services before modification:", this.services);
     this.services = this.services.map((service: any) => ({
       ...service,
