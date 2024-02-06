@@ -91,7 +91,7 @@ export class LoginPage implements OnInit {
       
     }
       else{
-        this.userService.presentToast("Το Email ή ο κωδικός είναι λάθος.", "danger");
+        this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
 
       }
       
@@ -185,7 +185,7 @@ passwordChange(){
               
             }
             else{
-              this.userService.presentToast("Το Email ή ο κωδικός είναι λάθος.", "danger");      
+              this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");      
             }
           });
         

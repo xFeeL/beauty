@@ -276,6 +276,13 @@
     white-space: normal !important;
  }
 
+ .custom-text-wrap {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
  .f22{
   font-size: 22px;
  }
@@ -361,8 +368,9 @@
     flex-grow: 1; /* Let the content take up the remaining space */
   }
   
+  
   .normal-line, .package-line {
-    width: 4px;
+    width: 4px !important;
     height: 100%;
     margin-right: 10px;
   }

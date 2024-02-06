@@ -1354,6 +1354,44 @@ export class UserService {
     );
   }
 
+  generateUniqueId() {
+    let result = '';
+    const timePart = Date.now().toString(36); // Convert current time to base 36 for a compact representation
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const totalLength = 20; // Desired total length of the ID
+    const timePartLength = timePart.length; // Length of the time part
+  
+    // Calculate how many random characters are needed, interspersing time characters
+    let randomPartsLength = totalLength - timePartLength;
+    let randomPart = '';
+  
+    // Generate the random part
+    for (let i = 0; i < randomPartsLength; i++) {
+      randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+  
+    // Intersperse timePart and randomPart characters
+    for (let i = 0, j = 0, k = 0; i < totalLength; i++) {
+      if (i % 2 == 0 && j < timePartLength) {
+        result += timePart.charAt(j++);
+      } else if (k < randomPartsLength) {
+        result += randomPart.charAt(k++);
+      }
+    }
+  
+    // Adjust in case the time part is shorter than needed
+    if (result.length < totalLength) {
+      let additionalRandom = '';
+      for (let i = result.length; i < totalLength; i++) {
+        additionalRandom += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      result += additionalRandom;
+    }
+  
+    return result;
+  }
+  
+
 
 
   getAllServicesAndVariations(): Observable<any> {

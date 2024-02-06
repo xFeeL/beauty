@@ -338,9 +338,11 @@
 
                               </ion-row>
                               <ion-row class="mt9">
-                                <ion-note>Τιμή: €{{ package.price }} • {{package.services.length}} υπηρεσίες</ion-note>
+                                <ion-note>{{ package.services.length === 1 ? '1 υπηρεσία' : package.services.length + ' υπηρεσίες' }}</ion-note>
                               </ion-row>
                             </ion-grid>
+                            <ion-text  slot="end">€{{ package.price }}</ion-text>
+
                           </ion-item>
                         </ng-container>
 
@@ -381,9 +383,16 @@
 
                               </ion-row>
                               <ion-row class="mt9">
-                                <ion-note>Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }} λεπτά</ion-note>
+                                <ion-note *ngIf="service.variations.length==0" class="custom-note">
+                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                                </ion-note>
+                                <ion-note *ngIf="service.variations.length>0" class="custom-note">
+                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>Από {{ service.duration }} λεπτά
+                                </ion-note>
                               </ion-row>
                             </ion-grid>
+                            <ion-text *ngIf="service.variations.length>0" slot="end">Από €{{ service.price }}</ion-text>
+                            <ion-text  *ngIf="service.variations.length==0"slot="end">€{{ service.price }}</ion-text>
                           </ion-item>
                         </ng-container>
                         <ng-template #noServices>

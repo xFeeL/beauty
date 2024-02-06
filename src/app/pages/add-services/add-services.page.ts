@@ -291,6 +291,8 @@ export class AddServicesPage implements OnInit {
 
 
   saveServices() {
+    console.log("Closing with")
+    console.log(this.selectedServicesAndPackages)
     this.modalController.dismiss(this.selectedServicesAndPackages)
   }
 

@@ -338,6 +338,15 @@ ion-toolbar {
   margin-right: 10px; /* Space between the line and the label */
 }
 
+.custom-note {
+  display: flex;
+  align-items: center;
+}
+.custom-icon {
+  margin-right: 5px; /* Adjust the space between the icon and text */
+  font-size:17px;
+}
+
 
 .servicesList{
   width:100%;

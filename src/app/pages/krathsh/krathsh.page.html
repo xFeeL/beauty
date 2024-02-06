@@ -112,6 +112,7 @@
                   <ion-row class="ion-margin-bottom ">
                     
                         <ion-item class="w100" *ngFor="let item of combinedList">
+                          
                           <div *ngIf="item.type === 'package'" class="package-line"></div>
       
                           <div *ngIf="item.type === 'service'" class="normal-line"></div>
@@ -123,8 +124,8 @@
                                 <ion-row class="ion-margin-bottom">
                                   <div class="ion-flex"
                                     style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                                    <ion-label>
-                                      <h2 class="customFontHeader">{{item.name}}</h2>
+                                    <ion-label class="custom-text-wrap">
+                                      <h2 class="customFontHeader custom-text-wrap">{{item.name}}</h2>
                                     </ion-label>
                                     <ion-label class="align-right">€{{item.price}}</ion-label>
                                   </div>
@@ -132,8 +133,13 @@
                     
                                 <!-- Grid for package services -->
                                 <div *ngFor="let package_service of item.serviceObjects" class="ion-margin-bottom">
+                                  <ion-row *ngIf="package_service.parentName!=null">
+                                    <ion-note >{{package_service.parentName}}</ion-note><br>
+
+                                  </ion-row>
                                   <ion-row>
-                                    <ion-note>{{package_service.name}}</ion-note><br>
+                                    <ion-note >{{package_service.name}}</ion-note><br>
+
                                   </ion-row>
                                   <ion-row>
                                     <ion-note>{{package_service.duration}} λεπτά με {{package_service.employee}}</ion-note>
@@ -144,14 +150,16 @@
                             <div *ngIf="item.type === 'service'">
                               <!-- Service Display Logic -->
                               <div class="ion-flex"
-                                style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                                <ion-label>
+                              style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                              <ion-label style="flex-grow: 1; white-space: normal;">
                                  
-                                  <h2 *ngIf="item.parentName!=null">{{item.parentName}} <ion-note>({{item.name}})</ion-note></h2>
-                                  <h2 *ngIf="item.parentName==null">{{item.name}}</h2>
-                                  <p>{{item.duration}} λεπτά με {{item.employee}}</p>
+                                  <h2 class="custom-text-wrap" text-wrap *ngIf="item.parentName!=null">{{item.parentName}} </h2>
+                                  <ion-note class="custom-text-wrap"> {{item.name}}</ion-note>  
+                                  <p text-wrap >{{item.duration}} λεπτά με {{item.employee}}</p>
                                 </ion-label>
-                                <ion-label class="align-right">€{{item.price}}</ion-label>
+                                <ion-label class="align-right" style="flex-shrink: 0;">
+                                  €{{item.price}}
+                                </ion-label>
                               </div>
                             </div>
                           </div>

@@ -25,8 +25,10 @@
                 <ion-item *ngFor="let service of selectedServicesAndPackages">
                   <ion-reorder slot="start" class="mr16"></ion-reorder>
                   <div class="success-line"></div>
-                  <ion-label>
-                    <h2 *ngIf="service.chosenVariation==null">{{ service.name }}</h2>
+                  <ion-label class="custom-text-wrap">
+                    <h2 *ngIf="service.chosenVariation==null && service.parentName==null">{{ service.name }}</h2>
+                    <h2 *ngIf="service.chosenVariation==null && service.parentName!=null">{{service.parentName}} <ion-note>({{ service.name}})</ion-note></h2>
+
                     <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{ service.chosenVariation.name }})</ion-note></h2>
 
                     <ion-note *ngIf="service.type!='package' && service.chosenVariation==null">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration}} λεπτά</ion-note>
@@ -62,9 +64,9 @@
             <ion-accordion-group [value]="currentService" class="ion-padding custom-accordion">
               <ion-accordion *ngFor="let service of selectedServices" [value]="service" class="custom-accordion-item">
                 <ion-item slot="header" class="custom-accordion-header">
-                  <ion-label  *ngIf="service.chosenVariation==null">{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
+                  <ion-label  *ngIf="service.chosenVariation==null"><ion-label *ngIf="service.parentName!=null">{{service.parentName}} - </ion-label>{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
                       }})</span></ion-label>
-                      <ion-label *ngIf="service.chosenVariation!=null">{{service.name}} <ion-note>({{ service.chosenVariation.name }})</ion-note></ion-label>
+                      <ion-label *ngIf="service.chosenVariation!=null">{{service.name}} - <ion-label>{{ service.chosenVariation.name }}</ion-label></ion-label>
                 </ion-item>
                 <div slot="content" class="horizontal-scroll">
 

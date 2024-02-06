@@ -575,6 +575,7 @@ export class OnboardingPage {
     const modal = await this.modalController.create({
       component: NewServicePage,
       componentProps: {
+        serviceId:service.id,
         people: transformedPeople,
         serviceName: service.name,
         servicePrice: service.price,
@@ -603,6 +604,7 @@ export class OnboardingPage {
       }
     } else if (data) {
       const processedService = {
+        id:data.id,
         name: data.name,
         price: data.price,
         duration: data.duration,
@@ -745,6 +747,7 @@ export class OnboardingPage {
 
     if (data) {
       const service = {
+        id:data.id,
         name: data.name,
         price: data.price,
         duration: data.duration,

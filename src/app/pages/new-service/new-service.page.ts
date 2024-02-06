@@ -103,45 +103,48 @@ export class NewServicePage implements OnInit {
   }
 
   async saveService() {
-    
-    if (this.servicePrice == undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
+    if (this.servicePrice === undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
       this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα πεδία.', "danger");
       return;
     }
-   
-
+  
     // Find the category object based on the serviceCategoryName
     let category;
     if (!this.onboarding) {
       category = this.categories.find((cat: { name: string; }) => cat.name === this.serviceCategory);
-
     } else {
-      category = this.categories.find((cat: any) => cat === this.serviceCategory);
-
+      category = this.categories.find((cat: string) => cat === this.serviceCategory);
     }
-
-    // Check if selected category exists in categories
+  
     if (!category) {
       this.userService.presentToast('Παρακαλώ επιλέξτε κατηγορία.', "danger");
       return;
     }
     const serviceCategoryId = category.id;
-
-    // Filter to get selected people objects
+  
     const selectedPeople = this.people.filter((person: { selected: any; }) => person.selected);
-    const selectedPeopleNames = selectedPeople.map((person: { name: string; surname: string; }) => `${person.name} ${person.surname}`);
-
-    // Check if no people are selected
+    const selectedPeopleNames = selectedPeople.map((person: { name: any; surname: any; }) => `${person.name} ${person.surname}`);
+  
     if (selectedPeople.length === 0) {
       this.userService.presentToast('Παρακαλώ επιλέξτε τουλάχιστον ένα άτομο.', "danger");
       return;
     }
-
-    // Check if the service already exists
+  
     if (this.serviceExists(this.serviceName, this.originalServiceName)) {
       this.userService.presentToast('Η υπηρεσία με αυτό το όνομα υπάρχει ήδη.', "danger");
       return;
     }
+  
+    // Calculate minimum duration and price from variations if there are any
+    if (this.variations.length > 0) {
+      const minPrice = Math.min(...this.variations.map((variation: { price: any; }) => Number(variation.price)));
+      const minDuration = Math.min(...this.variations.map((variation: { duration: any; }) => Number(variation.duration)));
+  
+      this.servicePrice = minPrice;
+      this.serviceDuration = minDuration;
+    }
+  
+    // Proceed with the rest of your method...
     if (!this.onboarding) {
       let body = {
         "name": this.serviceName,
@@ -150,35 +153,37 @@ export class NewServicePage implements OnInit {
         "description": this.serviceDescription,
         "serviceCategoryName": this.serviceCategory,
         "serviceCategoryId": serviceCategoryId,
-        "people": selectedPeople, // Sending the whole objects of selected people
+        "people": selectedPeople,
         "id": this.service_id,
         "variations": this.variations.map((variation: { price: any; duration: any; }) => ({
           ...variation,
           price: Number(variation.price),
           duration: Number(variation.duration)
-      }))      }
-      this.userService.saveService(body).subscribe((res: any) => {
+        }))
+      };
+      this.userService.saveService(body).subscribe(res => {
         this.userService.presentToast("Η υπηρεσία αποθηκεύτηκε επιτυχώς.", "success")
         this.modalController.dismiss({
           'edited': true
         });
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
-      })
+      });
     } else {
       await this.modalController.dismiss({
+        'id': this.userService.generateUniqueId(), 
         'name': this.serviceName,
         'price': this.servicePrice,
-        'people': selectedPeopleNames,  // Using the names only array here
+        'people': selectedPeopleNames,
         'duration': this.serviceDuration,
         'description': this.serviceDescription,
         'selectedCategory': this.serviceCategory,
         'categories': this.categories,
-        'variations':this.variations
+        'variations': this.variations
       });
     }
   }
-
+  
 
   serviceExists(serviceName: string, originalServiceName?: string): boolean {
     for (const service of this.services) {
@@ -279,19 +284,23 @@ export class NewServicePage implements OnInit {
 
 
   newVariation() {
+    // Function to generate a unique ID
+  
     // Check if this is the first variation being created
     if (this.variations.length === 0) {
       // If yes, create a variation that copies values from this.servicePrice and this.serviceDuration
       const initialVariation = {
+        id: this.userService.generateUniqueId(), 
         name: '',
         price: this.servicePrice,
         duration: this.serviceDuration,
       };
-      this.variations.push(initialVariation); 
+      this.variations.push(initialVariation);
     }
   
-    // Create the new variation with empty or default values
+    // Create the new variation with empty or default values and a unique ID
     const variation = {
+      id: this.userService.generateUniqueId(), 
       name: '',
       price: '',
       duration: '',
@@ -300,6 +309,7 @@ export class NewServicePage implements OnInit {
   
     this.scrollToBottomSetTimeOut(20);
   }
+  
   
 
   scrollToBottomSetTimeOut(time: number) {

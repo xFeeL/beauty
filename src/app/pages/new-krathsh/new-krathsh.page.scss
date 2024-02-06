@@ -280,3 +280,9 @@
 margin-right:16px !important;
 }
 
+
+.custom-text-wrap {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

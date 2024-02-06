@@ -28,20 +28,42 @@ export class NewPackagePage implements OnInit {
     this.onboarding=this.navParams.get('onboarding');
     if(this.onboarding){
       this.services = this.navParams.get('services');
-
+      console.log(this.services)
     }else{
-      this.userService.getAllServicesAndVariations().subscribe(data=>{
-        console.log(data)
-        this.services=data
-      },err=>{
-
-      })
-    }
+      this.userService.getAllServicesAndVariations().subscribe(data => {
+        console.log(data);
+        // Filter services to include only those where has_variations is false
+        this.services = data.filter((service: { hasVariations: any; }) => !service.hasVariations);
+    }, err => {
+        // Handle error
+    });
+  }
     console.log("The services before modification:", this.services);
-    this.services = this.services.map((service: any) => ({
-      ...service,
-      selected: false
-    }));
+    this.services = this.services.reduce((acc: any[], service: { variations: any[]; name: any; }) => {
+      // Check if the service has variations
+      if (service.variations && service.variations.length > 0) {
+        // For each variation, create a new object based on the service
+        // but with the variation's details and the name formatted as "serviceName (variationName)"
+        const variationsAsServices = service.variations.map((variation: { name: any; }) => ({
+          ...service,
+          ...variation, // Spread variation to override any similar fields from service
+          name: `${service.name} (${variation.name})`, // Format name as "serviceName (variationName)"
+          selected: false, // Ensure selected is set to false for the variation
+        }));
+    
+        // Add all variations to the accumulator
+        acc.push(...variationsAsServices);
+      } else {
+        // If no variations, add the service itself to the accumulator
+        acc.push({
+          ...service,
+          selected: false
+        });
+      }
+    
+      return acc;
+    }, []); // Initialize accumulator as an empty array
+    
     this.packageToEdit=this.navParams.get('package');
     console.log("The services after modification:", this.services);
     console.log("The package to edit is:", this.packageToEdit);
@@ -64,7 +86,7 @@ export class NewPackagePage implements OnInit {
     console.log("The pick is:")
     console.log(this.services)
     console.log(this.selectedServices)
-
+    console.log(event.detail)
     this.selectedServices = event.detail.value;
     console.log("The pick is:")
     console.log(this.services)
@@ -142,11 +164,19 @@ export class NewPackagePage implements OnInit {
       description: this.packageDescription,
       price: this.packagePrice,
       services: this.selectedServices,
-      servicesWithIndex: this.selectedServices.map((serviceId, index) => ({
-        id: serviceId,
-        index
-      }))
+      servicesWithIndex: this.selectedServices.map((serviceName, index) => {
+        // Find the corresponding service object in this.services by name
+        const service = this.services.find((service: { name: string; }) => service.name === serviceName);
+        // Return an object that includes the service ID and the index
+        // If the service is not found, it returns undefined for id
+        return {
+          id: service ? service.id : undefined,
+          name: serviceName,
+          index
+        };
+      })
     }
+    
     console.log("The new package is:", newPackage)
     this.modalController.dismiss({
       'newPackage': newPackage

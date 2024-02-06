@@ -500,6 +500,8 @@ export class NewKrathshPage implements OnInit {
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
+      console.log("DATA RECEIVED")
+      console.log(data)
       if(this.editing){
       this.dateChanged();
       }
