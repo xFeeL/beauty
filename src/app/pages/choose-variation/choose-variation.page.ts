@@ -10,6 +10,7 @@ import { UserService } from 'src/app/services/user.service';
 export class ChooseVariationPage implements OnInit {
   service_id: any="";
   variations:any=[]
+  service_name: any="";
   constructor(private modalController:ModalController, private userService:UserService, private navParams:NavParams) { }
   selectedVariation: any=null;
   ngOnInit() {
@@ -17,6 +18,8 @@ export class ChooseVariationPage implements OnInit {
   
   ionViewWillEnter() {
     this.service_id=this.navParams.get("service_id");
+    this.service_name=this.navParams.get("service_name");
+
       this.userService.getVariationsOfService(this.service_id).subscribe(data=>{
         console.log(data)
         this.variations=data

@@ -55,7 +55,8 @@ export class AddServicesPage implements OnInit {
     const modal = await this.modalController.create({
       component: ChooseVariationPage,
       componentProps: {
-        service_id: service.id
+        service_id: service.id,
+        service_name:service.name
       }
     });
 
@@ -222,7 +223,8 @@ export class AddServicesPage implements OnInit {
 
 
   toggleSelectService(item: any) {
-    if(item.hasVariations==true){
+    console.log(item)
+    if(item.hasVariations==true && item.isSelected==false){
       this.chooseVariation(item)
       return
     }
@@ -242,8 +244,12 @@ export class AddServicesPage implements OnInit {
   private updateServiceSelection(service: any) {
     if (this.services.includes(service) || this.filteredServices.includes(service)) {
       this.removeFromLists(service);
-      this.selectedServicesAndPackages.push(service);
+      if(service.parentName==null){
+        this.selectedServicesAndPackages.push(service);
+
+      }
     } else {
+      console.log("EDW MPIKA TELIKA")
       this.reintegrateService(service);
     }
   }
@@ -266,11 +272,15 @@ export class AddServicesPage implements OnInit {
   private reintegrateService(service: any) {
     this.removeFromSelectedServices(service);
     if (this.categoryServiceSegment === 'all' || service.serviceCategory === this.categoryServiceSegment) {
+      if(service.parentName==null){
+
+    
       this.services.push(service);
       if (this.isSearching) {
         this.filteredServices.push(service);
       }
     }
+  }
   }
   
   private reintegratePackage(pkg: any) {
