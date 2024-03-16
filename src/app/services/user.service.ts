@@ -455,7 +455,11 @@ export class UserService {
 
   }
   
-
+  getNotificationSettings(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-notification-settings", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
 
   /**
    * Checks for new notifications.
@@ -854,6 +858,11 @@ export class UserService {
     );;
   }
 
+  saveNotificationSetting(body:any): Observable<any> {
+    return this.http.post(beautyAuthenticated_API_URL + "save-notification-setting", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
 
   /**
    * Returns the expert image.

@@ -11,6 +11,11 @@ import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/faceboo
 import { GuidePage } from '../guide/guide.page';
 import { ExternalService } from 'src/app/services/external.service';
 import { ChangePasswordPage } from '../change-password/change-password.page';
+import { TeamServicesPage } from '../team-services/team-services.page';
+import { AutomatedNotificationsPage } from '../automated-notifications/automated-notifications.page';
+import { ReservationSettingsPage } from '../reservation-settings/reservation-settings.page';
+import { SocialMediaPage } from '../social-media/social-media.page';
+import { WrarioPage } from '../wrario/wrario.page';
 
 @Component({
   selector: 'app-settings',
@@ -50,7 +55,43 @@ export class SettingsPage implements OnInit {
   facebookPageAccessToken: any = "";
   facebookPageId: any;
   needRefresh: boolean=false;
+  settings = [
+    {
+      name: 'Ωράριο',
+      icon: '../../../assets/icon/opening-hours.png',
+      page:'schedule'
+    },
+    {
+      name: 'Ομάδα & Υπηρεσίες',
+      icon: '../../../assets/icon/work-team.png',
+      page:'team-services'
 
+    },
+    {
+      name: 'Κρατήσεις',
+      icon: '../../../assets/icon/time-management.png',
+      page:'reservations'
+
+    },
+    /*{
+      name: 'Social Media',
+      icon: '../../../assets/icon/social-media.png',
+      page:'social-media'
+
+    },*/
+    {
+      name: 'Αυτοματοποιημένες ειδοποιήσεις',
+      icon: '../../../assets/icon/sms.png',
+      page:'automated-notifications'
+
+    },
+    {
+      name: 'Αλλαγή Κωδικού',
+      icon: '../../../assets/icon/padlock.png',
+      page:'change-password'
+
+    }
+  ];
   constructor(private alertController:AlertController,private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
 
     for (let i = 0; i < 24; i++) {
@@ -81,6 +122,49 @@ export class SettingsPage implements OnInit {
 
 
   }
+
+  async goToSetting(item: any) {
+    let modal = null;
+    if (item.page == "team-services") {
+      modal = await this.modalController.create({
+        component: TeamServicesPage,
+      });
+    } else if (item.page == "social-media") {
+     
+      modal = await this.modalController.create({
+        component: SocialMediaPage,
+      });
+    }  else if (item.page == "automated-notifications") {
+     
+      modal = await this.modalController.create({
+        component: AutomatedNotificationsPage,
+      });
+    } else if (item.page == "reservations") {
+     
+      modal = await this.modalController.create({
+        component: ReservationSettingsPage,
+      });
+    } 
+    else if (item.page == "schedule") {
+     
+      modal = await this.modalController.create({
+        component: WrarioPage,
+      });
+    } 
+    else if (item.page == "change-password") {
+     
+      modal = await this.modalController.create({
+        component: ChangePasswordPage,
+      });
+    } 
+
+    
+    if (modal !== null) {
+      await modal.present();
+    }
+  }
+
+
   loadWrarioData() {
     this.getScheduleExceptions();
     this.saveButtonText = "Αποθήκευση ωραρίου"

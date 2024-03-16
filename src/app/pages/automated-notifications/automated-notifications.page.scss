@@ -1,0 +1,37 @@
+.custom-title-wrap {
+    white-space: normal;
+    text-align: left; /* Ensures title is centered even when wrapped */
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .custom-title-wrap {
+    font-size: 1rem; /* Adjusted font size for mobile devices */
+  }
+}
+
+.content-box {
+  border: 1px solid #ccc; /* Example border: 2px solid grey */
+  padding: 10px; /* Adds some padding inside the box */
+  margin-bottom: 20px; /* Adds some space below the box */
+  border-radius: 10px; /* Optional: adds rounded corners */
+  cursor: pointer;
+}
+
+.s40{
+  width:40px;
+  height:auto;
+}
+
+.s25{
+  width:25px;
+  height:25px;
+}
+
+.mb8{
+
+}
+
+.large-icon {
+  font-size: 48px; /* Adjust the size accordingly */
+}

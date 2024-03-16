@@ -147,6 +147,26 @@ const routes: Routes = [
     path: 'choose-variation',
     loadChildren: () => import('./pages/choose-variation/choose-variation.module').then( m => m.ChooseVariationPageModule)
   },
+  {
+    path: 'wrario',
+    loadChildren: () => import('./pages/wrario/wrario.module').then( m => m.WrarioPageModule)
+  },
+  {
+    path: 'reservation-settings',
+    loadChildren: () => import('./pages/reservation-settings/reservation-settings.module').then( m => m.ReservationSettingsPageModule)
+  },
+  {
+    path: 'automated-notifications',
+    loadChildren: () => import('./pages/automated-notifications/automated-notifications.module').then( m => m.AutomatedNotificationsPageModule)
+  },
+  {
+    path: 'social-media',
+    loadChildren: () => import('./pages/social-media/social-media.module').then( m => m.SocialMediaPageModule)
+  },
+  {
+    path: 'edit-automatic-notification',
+    loadChildren: () => import('./pages/edit-automatic-notification/edit-automatic-notification.module').then( m => m.EditAutomaticNotificationPageModule)
+  },
  
   
   

@@ -1,0 +1,68 @@
+.background {
+    --background: #E3F0F9;
+  }
+
+  .custom-grid {
+    background-color: white;
+    border-radius: 15px;
+    /* You can adjust the value based on how rounded you want the corners to be */
+  
+    /* Optional: you might want to add some padding inside the grid to ensure content doesn't press up against the rounded corners */
+    padding: 16px;
+  }
+  
+  
+
+  
+  mat-form-field {
+    display: block !important;
+  }
+  
+  mat-hint.mat-mdc-form-field-hint.pl5 {
+    padding-left: 0 !important;
+  }
+  
+  ::ng-deep .special-action {
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f0f0f0; // Adjust as necessary
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  ::ng-deep .special-action mat-icon {
+    margin-right: 5px; // Adjust as necessary
+  }
+  
+  ::ng-deep .mat-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  ::ng-deep .no-checkbox.mat-option .mat-pseudo-checkbox {
+    display: none;
+  }
+  
+  .flex-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-field {
+    flex-grow: 1;
+    margin-right:16px !important;
+  }
+  
+  
+ 
+  
+  
+  .blue-icon {
+    color: var(--ion-color-primary);
+  }
+  
+  
+  

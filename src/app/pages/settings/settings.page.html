@@ -7,7 +7,25 @@
     </ion-buttons>
     <ion-title color="light">Ρυθμίσεις</ion-title>
   </ion-toolbar>
-</ion-header><ion-content [fullscreen]="true" class="background">
+</ion-header>
+<ion-content [fullscreen]="true" class="background">
+  
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let item of settings" (click)="goToSetting(item)" class="cursor">
+        <ion-card class="centered-card-content ion-padding-bottom">
+          <div class="avatar-container">
+              <ion-img src="{{item.icon}}"></ion-img>
+          </div>
+          <ion-card-header class="centered-header">
+            <ion-card-subtitle text-wrap style="color: black !important">{{item.name}}</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<!--<ion-content [fullscreen]="true" class="background">
   <ion-segment mode="md" class="no-capitalize" color="primary" [(ngModel)]="selectedSegment">
     <ion-segment-button value="general" (click)="loadKrathseisSettings()" class="mr5">
       <ion-label>Γενικές</ion-label>
@@ -20,11 +38,7 @@
     </ion-segment-button>
   </ion-segment>
   <div *ngIf="selectedSegment === 'general'"> <ion-grid class="ion-margin custom-grid max-height">
-      <!--<ion-row class="ion-justify-content-center">
-        <ion-col size-xl="7" size="12">
-          <ion-input type="number" [(ngModel)]="maxReservationMinutes" label="Μέγιστη διάρκεια κράτησης (λεπτά)"
-            label-placement="floating" fill="outline" placeholder="Enter text"></ion-input>
-        </ion-col> </ion-row>-->
+
       <ion-row class="ion-justify-content-center ion-margin-top">
         <ion-col size-xl="7" size="12">
           <ion-list class="ion-no-padding"> <ion-label>
@@ -252,7 +266,7 @@
           <div style="position: relative;">
             <ion-textarea [autoGrow]="true" [(ngModel)]="autoGreeting" [value]="autoGreeting"
               label="Αυτόματος χαιρειτισμός messenger" labelPlacement="floating" fill="outline" color="primary"
-              style="padding-right: 0px;"> <!-- Increase as needed -->
+              style="padding-right: 0px;"> 
             </ion-textarea>
             <ion-icon name="clipboard-outline"
               style="position: absolute; right: 2px; bottom: 10px; cursor: pointer; z-index: 2;"
@@ -301,7 +315,7 @@
                   <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
                 </div>
                 <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception" class="ion-margin-bottom">
-                  {{ exception.formatted }} ({{exception.repeat}}) <!-- Adjust as per your data structure -->
+                  {{ exception.formatted }} ({{exception.repeat}}) 
                 </mat-option>
               </mat-select>
             </mat-form-field> <mat-icon class="ion-margin-bottom blue-icon" #tooltip="matTooltip"
@@ -317,7 +331,7 @@
           <ion-label>{{day.name}}</ion-label>
           <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
         </ion-item>
-        <!--<div *ngIf="day.open" class="time-selection">-->
+  
         <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid class="ion-no-margin w100">
             <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
               <ion-col size="5">
@@ -352,3 +366,4 @@
     <ion-label class="ion-no-padding" class="ion-text-center capsoff">{{saveButtonText}}</ion-label>
   </ion-button>
 </ion-footer>
+-->

@@ -190,6 +190,7 @@ mat-hint.mat-mdc-form-field-hint.pl5 {
 
 .form-field {
   flex-grow: 1;
+  margin-right:16px !important;
 }
 
 
@@ -198,7 +199,6 @@ ion-segment-button {
     margin-right: 5px; // adjust as needed
   }
 }
-
 
 
 .blue-icon {
@@ -218,7 +218,7 @@ ion-segment-button {
 }
 
 .phones-image {
-  border-radius: 10px !important;
+  border-radius: 20px !important;
   overflow: hidden;
 }
 
@@ -302,4 +302,32 @@ ion-card-content {
   width: 190px;
   /* Adjust to your preferred width */
 
+}
+
+.centered-card-content {
+  height:130px;
+  margin: 5px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  /* Add rounded corners */
+  background-color: white;
+  /* Set background color to white */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Optional: Add a subtle shadow for depth */
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+}
+
+.centered-header {
+  text-align: center;
+  padding: 0;
+  color: black !important;
+  /* Use !important to override default styles if necessary */
 }

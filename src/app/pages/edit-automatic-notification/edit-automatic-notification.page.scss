@@ -1,0 +1,32 @@
+.content-box {
+    border: 1px solid #ccc; /* Example border: 2px solid grey */
+    padding: 10px; /* Adds some padding inside the box */
+    margin-bottom: 20px; /* Adds some space below the box */
+    border-radius: 10px; /* Optional: adds rounded corners */
+  }
+
+  .s25{
+    height:25px;
+    width:25px;
+  }
+
+  .flex-align-items {
+    display: flex;
+    align-items: center; /* This will vertically center the children */
+    justify-content: start; /* Aligns children to the start of the container */
+  }
+
+  .mr10{
+    margin-right:10px;
+  }
+
+  ion-note.ion-padding {
+    display: block; /* or 'inline-block' depending on your layout needs */
+    padding: 15px; /* Adjust as necessary to match the desired padding */
+  }
+  
+ ion-select{
+  padding-end:0px;
+  padding-right:32px;
+  margin-left:16px;
+ }

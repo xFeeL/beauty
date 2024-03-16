@@ -1,0 +1,84 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light" class="custom-title-wrap">Αυτοματοποιημένες Ειδοποιήσεις</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+  <div #reminders class="ion-padding-bottom ">
+    <h4 class="ion-padding-bottom">Υπενθυμίσεις</h4>
+    <div *ngIf="!hasReminderOfReservation()" class="content-box" (click)="editNotification('REMINDER_OF_RESERVATION')">
+      <div class="icon-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <ion-img src="../../../assets/icon/bell.png" class="s40 ion-padding-bottom"></ion-img>
+       
+      </div>
+      <ion-text>Υπενθύμιση 1 ημέρα πριν την κράτηση</ion-text><br>
+      <ion-note>Ειδοποιεί αυτόματα τους πελάτες σας για την επερχόμενη κράτηση τους.</ion-note><br><br>
+      <ng-template #deactivated><ion-note color="danger">Απενεργοποιημένο</ion-note></ng-template>
+
+    </div>
+    <div *ngFor="let setting of remindersSettings" class="content-box" (click)="editNotification('REMINDER_OF_RESERVATION',setting)">
+      <div class="icon-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <ion-img src="../../../assets/icon/bell.png" class="s40 ion-padding-bottom"></ion-img>
+     
+      </div>
+      <ion-text>Υπενθύμιση {{setting.timeBeforeText}} πριν την κράτηση</ion-text><br>
+      <ion-note>Ειδοποιεί αυτόματα τους πελάτες σας για την επερχόμενη κράτηση τους.</ion-note><br><br>
+        <ion-note *ngIf="setting.channel!='NONE'" color="success">Ενεργοποιημένο</ion-note>
+        <ion-note *ngIf="setting.channel=='NONE'" color="danger">Απενεργοποιημένο</ion-note>
+      
+    </div>
+    <div class="content-box cursor"  (click)="newNotification()">
+      <ion-grid>
+        <ion-row class="ion-text-center ion-justify-content-center mb8">
+          <ion-icon name="add-circle-outline" color="primary" class="s25"></ion-icon>
+
+        </ion-row>
+        <ion-row class="ion-text-center ion-justify-content-center">
+          <ion-label color="primary" class="ion-text-center">Νέα υπενθύμιση</ion-label>
+
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+  <div #updates class="ion-padding-bottom ">
+    <h4 class="ion-padding-bottom">Ενημερώσεις κράτησης</h4>
+    <div class="content-box" *ngFor="let setting of ['NEW_RESERVATION', 'UPDATE', 'CANCELLATION', 'NOSHOW']"
+      (click)="editNotification(setting)">
+      <div class="icon-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <ion-img
+          [src]="'../../../assets/icon/' + (setting === 'NEW_RESERVATION' ? 'new-appointment.png' : setting === 'UPDATE' ? 'update-appointment.png' : setting === 'CANCELLATION' ? 'cancel-appointment.png' : 'no-show.png')"
+          class="s40 ion-padding-bottom"></ion-img>
+        
+      </div>
+      <ion-text>{{ getSettingText(setting)?.text }}</ion-text><br>
+      <ion-note>{{ getSettingText(setting)?.note }}</ion-note><br><br>
+      <ion-note color="success" *ngIf="isSettingActivated(setting); else deactivated">Ενεργοποιημένο</ion-note>
+            <ng-template #deactivated><ion-note color="danger">Απενεργοποιημένο</ion-note></ng-template>
+    </div>
+  </div>
+
+  <!--<div #boost class="ion-padding-bottom">
+    <h4 class="ion-padding-bottom">Αυξήστε τις κρατήσεις σας</h4>
+    <div class="content-box" (click)="editNotification('REMINDER_TO_RESERVE')">
+      <div class="icon-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <ion-img src="../../../assets/icon/repeat-appointment.png" class="s40 ion-padding-bottom"></ion-img>
+       
+      </div>
+      <ion-text>Υπενθύμιση για νέα κράτηση</ion-text><br>
+      <ion-note>Στείλτε μήνυμα στους πελάτες σας για να ξανακάνουν κράτηση.</ion-note><br><br>
+      <ion-note color="success"
+        *ngIf="notification_settings['repeatAppointment']; else boostDeactivated">Ενεργοποιημένο</ion-note>
+      <ng-template #boostDeactivated><ion-note color="danger">Απενεργοποιημένο</ion-note></ng-template>
+    </div>
+  </div>-->
+
+
+</ion-content>

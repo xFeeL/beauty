@@ -1,0 +1,64 @@
+<ion-header [translucent]="true"> <ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start">
+      <ion-icon name="arrow-back" color="light"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">Ωράριο λειτουργίας</ion-title>
+</ion-toolbar>
+</ion-header><ion-content class="background">
+<ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+    <ion-col size-xl="8" class="ion-justify-content-center">
+      <div class="flex-container">
+        <mat-form-field appearance="fill" (click)="handleClick()" class="form-field">
+          <mat-label>Εξαιρέσεις ωραρίου</mat-label>
+          <mat-select #mySelect [formControl]="daysControl" multiple>
+            <div class="special-action" (click)="openDateTimePicker()">
+              <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
+            </div>
+            <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception">
+              {{ exception.formatted }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> <mat-icon class="ion-margin-bottom blue-icon " #tooltip="matTooltip"
+          (click)="tooltip.toggle()" matTooltipPosition="above"
+          matTooltip="Με τις εξαιρέσεις ωραρίου μπορείτε να ορίσετε ημέρες και ώρες που η επιχείρηση σας θα είναι κλειστή.">info_outline</mat-icon>
+      </div> <ion-modal class="high-z-index" #dateTimePop size="auto" side="top" alignment="top">
+        <ng-template> </ng-template>
+      </ion-modal>
+    </ion-col> </ion-row>
+</ion-grid> <ion-list class="scrollable-list max-height ion-no-padding">
+  <div *ngFor="let day of daysWrario">
+    <ion-item lines="none">
+      <ion-label>{{day.name}}</ion-label>
+      <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
+    </ion-item>
+    <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid class="ion-no-margin w100">
+        <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
+          <ion-col size="5">
+            <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="floating" fill="outline"
+              interface="popover" [(ngModel)]="timeInterval.start"
+              (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
+              <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col size="5">
+            <ion-select class="smaller-font" label="Κλείνει στις" label-placement="floating" fill="outline"
+              interface="popover" [(ngModel)]="timeInterval.end"
+              (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
+              <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col size="2">
+            <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline" size="large"
+              (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon> <ion-icon class="ion-padding-top scheduleIcon"
+              name="trash-outline" size="large" color="danger" (click)="deleteTimeInterval(day, i)"
+              *ngIf="i > 0"></ion-icon> </ion-col>
+        </ion-row>
+      </ion-grid> </div>
+  </div>
+</ion-list>
+</ion-content>
+<ion-footer (click)="save()"> <ion-button expand="full" color="primary" class="ion-no-margin">
+  <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
+</ion-button></ion-footer>
