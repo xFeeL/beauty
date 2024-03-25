@@ -13,7 +13,8 @@
           <ion-row class="ion-justify-content-center ion-padding">
             <ion-col size="5" md-size="2" lg-size="2" class="custCol ion-no-padding ion-padding-start ion-padding-end">
               <ion-avatar class="custAvatarHed">
-                <img [src]="image">
+                <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' :image)"></ion-img>
+
               </ion-avatar>
             </ion-col>
             <ion-col size="12" class="ion-text-center">

@@ -6,7 +6,8 @@
       </ion-button>
     </ion-buttons>
     <ion-avatar class="custAv cursor" slot="start" (click)="goToUserProfile()">
-      <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img>
+      <ion-img [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' :profile_image)"></ion-img>
+
     </ion-avatar>
 
     <ion-label slot="start" (click)="goToUserProfile()" class="cursor">
@@ -51,15 +52,15 @@
           <ion-row [class]="message.showAvatar==true?nopadding:pl45 " [dir]="message.id_sender==userId?'ltr':'rtl'"
             (click)="message.showTime = !message.showTime">
             <ion-avatar class="messagesAvatar bottom" *ngIf="message.showAvatar==true">
-              <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img>
+              <ion-img [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' :profile_image)"></ion-img>
 
             </ion-avatar>
             <div [class]="message.id_sender==userId?'msgLbl pgChrWl':'msgLbl  pgChr'" style="display: inline-block">
               <ion-label class="somePad" *ngIf="message._image==false" text-wrap>{{message.content}}</ion-label>
 
               <div class="image-list" [gallerize]="'myGalleryId' + i">
-                <img class="container" *ngFor="let image of message.images" [src]="image+'?thumbnail=true'"
-                  [attr.imageSrc]="image+'?thumbnail=false'" [attr.thumbSrc]="image+'?thumbnail=true'">
+                <img class="container" *ngFor="let image of message.images" [src]="image"
+                  [attr.imageSrc]="image" [attr.thumbSrc]="image">
               </div>
 
               <ion-note class="tim r16">

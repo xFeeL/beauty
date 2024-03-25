@@ -81,8 +81,9 @@
                           <td mat-cell *matCellDef="let element" class="avatar-column ion-text-center">
                             <!-- Container div for the badge and the avatar --> <!-- Avatar -->
                             <ion-avatar class="custAvatarHedTable">
-                              <ion-img src="data:image/jpeg;base64,{{element.avatar}}"></ion-img>
+                              <ion-img [src]="(element.avatar === 'default' ? '../../../assets/icon/default-profile.png' : element.avatar)"></ion-img>
                             </ion-avatar>
+                            
                           </td>
                         </ng-container> <ng-container matColumnDef="name" sticky>
                           <th mat-header-cell *matHeaderCellDef class="pl0 table-column border border-column">Όνομα</th>
@@ -327,8 +328,9 @@
                           {{ i + 1 }}.
                         </ion-label>
                         <ion-avatar class="no-shrink" style="width: 35px; height: 35px; margin-right:10px;">
-                          <img src="data:image/jpeg;base64,{{client.profile_image}}" alt="Client Avatar">
+                          <ion-img [src]="(client.profile_image === 'default' ? '../../../assets/icon/default-profile.png' : client.profile_image)"></ion-img>
                         </ion-avatar>
+                     
                         <ion-label class="f400"
                           style="display: flex; justify-content: space-between; align-items: center;" [ngClass]="{
                                 'first-rank': i === 0,

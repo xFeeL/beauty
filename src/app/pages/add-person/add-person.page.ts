@@ -69,7 +69,7 @@ export class AddPersonPage implements OnInit {
   daysControl = new FormControl();
   isEditing: any = false;
   addedExceptions: boolean=false;
-
+  defaultImage=true;
 
   constructor(private alertController: AlertController, private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
     for (let i = 0; i < 24; i++) {
@@ -85,6 +85,7 @@ export class AddPersonPage implements OnInit {
 
   ionViewWillEnter() {
     console.log(this.navParams);
+    this.defaultImage=this.navParams.get('defaultImage');;
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
     this.customSchedule = this.navParams.get('toggled');
@@ -202,7 +203,7 @@ export class AddPersonPage implements OnInit {
       id: this.navParams.get('personId'),
       name: this.personName,
       surname: this.personSurName,
-      image: this.image?.split(",")[1] ?? '', // Add nullish coalescing operator
+      image: this.image?.split(",")[1] ?? 'default', 
       exceptions: deformattedSelectedExceptions,
       schedule: this.customSchedule 
         ? this.scheduleToReturn
@@ -230,6 +231,7 @@ export class AddPersonPage implements OnInit {
         'scheduleExceptions': deformattedSelectedExceptions,
         'days': this.scheduleToReturn,
         'image': this.image,
+        'defaultImage':this.defaultImage
       });
     } else {
       await this.modalController.dismiss({
@@ -238,6 +240,8 @@ export class AddPersonPage implements OnInit {
         'scheduleExceptions': deformattedSelectedExceptions,
         'days': this.businessSchedule,
         'image': this.image,
+        'defaultImage':this.defaultImage
+
       });
    }
   }
@@ -480,6 +484,8 @@ export class AddPersonPage implements OnInit {
         this.image = this.cropped
         this._cd.markForCheck();
         this.new_image = "true"
+        this.defaultImage=false;
+
       }
     });
   }

@@ -244,8 +244,8 @@ isMobile(){
     console.log("asdasdasdasdasd")
     if(localStorage.getItem('authenticated')=='true'){
       this.onMenuOpen();
-      this.userService.getExpertSlug().subscribe(data=>{
-        this.urlToCopy="https://www.fyx.gr/book/"+data.slug
+      this.userService.getExpertId().subscribe(data=>{
+        this.urlToCopy="https://www.fyx.gr/book/"+data.id
       },err=>{
 
       })

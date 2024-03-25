@@ -696,7 +696,7 @@ export class UserService {
       expertCategories: expertCategories,
       address: address,
       coordinates: coordinates,
-      photo: photo?.split(",")[1],
+      photo: photo === "default" ? "default" : photo?.split(",")[1],
       expertWP: days,
       people: people,
       services: services,
@@ -714,8 +714,8 @@ export class UserService {
    * Returns the expert slug.
    * @returns An Observable that resolves to the expert slug.
    */
-  getExpertSlug(): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-expert-slug", { headers: this.getHeaders(), withCredentials: true }).pipe(
+  getExpertId(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-expert-id", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }

@@ -50,7 +50,7 @@ newImages: Array<string>=new Array<string>;
   facebookPages: any;
   instagramPages: any;
   instagramImages: any;
-loadingOn=false;
+loadingOn=true;
   storageInput: boolean=false;
   deleteImages=false;
 constructor(private modalController:ModalController,private navParams:NavParams, private actRouter:ActivatedRoute,public gallery: Gallery,private userService:UserService,private navCtrol:NavController,		private plt: Platform,
@@ -78,6 +78,7 @@ constructor(private modalController:ModalController,private navParams:NavParams,
 
     loadLightBox() {
       this.gallery.ref().load(this.images);
+      this.loadingOn=false;
     }
 
     async setupFbLogin() {
@@ -124,21 +125,38 @@ constructor(private modalController:ModalController,private navParams:NavParams,
  
     
   }
-  deleteImage(index: number,item:any) {
+  deleteImage(index: number, item: any) {
     // Remove the image at the specified index from the 'images' array
     this.images.splice(index, 1);
-    console.log("THE ITEM")
-    console.log(item)
-    const url = item.data.src
-    const start = url.lastIndexOf("/") + 1; // get the position of the last slash and add 1 to exclude it
-    const end = url.lastIndexOf("."); // get the position of the last dot
-    const imageId = url.substring(start, end); 
-    this.userService.deleteImagePortfolio(this.folder_id,imageId+".png").subscribe(data=>{
+    console.log("THE ITEM");
+    console.log(item);
+    const url = item.data.src;
 
-    },err=>{
+    // Use a regular expression to extract the image ID from the URL
+    const imageIdMatch = url.match(/\/([a-zA-Z0-9]+)\.png/);
+    if (!imageIdMatch) {
+        console.error("Failed to extract image ID from URL");
+        return;
+    }
+    const imageId = imageIdMatch[1];
 
-    })
-  }
+    this.userService.deleteImagePortfolio(this.folder_id, imageId).subscribe(data => {
+        // Handle successful response
+    }, err => {
+        // Handle error
+    });
+}
+
+
+/**
+ * Extracts the image ID from a given URL.
+ */
+private extractImageId(url: string): string {
+    const start = url.lastIndexOf("/") + 1; // Get the position of the last slash and add 1 to exclude it
+    const end = url.lastIndexOf("."); // Get the position of the last dot
+    return url.substring(start, end);
+}
+
     
   getImageNames(){
     data2.splice(0);
@@ -150,8 +168,8 @@ constructor(private modalController:ModalController,private navParams:NavParams,
 
       
       data2.push({
-        src:data[i]+"?thumbnail=false",
-        thumb: data[i]+"?thumbnail=false"
+        src:data[i],
+        thumb: data[i]
       })
     }
     this.images = data2.map(item =>

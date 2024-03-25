@@ -21,7 +21,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <img [src]="expertImage">
+                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
                     <ion-row>
@@ -67,7 +68,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHedHighLighted">
-                    <img [src]="expertImage">
+                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
                     <ion-row>
@@ -100,7 +102,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <img [src]="expertImage">
+                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
                     <ion-row>
@@ -149,7 +152,8 @@
             <ion-item lines="none" class="w100 ion-no-padding ion-item2"> <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <img [src]="expertImage">
+                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
                     <ion-row class="ion-no-padding">
@@ -249,7 +253,8 @@
 
                 <ion-col size="auto">
                   <ion-avatar class="custAvatarHedPerson">
-                    <ion-img [src]="person.image"></ion-img>
+                    <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+
                   </ion-avatar>
                 </ion-col>
 

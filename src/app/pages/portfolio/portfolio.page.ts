@@ -30,7 +30,7 @@ export class PortfolioPage implements OnInit {
   folderImageToBeEdited: any;
   folderIdToBeEdited: any;
   imageWillChange: string="false";
-
+  loadingOn=true
   imageSelected = false;
   imagePreview: SafeUrl | null = null;
   newFolderImage:string="";
@@ -70,6 +70,7 @@ export class PortfolioPage implements OnInit {
 
     this.userService.getPortfolio().subscribe(data => {
       this.portfolio=data
+      this.loadingOn=false
     }, err => {
       this.portfolio = err.error.text;   //epeidi den einai json to response gurnaei error
     }

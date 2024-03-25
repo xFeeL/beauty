@@ -84,7 +84,8 @@
               </ion-chip>
               <ion-item  [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
                 <ion-avatar class="custAvatarHed">
-                  <ion-img src="data:image/jpeg;base64,{{krathsh[10]}}"></ion-img>
+                  <ion-img [src]="(krathsh[10] === 'default' ? '../../../assets/icon/default-profile.png' : krathsh[10])"></ion-img>
+
                 </ion-avatar>
                 <ion-label>
                   <h2 class="customFontHeader">{{krathsh[4]}}</h2>

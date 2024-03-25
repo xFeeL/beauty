@@ -40,7 +40,8 @@
                       <ion-card class="centered-card-content ">
                         <div class="avatar-container">
                           <ion-avatar class="custAv">
-                            <ion-img src="data:image/jpeg;base64,{{item[4]}}"></ion-img>
+                            <ion-img [src]="(item[4] === 'default' ? '../../../assets/icon/default-profile.png' : item[4])"></ion-img>
+
                           </ion-avatar>
                         </div>
                         <ion-card-header class="centered-header">

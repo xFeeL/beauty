@@ -16,7 +16,10 @@
     </ion-button>
   </ion-buttons>
 </ion-toolbar></ion-header>
-<ion-content> <ion-item class="ion-padding " lines="none" *ngIf="images.length==0">
+<ion-content> 
+  <ion-spinner class="ion-padding-top ion-margin-top" color="primary" *ngIf="loadingOn"></ion-spinner> 
+
+  <ion-item class="ion-padding " lines="none" *ngIf="images.length==0">
   <ion-grid>
     <ion-row>
       <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>

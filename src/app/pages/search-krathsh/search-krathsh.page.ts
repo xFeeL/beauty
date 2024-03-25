@@ -99,11 +99,13 @@ export class SearchKrathshPage implements OnInit {
       case 'canceled':
         return 'danger-line cursor w100 rad ion-margin-bottom ';
       case 'completed':
-        return 'warning-line cursor w100 rad ion-margin-bottom ';
+        return 'completed-line cursor w100 rad ion-margin-bottom ';
       case 'accepted':
         return 'success-line cursor w100 rad ion-margin-bottom';
       case 'pending':
         return 'pending-line cursor w100 rad ion-margin-bottom ';
+        case 'noshow':
+          return 'noshow-line cursor w100 rad ion-margin-bottom ';
       default:
         return 'pending-line cursor w100 rad ion-margin-bottom';
     }

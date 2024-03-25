@@ -30,7 +30,7 @@
           </ion-grid> </ion-item><ion-list *ngIf="initialized==true" class="backgroundGrid background"> <ion-item
             *ngFor="let chat of chats" (click)="goToChatDetail(chat)" class="ion-margin chat cursor" detail>
             <ion-avatar>
-              <ion-img src="data:image/jpeg;base64,{{this.chat.image}}"></ion-img>
+              <ion-img [src]="(chat.image === 'default' ? '../../../assets/icon/default-profile.png' :chat.image)"></ion-img>
             </ion-avatar>
             <ion-grid>
               <ion-row>

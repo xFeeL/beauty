@@ -115,12 +115,6 @@ async deleteEmployee(employee: any) {
 
   
 
-  addBase64Prefix(image: string) {
-    if (image && !image.startsWith("data:")) {
-      return "data:image/png;base64," + image;
-    }
-    return image;
-  }
 
 
   async managePerson(person?: any) {
@@ -137,7 +131,7 @@ async deleteEmployee(employee: any) {
       personSchedule: person.schedule,
       personName: person.name,
       personSurName: person.surname,
-      image: this.addBase64Prefix(person.image),
+      image: person.image,
       toggled: !this.isScheduleDefault(person.schedule),
       scheduleExceptions: person.exceptions,
       isEditing: true
@@ -152,6 +146,7 @@ async deleteEmployee(employee: any) {
 
     const { data } = await modal.onDidDismiss();
     if (data.edited) {
+      this.team=[]
       this.goToTeam();
 
     }
@@ -298,6 +293,7 @@ async deleteEmployee(employee: any) {
 
   goToTeam() {
     this.userService.getEmployeesOfExpert().subscribe(data => {
+      this.team=[]
       this.team = data;
 
       let employeeIds = this.team.map(employee => employee.id).join(",");
@@ -582,90 +578,7 @@ async deleteEmployee(employee: any) {
     }
   }
 
-  /*saveTeam() {
-    this.userService.saveTeam(this.team, false, false, false).subscribe(data => {
-      this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
-    }, err => {
-      if (err.status === 409) {
-        console.log("THE ERROR");
-        console.log(err.error);
-        this.presentChoiceAlert(err.error);
-      } else {
-        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
-      }
-    });
-  }
-
-  async presentChoiceAlert(errorObj: any) {
-    let message: string = "Unknown error";  // Set a default value
-    let buttonText: string = "";
-    let handlerFn;
-
-    if (errorObj.deletedEmployee) {
-      message = errorObj.deletedEmployee;
-      buttonText = 'Ακυρωση ολων';
-      handlerFn = () => {
-        this.userService.saveTeam(this.team, true, true, false).subscribe(
-          data => {
-            this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
-            this.reloadAppointments = true;
-
-          },
-          err => {
-            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
-          }
-        );
-      };
-    } else if (errorObj.newException) {
-      message = errorObj.newException;
-      buttonText = 'Ακυρωση ολων';
-      handlerFn = () => {
-        this.userService.saveTeam(this.team, true, false, true).subscribe(
-          data => {
-            this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
-            this.reloadAppointments = true;
-          },
-          err => {
-            this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
-          }
-        );
-      };
-    }
-
-    const alert = await this.alertController.create({
-      header: 'Προσοχή!',
-      message: message,
-      buttons: [
-        {
-          text: buttonText,
-          handler: handlerFn
-        },
-        {
-          text: 'Καμια Ακυρωση',
-          handler: () => {
-            this.userService.saveTeam(this.team, true, false, false).subscribe(
-              data => {
-                this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς χωρίς καμία ακύρωση.", "success");
-              },
-              err => {
-                this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
-              }
-            );
-          }
-        },
-        {
-          text: 'πισω',
-          role: 'cancel', // This makes it dismiss the dialog
-          handler: () => {
-            // Dismisses the dialog without any further action
-          }
-        },
-      ]
-    });
-
-    await alert.present();
-  }*/
-
+  
 
   async newPackage() {
     const modal = await this.modalController.create({

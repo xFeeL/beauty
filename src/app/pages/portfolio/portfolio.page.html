@@ -4,7 +4,11 @@
       <ion-icon color="light" name="arrow-back"></ion-icon>
     </ion-button>
   </ion-buttons> <ion-title color="light">Άλμπουμ Εικόνων</ion-title>
-</ion-toolbar></ion-header><ion-content> <ion-grid class="bgL ion-margin-top">
+</ion-toolbar></ion-header><ion-content>
+  
+  <ion-spinner class="ion-padding-top ion-margin-top" color="primary" *ngIf="loadingOn"></ion-spinner> 
+
+  <ion-grid class="bgL ion-margin-top">
   <ion-row class="ion-justify-content-center">
     <ion-col size="12">
       <ion-item class="ion-padding " lines="none" *ngIf="portfolio.length==0">

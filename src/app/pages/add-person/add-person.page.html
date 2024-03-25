@@ -14,8 +14,11 @@
 <ion-content class="background">
   <ion-grid class="ion-margin-top">
     <ion-row class="ion-justify-content-center ion-margin">
+      <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*"
+      hidden>
       <ion-avatar>
-        <ion-img [src]="image"></ion-img>
+        <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' :image)"></ion-img>
+
       </ion-avatar>
     </ion-row>
     <ion-row class="ion-justify-content-center ion-margin ">

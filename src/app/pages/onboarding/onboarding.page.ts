@@ -57,7 +57,7 @@ export class OnboardingPage {
   photos: { imageLink: string, selected: boolean }[] = [];
 
 
-
+  defaultImage=true;
   togglesCounter: number = 0;
   @ViewChild('_fileInput') _fileInput: any;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
@@ -409,6 +409,9 @@ export class OnboardingPage {
 
 
   saveData() {
+    if(this.defaultImage){
+      this.expertImage="default"
+    }
     // Check if every category has at least one service associated with it
     for (let category of this.serviceCategories) {
       let hasService = this.services.some(service => service.selectedCategory === category);
@@ -426,6 +429,8 @@ export class OnboardingPage {
 
       }
     }
+    console.log("the expertImage is ")
+    console.log(this.expertImage)
     this.userService.onBoarding(this.expertName, expertCategories, this.address,this.coordinates, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
       this.userService.presentToast("Τα στοιχεία σας καταχωρήθηκαν με επιτυχία!", "success")
       localStorage.setItem('authenticated', "true");
@@ -524,6 +529,7 @@ export class OnboardingPage {
       personName: person.name,
       personSurName: person.surname,
       image: person.image,
+      defaultImage:person.defaultImage,
       toggled: !this.isScheduleDefault(person.schedule),
       onboarding: true,
       isEditing: true
@@ -542,6 +548,7 @@ export class OnboardingPage {
         name: data.personName,
         surname: data.personSurName,
         image: data.image,
+        defaultImage:data.defaultImage,
         schedule: data.days.filter((day: { open: any; }) => day.open).map((day: { name: any; timeIntervals: any[]; }) => {
           const mappedDay = day.name;
           return {
@@ -783,6 +790,7 @@ export class OnboardingPage {
       if (result) {
         this.cropped = result.dataURL;
         this.expertImage = this.cropped
+        this.defaultImage=false
         this._cd.markForCheck();
         this.new_image = "true"
       }

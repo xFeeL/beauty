@@ -85,8 +85,10 @@
                     <div class="person-avatar" (click)="selectEmployee(service, person.id)">
                       <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for each employee -->
                       <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === person.id">
-                        <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
+                        <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+
                       </ion-avatar>
+                      image
                       <ion-note>{{person.name}}</ion-note>
                     </div>
                   </div>
@@ -145,7 +147,8 @@
           (click)="presentClientPop()">
           <ion-label class="full-width-label"> <ion-item lines="none" *ngIf="selectedClientImage!=''">
               <ion-avatar class="custAvatarHed2">
-                <ion-img src="data:image/jpeg;base64,{{selectedClientImage}}"></ion-img>
+                <ion-img [src]="(selectedClientImage === 'default' ? '../../../assets/icon/default-profile.png' : selectedClientImage)"></ion-img>
+
               </ion-avatar>
               <ion-grid>
                 <ion-row>
@@ -189,7 +192,8 @@
             </ion-item>
             <ion-item class="shadow" *ngFor="let suggestion of suggestionsNames" (click)="selectClient(suggestion)">
               <ion-avatar class="custAvatarHed">
-                <ion-img src="data:image/jpeg;base64,{{suggestion.image}}"></ion-img>
+                <ion-img [src]="(suggestion.image === 'default' ? '../../../assets/icon/default-profile.png' : suggestion.image)"></ion-img>
+
               </ion-avatar>
               <ion-label>{{suggestion.name}} <ion-note>({{suggestion.phone}})</ion-note></ion-label>
             </ion-item>

@@ -21,7 +21,7 @@ import { InstagramImagesPage } from '../instagram-images/instagram-images.page';
 })
 export class EditProfilePage {
 
-  image: string | undefined = "../../assets/imgs/max.png";
+  image: string | undefined = "../../assets/icon/default-profile.png";
   cropped?: string;
   phone: string = "Error";
   name: string = "Error";
@@ -81,7 +81,7 @@ export class EditProfilePage {
     this.userService.getExpertImage().subscribe(data => {
       this.image = data
     }, err => {
-      this.image = "data:image/jpeg;base64," + err.error.text
+      this.image =  err.error.text
     });
     this.userService.getExpertData().subscribe(data => {
       let temp = data[0][1].split("$");

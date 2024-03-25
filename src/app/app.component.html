@@ -8,7 +8,8 @@
           <ion-row class="ion-justify-content-center ion-padding">
             <ion-col size="5" class="ion-no-padding">
               <ion-avatar class="custAvatarHed">
-                <ion-img src="data:image/jpeg;base64,{{image}}"></ion-img>
+                <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' : image)"></ion-img>
+
               </ion-avatar>
             </ion-col>
             <ion-col size="12" class="ion-text-center">

@@ -54,7 +54,7 @@
                         <ion-row class="bgL">
                           <ion-item button lines="none" class="w100  paddBt bgL">
                             <ion-avatar class="custAvatar" (click)="goToClient()">
-                              <ion-img src="data:image/jpeg;base64,{{profile_image}}"></ion-img>
+                              <ion-img [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' : profile_image)"></ion-img>
                             </ion-avatar>
                             <ion-grid class="ion-no-padding p8">
                               <ion-row>

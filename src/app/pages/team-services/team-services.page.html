@@ -40,10 +40,11 @@
                       </button>
                     </mat-menu>
                   </div>
-
+                
                   <div class="avatar-container">
                     <ion-avatar class="custAv">
-                      <ion-img src="data:image/jpeg;base64,{{person.image}}"></ion-img>
+                      <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+
                     </ion-avatar>
                   </div>
 

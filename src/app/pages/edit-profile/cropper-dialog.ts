@@ -67,8 +67,8 @@ const STYLES = (_theme: ThemeVariables, ref: ThemeRef) => {
     keepAspectRatio: true,
     responsiveArea: true,
     output: {
-      width: 200,
-      height: 200
+      width: 100,
+      height: 100
     },
     resizableArea: true
   };
