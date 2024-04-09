@@ -27,7 +27,7 @@
       <ion-row>
         <ion-col size="6" *ngFor="let item of portfolio; let i = index" (click)="goToImages(item)">
           <ion-card class="uniform-card">
-            <ion-img src="data:image/jpeg;base64,{{item.image}}"></ion-img>
+            <ion-img [src]="item.image"></ion-img>
             <ion-card-header class="ion-no-padding uniform-card-header">
               <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
@@ -70,7 +70,7 @@
           <ion-col size="7" size-sm="7" size-md="7" size-lg="5" size-xl="5" class="ion-no-padding">
             <div class="image-container" (click)="presentActionSheet()">
               <ng-container *ngIf="newImageChosen; else chooseImage">
-                <img src="data:image/jpeg;base64,{{newFolderImage}}" class="folder-image">
+                <img [src]="newImageChosen ? ('data:image/jpeg;base64,' + newFolderImage) : newFolderImage" class="folder-image">
               </ng-container>
               <ng-template #chooseImage>
                 <ion-note>Επιλογή εικόνας</ion-note>
@@ -111,7 +111,7 @@
             <ion-button class="noCaps ion-margin-bottom" (click)="presentActionSheet()" color="primary"
               fill="outline">Αλλαγή εικόνας άλμπουμ</ion-button>
             <div class="image-container square-image">
-              <img src="data:image/jpeg;base64,{{newFolderImage}}" class="folder-image">
+              <img [src]="newImageChosen ? ('data:image/jpeg;base64,' + newFolderImage) : newFolderImage" class="folder-image">
             </div>
           </ion-col>
         </ion-row>

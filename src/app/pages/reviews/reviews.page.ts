@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
 import { ModalController, NavController } from '@ionic/angular';
+import { ClientProfilePage } from '../client-profile/client-profile.page';
 
 @Component({
   selector: 'app-reviews',
@@ -103,5 +104,15 @@ export class ReviewsPage implements OnInit {
       this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger");
 
     })
+  }
+
+  async goToClient(user_id: string) {
+    const modal = await this.modalController.create({
+      component: ClientProfilePage,
+      componentProps: {
+        'user_id': user_id
+      }
+    });
+    return await modal.present();
   }
 }

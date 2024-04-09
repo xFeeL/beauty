@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { Push } from '@awesome-cordova-plugins/push/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -54,6 +54,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatListModule} from '@angular/material/list';
 import {MatCardModule} from '@angular/material/card'; 
 import { MatRadioModule } from '@angular/material/radio';
+import { CustomHttpInterceptorService } from '../app/services/custom-http-interceptor.service';
 
 
 @NgModule({
@@ -100,7 +101,12 @@ import { MatRadioModule } from '@angular/material/radio';
     { provide: LY_THEME, useClass: MinimaLight, multi: true }, // name: `minima-light`
     { provide: LY_THEME, useClass: MinimaDark, multi: true }, // name: `minima-dark`
     // Gestures
-    { provide: HAMMER_GESTURE_CONFIG, useClass: LyHammerGestureConfig } // Required for <ly-carousel>
+    { provide: HAMMER_GESTURE_CONFIG, useClass: LyHammerGestureConfig }, // Required for <ly-carousel>,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomHttpInterceptorService,
+      multi: true // Important: This allows multiple interceptors and doesn't overwrite existing ones
+    }
   ],
   bootstrap: [AppComponent],
 })

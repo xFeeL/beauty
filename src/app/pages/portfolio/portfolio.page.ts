@@ -99,11 +99,13 @@ export class PortfolioPage implements OnInit {
         this.newFolderImage="";
         this.newFolderName="";
         this.userService.presentToast("Ο φάκελος δημιουργήθηκε με επιτυχία!","success")
-        this.portfolio[this.portfolio.length]=data
+        this.portfolio=[]
+        this.getPortfolio()
+        this.newFolderModal.dismiss('confirm');
+
       },error=>{
         this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ προσπαθήστε αργότερα.","danger")
       })
-      this.newFolderModal.dismiss( 'confirm');
 
     }
 
