@@ -1,166 +1,166 @@
 .bgL {
-    background-color: var(--ion-color-primary-contrast);
-    border-radius: 10px;
-  }
-  
-  .pro {
-    height: 7px;
-    border-radius: 5px;
-  }
-  
-  .proGood {
-    --progress-background: rgba(67, 230, 67, 0.612);
-    --background: var(--ion-color-light);
-  }
-  
-  .proDownAvrg {
-    --progress-background: rgb(235, 239, 116);
-    --background: var(--ion-color-light);
-  }
-  
-  .proWarn {
-    --progress-background: var(--ion-color-warning);
-    --background: var(--ion-color-light);
-  }
-  
-  .proDang {
-    --progress-background: var(--ion-color-danger);
-    --background: var(--ion-color-light);
-  }
-  
-  .proSucc {
-    --progress-background: var(--ion-color-success);
-    --background: var(--ion-color-light);
-  }
-  
-  .cusItem {
-    --ion-background-color: none;
-  }
-  
-  .bgPshadeP {
-    background-color: #d0f0ffd4;
-    border-radius: 10px;
-  }
-  
-  .backgroundWHite {
-    background-color: white;
-  }
-  
-  .custAvatar {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .custompadding0top {
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-    display: flex;
-  }
-  
-  .alignRight {
-    margin-left: auto;
-  }
-  
-  .dateNote {
-    margin-right: 7px;
-  }
-  
-  .backgroundTextArea {
-    --backgroud: white;
-  }
-  
+  background-color: var(--ion-color-primary-contrast);
+  border-radius: 20px;
+}
+
+.pro {
+  height: 7px;
+  border-radius: 5px;
+}
+
+.proGood {
+  --progress-background: rgba(67, 230, 67, 0.612);
+  --background: var(--ion-color-light);
+}
+
+.proDownAvrg {
+  --progress-background: rgb(235, 239, 116);
+  --background: var(--ion-color-light);
+}
+
+.proWarn {
+  --progress-background: var(--ion-color-warning);
+  --background: var(--ion-color-light);
+}
+
+.proDang {
+  --progress-background: var(--ion-color-danger);
+  --background: var(--ion-color-light);
+}
+
+.proSucc {
+  --progress-background: var(--ion-color-success);
+  --background: var(--ion-color-light);
+}
+
+.cusItem {
+  --ion-background-color: none;
+}
+
+.bgPshadeP {
+  background-color: #d0f0ffd4;
+  border-radius: 10px;
+}
+
+.backgroundWHite {
+  background-color: white;
+}
+
+.custAvatar {
+  width: 60px;
+  height: 60px;
+}
+
+.custompadding0top {
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+  display: flex;
+}
+
+.alignRight {
+  margin-left: auto;
+}
+
+.dateNote {
+  margin-right: 7px;
+}
+
+.backgroundTextArea {
+  --backgroud: white;
+}
+
+.responseItem {
+  padding-top: 5px;
+}
+
+@media screen and (max-width: 500px) {
   .responseItem {
     padding-top: 5px;
-  }
-  
-  @media screen and (max-width: 500px) {
-    .responseItem {
-      padding-top: 5px;
-      width: 100%;
-    }
-  
-    /* CSS styles for screens wider than 500px */
-  }
-  
-  @media screen and (min-width: 500px) {
-    .responseItem {
-      padding-top: 5px;
-      width: 80%;
-    }
-  
-    /* CSS styles for screens wider than 500px */
-  }
-  
-  .f15 {
-    font-size: 15px;
-  }
-  
-  .sendButton {
-    margin-left: 10px !important;
-  }
-  
-  ion-note {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .show-more-button,
-  .show-less-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  .show-less-button {
-    z-index: 1;
-    /* Make sure the "show less" button is displayed above the "show more" button */
-  }
-  
-  .relative {
-    position: relative;
-  }
-  
-  .name_reviews {
-    font-size: 16px;
-    color: black;
-  }
-  
-  .nameCol {
-    padding-bottom: 20px !important;
-    padding-left: 10px !important;
-  }
-  
-  .dateCol {
-    padding-top: 10px;
-  }
-  
-  .no_results_text {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    padding-top: 50px;
-    width: 95%;
-    padding-bottom: 20px;
-  }
-  
-  .no_results_item {
-    display: block;
-   
-    padding-top: 20px;
-    text-align: center;
-  }
-  
-  .background {
-    --background: #E3F0F9;
+    width: 100%;
   }
 
-  .gridBackground{
-    background:#E3F0F9;
+  /* CSS styles for screens wider than 500px */
+}
+
+@media screen and (min-width: 500px) {
+  .responseItem {
+    padding-top: 5px;
+    width: 80%;
   }
 
-  .m16{
-    margin:16px;
-  }
+  /* CSS styles for screens wider than 500px */
+}
+
+.f15 {
+  font-size: 15px;
+}
+
+.sendButton {
+  margin-left: 10px !important;
+}
+
+ion-note {
+  position: relative;
+  overflow: hidden;
+}
+
+.show-more-button,
+.show-less-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.show-less-button {
+  z-index: 1;
+  /* Make sure the "show less" button is displayed above the "show more" button */
+}
+
+.relative {
+  position: relative;
+}
+
+.name_reviews {
+  font-size: 16px;
+  //color: black;
+}
+
+.name_reviews_answer{
+  font-size: 16px;
+  color: black;
+}
+
+
+
+.nameCol {
+  padding-bottom: 20px !important;
+  padding-left: 10px !important;
+}
+
+.dateCol {
+  padding-top: 10px;
+}
+
+.no_results_text {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding-top: 50px;
+  width: 95%;
+  padding-bottom: 20px;
+}
+
+.no_results_item {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.background {
+  --background: var(--ion-color-tertiary);
+}

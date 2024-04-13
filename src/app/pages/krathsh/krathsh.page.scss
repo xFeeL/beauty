@@ -276,6 +276,12 @@
     white-space: normal !important;
  }
 
+ .toolbarBack{
+  background: var(--ion-color-primary);
+  --background: var(--ion-color-primary);
+
+}
+
  .custom-text-wrap {
   white-space: normal;
   overflow: hidden;

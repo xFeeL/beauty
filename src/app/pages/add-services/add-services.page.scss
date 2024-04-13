@@ -1,20 +1,18 @@
 .servicesGrid{
     //--background:white;
-    background-color: white;
+    background-color: var(--ion-color-dark-contrast);
     border-radius: 10px;
   }
 
-
+ion-content{
+  --background:var(--ion-color-dark-contrast)
+}
   .small-segment {
     max-width: 640px;  /* Adjust this value for the entire segment's width */
     background: var(--ion-color-primary) !important;
   
   }
 
-  ion-segment-button{
-    --color:white;
-    --color-checked:black;
-  }
 
   .normal-line {
     width: 4px; /* Adjust width as desired */

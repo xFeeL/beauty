@@ -8,6 +8,9 @@
     font-size: 18px;
   }
   
+  ion-content{
+    --background:var(--ion-color-tertiary)
+  }
   .my-custom-alert {
     --background: #fff;
     /* Change the background color */

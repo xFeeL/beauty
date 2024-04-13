@@ -16,6 +16,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { ChangePasswordPage } from './pages/change-password/change-password.page';
 import { TeamServicesPage } from './pages/team-services/team-services.page';
 import { StatsPage } from './pages/stats/stats.page';
+import { ThemeService } from '../app/services/theme.service';
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl `{
     body {
@@ -51,6 +52,7 @@ export class AppComponent implements WithStyles  {
   private authSubscription: Subscription = new Subscription;
   isAuthenticated: boolean=false;
   iconName: string = 'clipboard-outline';
+  themeToggle = false;
 
   image: any="Error";
   name: any;
@@ -59,7 +61,7 @@ export class AppComponent implements WithStyles  {
   initialized: boolean=false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string="";
-  constructor(
+  constructor(private themeService:ThemeService,
               private userService:UserService,
               private rout : Router,    readonly sRenderer: StyleRenderer,private modalController:ModalController) {
                 this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
@@ -215,10 +217,10 @@ isMobile(){
     this.email="error"
 
     this.userService.getExpertData().subscribe(data => {
-      this.name=data[0][1];
+      this.name=data.name;
       
-      this.email=data[0][0];
-      this.image=data[1];
+      this.email=data.email;
+      this.image=data.image;
       this.initialized=true;
 
     },err=>{
@@ -238,20 +240,56 @@ isMobile(){
     return await modal.present();
 }
 
-  ngOnInit() {
-    this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
-    this.isAuthenticated = isAuth;
-    console.log("asdasdasdasdasd")
-    if(localStorage.getItem('authenticated')=='true'){
-      this.onMenuOpen();
-      this.userService.getExpertId().subscribe(data=>{
-        this.urlToCopy="https://www.fyx.gr/book/"+data.id
-      },err=>{
 
-      })
-    }
-    });
+
+
+  ngOnInit() {
+    
+    this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+      console.log("asdasdasdasdasd")
+      if(localStorage.getItem('authenticated')=='true'){
+        this.onMenuOpen();
+        this.userService.getExpertId().subscribe(data=>{
+          this.urlToCopy="https://www.fyx.gr/book/"+data.id
+        },err=>{
+  
+        })
+      }
+      });
+  
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  // Check for a saved theme preference in localStorage
+  const savedDarkModePreference = localStorage.getItem('darkMode');
+  if (savedDarkModePreference) {
+    this.initializeDarkTheme(savedDarkModePreference === 'true');
+  } else {
+    // If there is no saved preference, use the system preference
+    this.initializeDarkTheme(prefersDark.matches);
   }
+
+  // Listen for changes to the prefers-color-scheme media query
+  prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
+}
+  
+initializeDarkTheme(isDark:any) {
+  this.themeToggle = isDark;
+  this.toggleDarkTheme(isDark);
+}
+
+
+// Listen for the toggle check/uncheck to toggle the dark theme
+toggleChange(event: any): void {
+  this.themeService.toggleDarkTheme(event.detail.checked);
+}
+// Add or remove the "dark" class on the document body
+toggleDarkTheme(shouldAdd:any) {
+  document.body.classList.toggle('dark', shouldAdd);
+  // Save the preference to localStorage
+  localStorage.setItem('darkMode', shouldAdd ? 'true' : 'false');
+}
+
 }
 
 

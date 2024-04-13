@@ -14,7 +14,7 @@ export class ClientsPage implements OnInit {
   clients: Array<any>= new Array<any>;
   clients_length: any;
   disableInfiniteScroll: boolean=false;
-
+  loadingClients=false
   constructor(private route:Router,private userService:UserService,private modalController:ModalController) { }
   searchTerm = '';
   page=0;
@@ -39,6 +39,7 @@ export class ClientsPage implements OnInit {
   }
 
   getClients(){
+    this.loadingClients=true;
     this.userService.getAllClients(this.page).subscribe(data=>{
       
       if(data.length == 0){
@@ -46,12 +47,17 @@ export class ClientsPage implements OnInit {
         
       }else{
         for (let j = 0; j < data.length; j++) {
-          data[j][1]=data[j][1].replace("$"," ")      
+          data[j].name=data[j].name.replace("$"," ")      
           this.clients.push(data[j]);    
         }
         
       }
       console.log(data)
+      this.loadingClients=false;
+
+    },err=>{
+      this.loadingClients=false;
+
     })
 }
 
@@ -59,7 +65,6 @@ export class ClientsPage implements OnInit {
   goBack() {
 this.modalController.dismiss()
     }
-
 
     onSearch(eve:any){
       if(eve.detail.value.length==0){
@@ -71,12 +76,13 @@ this.modalController.dismiss()
       this.userService.filterClients(eve.detail.value).subscribe(data=>{
         this.clients=[];
         for (let j = 0; j < data.length; j++) {
-          data[j][1]=data[j][1].replace("$"," ")          
+          data[j].name=data[j].name.replace("$"," ")          
         }
         this.clients=data;
       })
       
     }
+
 
     getClientsSize(){
 
@@ -89,7 +95,7 @@ this.modalController.dismiss()
       const modal = await this.modalController.create({
           component: ChatPage,
           componentProps: {
-            'user_id': item[0] // Passing item as a property to ClientProfilePage
+            'user_id': item.id 
         }
       });
       return await modal.present();
@@ -101,7 +107,7 @@ this.modalController.dismiss()
     const modal = await this.modalController.create({
         component: ClientProfilePage,
         componentProps: {
-            'user_id': item[0] // Passing item as a property to ClientProfilePage
+            'user_id': item.id 
         },
         backdropDismiss: false
     });

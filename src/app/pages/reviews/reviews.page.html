@@ -8,7 +8,7 @@
 </ion-toolbar></ion-header>
 
 <ion-content class="background">
-<ion-grid class="ion-no-padding">
+<ion-grid>
   <ion-row class="ion-justify-content-center">
     <ion-col size="12" class="ion-no-padding">
       <ion-grid class="bgL ion-margin-top ion-margin-end ion-margin-start" *ngIf="reviews.length!=0">
@@ -53,9 +53,9 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-grid class="gridBackground ion-no-padding  rad">
+      <ion-grid>
         <ion-row class="ion-justify-content-center">
-          <ion-item class="ion-no-padding " lines="none" *ngIf="reviews.length==0">
+          <ion-item class="ion-padding background" lines="none" *ngIf="reviews.length==0">
             <ion-grid>
               <ion-row>
                 <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"> </ion-img>
@@ -66,13 +66,15 @@
               </ion-row>
             </ion-grid> </ion-item>
 
-          <ion-card class="bgL ion-padding-bottom w100 m16 cursor" *ngFor="let item of reviews">
-            <ion-grid (click)="goToClient(item[0])">
-              <ion-row>
+          <ion-card class="bgL ion-padding-bottom w100 " *ngFor="let item of reviews">
+            <ion-grid >
+              <ion-row >
                 <ion-col size="7">
-                  <ion-item lines="none" class="cusItem ion-no-padding"> <ion-avatar class="custAvatar" >
-                    <ion-img [src]="(item[3] === 'default' ? '../../../assets/icon/default-profile.png' : item[3])"></ion-img>
-                  </ion-avatar>
+                  <ion-item lines="none" class="cusItem ion-no-padding cursor" (click)="goToClient(item[0])"> 
+                    <ion-avatar class="custAvatar">
+                      <ion-img [src]="(item[3] === 'default' ? '../../../assets/icon/default-profile.png' : item[3])"  class="custAvatar"></ion-img>
+
+                    </ion-avatar>
                     <ion-label class="name_reviews nameCol force-wrap" text-wrap>{{item[4]}}</ion-label> </ion-item> </ion-col>
                 <ion-col size="5" class="dateCol">
                   <ion-grid>
@@ -98,17 +100,17 @@
                   *ngIf="item[6]!=null">
                   <ion-row class="bgPshadeP">
                     <ion-col size="12">
-                      <ion-item lines="none" class="cusItem">
+                      <ion-item lines="none" class="cusItem transparent">
                         <ion-avatar slot="start">
-                          <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' :expertImage)"></ion-img>
+                          <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"  ></ion-img>
 
                         </ion-avatar>
-                        <ion-label text-wrap class="name_reviews"> {{expertReviewsData[0][0]}}</ion-label>
-                        <ion-note slot="end">{{item[7]}}</ion-note>
+                        <ion-label text-wrap class="name_reviews_answer"> {{expertReviewsData[0][0]}}</ion-label>
+                        <ion-note slot="end" color="medium">{{item[7]}}</ion-note>
                       </ion-item>
                     </ion-col>
                     <ion-col size="12" class="ion-padding">
-                      <ion-note>
+                      <ion-note color="medium">
                         {{item[6]}}
                       </ion-note>
                     </ion-col>
@@ -119,7 +121,7 @@
                     <ion-col size="12">
                       <ion-item lines="none" class="cusItem">
                         <ion-avatar slot="start">
-                          <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' :expertImage)"></ion-img>
+                          <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"  ></ion-img>
 
                         </ion-avatar>
                         <ion-item fill="outline" class="responseItem">
@@ -127,7 +129,7 @@
                           <ion-textarea rows="1" [(ngModel)]="item[9]"></ion-textarea>
                           <ion-button slot="end" expand="block" class="sendButton" (click)="sendResponse(item)"
                             *ngIf="item[9].length>0">
-                            <ion-icon name="send"></ion-icon>
+                            <ion-icon color="light" name="send"></ion-icon>
                           </ion-button>
                         </ion-item> </ion-item>
                     </ion-col> </ion-row>

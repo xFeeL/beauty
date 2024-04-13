@@ -112,7 +112,7 @@
   
 
   .whiteBackground{
-    background:white;
+    background:var(--ion-color-dark-contrast);
    ;
   }
 
@@ -122,7 +122,7 @@
   }
 
   .blueBackground{
-    --background: #E3F0F9;
+    --background: var(--ion-color-tertiary);
 
   }
 

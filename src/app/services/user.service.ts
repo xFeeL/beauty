@@ -557,7 +557,15 @@ export class UserService {
   login(user: User): Observable<any> {
     let phone = btoa(user.phone)
     let password = btoa(user.password)
+    const darkMode = localStorage.getItem('darkMode');
+  
+    // Clear all items in localStorage
     localStorage.clear();
+  
+    // Restore darkMode if it was set
+    if (darkMode !== null) {
+      localStorage.setItem('darkMode', darkMode);
+    }
     //this.pushSetup();
     const params = new HttpParams().append('phone', phone).append('password', password);
 
@@ -743,7 +751,15 @@ export class UserService {
     * @returns An Observable that resolves to the server response.
     */
   logout(): Observable<any> {
+    const darkMode = localStorage.getItem('darkMode');
+  
+    // Clear all items in localStorage
     localStorage.clear();
+  
+    // Restore darkMode if it was set
+    if (darkMode !== null) {
+      localStorage.setItem('darkMode', darkMode);
+    }
     return this.http.post(Authenticated_API_URL + "logout", "", { headers: this.getHeaders(), withCredentials: true }).pipe(
       tap(() => {
         // If the request is successful, redirect to login page
@@ -1088,13 +1104,21 @@ export class UserService {
    * @param days Working hours to save
    * @returns Observable of the response
    */
-  saveWrario(days: any[]): Observable<any> {
-    
-    return this.http.post(beautyAuthenticated_API_URL + "save-wrario", days, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', days))
+  saveWrario(days: any[], exceptions: any,safeToSave:boolean,cancelAllFutureOverlappedAppointments:boolean): Observable<any> {
+    // Create a new object that includes both days and exceptions
+    const payload = {
+      days: days,
+      exceptions: exceptions
+    };
+  
+    // Use the new payload object in the HTTP POST request
+    return this.http.post(beautyAuthenticated_API_URL + "save-wrario?safeToSave="+safeToSave+"&cancelAllFutureOverlappedAppointments="+cancelAllFutureOverlappedAppointments, payload, { 
+      headers: this.getHeaders(), 
+      withCredentials: true 
+    }).pipe(
+      catchError(error => this.handleError(error, 'POST', payload))
     );
   }
-
 
   /**
    * Get schedule exceptions

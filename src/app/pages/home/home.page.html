@@ -8,12 +8,12 @@
           <ion-toolbar class="ion-margin-bottom ion-margin-top"> <ion-buttons slot="start">
               <ion-menu-button class="gray-menu"></ion-menu-button>
             </ion-buttons>
-            <ion-img slot="start" class="logo-image" src="../../../assets/imgs/FYX-logo.jpg"></ion-img> <ion-button
+            <ion-img slot="start" class="logo-image" src="../../../assets/imgs/Fyx.png"></ion-img> <ion-button
               [size]="!isMobile ? '' : 'small'" shape="round" slot="end" class="capsoff"
               [ngStyle]="!isMobile ? {'margin-end': 'var(--ion-margin)'} : {'margin-right': '5px'}"
               (click)="newKrathsh()">
-              <ion-icon name="add"></ion-icon>
-              <ion-label class="ion-margin-start" *ngIf="!isMobile">Νέα Κράτηση</ion-label>
+              <ion-icon color="light" name="add"></ion-icon>
+              <ion-label color="light" class="ion-margin-start" *ngIf="!isMobile">Νέα Κράτηση</ion-label>
             </ion-button> <button (click)="goToNotifications()" class="notif" slot="end">
               <svg *ngIf="newNotification()==false || newNotification()==undefined" width="22" height="22"
                 viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -248,20 +248,20 @@
             <ion-col size="12" size-md="5.9" class="desktopGrid ">
               <div class="content-container  ion-margin-top">
                 <h3 class="left-text mt0 ion-text-center"><ion-text color="primary"><b>Στατιστικά </b></ion-text>
-                  <ion-text class="stats_right pl5" [matMenuTriggerFor]="menu">
+                  <ion-text class="stats_right pl5 cursor" [matMenuTriggerFor]="menu">
                     {{ selectedTimeFrame }}
                     <mat-icon class="pt4">arrow_drop_down</mat-icon> <mat-menu #menu="matMenu">
                       <button mat-menu-item *ngIf="selectedTimeFrame !== 'μήνα'"
                         (click)="updateSelectedTimeFrame('μήνα')">
-                        <span>μήνα</span>
+                        <span >μήνα</span>
                       </button>
                       <button mat-menu-item *ngIf="selectedTimeFrame !== 'εβδομάδας'"
                         (click)="updateSelectedTimeFrame('εβδομάδας')">
-                        <span>εβδομάδας</span>
+                        <span  >εβδομάδας</span>
                       </button>
                       <button mat-menu-item *ngIf="selectedTimeFrame !== 'χρονιάς'"
                         (click)="updateSelectedTimeFrame('χρονιάς')">
-                        <span>χρονιάς</span>
+                        <span  >χρονιάς</span>
                       </button>
                     </mat-menu>
                   </ion-text>
@@ -297,14 +297,14 @@
               <ion-item class="ion-padding " lines="none" *ngIf="topClients.length==0">
                 <ion-grid>
                   <ion-row>
-                    <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"></ion-img>
+                    <ion-img class="no_results_item transparent" src="../../../assets/imgs/NoResults.svg"></ion-img>
                   </ion-row>
                   <ion-row> <ion-note class="no_results_header">
                       Δεν υπάρχουν ακόμη πελάτες
                     </ion-note>
                   </ion-row>
                 </ion-grid> </ion-item>
-              <ion-list lines="full" class="ion-no-padding ion-margin-bottom " style="background-color: white;"
+              <ion-list lines="full" class="ion-no-padding ion-margin-bottom " class="backgroundColor"
                 *ngIf="topClients.length!=0">
                 <!-- Header Columns -->
                 <ion-grid>
@@ -316,7 +316,7 @@
                   </ion-row>
                 </ion-grid> <!-- Client List -->
                 <ion-grid>
-                  <ion-row *ngFor="let client of topClients; let i = index" class="ion-padding-top borderBottom cursor"
+                  <ion-row *ngFor="let client of topClients; let i = index" class="ion-padding-top  cursor"
                     (click)="goToClient(client.user_id)">
                     <ion-col offset="1" size="7">
                       <div style="display: flex; align-items: center;">

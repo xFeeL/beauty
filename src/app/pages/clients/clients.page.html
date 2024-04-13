@@ -1,74 +1,69 @@
 <ion-header> <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-grid>
-      <ion-row class="ion-justify-content-center ">
-        <ion-col size="12">
-          <ion-searchbar class="search" [(ngModel)]="searchTerm" (ionInput)="onSearch($event)"
-            placeholder="Αναζήτηση πελάτη"></ion-searchbar>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-toolbar></ion-header><ion-content class="contentt"> <ion-item class="ion-padding " lines="none"
-    *ngIf="clients.length==0">
-    <ion-grid>
-      <ion-row>
-        <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"> </ion-img>
-      </ion-row>
-      <ion-row> <ion-note class="no_results_header">
-          Δεν έχετε ακόμα πελάτες.
-        </ion-note>
-      </ion-row>
-    </ion-grid> </ion-item> <ion-grid *ngIf="clients.length!=0" class="cursor">
-    <ion-row>
-      <ion-col size="12" class="ion-no-padding">
-        <ion-card class="bgL p10">
-          <ion-grid class="ion-no-padding ion-no-margin">
-            <ion-row> <ion-col size="12" class="ion-no-padding ion-no-margin pBlk">
-                <h6 class="ion-padding-bottom">
-                  <ion-label>
-                    <ion-text color="primary">Πελάτες</ion-text>
-                  </ion-label>
-                </h6> <ion-label class="ion-padding-bottom ion-padding-start ion-padding-end"
-                  *ngIf="clients.length==0  && searchTerm!=''"><br>Δεν υπάρχουν αποτελέσματα</ion-label>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col size="6" size-md="4" *ngFor="let item of clients" (click)="goToClientProfile(item)">
-                      <ion-card class="centered-card-content ">
-                        <div class="avatar-container">
-                          <ion-avatar class="custAv">
-                            <ion-img [src]="(item[4] === 'default' ? '../../../assets/icon/default-profile.png' : item[4])"></ion-img>
-
-                          </ion-avatar>
-                        </div>
-                        <ion-card-header class="centered-header">
-                          <ion-card-subtitle text-wrap style="color: black !important">{{item[1]}}</ion-card-subtitle>
-                          <ion-note text-wrap>{{ item[3] === 'manual_clients' ? 'Δεν υπάρχει e-mail' : item[3]
-                            }}</ion-note>
-                        </ion-card-header>
-                        <div class="icon-container">
-                          <ion-button fill="clear" (click)="goToChat(item); $event.stopPropagation()"
-                            *ngIf="item[3]!='manual_clients'">
-                            <ion-icon name="chatbox-outline" slot="icon-only" size="small"></ion-icon>
-                          </ion-button>
-                          <ion-button fill="clear" href="tel:{{item[2]}}" (click)="$event.stopPropagation()">
-                            <ion-icon name="call-outline" slot="icon-only" size="small"></ion-icon>
-                          </ion-button>
-                        </div>
-                      </ion-card>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card>
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center ">
+      <ion-col size="12">
+        <ion-searchbar class="search" [(ngModel)]="searchTerm" (ionInput)="onSearch($event)"
+          placeholder="Αναζήτηση πελάτη"></ion-searchbar>
       </ion-col>
     </ion-row>
-  </ion-grid><ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
-    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll> </ion-content>
+  </ion-grid>
+</ion-toolbar></ion-header><ion-content class="contentt">
+<ion-spinner color="primary" class="ion-margin-top" *ngIf="loadingClients"></ion-spinner>
+
+<ion-item class="ion-padding transparent" lines="none" *ngIf="clients.length==0">
+  <ion-grid *ngIf="!loadingClients">
+    <ion-row>
+      <ion-img class="no_results_item" src="../../../assets/imgs/search.svg"> </ion-img>
+    </ion-row>
+    <ion-row> <ion-note class="no_results_header">
+        Δεν έχετε ακόμα πελάτες.
+      </ion-note>
+    </ion-row>
+  </ion-grid>
+</ion-item>
+<ion-grid *ngIf="clients.length!=0">
+  <ion-row>
+    <ion-col size="12" class="ion-no-padding">
+      <ion-label class="ion-padding-bottom ion-padding-start ion-padding-end"
+                *ngIf="clients.length==0  && searchTerm!=''"><br>Δεν υπάρχουν αποτελέσματα</ion-label>
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="6" size-md="4" *ngFor="let item of clients" (click)="goToClientProfile(item)"
+                    class="cursor">
+                    <ion-card class="centered-card-content ">
+                      <div class="avatar-container">
+                        <ion-avatar class="custAv">
+                          <ion-img [src]="(item.profileImage === 'default' ? '../../../assets/icon/default-profile.png' : item.profileImage)"></ion-img>
+
+                        </ion-avatar>
+                      </div>
+                      <ion-card-header class="centered-header">
+                        <ion-card-subtitle color="dark">{{item.name}}</ion-card-subtitle>
+                        <ion-note color="medium" text-wrap>{{ item.email === 'manual_clients' ? 'Δεν υπάρχει e-mail' : item.email
+                          }}</ion-note>
+                      </ion-card-header>
+                      <div class="icon-container">
+                        <ion-button fill="clear" (click)="goToChat(item); $event.stopPropagation()"
+                          *ngIf="item.email!='manual_clients'">
+                          <ion-icon name="chatbox-outline" slot="icon-only" size="small"></ion-icon>
+                        </ion-button>
+                        <ion-button fill="clear" href="tel:{{item.phone}}" (click)="$event.stopPropagation()">
+                          <ion-icon name="call-outline" slot="icon-only" size="small"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+        
+    </ion-col>
+  </ion-row>
+</ion-grid><ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
+  <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
+  </ion-infinite-scroll-content>
+</ion-infinite-scroll> </ion-content>

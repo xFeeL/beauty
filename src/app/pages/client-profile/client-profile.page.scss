@@ -1,6 +1,7 @@
-.bgL {
-    background-color: var(--ion-color-primary-contrast);
-  }
+.bgL{
+  background-color:var(--ion-color-tertiary);
+background: var(--ion-color-tertiary);
+}
   
   .hedCol {
     bottom: -20px;
@@ -149,10 +150,15 @@
     background-color: #E3F0F9;
   }
   
-  .cusItem {
-    --ion-background-color: none;
+  .cusItem{
+    --background:#dfecff;
+   
   }
-  
+
+  cusItem2{
+    --background:var(--ion-color-dark-contrast);
+
+  }
   .cusItemPrimary {
     --ion-background-color: var(--ion-color-primary);
   }
@@ -169,15 +175,30 @@
     margin-left: 10px;
     margin-right: 10px;
   }
+
+  .review-card{
+    background: var(--ion-color-dark-contrast);
+    border-radius: 10px;
+  }
+  
   
   .portfolio {
     margin-top: 20px;
   }
   
-  .name_reviews {
-    font-size: 13px;
+  .name_reviews{
+    font-size:13px;
+    color:var(--ion-color-dark) !important;
+  
   }
   
+  
+  
+  .name_reviews_answer{
+    font-size: 13px;
+    color:black
+    
+  }
   .grid {
     background-color: white;
   }
@@ -732,7 +753,7 @@
   }
   
   .light-blue-background {
-    background-color: #E3F0F9;
+    background-color: var(--ion-color-tertiary);
     /* Light blue color. Adjust as needed. */
   }
   

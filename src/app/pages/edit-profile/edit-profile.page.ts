@@ -84,15 +84,15 @@ export class EditProfilePage {
       this.image =  err.error.text
     });
     this.userService.getExpertData().subscribe(data => {
-      let temp = data[0][1].split("$");
+      let temp = data.name.split("$");
       this.name = temp[0];
-      this.email = data[0][0];
-      this.phone = data[0][2];
+      this.email = data.email;
+      this.phone = data.mobile;
       if (!this.updatedAddress) {
-        this.address = data[0][4]
-        this.coordinates=data[0][5]
+        this.address = data.address
+        this.coordinates=data.coordinates
       }
-      this.displayed_phone = data[0][3]
+      this.displayed_phone = data.displayed_phone
       this.initialized = true;
       this.mobileCheck();
       this.businessNameTest();

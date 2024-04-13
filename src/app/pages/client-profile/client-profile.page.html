@@ -1,20 +1,20 @@
 <ion-header> <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title color="light">Προφίλ Πελάτη</ion-title>
-    <ion-buttons slot="end">
-      <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
-        *ngIf="userData.source!='manual_clients'">
-        <ion-icon color="light" name="chatbox"></ion-icon>
-      </ion-button>
-      <!-- Material Menu Trigger -->
-      <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
-        *ngIf="userData.source=='manual_clients'"></ion-icon>
-    </ion-buttons>
-  </ion-toolbar> <!-- Material Menu Content -->
+  <ion-buttons slot="start">
+    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title color="light">Προφίλ Πελάτη</ion-title>
+  <ion-buttons slot="end">
+    <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
+      *ngIf="userData.email!='manual_clients'">
+      <ion-icon color="light" name="chatbox"></ion-icon>
+    </ion-button>
+    <!-- Material Menu Trigger -->
+    <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
+      *ngIf="userData.email=='manual_clients'"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>  <!-- Material Menu Content -->
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="editClient()">
       Επεξεργασία
@@ -33,11 +33,11 @@
             <h4 class="p5 ion-no-margin">
               <b>{{name[0]}} {{name[1]}}</b>
             </h4>
-            <ion-note class="p5">{{userData.phone}} | {{userData.source === 'manual_clients' ? 'Δεν υπάρχει e-mail' :
-              userData.source }}</ion-note>
+            <ion-note class="p5">{{userData.phone}} | {{userData.email === 'manual_clients' ? 'Δεν υπάρχει e-mail' :
+              userData.email }}</ion-note>
           </div>
         </ion-item>
-        <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.source!='manual_clients'" class="custom-segment ">
+        <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.email!='manual_clients'" class="custom-segment ">
           <ion-segment-button value="projects">
             <ion-label>Κρατήσεις <ion-note color="dark"></ion-note></ion-label>
           </ion-segment-button>
@@ -76,50 +76,73 @@
               <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
               </ion-infinite-scroll-content>
             </ion-infinite-scroll>
-          </div> <ion-grid *ngSwitchCase="'reviews'" class="bgL ion-margin-top"> <ion-row>
-            <ion-grid *ngIf="reviews.length==0">
-              <ion-row>
-                <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"></ion-img>
-              </ion-row>
-              <ion-row> <ion-note class="no_results_header">
-                  Δεν υπάρχουν ακόμη κριτικές
-                </ion-note>
-              </ion-row>
-            </ion-grid>
-              <ion-card class="bgL ion-padding-bottom w100 shadow" *ngFor="let item of reviews">
-               
+          </div> <ion-grid *ngSwitchCase="'reviews'" class="bgL ion-margin-top">
+            <ion-row class="ion-justify-content-center">
+              <ion-item class="ion-padding transparent" lines="none" *ngIf="reviews.length==0">
                 <ion-grid>
                   <ion-row>
-                    <ion-col size="7.5">
-                      <ion-item lines="none" class="cusItem ion-no-padding ion-margin-bottom"> <ion-avatar
-                          class="custAvatar">
-                          <ion-img [src]="(userData.profile_image === 'default' ? '../../../assets/icon/default-profile.png' : userData.profile_image)"></ion-img>
+                    <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+                  </ion-row>
+                  <ion-row> <ion-note class="no_results_header">
+                      Δεν έχετε κριτικές από τον συγκεκριμένο πελάτη.
+                    </ion-note>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>
 
-                        
+              <ion-card class="bgL ion-padding-bottom w100 review-card" *ngFor="let item of reviews">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="7">
+                      <ion-item lines="none" class="ion-no-padding transparent">
+
+                        <ion-avatar class="custAvatar">
+                          <ion-img
+                            [src]="(userData.profile_image === 'default' ? '../../../assets/icon/default-profile.png' : userData.profile_image)"></ion-img>
+
                         </ion-avatar>
                         <ion-label class="name_reviews nameCol" text-wrap>{{name[0]}} {{name[1]}}</ion-label>
-                      </ion-item> </ion-col>
-                    <ion-grid>
-                      <ion-row>
-                        <ion-note class="alignRight dateNote">{{item[2]}}</ion-note> </ion-row>
-                      <ion-row>
-                        <ion-chip class=" ion-text-center" outline="true" color="primary" class="alignRight">
-                          <ion-label class="w100">
-                            <ion-icon name="star" *ngFor="let item2 of numSequence(item[0])"></ion-icon>
-                            <ion-icon name="star-outline" *ngFor="let item2 of numSequence(5-item[0])"></ion-icon>
-                          </ion-label>
-                        </ion-chip>
-                      </ion-row>
-                    </ion-grid> </ion-row>
-                  <ion-row class="ion-padding-bottom ion-padding-start ion-padding-end relative"> <ion-note
-                      *ngIf="item[1].length>70">
-                      {{ item[10] ? item[1] : item[1].substr(0, 70) + '...' }} </ion-note>
+
+                      </ion-item>
+
+                    </ion-col>
+
+                    <ion-col size="5" class="dateCol">
+                      <ion-grid>
+                        <ion-row>
+                          <ion-note class="alignRight dateNote">{{item[2]}}</ion-note>
+
+                        </ion-row>
+                        <ion-row>
+                          <ion-chip class=" ion-text-center" outline="true" color="primary" class="alignRight">
+                            <ion-label class="w100">
+                              <ion-icon name="star" *ngFor="let item2 of numSequence(item[0])"></ion-icon>
+                              <ion-icon name="star-outline" *ngFor="let item2 of numSequence(5-item[0])"></ion-icon>
+                            </ion-label>
+                          </ion-chip>
+                        </ion-row>
+                      </ion-grid>
+
+                    </ion-col>
+
+
+                  </ion-row>
+                  <ion-row class="ion-padding-bottom ion-padding-start ion-padding-end relative">
+
+                    <ion-note *ngIf="item[1].length>70">
+                      {{ item[10] ? item[1] : item[1].substr(0, 70) + '...' }}
+
+                    </ion-note>
                     <ion-note *ngIf="item[1].length<=70">
-                      {{ item[1]}} </ion-note>
+                      {{ item[1]}}
+
+                    </ion-note>
                     <ion-note color="primary" *ngIf="!item[10] && item[1].length > 70" class="show-more-button"
                       (click)="item[10] = true">Προβολή κριτικής</ion-note>
                     <ion-note color="primary" *ngIf="item[10]" class="show-less-button"
-                      (click)="item[10] = false">Απόκρυψη</ion-note> </ion-row>
+                      (click)="item[10] = false">Απόκρυψη</ion-note>
+
+                  </ion-row>
                   <ion-row>
                     <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
                       *ngIf="item[3]!=null">
@@ -127,26 +150,30 @@
                         <ion-col size="12">
                           <ion-item lines="none" class="cusItem">
                             <ion-avatar slot="start">
-                              <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' :expertImage)"></ion-img>
+                              <ion-img
+                                [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                             </ion-avatar>
-                            <ion-label text-wrap class="name_reviews"> {{expertReviewsData[0][0]}}</ion-label>
+                            <ion-label text-wrap class="name_reviews_answer"> {{expertReviewsData[0][0]}}</ion-label>
                             <ion-note slot="end">{{item[7]}}</ion-note>
                           </ion-item>
                         </ion-col>
                         <ion-col size="12" class="ion-padding">
-                          <ion-note>
+                          <ion-note color="medium">
                             {{item[3]}}
                           </ion-note>
                         </ion-col>
                       </ion-row>
-                    </ion-grid> <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
+                    </ion-grid>
+
+                    <ion-grid class="ion-no-padding ion-padding-start ion-padding-end ion-margin-top"
                       *ngIf="item[3]==null">
                       <ion-row class="backgroundWhite">
                         <ion-col size="12">
-                          <ion-item lines="none" class="cusItem">
+                          <ion-item lines="none" class="cusItem2">
                             <ion-avatar slot="start">
-                              <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' :expertImage)"></ion-img>
+                              <ion-img
+                                [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                             </ion-avatar>
                             <ion-item fill="outline" class="responseItem">
@@ -154,12 +181,24 @@
                               <ion-textarea rows="1" [(ngModel)]="item[9]"></ion-textarea>
                               <ion-button slot="end" expand="block" class="sendButton" (click)="sendResponse(item)"
                                 *ngIf="item[9].length>0">
-                                <ion-icon name="send"></ion-icon>
+                                <ion-icon color="light" name="send"></ion-icon>
                               </ion-button>
-                            </ion-item> </ion-item>
-                        </ion-col> </ion-row>
-                    </ion-grid> </ion-row>
-                </ion-grid> </ion-card> </ion-row>
+                            </ion-item>
+
+
+                          </ion-item>
+                        </ion-col>
+
+                      </ion-row>
+                    </ion-grid>
+
+                  </ion-row>
+                </ion-grid>
+
+              </ion-card>
+
+
+            </ion-row>
           </ion-grid>
         </div>
       </ion-col>

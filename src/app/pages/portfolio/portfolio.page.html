@@ -8,13 +8,13 @@
   
   <ion-spinner class="ion-padding-top ion-margin-top" color="primary" *ngIf="loadingOn"></ion-spinner> 
 
-  <ion-grid class="bgL ion-margin-top">
+  <ion-grid class="bgL">
   <ion-row class="ion-justify-content-center">
     <ion-col size="12">
       <ion-item class="ion-padding " lines="none" *ngIf="portfolio.length==0">
         <ion-grid>
           <ion-row>
-            <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+            <ion-img class="no_results_item transparent" src="../../../assets/imgs/NoResults.svg"> </ion-img>
           </ion-row>
           <ion-row> <ion-note class="no_results_text">
               Δημιουργήστε ένα άλμπουμ πατώντας στο κουμπί "Νέο".
@@ -55,13 +55,13 @@
       <ion-toolbar color="primary" class="modal-toolbar">
         <ion-buttons slot="start" color="primary">
           <ion-button no-caps class="modal-button" (click)="cancelNewFolderModal()">
-            <ion-icon name="close"></ion-icon>
+            <ion-icon color="light" name="close"></ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-title color="light" class="center-title" text-wrap>Νέο Άλμπουμ</ion-title>
         <ion-buttons slot="end">
           <ion-button class="modal-button" (click)="confirmNewFolderModal()"
-            *ngIf="newFolderName!='' && newFolderImage!=''" [strong]="true">Δημιουργία</ion-button>
+            *ngIf="newFolderName!='' && newFolderImage!=''" [strong]="true"><ion-text color="light">Δημιουργία</ion-text></ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -93,13 +93,13 @@
       <ion-toolbar color="primary" class="modal-toolbar">
         <ion-buttons slot="start" color="primary">
           <ion-button no-caps class="modal-button" (click)="cancelEditFolderModal()">
-            <ion-icon name="close"></ion-icon>
+            <ion-icon color="light"   name="close"></ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-title color="light" class="center-title ion-text-center" text-wrap>Επεξεργασία </ion-title>
         <ion-buttons slot="end">
           <ion-button class="modal-button" (click)="confirmEditFolderModal()" [strong]="true">
-            Αποθήκευση
+            <ion-text color="light">Αποθήκευση</ion-text>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>

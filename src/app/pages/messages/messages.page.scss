@@ -37,7 +37,7 @@
   }
   
   .theContent {
-    --ion-background-color: #E3F0F9;
+    --ion-background-color: var(--ion-color-tertiary);
   }
   
   .chat {

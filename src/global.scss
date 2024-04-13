@@ -75,7 +75,7 @@ ion-modal {
 }
 
 ion-content {
-  --ion-background-color: var(--ion-color-light);
+  --ion-background-color: var(--ion-color-tertiary);
 }
 
 ion-toolbar {
@@ -127,11 +127,31 @@ ion-item {
 }
 
 .background {
-  --background: #E3F0F9;
+  --background: var(--ion-color-tertiary);
 }
 
 .backgroundGrid {
-  background: #E3F0F9;
+  background: var(--ion-color-tertiary);
+}
+
+ion-segment-button::part(indicator-background) {
+  background: var(--ion-color-dark-contrast);
+}
+
+.transparent{
+  --ion-background-color: transparent;
+  --background:transparent;
+  background:transparent
+}
+
+
+ion-segment-button{
+  --color:var(--ion-color-dark) !important;
+  --indicator-color: white;
+}
+
+ion-segment {
+  --background: var(--ion-color-primary);
 }
 
 .mgSE8 {

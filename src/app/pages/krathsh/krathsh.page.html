@@ -42,7 +42,7 @@
             </ion-col>
           </ion-row>
         </ion-grid> <ion-grid class="paddSE p10 rad">
-          <ion-row class="bgL rad"> <ion-col size="12" class="bordB rad">
+          <ion-row class="bgL rad"> <ion-col size="12" class=" rad">
               <ion-list class="bgL ion-no-padding rad">
                 <ion-item lines="none" class="rad">
                   <ion-label><ion-note color="medium">Πελάτης</ion-note></ion-label>
@@ -72,7 +72,7 @@
                 </ion-grid>
               </ion-list>
             </ion-col>
-            <ion-col size="12" class="bordB rad">
+            <ion-col size="12" class=" rad">
               <ion-list class="bgL rad">
                 <ion-grid class="bgL ion-no-padding rad ">
                   <ion-row class="bgL">
@@ -189,26 +189,35 @@
       <ion-col size="6" class="ion-no-padding">
         <ion-button class="ion-no-margin" *ngIf="status=='accepted'" color="danger" expand="block"
           (click)="openRejectionPopover()">
-          Ακύρωση Κράτησης
+          
+          <ion-text color="light"> Ακύρωση Κράτησης
+          </ion-text>
         </ion-button>
       </ion-col>
       <ion-col size="6" class="ion-no-padding">
         <ion-button class="ion-no-margin" *ngIf="status=='accepted'" expand="block" color="primary"
           (click)="editReservation()">
-          Τροποποίηση Κράτησης
-        </ion-button>
+          <ion-text color="light"> Τροποποίηση Κράτησης
+          </ion-text></ion-button>
       </ion-col> <ion-col size="6" *ngIf="status=='pending'">
         <ion-button fill="outline" color="danger" expand="block" (click)="cancelAppointment()">
           <ion-icon style="margin-right:3px;" name="close-circle-outline"></ion-icon>
-          Απόρριψη
+          
+          <ion-text color="light"> Απόρριψη
+          </ion-text>
         </ion-button>
       </ion-col> <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
         <ng-template>
-          <ion-header> <ion-title class="ion-margin-top ion-margin-bottom">
-              Αιτία απόρριψης
-            </ion-title>
+          <ion-header > <ion-toolbar class="toolbarBack">
+            <ion-buttons slot="start">
+              <ion-button color="light" (click)="closeRejectPopover()" slot="start" fill="clear">
+                <ion-icon name="arrow-back"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-title color="light">Αιτία απόρριψης</ion-title>
+            </ion-toolbar>
           </ion-header>
-          <ion-content>
+          <ion-content class="background">
             <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true" class="cancelReason ion-padding"
               label="Λόγος απόρριψης" labelPlacement="floating" fill="outline" [value]="cancelReason"></ion-textarea>
             <div class="scrolling-wrapper reasonChips">
@@ -222,14 +231,16 @@
           </ion-content>
           <ion-footer class="ion-no-padding" (click)="applyRejectPopover()">
             <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
-              <ion-label class="ion-no-padding" class="ion-text-center capsoff">Αποθήκευση</ion-label>
+              <ion-label color="light" class="ion-no-padding" class="ion-text-center capsoff">Αποθήκευση</ion-label>
             </ion-button>
           </ion-footer> </ng-template>
       </ion-popover>
       <ion-col size="6" *ngIf="status=='pending'"> <ion-button fill="solid" color="success" expand="block"
           (click)="acceptAppointment()">
           <ion-icon name="checkmark-circle-outline" style="margin-right:3px;"></ion-icon>
-          Αποδοχή
+          
+          <ion-text color="light"> Αποδοχή
+          </ion-text>
         </ion-button>
       </ion-col>
     </ion-row>

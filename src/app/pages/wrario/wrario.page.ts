@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -41,7 +41,8 @@ export class WrarioPage implements OnInit {
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
-  constructor(private modalController: ModalController, private userService: UserService) {
+  addedExceptions: boolean=false;
+  constructor(private alertController:AlertController,private modalController: ModalController, private userService: UserService) {
 
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
@@ -130,7 +131,7 @@ export class WrarioPage implements OnInit {
   }
 
 
-  async openDateTimePicker() {
+ /* async openDateTimePicker() {
     this.mySelect.close()
     const modal = await this.modalController.create({
       component: AddScheduleExceptionPage,
@@ -149,7 +150,49 @@ export class WrarioPage implements OnInit {
 
       // room.tableTypes = data.tableTypes; // Update the room's table types with the returned data
     }
+  }*/
+
+  async openDateTimePicker() {
+    this.mySelect.close();
+    const modal = await this.modalController.create({
+      component: AddScheduleExceptionPage,
+      componentProps: {
+        // room: room, // Pass the entire room object
+      }
+    });
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+    console.log("THE DATA RETURNED")
+    console.log(data)
+    if (data) {
+      const formattedException = this.formatException(data);
+      if (this.scheduleExceptions) {
+        this.scheduleExceptions.push(formattedException);
+        this.daysControl.setValue(this.scheduleExceptions);
+        this.addedExceptions=true
+      } else {
+        console.error("scheduleExceptions is not initialized");
+      }
+
+      console.log("NEW EXCEPTIONs");
+      console.log(this.scheduleExceptions);
+    }
   }
+
+  formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
+    const formattedStart = moment.utc(exception.start).locale('el').format('MMM DD, HH:mm');
+    const formattedEnd = moment.utc(exception.end).locale('el').format('MMM DD, HH:mm');
+    
+    return {
+      formatted: `${formattedStart} - ${formattedEnd}`,
+      originalStart: exception.start,
+      originalEnd: exception.end,
+      repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+    };
+  }
+
+  
 
 
   goBack() {
@@ -275,7 +318,30 @@ export class WrarioPage implements OnInit {
     }
   }
 
+  deformatExceptions(exceptionsArray: Array<{
+    formatted: string,
+    originalStart: moment.MomentInput,
+    originalEnd: moment.MomentInput,
+    repeat: string
+  }>): any[] {
+    return exceptionsArray.map(exception => {
+      console.log("Processing exception:", exception);
 
+      const start = exception.originalStart;
+      const end = exception.originalEnd;
+      const repeat = exception.repeat === "Επαναλαμβανόμενο";
+
+      console.log("Extracted start:", start);
+      console.log("Extracted end:", end);
+      console.log("Extracted repeat:", repeat);
+
+      return {
+        start: start,
+        end: end,
+        repeat: repeat
+      };
+    });
+  }
 
   deleteTimeInterval(day: any, index: number) {
     day.timeIntervals.splice(index, 1);
@@ -290,13 +356,49 @@ export class WrarioPage implements OnInit {
     return num < 10 ? '0' + num : num.toString();
   }
 
-  save() {
-    this.userService.saveWrario(this.daysWrario).subscribe(data => {
+  saveAll(safeToSave:boolean,cancelAllFutureOverlappedAppointments:any) {
+
+      
+    this.userService.saveWrario(this.daysWrario,this.deformatExceptions(this.daysControl.value),safeToSave,cancelAllFutureOverlappedAppointments).subscribe(data => {
       this.userService.presentToast("Το ωράριο αποθηκεύτηκε με επιτυχία.", "success")
       this.modalController.dismiss()
+
     }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+      if (err.status === 406 && err.error && err.error["Overlapping appointments"]) { 
+        this.presentAlertWithChoices(err.error["Overlapping appointments"]);
+      } else {
+        this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
+      }
 
     })
+  }
+
+  async presentAlertWithChoices( overlappingDates: string) {
+    const alert = await this.alertController.create({
+      header: 'Προσοχή!',
+      message: 'Υπάρχουν κρατήσεις που δεν έχουν ολοκληρωθει τις ημερομηνίες: ' + overlappingDates,
+      buttons: [
+        {
+          text: 'ακυρωση ολων',
+          handler: () => {
+            console.log("PREPEI NA EINAI TRUE")
+            /*this.needRefresh=true
+            console.log(this.needRefresh)*/
+            this.saveAll( true, true);
+          }
+        },
+        {
+          text: 'καμια ακυρωση',
+          handler: () => {
+            this.saveAll( true, false);
+          }
+        },
+        {
+          text: 'πισω',
+          role: 'cancel'
+        }
+      ]
+    });
+    await alert.present();
   }
 }

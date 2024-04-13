@@ -19,7 +19,7 @@
       <ion-icon [color]="krathshChipIconCOlor" name="chevron-down-outline"></ion-icon> </ion-chip>
     <ion-popover trigger="krathsh-trigger" #krathshPop (ionPopoverDidDismiss)="closeKrathshPopover()">
       <ng-template>
-        <ion-list class="backgroundGrid">
+        <ion-list class="backgroundGrid ion-no-padding">
           <ion-item *ngFor="let item of itemsKrathsh" (click)="toggleItem(item)">
             <ion-label text-wrap>{{ getStatusTextInGreek(item.value) }}</ion-label>
             <ion-checkbox slot="end" [checked]="item.selected" ></ion-checkbox>
@@ -68,7 +68,7 @@
         <ion-item  lines="none" *ngIf="krathseis.length==0">
           <ion-grid>
             <ion-row>
-              <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+              <ion-img class="no_results_item transparent" src="../../../assets/imgs/NoResults.svg"> </ion-img>
             </ion-row>
             <ion-row> <ion-note class="no_results_text">
                 Δεν έχετε επερχόμενες κρατήσεις.

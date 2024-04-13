@@ -9,7 +9,7 @@
 <ion-content *ngIf="initialized==true">
   <ion-grid class="ion-no-padding">
     <ion-row class="ion-justify-content-center">
-      <ion-col size="12" class="ion-no-padding"> <ion-grid class="bgL ion-margin-top">
+      <ion-col size="12" class="ion-no-padding"> <ion-grid class="bgL">
           <ion-row class="ion-justify-content-center ion-padding">
             <ion-col size="5" md-size="2" lg-size="2" class="custCol ion-no-padding ion-padding-start ion-padding-end">
               <ion-avatar class="custAvatarHed">
@@ -67,5 +67,5 @@
   </ion-grid></ion-content>
 <ion-footer (click)="save()"> <ion-button [disabled]="!saveButtonDisabled()" expand="full" color="primary"
     class="ion-no-margin">
-    <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
+    <ion-label class="ion-text-center capsoff" color="light">Αποθήκευση</ion-label>
   </ion-button></ion-footer>

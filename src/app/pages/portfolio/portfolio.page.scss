@@ -1,5 +1,9 @@
 .bgL {
-    background-color: var(--ion-color-primary-contrast);
+    background-color: var(--ion-color-tertiary);
+  }
+
+  ion-content{
+    --background: var(--ion-color-tertiary);
   }
   
   .no_results_item {

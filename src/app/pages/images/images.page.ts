@@ -148,15 +148,6 @@ constructor(private modalController:ModalController,private navParams:NavParams,
 }
 
 
-/**
- * Extracts the image ID from a given URL.
- */
-private extractImageId(url: string): string {
-    const start = url.lastIndexOf("/") + 1; // Get the position of the last slash and add 1 to exclude it
-    const end = url.lastIndexOf("."); // Get the position of the last dot
-    return url.substring(start, end);
-}
-
     
   getImageNames(){
     data2.splice(0);

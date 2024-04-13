@@ -1,57 +1,57 @@
 <ion-header> <ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-button color="light" (click)="goBack()" slot="start">
-      <ion-icon name="arrow-back" color="light"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-  <ion-title color="light">Αναζήτηση Κράτησης</ion-title>
-</ion-toolbar></ion-header><ion-content>
-<ion-grid>
-  <ion-row class="ion-justify-content-center ">
-    <ion-col size="11">
-      <ion-searchbar class="search" [(ngModel)]="searchTerm" (ionInput)="onSearch($event)" (ionClear)="onClear()"
-        placeholder="Όνομα Κράτησης"></ion-searchbar> </ion-col>
-  </ion-row>
-</ion-grid> <ion-list class="ion-no-padding">
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Αναζήτηση Κράτησης</ion-title>
+  </ion-toolbar></ion-header><ion-content>
   <ion-grid>
-    <ng-container *ngFor="let krathsh of krathseis; let i = index" >
+    <ion-row class="ion-justify-content-center ">
+      <ion-col size="11">
+        <ion-searchbar class="search" [(ngModel)]="searchTerm" (ionInput)="onSearch($event)" (ionClear)="onClear()"
+          placeholder="Όνομα Κράτησης"></ion-searchbar> </ion-col>
+    </ion-row>
+  </ion-grid> <ion-list class="ion-no-padding backgroundList">
+    <ion-grid>
+      <ng-container *ngFor="let krathsh of krathseis; let i = index">
 
-      <ion-chip *ngIf=" (i === 0 || getDate(krathsh[3]) !== getDate(krathseis[i-1][3]))"
-        color="primary" class=" date-chip ion-margin-top">
-        <ion-label>{{ getDate(krathsh[3]) }}</ion-label>
-      </ion-chip>
-      <ion-item  [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
-        <ion-avatar class="custAvatarHed">
-          <ion-img [src]="(krathsh[7] === 'default' ? '../../../assets/icon/default-profile.png' : krathsh[7])"></ion-img>
+        <ion-chip *ngIf=" (i === 0 || getDate(krathsh[3]) !== getDate(krathseis[i-1][3]))" color="primary"
+          class=" date-chip ion-margin-top">
+          <ion-label>{{ getDate(krathsh[3]) }}</ion-label>
+        </ion-chip>
+        <ion-item [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
+          <ion-avatar class="custAvatarHed">
+            <ion-img
+              [src]="(krathsh[7] === 'default' ? '../../../assets/icon/default-profile.png' : krathsh[7])"></ion-img>
 
-        </ion-avatar>
-        <ion-label>
-          <h2 class="customFontHeader">{{krathsh[5]}}</h2>
-          <ion-note class="customFontNote" >{{krathsh[3]}} </ion-note>
+          </ion-avatar>
+          <ion-label>
+            <h2 class="customFontHeader">{{krathsh[5]}}</h2>
+            <ion-note class="customFontNote">{{krathsh[3]}} </ion-note>
 
-        </ion-label>
-        <div class="align-right" *ngIf="krathsh[2]=='accepted'">
-          <ion-icon *ngIf="isMobile()" [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon"
-            name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
-           
-    <ion-button *ngIf="!isMobile()"
-                    class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
-                    [@buttonAnimation]="krathsh[7]=='true' ? 'expanded' : 'collapsed'"
-                    [fill]="krathsh[7]=='true' ? 'solid' : 'outline'" size="small"
-                    [class.green-border]="krathsh[7]!='true'" [color]="krathsh[7]=='true'?'success':'medium'"
-                    (click)="checkIn(krathsh); $event.stopPropagation();"
-                    style="text-transform: none; border-radius: 100px !important;">
-                    <ion-icon *ngIf="krathsh[7]=='true'" [@checkmarkAnimation] name="checkmark-outline"
-                      style="padding-right: 10px;"></ion-icon>
-                    Έφτασε
-                  </ion-button>
-        </div>
-        
-      </ion-item>
+          </ion-label>
+          <div class="align-right" *ngIf="krathsh[2]=='accepted'">
+            <ion-icon *ngIf="isMobile()" [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon"
+              name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
 
-    </ng-container>
-  </ion-grid> <ion-infinite-scroll  threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
-    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll> </ion-list>
+            <ion-button *ngIf="!isMobile() && isAfterOneHourAgo(krathsh)" class="rounded-btn align-right"
+              [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
+              [@buttonAnimation]="krathsh[7]=='true' ? 'expanded' : 'collapsed'"
+              [fill]="krathsh[7]=='true' ? 'solid' : 'outline'" size="small" [class.green-border]="krathsh[7]!='true'"
+              [color]="krathsh[7]=='true'?'success':'medium'" (click)="checkIn(krathsh); $event.stopPropagation();"
+              style="text-transform: none; border-radius: 100px !important;">
+              <ion-icon *ngIf="krathsh[7]=='true'" [@checkmarkAnimation] name="checkmark-outline"
+                style="padding-right: 10px;"></ion-icon>
+              Έφτασε
+            </ion-button>
+          </div>
+
+        </ion-item>
+
+      </ng-container>
+    </ion-grid> <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll> </ion-list>
 </ion-content>

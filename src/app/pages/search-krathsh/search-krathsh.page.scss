@@ -28,8 +28,9 @@
     --color: #0048C0;
   }
   
-
-  
+  ion-content{
+    --background: var(--ion-color-tertiary);
+  } 
   .modal-toolbar {
     --opacity: 100 !important;
   }
@@ -63,10 +64,17 @@
     font-size: 13px;
   }
   
-
+  .search{
+    color:black;
+  }
+  
   
   .custGrid {
     padding-top: 0px !important;
+  }
+
+  .backgroundList{
+    background:var(--ion-color-tertiary);
   }
   
   .title {

@@ -19,10 +19,10 @@
 <ion-content> 
   <ion-spinner class="ion-padding-top ion-margin-top" color="primary" *ngIf="loadingOn"></ion-spinner> 
 
-  <ion-item class="ion-padding " lines="none" *ngIf="images.length==0">
+  <ion-item class="ion-padding transparent" lines="none" *ngIf="images.length==0">
   <ion-grid>
     <ion-row>
-      <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+      <ion-img class="no_results_item transparent" src="../../../assets/imgs/NoResults.svg"> </ion-img>
     </ion-row>
     <ion-row> <ion-note class="no_results_text">
         Εισάγετε εικόνες πατώντας στο κουμπί "Νέες".
@@ -50,13 +50,13 @@
       <ion-toolbar color="primary" class="modal-toolbar">
         <ion-buttons slot="start" color="primary">
           <ion-button no-caps class="modal-button" (click)="cancelNewPhotosModal()">
-            <ion-icon name="close"></ion-icon>
+            <ion-icon color="light" name="close"></ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-title color="light" class="center-title" text-wrap>Προσθήκη Φωτογραφιών</ion-title>
         <ion-buttons slot="end">
           <ion-button class="modal-button" (click)="confirmNewPhotosModal()" *ngIf="newImages.length!=0"
-            [strong]="true">Προσθήκη</ion-button>
+            [strong]="true"><ion-text  color="light">Προσθήκη</ion-text></ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

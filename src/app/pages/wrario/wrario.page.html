@@ -33,7 +33,7 @@
       <ion-label>{{day.name}}</ion-label>
       <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
     </ion-item>
-    <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid class="ion-no-margin w100">
+    <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid class="ion-no-margin w100 gridBackground">
         <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
           <ion-col size="5">
             <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="floating" fill="outline"
@@ -59,6 +59,6 @@
   </div>
 </ion-list>
 </ion-content>
-<ion-footer (click)="save()"> <ion-button expand="full" color="primary" class="ion-no-margin">
-  <ion-label class="ion-text-center capsoff">Αποθήκευση</ion-label>
+<ion-footer (click)="saveAll(false,false)"> <ion-button expand="full" color="primary" class="ion-no-margin">
+  <ion-label class="ion-text-center capsoff" color="light">Αποθήκευση</ion-label>
 </ion-button></ion-footer>

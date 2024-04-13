@@ -7,7 +7,7 @@
   }
   
   .bgL {
-    background-color: var(--ion-color-primary-contrast);
+    background-color: var(--ion-color-dark-contrast);
   }
   
   .bgPr {
@@ -71,6 +71,6 @@
     --highlight-color-focused:var(--ion-color-primary) !important;
     --highlight-color-valid:var(--ion-color-success) !important;
     --highlight-color-invalid:var(--ion-color-danger) !important;
-    --background:white ;
+    --background:transparent ;
   }
   

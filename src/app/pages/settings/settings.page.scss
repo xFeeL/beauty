@@ -1,6 +1,6 @@
 //all
 .background {
-  --background: #E3F0F9;
+  --background: var(--ion-color-tertiary);
 }
 
 //wrario
@@ -313,7 +313,7 @@ ion-card-content {
   justify-content: center;
   border-radius: 20px;
   /* Add rounded corners */
-  background-color: white;
+  background-color: var(--ion-color-dark-contrast);
   /* Set background color to white */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* Optional: Add a subtle shadow for depth */
@@ -328,6 +328,12 @@ ion-card-content {
 .centered-header {
   text-align: center;
   padding: 0;
-  color: black !important;
+  color: var(--ion-color-dark) !important;
   /* Use !important to override default styles if necessary */
+}
+
+
+ion-card-subtitle {
+  color: var(--ion-color-dark) !important;
+  
 }

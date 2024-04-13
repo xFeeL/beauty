@@ -9,21 +9,26 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" class="background">
-  
+   
   <ion-grid>
     <ion-row>
-      <ion-col size="6" size-md="4" *ngFor="let item of settings" (click)="goToSetting(item)" class="cursor">
-        <ion-card class="centered-card-content ion-padding-bottom">
-          <div class="avatar-container">
-              <ion-img src="{{item.icon}}"></ion-img>
+      <ion-col size="6" size-md="4" *ngFor="let item of settings">
+        <ion-card (click)="goToSetting(item)" [ngClass]="{'centered-card-content': true, 'ion-padding-bottom': true, 'ion-padding-top': item.name === 'Σκοτεινή λειτουργία'}" class="cursor">
+          <div class="avatar-container" >
+            <ion-img src="{{item.icon}}"></ion-img>
           </div>
-          <ion-card-header class="centered-header">
-            <ion-card-subtitle text-wrap style="color: black !important">{{item.name}}</ion-card-subtitle>
+          <ion-card-header class="centered-header" >
+            <ion-card-subtitle text-wrap >{{item.name}}</ion-card-subtitle>
           </ion-card-header>
+          <div *ngIf="item.name === 'Σκοτεινή λειτουργία'" class="toggle-container ion-padding" (click)="goToSetting(item); $event.stopPropagation()">
+            <ion-toggle color="primary" [(ngModel)]="themeToggle" (ionChange)="toggleChange(); goToSetting(item)"></ion-toggle>
+          </div>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
+  
+  
 </ion-content>
 <!--<ion-content [fullscreen]="true" class="background">
   <ion-segment mode="md" class="no-capitalize" color="primary" [(ngModel)]="selectedSegment">

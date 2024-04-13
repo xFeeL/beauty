@@ -83,3 +83,7 @@ ion-toolbar{
     margin-right: auto;
     //object-fit: cover;
   }
+
+  ion-content{
+    --background:var(--ion-color-tertiary)
+  }
