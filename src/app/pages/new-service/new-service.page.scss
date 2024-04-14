@@ -39,13 +39,13 @@ ion-toolbar {
 
   .customGrid{
     margin-top:16px;
-    background: white;
-    --background:white;
+    background: var(--ion-color-dark-contrast);
+    --background:var(--ion-color-dark-contrast);
     border-radius: 10px;
   }
 
   .whiteBack{
-    background: white;
+    background: var(--ion-color-dark-contrast);
   }
 
   .delete-icon {

@@ -12,8 +12,9 @@
               </ion-note>
             </div>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)">Ας
-                Ξεκινήσουμε!</ion-button>
+              <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-text
+                  color="light">Ας
+                  Ξεκινήσουμε!</ion-text> </ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide2"> <ion-item lines="none"
@@ -21,7 +22,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+                    <ion-img
+                      [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
@@ -59,7 +61,7 @@
 
             <div class="navigator ion-padding">
               <ion-button color="primary" [disabled]="!(expertName!='' && expertName!=undefined)" class="beginButton"
-                no-caps (click)="nextSlide($event)"><ion-icon
+                no-caps (click)="nextSlide($event)"><ion-icon color="light"
                   name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
@@ -68,7 +70,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHedHighLighted">
-                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+                    <ion-img
+                      [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
@@ -92,9 +95,9 @@
             <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button>
+                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button>
               <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
-                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide4"> <ion-item lines="none"
@@ -102,7 +105,8 @@
               <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+                    <ion-img
+                      [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
@@ -113,7 +117,8 @@
                         </h4>
                       </ion-col>
                     </ion-row>
-                    <ion-row *ngIf="this.address!=''" class="address-row ion-margin-start" style="justify-content: flex-start;">
+                    <ion-row *ngIf="this.address!=''" class="address-row ion-margin-start"
+                      style="justify-content: flex-start;">
                       <div style="display: flex; align-items: center;">
                         <ion-icon name="location-outline" color="primary" style="flex-shrink: 0;"></ion-icon>
                         <ion-note text-wrap style="margin-left: 2px;">
@@ -143,16 +148,17 @@
               Διεύθυνσης</ion-button>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
+                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
                 class="beginButton" [disabled]="!addressEntered" no-caps (click)="nextSlide($event)"><ion-icon
-                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide5">
             <ion-item lines="none" class="w100 ion-no-padding ion-item2"> <ion-grid>
                 <ion-row>
                   <ion-avatar class="custAvatarHed">
-                    <ion-img [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
+                    <ion-img
+                      [src]="(expertImage === 'default' ? '../../../assets/icon/default-profile.png' : expertImage)"></ion-img>
 
                   </ion-avatar>
                   <ion-grid class="ion-no-padding bl5">
@@ -163,7 +169,8 @@
                         </h4>
                       </ion-col>
                     </ion-row>
-                    <ion-row *ngIf="this.address!=''" class="address-row ion-margin-start" style="justify-content: flex-start;">
+                    <ion-row *ngIf="this.address!=''" class="address-row ion-margin-start"
+                      style="justify-content: flex-start;">
                       <div style="display: flex; align-items: center;">
                         <ion-icon name="location-outline" color="primary" style="flex-shrink: 0;"></ion-icon>
                         <ion-note text-wrap style="margin-left: 2px;">
@@ -188,9 +195,9 @@
               Κατηγοριών</ion-button>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="!(selectedItems.length>0)" color="primary" class="beginButton" no-caps
-                (click)="nextSlide($event)"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                (click)="nextSlide($event)"><ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide6">
@@ -232,9 +239,9 @@
             </ion-list>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
+                color="light"  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
                 color="primary" class="beginButton" no-caps (click)="nextSlide($event)">
-                <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+                <ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon>
               </ion-button>
             </div>
           </swiper-slide>
@@ -253,7 +260,8 @@
 
                 <ion-col size="auto">
                   <ion-avatar class="custAvatarHedPerson">
-                    <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+                    <ion-img
+                      [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
 
                   </ion-avatar>
                 </ion-col>
@@ -300,9 +308,9 @@
             </ion-grid>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
+                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
                 color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
-                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide8">
@@ -343,10 +351,11 @@
 
                               </ion-row>
                               <ion-row class="mt9">
-                                <ion-note>{{ package.services.length === 1 ? '1 υπηρεσία' : package.services.length + ' υπηρεσίες' }}</ion-note>
+                                <ion-note>{{ package.services.length === 1 ? '1 υπηρεσία' : package.services.length + '
+                                  υπηρεσίες' }}</ion-note>
                               </ion-row>
                             </ion-grid>
-                            <ion-text  slot="end">€{{ package.price }}</ion-text>
+                            <ion-text slot="end">€{{ package.price }}</ion-text>
 
                           </ion-item>
                         </ng-container>
@@ -389,15 +398,17 @@
                               </ion-row>
                               <ion-row class="mt9">
                                 <ion-note *ngIf="service.variations.length==0" class="custom-note">
-                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{
+                                  service.duration }} λεπτά
                                 </ion-note>
                                 <ion-note *ngIf="service.variations.length>0" class="custom-note">
-                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>Από {{ service.duration }} λεπτά
+                                  <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>Από {{
+                                  service.duration }} λεπτά
                                 </ion-note>
                               </ion-row>
                             </ion-grid>
                             <ion-text *ngIf="service.variations.length>0" slot="end">Από €{{ service.price }}</ion-text>
-                            <ion-text  *ngIf="service.variations.length==0"slot="end">€{{ service.price }}</ion-text>
+                            <ion-text *ngIf="service.variations.length==0" slot="end">€{{ service.price }}</ion-text>
                           </ion-item>
                         </ng-container>
                         <ng-template #noServices>
@@ -420,9 +431,9 @@
             </ion-grid>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
-                (click)="saveData()">Τέλος</ion-button>
+                (click)="saveData()"><ion-text color="light">Τέλος</ion-text> </ion-button>
             </div>
           </swiper-slide>
         </swiper-container>
@@ -433,7 +444,7 @@
                 <ion-buttons slot="start">
                   <ng-container *ngIf="isMobile(); else cancelButton">
                     <ion-button (click)="cancel()">
-                      <ion-icon color="light" name="arrow-back"></ion-icon>
+                      <ion-icon color="light" color="light" name="arrow-back"></ion-icon>
                     </ion-button>
                   </ng-container>
                   <ng-template #cancelButton>

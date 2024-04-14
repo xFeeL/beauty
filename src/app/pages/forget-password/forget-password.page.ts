@@ -19,12 +19,13 @@ export class ForgetPasswordPage implements OnInit {
   constructor(private navCtrl: NavController,private route : Router,private user: UserService,private menu: MenuController,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,private userService:UserService) { }
-  phone: any="";
   buttonDisabled:any;
   variableIcon!: string;
   variableColor!: string;
   variableClass!: string;
   variableDisabled!: string;
+  phone: any="";
+
   ngOnInit() {
     this.variableDisabled="true";
     
@@ -36,6 +37,7 @@ export class ForgetPasswordPage implements OnInit {
 
   }
 
+ 
   goHome() {
     this.user.forgotPassword(this.phone);
     this.userService.presentToast("Αν υπάρχει το κινητό που εισάγατε, θα σταλεί ο σύνδεσμος επαναφοράς.", "warning");
@@ -48,9 +50,7 @@ export class ForgetPasswordPage implements OnInit {
       this.navCtrl.back();
 
     
-}
-
-
+  }
 
 
 

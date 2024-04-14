@@ -150,12 +150,13 @@
     <ion-row>
       <ion-col size="6" (click)="deleteService()" class="ion-no-padding" *ngIf="service_id!=null">
         <ion-button size="full" color="danger" class="capsoff ion-no-margin">
-          Διαγραφή
+           <ion-text color="light">Διαγραφή</ion-text> 
         </ion-button>
       </ion-col>
       <ion-col [size]="service_id!=null?'6':'12'" class="ion-no-padding">
         <ion-button [disabled]="isSaveDisabled()" size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
-          Αποθήκευση
+          <ion-text color="light">Αποθήκευση</ion-text> 
+
         </ion-button>
       </ion-col>
     </ion-row>

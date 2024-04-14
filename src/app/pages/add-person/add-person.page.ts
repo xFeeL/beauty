@@ -68,8 +68,8 @@ export class AddPersonPage implements OnInit {
   scheduleExceptions: any[] = [];
   daysControl = new FormControl();
   isEditing: any = false;
-  addedExceptions: boolean=false;
-  defaultImage=true;
+  addedExceptions: boolean = false;
+  defaultImage = true;
 
   constructor(private alertController: AlertController, private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
     for (let i = 0; i < 24; i++) {
@@ -85,7 +85,7 @@ export class AddPersonPage implements OnInit {
 
   ionViewWillEnter() {
     console.log(this.navParams);
-    this.defaultImage=this.navParams.get('defaultImage');;
+    this.defaultImage = this.navParams.get('defaultImage');;
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
     this.customSchedule = this.navParams.get('toggled');
@@ -198,60 +198,73 @@ export class AddPersonPage implements OnInit {
       }
     }
 
-   if(!this.onboarding){
-    let body = {
-      id: this.navParams.get('personId'),
-      name: this.personName,
-      surname: this.personSurName,
-      image: this.image?.split(",")[1] ?? 'default', 
-      exceptions: deformattedSelectedExceptions,
-      schedule: this.customSchedule 
-        ? this.scheduleToReturn
-          .filter((day: { open: any; }) => day.open)
-          .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({ 
-            day: name, 
-            intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`) 
-          }))
-        : this.businessSchedule.map((day: { name: any; timeIntervals: any[]; }) => {
+    if (!this.onboarding) {
+      let body = {
+        id: this.navParams.get('personId'),
+        name: this.personName,
+        surname: this.personSurName,
+        image: (() => {
+          const parts = this.image?.split(",");
+          if (parts && parts.length === 2) {
+            // If the image URL is properly split into two parts, return the second part
+            return parts[1];
+          } else if (this.image?.includes("http")) {
+            // If the image string contains "http", assume it's a valid URL and return it
+            return this.image;
+          }
+          // If none of the above conditions are met, return 'default'
+          return 'default';
+        })(),
+        
+        exceptions: deformattedSelectedExceptions,
+        schedule: this.customSchedule
+          ? this.scheduleToReturn
+            .filter((day: { open: any; }) => day.open)
+            .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({
+              day: name,
+              intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`)
+            }))
+          : this.businessSchedule.map((day: { name: any; timeIntervals: any[]; }) => {
             const mappedDay = day.name;
             return {
               day: mappedDay,
               intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
             };
           }),
-    };
-    console.log("The body")
-    console.log(body)
-    this.saveEmployee(body)
-   }else{
-    if (this.customSchedule) {
-      await this.modalController.dismiss({
-        'personName': this.personName,
-        'personSurName': this.personSurName,
-        'scheduleExceptions': deformattedSelectedExceptions,
-        'days': this.scheduleToReturn,
-        'image': this.image,
-        'defaultImage':this.defaultImage
-      });
+      };
+      console.log("The body")
+      console.log(body)
+      this.saveEmployee(body)
     } else {
-      await this.modalController.dismiss({
-        'personName': this.personName,
-        'personSurName': this.personSurName,
-        'scheduleExceptions': deformattedSelectedExceptions,
-        'days': this.businessSchedule,
-        'image': this.image,
-        'defaultImage':this.defaultImage
+      if (this.customSchedule) {
+        await this.modalController.dismiss({
+          'personName': this.personName,
+          'personSurName': this.personSurName,
+          'scheduleExceptions': deformattedSelectedExceptions,
+          'days': this.scheduleToReturn,
+          'image': this.image,
+          'defaultImage': this.defaultImage
+        });
+      } else {
+        await this.modalController.dismiss({
+          'personName': this.personName,
+          'personSurName': this.personSurName,
+          'scheduleExceptions': deformattedSelectedExceptions,
+          'days': this.businessSchedule,
+          'image': this.image,
+          'defaultImage': this.defaultImage
 
-      });
-   }
+        });
+      }
+    }
+
+
   }
-    
 
-  }
-
-  dismissModalAfterEdit(){
+  dismissModalAfterEdit() {
     this.modalController.dismiss({
-      'edited': true
+      'edited': true,
+      'new_image': this.new_image
     });
   }
 
@@ -484,7 +497,7 @@ export class AddPersonPage implements OnInit {
         this.image = this.cropped
         this._cd.markForCheck();
         this.new_image = "true"
-        this.defaultImage=false;
+        this.defaultImage = false;
 
       }
     });
@@ -621,7 +634,7 @@ export class AddPersonPage implements OnInit {
       if (this.scheduleExceptions) {
         this.scheduleExceptions.push(formattedException);
         this.daysControl.setValue(this.scheduleExceptions);
-        this.addedExceptions=true
+        this.addedExceptions = true
       } else {
         console.error("scheduleExceptions is not initialized");
       }

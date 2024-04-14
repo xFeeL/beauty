@@ -17,8 +17,9 @@
               <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
             </div>
             <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception">
-              {{ exception.formatted }}
+              {{ exception.formatted }} ({{exception.repeat}})
             </mat-option>
+          
           </mat-select>
         </mat-form-field> <mat-icon class="ion-margin-bottom blue-icon " #tooltip="matTooltip"
           (click)="tooltip.toggle()" matTooltipPosition="above"

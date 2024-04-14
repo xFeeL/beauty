@@ -41,8 +41,8 @@ export class WrarioPage implements OnInit {
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
-  addedExceptions: boolean=false;
-  constructor(private alertController:AlertController,private modalController: ModalController, private userService: UserService) {
+  addedExceptions: boolean = false;
+  constructor(private alertController: AlertController, private modalController: ModalController, private userService: UserService) {
 
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
@@ -51,7 +51,7 @@ export class WrarioPage implements OnInit {
     this.hours.push(this.formatHour(23, '59'));
 
   }
- 
+
   firstDayTemplate: any[] = [];
   firstDayToggled: any = null;
 
@@ -61,16 +61,20 @@ export class WrarioPage implements OnInit {
   getScheduleExceptions() {
     this.userService.getScheduleExceptions().subscribe(
       data => {
-        this.scheduleExceptions = data.map((exception: { start: moment.MomentInput; end: moment.MomentInput; }) => {
+        this.scheduleExceptions = data.map((exception: { start: moment.MomentInput; end: moment.MomentInput; repeat?: boolean }) => {
           const formattedStart = moment(exception.start).locale('el').format('MMM DD, HH:mm');
           const formattedEnd = moment(exception.end).locale('el').format('MMM DD, HH:mm');
           const start = exception.start
           const end = exception.end
+
           return {
             formatted: `${formattedStart} - ${formattedEnd}`,
             originalStart: start,
-            originalEnd: end
+            originalEnd: end,
+            repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+
           };
+
         });
         this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
       },
@@ -131,26 +135,26 @@ export class WrarioPage implements OnInit {
   }
 
 
- /* async openDateTimePicker() {
-    this.mySelect.close()
-    const modal = await this.modalController.create({
-      component: AddScheduleExceptionPage,
-      componentProps: {
-        // room: room, // Pass the entire room object
-      }
-    });
-    await modal.present();
-    //; // Close the MatSelect dropdown
-
-    const { data } = await modal.onDidDismiss();
-    this.scheduleExceptions = []
-    this.getScheduleExceptions()
-
-    if (data) {
-
-      // room.tableTypes = data.tableTypes; // Update the room's table types with the returned data
-    }
-  }*/
+  /* async openDateTimePicker() {
+     this.mySelect.close()
+     const modal = await this.modalController.create({
+       component: AddScheduleExceptionPage,
+       componentProps: {
+         // room: room, // Pass the entire room object
+       }
+     });
+     await modal.present();
+     //; // Close the MatSelect dropdown
+ 
+     const { data } = await modal.onDidDismiss();
+     this.scheduleExceptions = []
+     this.getScheduleExceptions()
+ 
+     if (data) {
+ 
+       // room.tableTypes = data.tableTypes; // Update the room's table types with the returned data
+     }
+   }*/
 
   async openDateTimePicker() {
     this.mySelect.close();
@@ -170,7 +174,7 @@ export class WrarioPage implements OnInit {
       if (this.scheduleExceptions) {
         this.scheduleExceptions.push(formattedException);
         this.daysControl.setValue(this.scheduleExceptions);
-        this.addedExceptions=true
+        this.addedExceptions = true
       } else {
         console.error("scheduleExceptions is not initialized");
       }
@@ -183,7 +187,7 @@ export class WrarioPage implements OnInit {
   formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
     const formattedStart = moment.utc(exception.start).locale('el').format('MMM DD, HH:mm');
     const formattedEnd = moment.utc(exception.end).locale('el').format('MMM DD, HH:mm');
-    
+
     return {
       formatted: `${formattedStart} - ${formattedEnd}`,
       originalStart: exception.start,
@@ -192,7 +196,7 @@ export class WrarioPage implements OnInit {
     };
   }
 
-  
+
 
 
   goBack() {
@@ -356,15 +360,16 @@ export class WrarioPage implements OnInit {
     return num < 10 ? '0' + num : num.toString();
   }
 
-  saveAll(safeToSave:boolean,cancelAllFutureOverlappedAppointments:any) {
 
-      
-    this.userService.saveWrario(this.daysWrario,this.deformatExceptions(this.daysControl.value),safeToSave,cancelAllFutureOverlappedAppointments).subscribe(data => {
+  saveAll(safeToSave: boolean, cancelAllFutureOverlappedAppointments: any) {
+
+
+    this.userService.saveWrario(this.daysWrario, this.deformatExceptions(this.daysControl.value), safeToSave, cancelAllFutureOverlappedAppointments).subscribe(data => {
       this.userService.presentToast("Το ωράριο αποθηκεύτηκε με επιτυχία.", "success")
       this.modalController.dismiss()
 
     }, err => {
-      if (err.status === 406 && err.error && err.error["Overlapping appointments"]) { 
+      if (err.status === 406 && err.error && err.error["Overlapping appointments"]) {
         this.presentAlertWithChoices(err.error["Overlapping appointments"]);
       } else {
         this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
@@ -373,7 +378,7 @@ export class WrarioPage implements OnInit {
     })
   }
 
-  async presentAlertWithChoices( overlappingDates: string) {
+  async presentAlertWithChoices(overlappingDates: string) {
     const alert = await this.alertController.create({
       header: 'Προσοχή!',
       message: 'Υπάρχουν κρατήσεις που δεν έχουν ολοκληρωθει τις ημερομηνίες: ' + overlappingDates,
@@ -384,13 +389,13 @@ export class WrarioPage implements OnInit {
             console.log("PREPEI NA EINAI TRUE")
             /*this.needRefresh=true
             console.log(this.needRefresh)*/
-            this.saveAll( true, true);
+            this.saveAll(true, true);
           }
         },
         {
           text: 'καμια ακυρωση',
           handler: () => {
-            this.saveAll( true, false);
+            this.saveAll(true, false);
           }
         },
         {

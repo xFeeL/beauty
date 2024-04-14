@@ -92,7 +92,7 @@
   justify-content: center;
   border-radius: 10px;
   /* Add rounded corners */
-  background-color: white;
+  background-color: var(--ion-color-dark-contrast);
   /* Set background color to white */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* Optional: Add a subtle shadow for depth */
@@ -140,4 +140,8 @@ ion-avatar {
   position: fixed;
   bottom: 8%;
   right: 3%;
+}
+
+ion-segment{
+  background:var(--ion-color-primary)
 }

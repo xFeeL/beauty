@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" class="background">
-  <ion-segment mode="md" class="capsoff" color="primary" [(ngModel)]="selectedSegment">
+  <ion-segment mode="ios" class="capsoff" color="primary" [(ngModel)]="selectedSegment">
     <ion-segment-button value="team" (click)="goToTeam()" class="mr5 capsoff">
       <ion-label>Ομάδα</ion-label>
     </ion-segment-button>
@@ -40,10 +40,11 @@
                       </button>
                     </mat-menu>
                   </div>
-                
+
                   <div class="avatar-container">
                     <ion-avatar class="custAv">
-                      <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+                      <ion-img
+                        [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
 
                     </ion-avatar>
                   </div>
@@ -78,7 +79,7 @@
         <ion-col size="11">
 
 
-          <ion-grid class="w100 w80 custRow "  *ngIf="serviceCategories.length!=0">
+          <ion-grid class="w100 w80 custRow " *ngIf="serviceCategories.length!=0">
             <ion-row>
               <ion-col size="12">
                 <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom">
@@ -86,13 +87,12 @@
                     <ion-col>
                       <h4 class="ml13" style="text-align: left">Πακέτα</h4> <!-- Display category name -->
                     </ion-col>
-                  
+
                   </ion-row>
                   <ion-row *ngIf="packages.length > 0">
                     <ion-list lines="inset" class="ion-no-padding servicesList">
-                      <ng-container >
-                        <ion-item class="cursor" *ngFor="let package of packages"
-                          (click)="editPackage(package)">
+                      <ng-container>
+                        <ion-item class="cursor" *ngFor="let package of packages" (click)="editPackage(package)">
                           <div class="package-line"></div>
                           <ion-grid>
                             <ion-row>
@@ -107,7 +107,7 @@
                           </ion-grid>
                         </ion-item>
                       </ng-container>
-                     
+
                     </ion-list>
                   </ion-row>
                 </ion-grid>
@@ -146,14 +146,16 @@
                             </ion-row>
                             <ion-row class="mt9">
                               <ion-note *ngIf="!service.hasVariations" class="custom-note">
-                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{
+                                service.duration }} λεπτά
                               </ion-note>
                               <ion-note *ngIf="service.hasVariations" class="custom-note">
-                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{ service.duration }} λεπτά
+                                <ion-icon color="primary" name="time-outline" class="custom-icon"></ion-icon>{{
+                                service.duration }} λεπτά
                               </ion-note>
                             </ion-row>
-                            
-                            
+
+
                           </ion-grid>
                           <ion-text *ngIf="service.hasVariations" slot="end">Από €{{ service.price }}</ion-text>
                           <ion-text *ngIf="!service.hasVariations" slot="end">€{{ service.price }}</ion-text>

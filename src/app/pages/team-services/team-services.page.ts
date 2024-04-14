@@ -145,9 +145,13 @@ async deleteEmployee(employee: any) {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
+    
     if (data.edited) {
-      this.team=[]
-      this.goToTeam();
+      this.goToTeam()
+      if(data.new_image=="true"){
+        window.location.reload();
+
+      }
 
     }
   }

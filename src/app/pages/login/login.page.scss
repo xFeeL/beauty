@@ -18,6 +18,10 @@
     background-color: rgba(102, 51, 153, 0)
 }
 
+.division{
+    background-color: var(--ion-color-dark-contrast);;
+}
+
 .bordernon {
     border: none;
 }
@@ -111,4 +115,14 @@
 
 .no-padding-bottom{
     padding-bottom: 0px;
+}
+
+ion-content{
+    --background: var(--ion-color-dark-contrast);
+}
+
+
+
+  ion-item {
+    --border-color: var(--ion-color-primary);
 }

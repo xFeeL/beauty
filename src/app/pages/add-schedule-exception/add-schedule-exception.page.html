@@ -15,7 +15,7 @@
       <ion-text color="primary"><b>Τύπος εξαίρεσης</b></ion-text>
     </ion-card-header>
     <ion-card-content>
-      <ion-segment [(ngModel)]="exceptionType">
+      <ion-segment [(ngModel)]="exceptionType" mode="ios">
         <ion-segment-button class="capsoff" value="once">Μία φορά</ion-segment-button>
         <ion-segment-button class="capsoff" value="repeated">Επαναλαμβανόμενο</ion-segment-button>
       </ion-segment>
@@ -58,5 +58,5 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button class="ion-no-margin capsoff" expand="full" (click)="saveScheduleException()">Αποθήκευση</ion-button>
+  <ion-button class="ion-no-margin capsoff" expand="full" (click)="saveScheduleException()" ><ion-text color="light">Αποθήκευση</ion-text></ion-button>
 </ion-footer>

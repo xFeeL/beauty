@@ -1,9 +1,11 @@
 .content-box {
-    border: 1px solid #ccc; /* Example border: 2px solid grey */
-    padding: 10px; /* Adds some padding inside the box */
-    margin-bottom: 20px; /* Adds some space below the box */
-    border-radius: 10px; /* Optional: adds rounded corners */
-  }
+  border: 1px solid #ccc; /* Example border: 2px solid grey */
+  padding: 10px; /* Adds some padding inside the box */
+  margin-bottom: 20px; /* Adds some space below the box */
+  border-radius: 10px; /* Optional: adds rounded corners */
+  background: var(--ion-color-dark-contrast);
+}
+
 
   .s25{
     height:25px;
@@ -25,8 +27,9 @@
     padding: 15px; /* Adjust as necessary to match the desired padding */
   }
   
- ion-select{
-  padding-end:0px;
-  padding-right:32px;
-  margin-left:16px;
- }
+  ion-select{
+    padding-end:0px;
+    //padding-right:32px;
+    //margin-left:16px;
+    background: var(--ion-color-dark-contrast);
+   }

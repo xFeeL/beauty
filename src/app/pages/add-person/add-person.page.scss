@@ -74,7 +74,10 @@
   
 
   .whiteback{
-    background:white
+    background:transparent;
   }
 
+  .time-selection{
+    background: var(--ion-color-dark-contrast);
+  }
   
