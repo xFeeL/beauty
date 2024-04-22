@@ -206,6 +206,8 @@ export class HomePage implements OnInit {
   }
 
   getPendingAppointmentsNumber() {
+    this.pendingAppointments = null;
+
     this.userService.getPendingAppointmentsNumber().subscribe(data => {
       this.pendingAppointments = data;
     }, err => {

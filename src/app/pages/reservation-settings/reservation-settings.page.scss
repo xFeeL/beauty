@@ -43,6 +43,10 @@ mat-hint.mat-mdc-form-field-hint.pl5 {
 ::ng-deep .no-checkbox.mat-option .mat-pseudo-checkbox {
   display: none;
 }
+.text-wrap {
+  white-space: normal; /* Overrides any nowrap CSS applied elsewhere */
+}
+
 
 .flex-container {
   display: flex;

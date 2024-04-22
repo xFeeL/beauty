@@ -22,18 +22,25 @@
             </ion-select>
           </ion-label>
         </ion-list> </ion-col> </ion-row>
-    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-      <ion-col size-xl="8" class="ion-justify-content-center">
-        <ion-item lines="none"> <ion-toggle [(ngModel)]="needAccept" #toggleElement [enableOnOffLabels]="true"
-            labelPlacement="start">Αυτόματη αποδοχή κρατήσεων</ion-toggle>
-        </ion-item>
-      </ion-col> </ion-row>
-    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-      <ion-col size-xl="8" class="ion-justify-content-center"> <ion-item lines="none">
-          <ion-toggle [(ngModel)]="isVisible " #toggleElement [enableOnOffLabels]="true"
-            labelPlacement="start">Ενεργοποίηση online κρατήσεων</ion-toggle>
-        </ion-item>
-      </ion-col> </ion-row>
+        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+          <ion-col size-xl="8" class="ion-justify-content-center">
+            <ion-item lines="none">
+              <ion-toggle [(ngModel)]="needAccept" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
+                <ion-text text-wrap style="white-space: normal !important;">Αυτόματη αποδοχή κρατήσεων</ion-text>
+              </ion-toggle>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+          <ion-col size-xl="8" class="ion-justify-content-center">
+            <ion-item lines="none">
+              <ion-toggle [(ngModel)]="isVisible" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
+                <ion-text text-wrap style="white-space: normal !important; ">Ενεργοποίηση online κρατήσεων</ion-text>
+              </ion-toggle>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        
    
   </ion-grid> 
 </ion-content>

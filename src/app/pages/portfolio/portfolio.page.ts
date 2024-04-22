@@ -55,6 +55,7 @@ export class PortfolioPage implements OnInit {
   currentAlbum: any; // The currently selected album
   currentAlbumPhotos: any;
   newImageChosen: boolean=false;
+  isCreating: boolean=false;
 
   constructor(private actionSheetCtrl: ActionSheetController,private modalController:ModalController,private plt: Platform,private userService:UserService,private navCtl:NavController,private sanitizer: DomSanitizer,private alertController: AlertController,private router:Router,private actionSheetController:ActionSheetController,) {
     this.fbLogin = FacebookLogin;
@@ -93,20 +94,26 @@ export class PortfolioPage implements OnInit {
       }
     }
 
-    confirmNewFolderModal(){
-     
-      this.userService.newPorfolioFolder(this.newFolderName,this.newFolderImage).subscribe(data=>{
-        this.newFolderImage="";
-        this.newFolderName="";
-        this.userService.presentToast("Ο φάκελος δημιουργήθηκε με επιτυχία!","success")
-        this.portfolio=[]
-        this.getPortfolio()
+    confirmNewFolderModal() {
+      this.isCreating = true; // Start the spinner
+  
+      this.userService.newPorfolioFolder(this.newFolderName, this.newFolderImage).subscribe(data => {
+        // Reset the form and other state
+        this.newFolderImage = "";
+        this.newFolderName = "";
+        // Notify the user of success
+        this.userService.presentToast("Ο φάκελος δημιουργήθηκε με επιτυχία!", "success");
+        // Refresh any necessary data
+        this.portfolio = [];
+        this.getPortfolio();
+        // Dismiss the modal
         this.newFolderModal.dismiss('confirm');
-
-      },error=>{
-        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ προσπαθήστε αργότερα.","danger")
-      })
-
+        this.isCreating = false; // Stop the spinner
+      }, error => {
+        // Handle errors and stop the spinner
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ προσπαθήστε αργότερα.", "danger");
+        this.isCreating = false;
+      });
     }
 
     cancelNewFolderModal(){

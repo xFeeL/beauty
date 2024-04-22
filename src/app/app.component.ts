@@ -250,7 +250,7 @@ isMobile(){
       console.log("asdasdasdasdasd")
       if(localStorage.getItem('authenticated')=='true'){
         this.onMenuOpen();
-        this.userService.getExpertId().subscribe(data=>{
+        this.userService.getAccountId().subscribe(data=>{
           this.urlToCopy="https://www.fyx.gr/book/"+data.id
         },err=>{
   

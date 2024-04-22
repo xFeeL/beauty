@@ -9,9 +9,14 @@ import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
 
 
+//let API_URL = "http://localhost:8080/common/";
+//let Authenticated_API_URL = "http://localhost:8080/common-auth/"
+//let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+
 let API_URL = "http://localhost:8080/common/";
 let Authenticated_API_URL = "http://localhost:8080/common-auth/"
 let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +78,12 @@ export class UserService {
   sseConnect(call: string) {
     console.log("Getting called from " + call)
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream")
-      this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
+      this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       console.log(this.eventSource)
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -133,8 +138,8 @@ export class UserService {
           console.log('SSE connection closed, reconnecting...');
           console.log('Trying...');
           setTimeout(() => {
-            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream")
-            this.getServerSentEvent("http://localhost:8080/common-auth/stream").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
+            this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -727,6 +732,14 @@ export class UserService {
       catchError(error => this.handleError(error))
     );
   }
+
+  
+  getAccountId(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-account-id", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
 
   /**
   * Returns the expert data.

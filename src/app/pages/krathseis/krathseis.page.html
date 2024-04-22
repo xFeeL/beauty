@@ -93,11 +93,11 @@
                   <ion-note class="customFontNote" *ngIf="mode=='new'">{{krathsh[3]}} • Τιμή: €{{krathsh[9]}}</ion-note>
 
                 </ion-label>
-                <div class="align-right" *ngIf="krathsh[2]=='accepted'">
-                  <ion-icon *ngIf="isMobile()" [color]="krathsh[5]=='true'?'success':'medium'" class="checkmark-icon"
+                <div class="align-right" *ngIf="krathsh[2]=='accepted' && isAfterOneHourAgo(krathsh)">
+                  <ion-icon *ngIf="isMobile() " [color]="krathsh[5]=='true'?'success':'medium'" class="checkmark-icon"
                     name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
                    
-            <ion-button *ngIf="!isMobile() && isAfterOneHourAgo(krathsh)"
+            <ion-button *ngIf="!isMobile()"
                             class="rounded-btn align-right" [ngClass]="{'expanded': krathsh[5]=='checked_in'}"
                             [@buttonAnimation]="krathsh[5]=='true' ? 'expanded' : 'collapsed'"
                             [fill]="krathsh[5]=='true' ? 'solid' : 'outline'" size="small"
