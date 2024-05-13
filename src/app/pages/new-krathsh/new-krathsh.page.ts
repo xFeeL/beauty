@@ -156,6 +156,8 @@ export class NewKrathshPage implements OnInit {
           this.selectedServices = []
         }
       });
+    }else{
+      this.chooseServices();
     }
 
   }

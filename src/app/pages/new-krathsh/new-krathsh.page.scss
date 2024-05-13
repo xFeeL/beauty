@@ -46,6 +46,10 @@
     --color: white;
     --width: 300px;
   }
+
+  .m8{
+    margin:8px;
+  }
   
   ion-searchbar {
     font-size: 12px;
@@ -226,7 +230,7 @@
 }
 
 .blackFont{
-  color:black;
+  color:var(--ion-color-dark);
 }
 
 .person-item {

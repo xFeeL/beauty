@@ -113,7 +113,7 @@
 
       </ion-button>
     </ion-buttons>
-    <ion-input class="chat_input" #inputId autofocus="true" *ngIf="mode=='text'" type="text" [(ngModel)]="to_send"
+    <ion-input class="chat_input" #inputId autofocus="false" *ngIf="mode=='text'" type="text" [(ngModel)]="to_send"
       placeholder="Aa" (keyup.enter)="sendMessage()"></ion-input>
   </ion-toolbar>
 </ion-footer>

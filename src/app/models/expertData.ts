@@ -7,4 +7,7 @@ export class expertData {
     address:string="";
     coordinates:string="";
     categories:string="";
+    instagram=""
+    facebook=""
+    tiktok=""
 }

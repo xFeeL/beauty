@@ -5,7 +5,7 @@
       </ion-button>
     </ion-buttons>
     <ion-title color="light">Νέα Κράτηση</ion-title>
-  </ion-toolbar></ion-header><ion-content class="background"> <ion-grid class="ion-no-padding bgL">
+  </ion-toolbar></ion-header><ion-content class="background"> <ion-grid class="ion-no-padding bgL m8">
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" size-xl="11">
         <h4><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
@@ -185,7 +185,7 @@
       <ion-content class="ion-padding backgroundChooseClient">
         <ng-container *ngIf="!isAddingNewClient">
           <ion-searchbar class="blackFont" placeholder="Εισάγετε όνομα" [(ngModel)]="searchTerm" (keyup)="searchClient()"></ion-searchbar>
-          <ion-list>
+          <ion-list class="ion-no-padding">
             <ion-item *ngIf="isLoading">
               <ion-spinner slot="start" name="crescent" color="primary"></ion-spinner>
               <ion-label class="ion-padding-start">Αναζήτηση...</ion-label>

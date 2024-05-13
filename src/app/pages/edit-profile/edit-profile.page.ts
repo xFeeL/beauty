@@ -12,6 +12,7 @@ import { ImgCropperEvent } from '@alyle/ui/image-cropper';
 import { LyDialog } from '@alyle/ui/dialog';
 import { FacebookImagesPage } from '../facebook-images/facebook-images.page';
 import { InstagramImagesPage } from '../instagram-images/instagram-images.page';
+import { NgModel } from '@angular/forms';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.page.html',
@@ -27,7 +28,9 @@ export class EditProfilePage {
   name: string = "Error";
   new_image: string = "false";
   photos: { imageLink: string, selected: boolean }[] = [];
-
+  facebookLink: string = "";
+  instagramLink: string = "";
+  tiktokLink: string = "";
   email: string = "Error";
   initialized: boolean = false;
   dataExpert: expertData = new expertData();
@@ -55,9 +58,9 @@ export class EditProfilePage {
   @ViewChild('_fileInput') _fileInput: any;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
   needReferesh: any = false;
-  expert_categories: any=[];
-  all_categories: any=[];
-  coordinates: string="";
+  expert_categories: any = [];
+  all_categories: any = [];
+  coordinates: string = "";
 
   constructor(
 
@@ -68,7 +71,7 @@ export class EditProfilePage {
   }
 
   ngOnInit() {
-   
+
   }
 
   ionViewWillEnter() {
@@ -81,16 +84,25 @@ export class EditProfilePage {
     this.userService.getExpertImage().subscribe(data => {
       this.image = data
     }, err => {
-      this.image =  err.error.text
+      this.image = err.error.text
     });
     this.userService.getExpertData().subscribe(data => {
       let temp = data.name.split("$");
       this.name = temp[0];
       this.email = data.email;
       this.phone = data.mobile;
+      if (data.social_media) {
+        const links = data.social_media.split(',');
+        // Ensure the array has at least three elements to prevent undefined errors
+        if (links.length >= 3) {
+          this.facebookLink = links[0];  // Assign the first item to facebookLink
+          this.instagramLink = links[1]; // Assign the second item to instagramLink
+          this.tiktokLink = links[2];    // Assign the third item to tiktokLink
+        }
+      }
       if (!this.updatedAddress) {
         this.address = data.address
-        this.coordinates=data.coordinates
+        this.coordinates = data.coordinates
       }
       this.displayed_phone = data.displayed_phone
       this.initialized = true;
@@ -129,8 +141,12 @@ export class EditProfilePage {
     this.dataExpert.displayedPhone = this.displayed_phone
     this.dataExpert.new_image = this.new_image
     this.dataExpert.address = this.address;
-    this.dataExpert.coordinates=this.coordinates
+    this.dataExpert.coordinates = this.coordinates
     this.dataExpert.image = this.image
+    this.dataExpert.facebook = this.facebookLink
+    this.dataExpert.instagram = this.instagramLink
+    this.dataExpert.tiktok = this.tiktokLink
+
     //this.dataUser.image=this.image
     this.userService.saveExpertData(this.dataExpert).subscribe(data => {
       this.userService.presentToast("Το προφίλ σας άλλαξε με επιτυχία!", "success")
@@ -155,7 +171,7 @@ export class EditProfilePage {
       if (data.data != undefined) {
         console.log(data.data)
         this.address = data.data.address
-        this.coordinates=data.data.longitude+","+data.data.latitude
+        this.coordinates = data.data.longitude + "," + data.data.latitude
         this.needReferesh = true
       }
       // Do something with the data returned from the modal
@@ -188,20 +204,38 @@ export class EditProfilePage {
       this.businessNameItemClass = "ion-margin invalidBorderItem"
 
     }
-    
+
   }
 
-  
+  // Accessing the NgModels
+  @ViewChild('facebookForm', { static: false }) facebookForm!: NgModel;
+  @ViewChild('instagramForm', { static: false }) instagramForm!: NgModel;
+  @ViewChild('tiktokForm', { static: false }) tiktokForm!: NgModel;
 
-  saveButtonDisabled(){
-    if (this.resultBusinessNameCheck && this.resultPhoneCheck && this.expert_categories.length > 0) {
-      this.saveButtonEnabled = true;
-    } else {
-      this.saveButtonEnabled = false;
 
-    }
-    return this.saveButtonEnabled;
+  linkValid(link: string): boolean {
+    // Checks if the provided link includes 'https://'
+    return link.includes('https://');
   }
+
+
+  saveButtonDisabled() {
+    const basicChecks = this.resultBusinessNameCheck && this.resultPhoneCheck && this.expert_categories.length > 0;
+
+    // Ensure the input is either empty or valid (if not empty, it must be valid)
+    const facebookValid = this.facebookLink == "" || (this.facebookLink != "" && this.linkValid(this.facebookLink));
+    const instagramValid = this.instagramLink == "" || (this.instagramLink != "" && this.linkValid(this.instagramLink));
+    const tiktokValid = this.tiktokLink == "" || (this.tiktokLink != "" && this.linkValid(this.tiktokLink));
+
+    console.log("facebook " + facebookValid + " " + this.facebookLink);
+    console.log("insta " + instagramValid);
+    console.log("tiktok " + tiktokValid);
+
+    let saveButtonEnabled = basicChecks && facebookValid && instagramValid && tiktokValid;
+    return !saveButtonEnabled;  // Return true to disable the save button if conditions are not met
+  }
+
+
 
 
   mobileCheck() {
@@ -353,7 +387,7 @@ export class EditProfilePage {
 
   goToCrop() {
 
-  
+
     this.openCropperDialog(this.selectedImage.imageLink)
 
   }
