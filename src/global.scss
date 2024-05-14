@@ -26,7 +26,6 @@
 @import "swiper/scss";
 @import "swiper/scss/navigation";
 @import "swiper/scss/pagination";
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -313,6 +312,37 @@ ion-select {
   --background:white !;
 }
 
+.mat-mdc-text-field-wrapper{
+  background: var(--ion-color-dark-contrast) !important
+}
+
+.mat-mdc-autocomplete-panel{
+  background: var(--ion-color-dark-contrast) !important
+
+}
 
 
+.mat-mdc-autocomplete-trigger{
+  color: var(--ion-color-dark) !important
 
+}
+
+.mdc-list-item__primary-text{
+  color: var(--ion-color-dark) !important
+
+}
+
+.mdc-floating-label{
+  color: var(--ion-color-dark) !important
+
+}
+
+.location-search-icon {
+  color: var(--ion-color-primary);
+  margin-right: 5px;
+}
+
+.loading-spinner mat-spinner {
+  width: 24px;
+  height: 24px;
+}

@@ -65,7 +65,7 @@ export class AppComponent implements WithStyles  {
               private userService:UserService,
               private rout : Router,    readonly sRenderer: StyleRenderer,private modalController:ModalController) {
                 this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
-
+              
               }
   $priority?: number | undefined;
 

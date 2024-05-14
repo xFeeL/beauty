@@ -79,6 +79,7 @@ export class EditProfilePage {
 
     if (localStorage.getItem('address') != null) {
       this.address = localStorage.getItem('address');
+      this.autocompleteInput=this.address
       this.updatedAddress = true
     }
     this.userService.getExpertImage().subscribe(data => {
@@ -102,6 +103,8 @@ export class EditProfilePage {
       }
       if (!this.updatedAddress) {
         this.address = data.address
+        this.autocompleteInput=this.address
+
         this.coordinates = data.coordinates
       }
       this.displayed_phone = data.displayed_phone
@@ -420,7 +423,42 @@ export class EditProfilePage {
     }
   }
 
+  autocompleteInput: string = '';
+  loadingOn: boolean = false;
+  queryWait: boolean = false;
+  suggestions:any=[]
+  searchAddress() {
+    console.log('search', this.autocompleteInput);
+    if (this.autocompleteInput.length < 1) {
+      this.suggestions = [];
+      this.loadingOn = false;
+      return;
+    }
 
+    if (!this.queryWait) {
+      this.loadingOn = true;
+      this.queryWait = true;
+
+      setTimeout(() => {
+        this.queryWait = false;
+        this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
+          this.suggestions = data;
+          console.log(data);
+          this.loadingOn = false;
+        }, err => {
+          console.error(err);
+          this.loadingOn = false;
+        });
+      }, 0);
+    }
+  }
+
+  saveAddress(suggestion:any){
+    this.address=suggestion.address
+    this.coordinates= suggestion.longitude + "," + suggestion.latitude
+
+    this.needReferesh = true
+  }
 
 
 }

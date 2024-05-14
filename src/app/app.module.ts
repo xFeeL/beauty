@@ -56,6 +56,7 @@ import {MatCardModule} from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { CustomHttpInterceptorService } from '../app/services/custom-http-interceptor.service';
 
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 
 @NgModule({
   declarations: [AppComponent,CropperDialog],
@@ -85,7 +86,7 @@ import { CustomHttpInterceptorService } from '../app/services/custom-http-interc
     MatNativeDateModule,
     MatSelectModule,
     MatButtonModule,
-    
+    MatAutocompleteModule,
     MatInputModule,
     NgxAwesomePopupModule.forRoot(), // Essential, mandatory main module.
     DialogConfigModule.forRoot(), // Needed for instantiating dynamic components.
