@@ -1,43 +1,247 @@
-/* Dark border for the sticky header row and its children */
-.sticky-header-row {
-    position: sticky;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+#calendar {
+  // max-width: 1100px;
+  margin: 40px auto;
+}
+
+::ng-deep .fc .fc-timegrid-slot-minor {
+  border-top-style: none !important;
+  border-style: none;
+}
+
+ion-popover {
+  &.width-80 {
+    --width: 19%;
+  }
+}
+
+:host ::ng-deep .custom-datetime {
+  border-radius: 20px;
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  background: #F7F7F7;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 998;
+}
+
+::ng-deep .time-div{
+  padding-right: 4px;
+  margin-top: -2px;
+}
+::ng-deep .fc thead {
+  background-color: #F7F7F7 !important;
+}
+
+::ng-deep .fc-col-header {
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  margin-top: 56px;
+}
+
+::ng-deep .fc-scrollgrid-section-body {
+  top: 0;
+  position: relative;
+}
+
+.todayButton {
+  color: #007aff;
+  font-weight: bold;
+  padding: 0;
+  line-height: 2.25em;
+  font-size: 1em;
+  margin: -25px;
+  margin-top: -21px;
+}
+
+.datepicker-text {
+  margin-left: 20px;
+  margin-top: 2px;
+  font-size: 1.5em;
+  line-height: 1.666667em;
+  color: #007aff;
+  cursor: pointer;
+}
+
+:host ::ng-deep .fc-direction-ltr .fc-timegrid-slot-label-frame {
+  color: #8c8c8c !important;
+  font-size: 0.75em;
+}
+
+::ng-deep .fc-v-event {
+  // padding: 5px;
+  border: none !important;
+}
+
+::ng-deep .highlighted {
+  color: #007aff !important;
+  font-size: 11.5px;
+  text-align: center;
+}
+
+::ng-deep .current-slot {
+  // box-shadow: 0 -1px 0 0 #007aff !important;
+  // border:1px solid #007aff !important;
+  // border-bottom: none !important;
+  vertical-align: middle;
+  align-items: center;
+}
+::ng-deep .current-time {
+  color: #007aff !important;
+  font-size: 11.5px;
+  text-align: right;
+}
+::ng-deep .blue-line{
+  width: 100%;
+  color: #007aff !important;
+  margin-top: 0px;
+  background: #007aff !important;;
+}
+::ng-deep .fc col{
+  width: 50px !important;
+}
+::ng-deep .fc-col-header-cell-cushion {
+  color: #000 !important;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+::ng-deep .fc .fc-timegrid-slot {
+  height: 10px !important;
+  border-left: none !important;
+  margin-left: 10px !important;
+  // padding-right: 15px !important;
+}
+
+::ng-deep .fc .fc-col-header-cell-cushion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+::ng-deep .fc .fc-timegrid-slot-label {
+  vertical-align: baseline;
+  border: none !important
+}
+
+::ng-deep .fc .fc-timegrid-col.fc-day-today {
+  background-color: white;
+}
+
+::ng-deep .fc .fc-timegrid-col {
+  background-color: white !important;
+}
+
+::ng-deep .fc-scrollgrid {
+  border: none !important;
+}
+
+::ng-deep .fc-timegrid-axis {
+  border: none !important;
+}
+
+::ng-deep .fc-day-mon,
+::ng-deep .fc-day-tue,
+::ng-deep .fc-day-wed,
+::ng-deep .fc-day-thu,
+::ng-deep .fc-day-fri {
+  border-left: none !important;
+  border-width: none;
+  border-left: 4px solid black;
+}
+
+:host ::ng-deep .fc-license-message {
+  display: none;
+}
+
+::ng-deep .fc-head-container th:not(.fc-col-header-cell) {
+  border-bottom: none;
+}
+
+:host ::ng-deep .fc-col-header-cell {
+  border-bottom: none !important;
+}
+
+::ng-deep .fc-resource {
+  border-left: none !important;
+  border-top: none !important;
+}
+
+:host ::ng-deep .solid-border {
+  border-left: 2px solid #CCCCCC !important;
+}
+
+.full-calendar .fc-event {
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .full-calendar {
+    width: 87em;
+    height: 98vh;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+  }
+
+  .calendar-container {
+    overflow-x: auto !important;
+    scrollbar-width: thin !important;
+  }
+
+  ::ng-deep .fc-col-header {
+    position: inherit;
+    // width: 87em;
+  }
+
+  ::ng-deep .fc thead {
+    overflow-x: scroll !important;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    // display: block;
+    // width:  100vw;
+  }
+
+  ion-popover {
+    &.width-80 {
+      --width: 90%;
+    }
+  }
+
+  ::ng-deep .fc-scrollgrid-section-body {
     top: 0;
-    z-index: 10;
-    background-color: #ffffff;
-    border-bottom: 2px solid darkgray; /* Dark border at the bottom of the sticky header row */
-  
-    /* Nested columns inside the sticky header row */
-    ion-col {
-      border-right: 2px solid darkgray; /* Dark border for right side of each column */
-    }
-  
-    /* The last child should not have a right border to avoid a double-thick border on the far right */
-    ion-col:last-child {
-      border-right: none;
-    }
+    position: relative;
   }
-  
-  /* Dark border for the time column */
- 
-  
-  /* Light gray borders for the rest */
-  ion-grid ion-row {
-    ion-col {
-      border-right: 1px solid lightgray;
-      border-bottom: 1px solid lightgray;
-    }
-  
-    ion-col:last-child {
-      border-right: none;
-    }
+
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1200px) {
+  .full-calendar {
+    width: 95em;
+    height: 98vh;
+    overflow-x: scroll;
+    scrollbar-width: thin;
   }
-  
-  /* Overwrite for the time column so it doesn't get a double border */
-  ion-grid ion-row .time-column {
-    border-right: 2px solid darkgray;
+
+  .calendar-container {
+    overflow-x: auto !important;
+    scrollbar-width: thin !important;
   }
-  
-  .flexible-time-column {
-    width: 60px;
-    max-width: 60px;
+
+  ::ng-deep .fc-col-header {
+    position: inherit;
+  }
 }

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { TestPageRoutingModule } from './test-routing.module';
-
+import { FullCalendarModule } from '@fullcalendar/angular';
 import { TestPage } from './test.page';
 
 @NgModule({
@@ -13,6 +13,7 @@ import { TestPage } from './test.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    FullCalendarModule,
     TestPageRoutingModule
   ],
   declarations: [TestPage]

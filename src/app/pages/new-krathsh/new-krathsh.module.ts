@@ -8,11 +8,15 @@ import { NewKrathshPageRoutingModule } from './new-krathsh-routing.module';
 
 import { NewKrathshPage } from './new-krathsh.page';
 import {MatChipsModule} from '@angular/material/chips'; 
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    MatIconModule,
+    MatButtonToggleModule,
     MatChipsModule,
     NewKrathshPageRoutingModule
   ],

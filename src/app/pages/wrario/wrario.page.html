@@ -16,7 +16,7 @@
             <div class="special-action" (click)="openDateTimePicker()">
               <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
             </div>
-            <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception">
+            <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception" class="fontColor">
               {{ exception.formatted }} ({{exception.repeat}})
             </mat-option>
           

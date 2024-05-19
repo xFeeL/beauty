@@ -15,7 +15,7 @@
       <ion-col size="6" size-md="4" *ngFor="let item of settings">
         <ion-card (click)="goToSetting(item)" [ngClass]="{'centered-card-content': true, 'ion-padding-bottom': true, 'ion-padding-top': item.name === 'Σκοτεινή λειτουργία'}" class="cursor">
           <div class="avatar-container" >
-            <ion-img src="{{item.icon}}"></ion-img>
+            <ion-img class="wh45" src="{{item.icon}}"></ion-img>
           </div>
           <ion-card-header class="centered-header" >
             <ion-card-subtitle text-wrap >{{item.name}}</ion-card-subtitle>

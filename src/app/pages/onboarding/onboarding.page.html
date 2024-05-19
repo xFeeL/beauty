@@ -321,7 +321,19 @@
               </ion-note>
             </div>
             <!-- Trigger for the menu -->
-            <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top">Προσθήκη</ion-button>
+            <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top" *ngIf="serviceCategories.length!=0">Προσθήκη</ion-button>
+            <div class="content-box cursor ion-margin-top"  (click)="newCategory()" *ngIf="serviceCategories.length==0">
+              <ion-grid>
+                <ion-row class="ion-text-center ion-justify-content-center mb8">
+                  <ion-icon name="add-circle-outline" color="primary" class="s25"></ion-icon>
+        
+                </ion-row>
+                <ion-row class="ion-text-center ion-justify-content-center ">
+                  <ion-label color="primary" class="ion-text-center">Νέα κατηγορία</ion-label>
+        
+                </ion-row>
+              </ion-grid>
+            </div>
             <!-- Menu definition -->
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>

@@ -62,7 +62,8 @@ export class NewKrathshPage implements OnInit {
   dataChanged = false;
   appointmentId: string | null = null;
   selectedServicesAndPackages: any = [];
-
+  filteredTimeSlots: any[]=[];
+  toggleValue="all"
 
   constructor(private modalController: ModalController, private userService: UserService, private navParams: NavParams, private _cd: ChangeDetectorRef) {
     this.minDate = new Date().toISOString().split('T')[0];
@@ -310,6 +311,8 @@ export class NewKrathshPage implements OnInit {
         this.timeSlotSelected = null;
 
       }
+      this.filteredTimeSlots = [...this.time_slots];
+
     });
   }
 
@@ -636,7 +639,36 @@ export class NewKrathshPage implements OnInit {
     }
   }
 
+  filterTimeSlots() {
+    if (this.toggleValue === 'all') {
+      console.log("ALL")
+      this.filteredTimeSlots = [...this.time_slots];
+      console.log(this.time_slots)
+      console.log(this.filteredTimeSlots)
+    } else {
+      this.filteredTimeSlots = this.time_slots.filter((slot: { value: string; }) => this.isInPeriod(slot.value, this.toggleValue));
+    }
+  }
 
+  isInPeriod(value: string, period: string): boolean {
+    const hour = this.getHour(value);
+    switch (period) {
+      case 'morning':
+        return hour >= 6 && hour < 12;
+      case 'afternoon':
+        return hour >= 12 && hour < 15;
+      case 'evening':
+        return hour >= 15 && hour < 18;
+      case 'night':
+        return hour >= 18 || hour < 6;
+      default:
+        return false;
+    }
+  }
+
+  getHour(time: string): number {
+    return parseInt(time.split(':')[0], 10);
+  }
 
 }
 interface ServiceEmployee {

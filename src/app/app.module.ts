@@ -55,6 +55,8 @@ import {MatListModule} from '@angular/material/list';
 import {MatCardModule} from '@angular/material/card'; 
 import { MatRadioModule } from '@angular/material/radio';
 import { CustomHttpInterceptorService } from '../app/services/custom-http-interceptor.service';
+import { FullCalendarModule } from '@fullcalendar/angular';
+
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 
@@ -63,6 +65,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
   imports: [FormsModule,BrowserModule,LightgalleryModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule,BrowserAnimationsModule, BrowserAnimationsModule,
     LyButtonModule,
     LyToolbarModule,
+    FullCalendarModule,
     LyImageCropperModule,
     LyDialogModule,
     LyIconModule,

@@ -118,19 +118,33 @@
         <h4 *ngIf="dateSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Ώρας</b></ion-text>
         </h4>
-
+        
+        
         <ion-grid class="customGrid" *ngIf="dateSelected" [@moveToBottom]="'*'">
           <ion-row class="ion-margin scrollable-content">
-            <ng-container *ngIf="time_slots && time_slots.length > 0; else noSlotsAvailable">
-              <div *ngFor="let slot of time_slots"
-                [class]="slot.selected?'ion-text-center timDiv selected cursor':'ion-text-center timDiv avail cursor' "
+            <ion-col>
+              <mat-button-toggle-group class="toggleGroup" #group="matButtonToggleGroup" value="all"  [(ngModel)]="toggleValue"
+                (change)="filterTimeSlots()" name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle value="all">Όλα</mat-button-toggle>
+                <mat-button-toggle value="morning">Πρωί</mat-button-toggle>
+                <mat-button-toggle value="afternoon">Μεσημέρι</mat-button-toggle>
+                <mat-button-toggle value="evening">Απόγευμα</mat-button-toggle>
+                <mat-button-toggle value="night">Βράδυ</mat-button-toggle>
+              </mat-button-toggle-group>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row class="ion-margin scrollable-content">
+            <ng-container *ngIf="filteredTimeSlots && filteredTimeSlots.length > 0; else noSlotsAvailable">
+              <div *ngFor="let slot of filteredTimeSlots"
+                [class]="slot.selected ? 'ion-text-center timDiv selected cursor' : 'ion-text-center timDiv avail cursor'"
                 (click)="slotSelected(slot)">
                 <ion-label>{{slot.value}}</ion-label>
               </div>
             </ng-container>
             <ng-template #noSlotsAvailable>
               <ion-note class="no_results_text ion-justify-content-center">
-                Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα.
+                Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα ή περίοδο.
               </ion-note>
             </ng-template>
           </ion-row>

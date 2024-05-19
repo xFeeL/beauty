@@ -1,38 +1,26 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Scheduler</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
+  <ion-list class="list">
+    <ion-text class="datepicker-text" slot="start" id="open-popover1">{{ dateExample | date: 'MMM yyyy' }}</ion-text>
+    <ion-popover trigger="open-popover1" class="custom-datetime" cssClass="width-80 custom-popover">
+      <ng-template>
+        <ion-datetime presentation="date" [(ngModel)]="dateExample" class="custom-datetime"
+          (ionChange)="onDateSelected($event)" size="cover"></ion-datetime>
+      </ng-template>
+    </ion-popover>
+    <div class="toolbar">
+      <ion-button (click)="prev()" id="prevButton" fill="clear" slot="start">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+      <ion-button (click)="today()" id="todayButton" class="todayButton" fill="clear" slot="center">Today</ion-button>
+      <ion-button (click)="next()" id="nextButton" fill="clear" slot="end">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-list>
+  <!-- (mousemove)="handleMouseEnter($event)" -->
+  <div #calendarContainer class="calendar-container">
+    <full-calendar class="full-calendar" #calendar [options]="calendarOptions"
+      [events]="eventsPromise | async"></full-calendar>
+  </div>
 
-<ion-content scrollX="true" scrollY="true">
-  <ion-grid>
-    <!-- Time cell and Employee names -->
-    <ion-row class="sticky-header-row">
-      <ion-col class="ion-no-padding">
-        <ion-grid class="ion-no-padding">
-          <ion-row class="ion-justify-content-center">
-            <ion-label>25th of May</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-col class="time-column flexible-time-column">
-              
-          </ion-col>
-            <ion-col size="2" *ngFor="let employee of employees">
-              {{ employee.name }}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-col>
-    </ion-row>
-
-    <!-- Time Slots Rows -->
-    <ion-row *ngFor="let time of times">
-      <ion-col class="time-column flexible-time-column">
-        {{ time }}
-    </ion-col>
-      <ion-col size="2" *ngFor="let employee of employees">
-        Task/Data
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

@@ -84,3 +84,83 @@ mat-hint.mat-mdc-form-field-hint.pl5 {
   flex-grow: 1;
   margin-right:16px !important;
 }
+
+.mat-mdc-select-value{
+  color:red !important
+}
+
+.mat-mdc-select-trigger{
+  color:red !important;
+}
+
+.fontColor{
+  color:red !important;
+}
+
+.special-action{
+  background: var(--ion-color-dark-contrast) !important;
+  color: var(--ion-color-dark) !important;
+}
+
+.mat-mdc-option {
+  background: var(--ion-color-dark-contrast) !important;
+}
+
+.mat-mdc-select-value-text {
+  color:red !important;
+}
+
+.mat-mdc-select-value{
+  color:red !important;
+
+}
+
+.mat-mdc-select-trigger{
+  color:red !important;
+
+}
+
+.mat-mdc-select {
+  color:red !important;
+
+}
+
+.mat-mdc-select-min-line{
+  color:red !important;
+}
+
+#mat-select-value-1{
+  color:red !important;
+
+}
+
+.not-empty-select.mat-selected {
+  color: green !important;
+}
+
+.not-empty-select.mat-selected {
+  color: green !important;
+}
+
+:host  .mat-select-value-text {
+  color: green !important;
+}
+
+::ng-deep .mat-select-value{    
+  color: green!important;  }
+
+  ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: red;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color: red;
+}
+
+::ng-deep .mat-form-field.mat-focused.mat-primary .mat-select-arrow{
+    color: red;
+}
+
+::ng-deep .mat-primary .mat-option.mat-selected:not(.mat-option-disabled){
+    color: red;
+}

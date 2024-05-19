@@ -983,6 +983,43 @@ export class OnboardingPage {
     return modal.present();
   }
 
+  autocompleteInput: string = '';
+  loadingOn: boolean = false;
+  queryWait: boolean = false;
+  suggestions:any=[]
+  searchAddress() {
+    console.log('search', this.autocompleteInput);
+    if (this.autocompleteInput.length < 1) {
+      this.suggestions = [];
+      this.loadingOn = false;
+      return;
+    }
+
+    if (!this.queryWait) {
+      this.loadingOn = true;
+      this.queryWait = true;
+
+      setTimeout(() => {
+        this.queryWait = false;
+        this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
+          this.suggestions = data;
+          console.log(data);
+          this.loadingOn = false;
+        }, err => {
+          console.error(err);
+          this.loadingOn = false;
+        });
+      }, 0);
+    }
+  }
+
+  saveAddress(suggestion:any){
+    this.address=suggestion.address
+    this.coordinates= suggestion.longitude + "," + suggestion.latitude
+
+  }
+
+
 }
 
 

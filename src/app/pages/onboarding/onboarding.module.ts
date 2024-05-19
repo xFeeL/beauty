@@ -16,7 +16,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 
 import { CropperDialog } from './cropper-dialog';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 @NgModule({
   imports: [
     CommonModule,
@@ -28,6 +30,9 @@ import { CropperDialog } from './cropper-dialog';
     LyButtonModule,
     LyIconModule,
     MatMenuModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
     MatIconModule,
     LyDialogModule
   ],

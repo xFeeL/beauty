@@ -1,140 +1,144 @@
-
-
-.notif{
-    margin-right: 10px;
-    padding: 10px;
-    background: none;
-    size:15px;
+.notif {
+  margin-right: 10px;
+  padding: 10px;
+  background: none;
+  size: 15px;
 }
 
 .content-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-  }
-
-  .mt0{
-    margin-top:0px;
-  }
-  
-  .left-text {
-    flex: 1;
-    padding-right: 10px;
-  }
-  
-  .end-button {
-    padding-left: 10px;
-    padding-top:44px;
-    font-size:12px;
-cursor:pointer;
-  }
-
-  .cursor{
-    cursor:pointer;
-
-  }
-
- 
-  .custAvatarHed{
-    width: 60px;
-    height: 60px;
-   margin-left:10px;
-   margin-bottom:20px;
-   margin-top:16px;
-  }
-
-  .scrolling-wrapper {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    ion-segment {
-      display: flex;
-      align-items: center;
-    }
-    ion-segment-button {
-      flex: 0 0 auto;
-    }
-  }
-  
-
-  .borderBottom{
-    border-bottom: 2px solid #eceef1;
-    height: 65px;
-  }
-
-  .borderBottom2{
-    border-bottom: 2px solid #eceef1;
-    height: 80px;
-  }
-
-  .customPadding{
-    padding-left:0px;
-    padding-top:10px;
-  }
-
-  .f18{
-    font-size: 18px;
-  }
-
-  .f14{
-    font-size: 14px;
-  }
-
-  .thechip{
-    margin-right:0px;
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-  }
-
-  .f11{
-    font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
 }
-.f10{
+
+.mt0 {
+  margin-top: 0px;
+}
+
+.left-text {
+  flex: 1;
+  padding-right: 10px;
+}
+
+.end-button {
+  padding-left: 10px;
+  padding-top: 44px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cursor {
+  cursor: pointer;
+
+}
+
+
+.custAvatarHed {
+  width: 60px;
+  height: 60px;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  margin-top: 16px;
+}
+
+.scrolling-wrapper {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  ion-segment {
+    display: flex;
+    align-items: center;
+  }
+
+  ion-segment-button {
+    flex: 0 0 auto;
+  }
+}
+
+
+.borderBottom {
+  border-bottom: 2px solid #eceef1;
+  height: 65px;
+}
+
+.borderBottom2 {
+  border-bottom: 2px solid #eceef1;
+  height: 80px;
+}
+
+.customPadding {
+  padding-left: 0px;
+  padding-top: 10px;
+}
+
+.f18 {
+  font-size: 18px;
+}
+
+.f14 {
+  font-size: 14px;
+}
+
+.thechip {
+  margin-right: 0px;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.f11 {
+  font-size: 11px;
+}
+
+.f10 {
   font-size: 11px;
 
 }
 
-.title{
-  padding-left:5px;
-  font-size: 15px;;
-  color:black
+.title {
+  padding-left: 5px;
+  font-size: 15px;
+  ;
+  color: black
 }
 
-.p5{
-  padding-left:5px;
+.p5 {
+  padding-left: 5px;
 }
 
 
-.center{
+.center {
   //width: 50%;
   margin: 0 auto;
   text-align: center;
 }
 
-.theItem{
-  border-radius:20px;
+.theItem {
+  border-radius: 20px;
   filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.35));
-  --background:white;
+  --background: white;
 }
 
-.moreImage{
-  height:40px;
-  width:auto;
+.moreImage {
+  height: 40px;
+  width: auto;
 }
 
-.background{
-  --background:var(--ion-color-tertiary);
+.background {
+  --background: var(--ion-color-tertiary);
 }
-.moreCard{
+
+.moreCard {
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-  width:115px;
-  --background:white;
-  border: 2px solid var(--ion-color-primary); /* Change color as needed */
+  width: 115px;
+  --background: white;
+  border: 2px solid var(--ion-color-primary);
+  /* Change color as needed */
 }
 
 ion-item-divider {
-  --background:white;
+  --background: white;
 
-  height:10px;
+  height: 10px;
   min-height: 10px !important;
   max-height: 10px !important;
   --padding-top: 0px;
@@ -143,14 +147,14 @@ ion-item-divider {
   --padding-end: 0;
 }
 
-.caption{
+.caption {
   padding-bottom: 5px;
   padding-top: 5px;
 
 }
 
-.pl9{
-  padding-left:9px;
+.pl9 {
+  padding-left: 9px;
 }
 
 .mat-mdc-table-sticky-border-elem-top {
@@ -158,20 +162,20 @@ ion-item-divider {
 }
 
 
-.modal-toolbar{
-  --opacity	:100 !important;
+.modal-toolbar {
+  --opacity: 100 !important;
 }
 
-.custRow{
-  background-color:var(--ion-color-primary-contrast);
+.custRow {
+  background-color: var(--ion-color-primary-contrast);
   border-radius: 15px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
   display: block;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
-  margin:16px;
-  padding-top:5px;
+  margin: 16px;
+  padding-top: 5px;
   padding-bottom: 0px;
-  height:auto;
+  height: auto;
 }
 
 .chip-container {
@@ -179,42 +183,49 @@ ion-item-divider {
   margin-right: auto;
   box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
   pointer-events: none;
-  --height: 17px;            /* Adjusts the height of the chip */
-  --padding-start: 5px;      /* Adjusts the left padding of the chip */
-  --padding-end: 5px;        /* Adjusts the right padding of the chip */
-  --padding-top: 10px;        /* Adjusts the top padding of the chip */
-  --padding-bottom: 10px;     /* Adjusts the bottom padding of the chip */
-  font-size: 0.7rem;  
+  --height: 17px;
+  /* Adjusts the height of the chip */
+  --padding-start: 5px;
+  /* Adjusts the left padding of the chip */
+  --padding-end: 5px;
+  /* Adjusts the right padding of the chip */
+  --padding-top: 10px;
+  /* Adjusts the top padding of the chip */
+  --padding-bottom: 10px;
+  /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;
 }
 
 .chip-container2 {
   margin-left: 0px;
-  margin-right:auto;
+  margin-right: auto;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
-  --background:var(--ion-color-primary);
-  color:white;
-  --padding-start: 5px;      /* Adjusts the left padding of the chip */
-  --padding-end: 5px;        /* Adjusts the right padding of the chip */
- /* Adjusts the bottom padding of the chip */
-  font-size: 0.7rem;  
+  --background: var(--ion-color-primary);
+  color: white;
+  --padding-start: 5px;
+  /* Adjusts the left padding of the chip */
+  --padding-end: 5px;
+  /* Adjusts the right padding of the chip */
+  /* Adjusts the bottom padding of the chip */
+  font-size: 0.7rem;
 }
 
-.container-time-people{
-  padding-top:0px;
-  padding-left:6px;
+.container-time-people {
+  padding-top: 0px;
+  padding-left: 6px;
 }
 
 .small-icon {
   font-size: 17px;
 }
 
-.pr5{
-  padding-right:3px;
+.pr5 {
+  padding-right: 3px;
 }
 
-.pr10{
-  padding-right:10px;
-  color:var(--ion-color-step-600, #666666);
+.pr10 {
+  padding-right: 10px;
+  color: var(--ion-color-step-600, #666666);
 
 }
 
@@ -227,8 +238,8 @@ ion-item-divider {
 
 .end-button {
   padding-left: 10px;
-  padding-top:44px;
-  font-size:12px;
+  padding-top: 44px;
+  font-size: 12px;
 
 }
 
@@ -254,15 +265,17 @@ ion-segment-button.ios {
   justify-content: flex-end;
 }
 
-.p10{
-  padding:10px;
+.p10 {
+  padding: 10px;
 }
 
 @media screen and (min-width: 500px) {
-  .mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding:0px 1px 0px 16px !important;
+
+  .mdc-data-table__cell,
+  .mdc-data-table__header-cell {
+    padding: 0px 1px 0px 16px !important;
   }
-  
+
 }
 
 
@@ -274,8 +287,8 @@ ion-segment-button.ios {
   background-color: var(--ion-color-dark-contrast);
 }
 
-.fontColor{
-  color:var(--ion-color-dark-contrast)
+.fontColor {
+  color: var(--ion-color-dark-contrast)
 }
 
 .mat-mdc-row .mat-mdc-cell {
@@ -284,8 +297,8 @@ ion-segment-button.ios {
   cursor: pointer;
 }
 
-.backgroundColor{
-background-color: var(--ion-color-dark-contrast);
+.backgroundColor {
+  background-color: var(--ion-color-dark-contrast);
 
 }
 
@@ -295,13 +308,14 @@ background-color: var(--ion-color-dark-contrast);
 }
 
 .desktopGrid {
-  margin-top:16px;
+  margin-top: 16px;
   background-color: var(--ion-color-dark-contrast);
-  border-radius:25px;
+  border-radius: 25px;
 }
 
 .small-segment {
-  max-width: 640px;  /* Adjust this value for the entire segment's width */
+  max-width: 640px;
+  /* Adjust this value for the entire segment's width */
   //width: 540px;  /* Adjust this value for the entire segment's width */
 
   //min-width: 480px;  /* Adjust this value for the entire segment's width */
@@ -309,29 +323,35 @@ background-color: var(--ion-color-dark-contrast);
 }
 
 .small-segment ion-segment-button {
-  max-width: 160px;  /* Adjust this value to control the width of individual segment buttons */
-  min-width: 120px;  /* Adjust this value for the entire segment's width */
+  max-width: 160px;
+  /* Adjust this value to control the width of individual segment buttons */
+  min-width: 120px;
+  /* Adjust this value for the entire segment's width */
 
   justify-content: center;
 }
 
-.custAvatarHedTable{
-  width:35px;
-  height:35px;
+.custAvatarHedTable {
+  width: 35px;
+  height: 35px;
 }
 
 .avatar-column {
-  width: 55px !important;  /* use !important to ensure the width is applied */
+  width: 55px !important;
+  /* use !important to ensure the width is applied */
   max-width: 55px;
   min-width: 55px;
-  overflow: hidden;        /* this is to ensure that the content doesn't spill over */
-  
+  overflow: hidden;
+  /* this is to ensure that the content doesn't spill over */
+
 }
 
 
 .custom-cell {
-  color: gray;               /* Set the text color to gray */
-  font-size: 0.9em;          /* Make the text a bit smaller */
+  color: gray;
+  /* Set the text color to gray */
+  font-size: 0.9em;
+  /* Make the text a bit smaller */
   padding-left: 5px !important;
   //min-width: 150px; /* Adjust this value as needed */+
   text-align: left;
@@ -339,12 +359,12 @@ background-color: var(--ion-color-dark-contrast);
 
 
 
-.pl0{
-  padding-left:6px !important;
+.pl0 {
+  padding-left: 6px !important;
 
 }
 
-.textLeft{
+.textLeft {
   text-align: left;
 }
 
@@ -355,43 +375,44 @@ background-color: var(--ion-color-dark-contrast);
 ion-icon[name="checkmark-circle-outline"].icon-spacing {
   margin-right: 10px; // adjust this value as needed
 }
-ion-icon[name="checkmark-circle-outline"]{
-  font-size:26px;
+
+ion-icon[name="checkmark-circle-outline"] {
+  font-size: 26px;
 }
 
-ion-icon[name="close-circle-outline"]{
-  font-size:26px;
+ion-icon[name="close-circle-outline"] {
+  font-size: 26px;
 }
 
-.no_results_item{
+.no_results_item {
   display: block;
   margin-left: auto;
   margin-right: auto;
   padding-top: 20px;
   text-align: center;
-  width:300px;
-  height:auto;
-}
-.pt4{
-  padding-top:4px;
+  width: 300px;
+  height: auto;
 }
 
-.no_results_header{
+.pt4 {
+  padding-top: 4px;
+}
+
+.no_results_header {
   display: block;
   margin-left: auto;
   margin-right: auto;
   padding-top: 20px;
   text-align: center;
   line-height: 20px;
-  font-family:serif
-  font-size 20px;
+  font-family: serif font-size 20px;
 }
 
 .date-section {
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  margin-top:0px;
+  margin-top: 0px;
 }
 
 h3 {
@@ -402,8 +423,10 @@ h3 {
 
 .stats-container {
   display: flex;
-  justify-content: space-between; /* if you want them spaced out evenly */
-  gap: 20px; /* you can adjust this value to change the gap */
+  justify-content: space-between;
+  /* if you want them spaced out evenly */
+  gap: 20px;
+  /* you can adjust this value to change the gap */
 }
 
 .stat-number {
@@ -414,7 +437,8 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 2px 0; /* Reduce margin value here */
+  margin: 2px 0;
+  /* Reduce margin value here */
   gap: 10px;
 }
 
@@ -435,11 +459,15 @@ h3 {
   color: var(--ion-color-primary);
   margin: 0;
   display: flex;
-    flex-direction: column; /* stack children vertically */
-    align-items: center; /* center children horizontally */
-    justify-content: center; /* center children vertically */
-    margin: 4px 0; /* Adjust the value as needed */
-    gap:10px;
+  flex-direction: column;
+  /* stack children vertically */
+  align-items: center;
+  /* center children horizontally */
+  justify-content: center;
+  /* center children vertically */
+  margin: 4px 0;
+  /* Adjust the value as needed */
+  gap: 10px;
 }
 
 .stat-label {
@@ -449,16 +477,18 @@ h3 {
 }
 
 
-.stats_right{
-  margin-top:0px;
-  margin-bottom:20px;
-  color:var(--ion-color-dark)
+.stats_right {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  color: var(--ion-color-dark)
 }
 
 /* Makes sure sticky columns appear above other table cells */
-th.mat-header-cell.sticky, td.mat-cell.sticky {
+th.mat-header-cell.sticky,
+td.mat-cell.sticky {
   z-index: 1;
-  background-color: inherit; /* or whatever background-color you want */
+  background-color: inherit;
+  /* or whatever background-color you want */
 }
 
 /* Optional: If you have a shadow or something to differentiate the sticky column from others */
@@ -469,7 +499,8 @@ th.mat-header-cell.sticky:after {
   right: 0;
   width: 1px;
   height: 100%;
-  background: #ddd; /* Adjust as needed */
+  background: #ddd;
+  /* Adjust as needed */
 }
 
 .mat-table {
@@ -480,16 +511,20 @@ th.mat-header-cell.sticky:after {
 
 @media (max-width: 768px) {
   .table-container::-webkit-scrollbar {
-      height: 15px; /* adjust as needed */
+    height: 15px;
+    /* adjust as needed */
   }
 
   .table-container::-webkit-scrollbar-thumb {
-      background-color: #ccc; /* adjust as needed */
-      border-radius: 4px; /* adjust as needed */
+    background-color: #ccc;
+    /* adjust as needed */
+    border-radius: 4px;
+    /* adjust as needed */
   }
 
   .table-container::-webkit-scrollbar-track {
-      background-color: #f7f7f7; /* adjust as needed */
+    background-color: #f7f7f7;
+    /* adjust as needed */
   }
 }
 
@@ -497,9 +532,9 @@ th.mat-header-cell.sticky:after {
   display: block;
 }
 
-.chart{
-  padding-bottom:10px;
-  padding-left:10px;
+.chart {
+  padding-bottom: 10px;
+  padding-left: 10px;
   padding-right: 10px;
 }
 
@@ -510,89 +545,98 @@ th.mat-header-cell.sticky:after {
 .white-bg {
   background-color: white;
 }
+
 .no-shrink {
   flex-shrink: 0;
 }
 
 .first-rank {
   color: rgb(240, 204, 0);
-  font-weight:550 !important;
-  
+  font-weight: 550 !important;
+
 }
 
 .second-rank {
   color: rgb(180, 180, 180);
-  font-weight:450 !important;
+  font-weight: 450 !important;
 
 }
 
 .third-rank {
-  color: #cd7f32;  /* bronze */
-  font-weight:400;
-
-}
-.f400{
-  font-weight:400;
+  color: #cd7f32;
+  /* bronze */
+  font-weight: 400;
 
 }
 
-.title_space{
-  padding-left:9px;
+.f400 {
+  font-weight: 400;
+
+}
+
+.title_space {
+  padding-left: 9px;
 }
 
 ion-button.rounded-btn {
   --border-radius: 100px;
 }
 
-.pl5{
-  padding-left:3px;
+.pl5 {
+  padding-left: 3px;
 }
 
 /* Styles for the container div */
 .badge-avatar-container {
   display: flex;
-  align-items: center; /* Vertically center the badge and the avatar */
+  align-items: center;
+  /* Vertically center the badge and the avatar */
 }
 
 /* Styles for the badge */
 .cancel-badge {
-  padding:8px;
+  padding: 8px;
   font-size: 12px;
-  font-weight:500;
+  font-weight: 500;
   border-radius: 12px; // A bigger border-radius to make it more circular
   //box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); // A subtle shadow to lift it off the page a bit
 }
 
 
-.badge-column{
-  max-width:50px;
+.badge-column {
+  max-width: 50px;
 }
+
 ion-popover {
-  --width:300px;
+  --width: 300px;
   --height: auto;
 
 }
 
-.cancelChip{
-  margin-left:0px !important;
-  font-size:12px;
+.cancelChip {
+  margin-left: 0px !important;
+  font-size: 12px;
 }
 
 @keyframes ring {
   0% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   25% {
-      transform: rotate(-10deg);
+    transform: rotate(-10deg);
   }
+
   50% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   75% {
-      transform: rotate(10deg);
+    transform: rotate(10deg);
   }
+
   100% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 }
 
@@ -600,20 +644,21 @@ ion-popover {
   animation: ring 0.75s ease-in-out infinite;
 }
 
-.logo-image{
-  height:60px;
-  width:auto;
+.logo-image {
+  height: 60px;
+  width: auto;
   text-align: left;
   align-items: left;
 }
 
-.gray-menu{
-  color:#B0B0B0;
+.gray-menu {
+  color: #B0B0B0;
 }
 
 .red-name {
   color: red;
 }
+
 .table-container {
   width: 85%;
   overflow-x: auto;
@@ -622,38 +667,42 @@ ion-popover {
 @media (max-width: 1500px) {
 
   .table-container {
-   width:100% /* adjust as needed */
-    
-}
+    width: 100%
+      /* adjust as needed */
+
+  }
 
 }
 
 @media (max-width: 600px) {
-.name-column {
-  width: 100px !important;  /* use !important to ensure the width is applied */
-  max-width: 100px;
-  min-width: 100px;
-  overflow: hidden;        /* this is to ensure that the content doesn't spill over */
-  
-}
+  .name-column {
+    width: 100px !important;
+    /* use !important to ensure the width is applied */
+    max-width: 100px;
+    min-width: 100px;
+    overflow: hidden;
+    /* this is to ensure that the content doesn't spill over */
+
+  }
 }
 
 @media (max-width: 600px) {
 
-.mlr0{
-  margin-left:0px !important;
-  margin-right:0px !important;
-  padding-left:0px !important;
-  padding-right:0px !important;
+  .mlr0 {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 
-}
+  }
 }
 
 
 
 .border-column {
-  border-bottom: 0px solid var(--ion-color-dark) !important; /* Adjust as per your requirement */
-  color:var(--ion-color-dark) ;
+  border-bottom: 0px solid var(--ion-color-dark) !important;
+  /* Adjust as per your requirement */
+  color: var(--ion-color-dark);
   text-align: left;
 
 }
@@ -665,25 +714,25 @@ ion-popover {
   text-overflow: ellipsis;
 }
 
-.plusChip{
+.plusChip {
   margin-left: 5px;
   font-size: 11px;
   margin-top: 3px;
 }
 
 .center-icon {
-  padding-left:20px;
+  padding-left: 20px;
 }
 
-.chipHeight{
-  height:40px;
+.chipHeight {
+  height: 40px;
 }
 
-th{
+th {
   text-align: center;
 }
 
-td{
+td {
   text-align: center;
 }
 
@@ -691,7 +740,291 @@ td{
   white-space: nowrap;
 }
 
-
-.employeeChip{
-  font-size:0.9em;
+.listIcon {
+  width: 20px;
+  height: auto;
+  border: 1px lightgray solid;
+  cursor: pointer;
+  padding: 10px;
 }
+
+.right-rad {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.left-rad {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.employeeChip {
+  font-size: 0.9em;
+}
+
+/* reservations.component.scss */
+.view-toggle-button {
+  margin-left: auto;
+  --padding-end: 0;
+  --padding-start: 0;
+}
+
+
+
+//Agenda
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+#calendar {
+  // max-width: 1100px;
+  margin: 40px auto;
+}
+
+::ng-deep .fc .fc-timegrid-slot-minor {
+  border-top-style: none !important;
+  border-style: none;
+}
+
+ion-popover {
+  &.width-80 {
+    --width: 19%;
+  }
+}
+
+:host ::ng-deep .custom-datetime {
+  border-radius: 20px;
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  /* This aligns items vertically */
+  background: white;
+  z-index: 998;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;  /* Ensures buttons in the toolbar are also aligned vertically */
+}
+
+::ng-deep .time-div{
+  padding-right: 4px;
+  margin-top: -2px;
+}
+::ng-deep .fc thead {
+  background-color: #F7F7F7 !important;
+}
+
+::ng-deep .fc-col-header {
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  //margin-top: 56px;
+}
+
+::ng-deep .fc-scrollgrid-section-body {
+  top: 0;
+  position: relative;
+}
+
+.todayButton {
+  color: #007aff;
+  font-weight: bold;
+  padding: 0;
+  line-height: 2.25em;
+  font-size: 1em;
+  margin: -25px;
+  margin-top: -21px;
+}
+
+.datepicker-text {
+  margin-left: 20px;
+  margin-top: 2px;
+  font-size: 1.5em;
+  line-height: 1.666667em;
+  color: #007aff;
+  cursor: pointer;
+}
+
+:host ::ng-deep .fc-direction-ltr .fc-timegrid-slot-label-frame {
+  color: #8c8c8c !important;
+  font-size: 0.75em;
+}
+
+::ng-deep .fc-v-event {
+  // padding: 5px;
+  border: none !important;
+}
+
+::ng-deep .highlighted {
+  color: #007aff !important;
+  font-size: 11.5px;
+  text-align: center;
+}
+
+::ng-deep .current-slot {
+  // box-shadow: 0 -1px 0 0 #007aff !important;
+  // border:1px solid #007aff !important;
+  // border-bottom: none !important;
+  vertical-align: middle;
+  align-items: center;
+}
+::ng-deep .current-time {
+  color: #007aff !important;
+  font-size: 11.5px;
+  text-align: right;
+}
+::ng-deep .blue-line{
+  width: 100%;
+  color: #007aff !important;
+  margin-top: 0px;
+  background: #007aff !important;;
+}
+::ng-deep .fc col{
+  width: 50px !important;
+}
+::ng-deep .fc-col-header-cell-cushion {
+  color: #000 !important;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+::ng-deep .fc .fc-timegrid-slot {
+  height: 30px !important;
+  border-left: none !important;
+  margin-left: 10px !important;
+  // padding-right: 15px !important;
+}
+
+::ng-deep .fc .fc-col-header-cell-cushion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+::ng-deep .fc .fc-timegrid-slot-label {
+  vertical-align: baseline;
+  border: none !important
+}
+
+::ng-deep .fc .fc-timegrid-col.fc-day-today {
+  background-color: white;
+}
+
+::ng-deep .fc .fc-timegrid-col {
+  background-color: white !important;
+}
+
+::ng-deep .fc-scrollgrid {
+  border: none !important;
+}
+
+::ng-deep .fc-timegrid-axis {
+  border: none !important 
+}
+
+::ng-deep .fc-col-header-cell {
+  border-left: none !important 
+}
+::ng-deep .fc-day-mon,
+::ng-deep .fc-day-tue,
+::ng-deep .fc-day-wed,
+::ng-deep .fc-day-thu,
+::ng-deep .fc-day-fri {
+  border-left: none !important;
+  border-width: none;
+  border-left: 4px solid black;
+}
+
+
+:host ::ng-deep .fc-license-message {
+  display: none;
+}
+
+::ng-deep .fc-head-container th:not(.fc-col-header-cell) {
+  border-bottom: none;
+}
+
+:host ::ng-deep .fc-col-header-cell {
+  border-bottom: none !important;
+}
+
+::ng-deep .fc-resource {
+  border-left: none !important;
+  border-top: none !important;
+}
+
+:host ::ng-deep .solid-border {
+  border-left: 2px solid #CCCCCC !important;
+}
+
+.full-calendar .fc-event {
+  pointer-events: none;
+  
+}
+
+@media only screen and (max-width: 600px) {
+  .full-calendar {
+    width: 87em;
+    height: 98vh;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+  }
+
+  .calendar-container {
+    overflow-x: auto !important;
+    scrollbar-width: thin !important;
+  }
+
+  ::ng-deep .fc-col-header {
+    position: inherit;
+    // width: 87em;
+  }
+
+  ::ng-deep .fc thead {
+    overflow-x: scroll !important;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    // display: block;
+    // width:  100vw;
+  }
+
+  ion-popover {
+    &.width-80 {
+      --width: 90%;
+    }
+  }
+
+  ::ng-deep .fc-scrollgrid-section-body {
+    top: 0;
+    position: relative;
+  }
+
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1200px) {
+  .full-calendar {
+    width: 95em;
+    height: 98vh;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+  }
+
+  .calendar-container {
+    overflow-x: auto !important;
+    scrollbar-width: thin !important;
+  }
+
+  ::ng-deep .fc-col-header {
+    position: inherit;
+  }
+}
+

@@ -150,6 +150,17 @@ swiper-container {
     /* scrollbar-color:var(--ion-color-primary) var(--ion-color-primary-contrast); */
   }
   
+  .content-box {
+    border: 1px solid #ccc; /* Example border: 2px solid grey */
+    padding: 10px; /* Adds some padding inside the box */
+    margin-bottom: 20px; /* Adds some space below the box */
+    border-radius: 10px; /* Optional: adds rounded corners */
+    cursor: pointer;
+    background: var(--ion-color-dark-contrast);
+    width:80%
+  }
+
+
   .time-selection {
     display: flex;
     flex-direction: column;

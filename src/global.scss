@@ -346,3 +346,33 @@ ion-select {
   width: 24px;
   height: 24px;
 }
+
+.mat-mdc-select-value-text{
+  color:var(--ion-color-dark) !important;
+}
+ .mat-mdc-select-panel{
+  padding:0px !important;
+}
+
+
+.mat-button-toggle {
+  background: var(--ion-color-dark-contrast) !important;
+  color: var(--ion-color-dark) !important;
+}
+
+.mat-button-toggle-group {
+  border-radius: 20px !important;
+  border: 1px solid var(--ion-color-dark) !important;
+  margin-top: 10px;
+  line-height: 0px;
+}
+
+.mat-button-toggle-checked{
+  background: var(--ion-color-primary) !important;
+}
+
+.mat-mdc-menu-panel{
+  background:var(--ion-color-dark-contrast);
+}
+
+
