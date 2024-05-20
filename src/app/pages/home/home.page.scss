@@ -841,6 +841,7 @@ ion-popover {
   font-size: 1em;
   margin: -25px;
   margin-top: -21px;
+  text-transform: capitalize;
 }
 
 .datepicker-text {
@@ -882,9 +883,9 @@ ion-popover {
 }
 ::ng-deep .blue-line{
   width: 100%;
-  color: #007aff !important;
+  color: #6fb5ff !important;
   margin-top: 0px;
-  background: #007aff !important;;
+  background: #6fb5ff !important;;
 }
 ::ng-deep .fc col{
   width: 50px !important;

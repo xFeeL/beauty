@@ -6,6 +6,7 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { PopoverController } from '@ionic/angular';
+import elLocale from '@fullcalendar/core/locales/el';
 
 @Component({
   selector: 'app-test',
@@ -28,37 +29,13 @@ export class TestPage {
 
   dateExample = new Date().toISOString();
   events: EventInput[] = [
-    {
-      id: 'event1',
-      title: 'Product team mtg',
-      start: '2024-05-14T10:00:00',
-      end: '2024-05-14T11:00:00',
-      backgroundColor: '#FADCD2',
-      resourceId: 'b',
-      borderColor: '#F7C4B4'
-    },
-    {
-      id: 'event2',
-      title: 'Quick mtg with Martin',
-      start: '2024-05-15T08:00:00',
-      end: '2024-05-15T09:00:00',
-      backgroundColor: '#DDF7DF',
-      resourceId: 'b',
-      borderColor: '#C6F1C9'
-    },
-    {
-      id: 'event3',
-      title: 'Business software',
-      start: '2024-05-22T10:00:00',
-      end: '2024-05-22T11:00:00',
-      backgroundColor: '#F1E3F5',
-      resourceId: 'c',
-      borderColor: '#E8D0EF'
-    }
+   
   ];
   eventsPromise: Promise<EventInput[]> | undefined;
   calendarOptions: CalendarOptions = {
     timeZone: 'UTC',
+    locales: [ { code: 'el' }],
+
     initialView: 'resourceTimeGridWeek',
     datesAboveResources: true,
     plugins: [timeGridPlugin, interactionPlugin, resourceTimeGridPlugin, dayGridPlugin],

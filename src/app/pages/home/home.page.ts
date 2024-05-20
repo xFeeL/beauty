@@ -28,9 +28,8 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { PopoverController } from '@ionic/angular';
+import { formatDate } from '@angular/common';
 import elLocale from '@fullcalendar/core/locales/el';
-
-
 export interface PeriodicElement {
   avatar: string;
   name: string;
@@ -135,6 +134,11 @@ export class HomePage implements OnInit {
   @ViewChild('krathshPop') krathshPop!: IonPopover;
   @ViewChild('acceptPop') acceptPop!: IonPopover;
   @ViewChild('rejectPop') rejectPop!: IonPopover;
+  employees: any = [];
+  startDate: any;
+  endDate: any;
+  dateRangeText: string = "";
+  calendarDaysLength: number = 2;
   constructor(private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
@@ -157,10 +161,36 @@ export class HomePage implements OnInit {
     if (this.userService.isMobile()) {
       this.rout.navigate(['/tabs/krathseis']);
     }
+    this.userService.getEmployeesOfExpert().subscribe(
+      data => {
+        this.employees = data;
+        this.calendarOptions.resources = this.employees.map((employee: any, index: any) => {
+          const color = this.getRandomLightColor();
+          return {
+            id: employee.id,
+            title: employee.name + " " + employee.surname[0] + ".",
+            color: color,
+            borderColor: this.darkenColor(color),
+            image: employee.image === "default" ? '../../assets/icon/default-profile.png' : employee.image
+          };
+        });
+        this.changeAgendaDuration(data.length)
+        this.ngAfterViewChecked()
+        this.getAppointmentsOfRange(this.startDate, this.endDate);
+        this.calendarComponent.getApi().removeAllEvents();
+        this.calendarComponent.getApi().addEventSource(this.events);
+        this.updateDateRangeText();
+        this.calendarComponent.getApi().setOption('locale', 'el');
+        console.log(this.calendarComponent)
+      },
+      err => {
+        console.error(err);
+      }
+    );
     //this.ngAfterViewChecked();
-
-
   }
+
+
 
   switchToListView() {
     this.projects = []
@@ -830,7 +860,7 @@ export class HomePage implements OnInit {
     if (this.listView) {
       this.switchToListView()
     } else {
-      //this.ngAfterViewChecked()
+      this.ionViewWillEnter()
 
     }
   }
@@ -846,6 +876,7 @@ export class HomePage implements OnInit {
   ngAfterViewChecked() {
     this.addBorderToDayChange();
     this.highlightCurrentTimeElement();
+    this.calendarComponent.local = 'el'
   }
 
   @ViewChild(FullCalendarComponent) calendarComponent: FullCalendarComponent | any;
@@ -853,38 +884,11 @@ export class HomePage implements OnInit {
 
   dateExample = new Date().toISOString();
   events: EventInput[] = [
-    {
-      id: 'event1',
-      title: 'Product team mtg',
-      start: '2024-05-14T10:00:00',
-      end: '2024-05-14T11:00:00',
-      backgroundColor: '#FADCD2',
-      resourceId: 'b',
-      borderColor: '#F7C4B4'
-    },
-    {
-      id: 'event2',
-      title: 'Quick mtg with Martin',
-      start: '2024-05-15T08:00:00',
-      end: '2024-05-15T09:00:00',
-      backgroundColor: '#DDF7DF',
-      resourceId: 'b',
-      borderColor: '#C6F1C9'
-    },
-    {
-      id: 'event3',
-      title: 'Business software',
-      start: '2024-05-22T10:00:00',
-      end: '2024-05-22T11:00:00',
-      backgroundColor: '#F1E3F5',
-      resourceId: 'c',
-      borderColor: '#E8D0EF'
-    }
+
   ];
+
   eventsPromise: Promise<EventInput[]> | undefined;
   calendarOptions: CalendarOptions = {
-    timeZone: 'local',
-    locale: elLocale,
     initialView: 'resourceTimeGridWeek',
     datesAboveResources: true,
     plugins: [timeGridPlugin, interactionPlugin, resourceTimeGridPlugin, dayGridPlugin],
@@ -893,29 +897,28 @@ export class HomePage implements OnInit {
         type: 'resourceTimeGrid',
         duration: { days: 2 },
         buttonText: 'Week',
-        allDaySlot: false
+        allDaySlot: false,
+
       }
+
     },
     events: this.events,
     eventLongPressDelay: 1000,
     resources: [
-      { id: 'a', title: 'Ryan', color: '#FADCD2', borderColor: '#F7C4B4', image: '../../assets/ryan.png' },
-      { id: 'b', title: 'Kate', color: '#DDF7DF', borderColor: '#C6F1C9', image: '../../assets/kate.png' },
-      { id: 'c', title: 'John', color: '#F1E3F5', borderColor: '#E8D0EF', image: '../../assets/john.png' },
-      { id: 'd', title: 'John', color: '#F1E3F5', borderColor: '#E8D0EF', image: '../../assets/john.png' },
-      { id: 'e', title: 'John', color: '#F1E3F5', borderColor: '#E8D0EF', image: '../../assets/john.png' },
-      { id: 'f', title: 'John', color: '#F1E3F5', borderColor: '#E8D0EF', image: '../../assets/john.png' },
 
     ],
     headerToolbar: false,
     weekends: true,
+    eventDurationEditable: false,
     editable: true,
     height: 'auto',
     stickyHeaderDates: true,
+    locale: elLocale, // Use the imported locale here
+
     slotDuration: '00:15:00',
     //slotLabelInterval: { hour: 1 },
     //slotLabelFormat: { hour: 'numeric' },
-
+    datesSet: this.handleDatesSet.bind(this),
     slotLabelInterval: { minutes: 30 },
     slotLabelFormat: { hour: 'numeric', minute: '2-digit' },
     slotMinTime: '08:00',
@@ -923,10 +926,11 @@ export class HomePage implements OnInit {
     dayHeaderFormat: { weekday: 'long', month: 'long', day: 'numeric' },
     dateClick: this.addEvent.bind(this),
     eventDrop: this.handleEventDrop.bind(this),
+    eventClick: this.handleEventClick.bind(this), 
     dayHeaderContent: this.dayHeaderContent.bind(this),
     resourceLabelContent: this.getResourceLabelContent.bind(this),
     eventContent: this.eventContent.bind(this),
-    eventResize: this.eventResize.bind(this),
+    //eventResize: this.eventResize.bind(this),
   };
   eventContent(arg: any) {
     const timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
@@ -937,8 +941,8 @@ export class HomePage implements OnInit {
   }
   dayHeaderContent(arg: any) {
     const date = arg.date;
-    const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
-    const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    const dayOfWeek = date.toLocaleString('el-GR', { weekday: 'long' });
+    const formattedDate = date.toLocaleDateString('el-GR', { month: 'long', day: 'numeric' });
     const html = `
        <div class="custom-day-header" style="display: flex; justify-content: space-between; width: 100%;margin: 5px; padding: 5px;">
        <div>
@@ -1030,9 +1034,9 @@ export class HomePage implements OnInit {
       }
     }
   }
-  eventResize(info: any) {
+  /*eventResize(info: any) {
     this.handleEventDrop(info)
-  }
+  }*/
   handleEventDrop(info: any) {
     const event = info.event;
     const newResource = info.newResource;
@@ -1055,30 +1059,12 @@ export class HomePage implements OnInit {
   }
 
   addEvent(info: any) {
-    if (info.jsEvent.detail === 2 || info.jsEvent.type === 'touchend') {
-      const startTime = new Date(info.date);
-      startTime.setMinutes(0);
-      startTime.setSeconds(0);
-      startTime.setMilliseconds(0);
-
-      const endTime = new Date(startTime);
-      endTime.setHours(endTime.getHours() + 1);
-      const newEvent: EventInput = {
-        id: 'event' + (this.events.length + 1),
-        title: 'New Event',
-        start: startTime,
-        end: endTime.toISOString(),
-        backgroundColor: info.resource.extendedProps.color,
-        resourceId: info.resource.id,
-        borderColor: info.resource?.extendedProps?.borderColor
-      };
-      this.events = [...this.events, newEvent];
-      this.calendarOptions.events = this.events;
-    }
+    this.newKrathsh()
   }
   prev() {
     this.calendarComponent.getApi().prev();
     this.updateCurrentMonth();
+
   }
 
   today() {
@@ -1093,14 +1079,18 @@ export class HomePage implements OnInit {
   updateCurrentMonth() {
     const calendarApi = this.calendarComponent.getApi();
     const currentDate = calendarApi.view.currentStart;
+    const endDate = calendarApi.view.currentStart;
     const month = currentDate.toLocaleString('default', { month: 'short' });
     const year = currentDate.getFullYear();
     this.dateExample = `${month} ${year}`;
+    this.updateDateRangeText();
+
   }
   onDateSelected(event: any) {
     const selectedDate = new Date(event.detail.value);
     this.calendarComponent.getApi().gotoDate(selectedDate);
     this.dismissPopover();
+    this.updateDateRangeText();
   }
 
   dismissPopover() {
@@ -1109,18 +1099,33 @@ export class HomePage implements OnInit {
   addBorderToDayChange() {
     const elementsWithDataDate = Array.from(this.calendarContainer.nativeElement.querySelectorAll('[data-date]'));
     let prevDate: any = null;
+   
     elementsWithDataDate.forEach((element: any, index: number) => {
 
       const currentDate = element.getAttribute('data-date');
 
       if (prevDate && prevDate !== currentDate) {
-        if (index !== 5 && index !== 20) {
+        if (this.calendarDaysLength == 2) {
+          if (index !== this.calendarDaysLength && index !== 10) {
 
-          element.classList.add('solid-border');
+            element.classList.add('solid-border');
+          }
+        } else if (this.calendarDaysLength == 5) {
+          if (index !== this.calendarDaysLength && index !== 15) {
+
+            element.classList.add('solid-border');
+          }
+
+        } else if (this.calendarDaysLength == 3) {
+          if (index !== this.calendarDaysLength && index !== 12) {
+
+            element.classList.add('solid-border');
+          }
+
         }
       }
-      prevDate = currentDate;
-    });
+        prevDate = currentDate;
+      });
   }
   highlightCurrentTimeElement() {
     const now = new Date();
@@ -1219,6 +1224,182 @@ export class HomePage implements OnInit {
 
     return `${formattedHours}:${formattedMinutes} ${amPm}`;
   }
+
+  changeAgendaDuration(employees_length: number) {
+    if (this.calendarOptions.views && this.calendarOptions.views['resourceTimeGridWeek']) {
+      if (employees_length <= 2) {
+        this.calendarDaysLength = 5
+
+      } else if (employees_length <= 3) {
+        this.calendarDaysLength = 3
+
+      } else {
+        this.calendarDaysLength = 2
+
+
+      }
+      this.calendarOptions.views['resourceTimeGridWeek'].duration = { days: this.calendarDaysLength };
+
+      this.calendarOptions = { ...this.calendarOptions };
+    } else {
+      console.error('View "resourceTimeGridWeek" is not defined in calendarOptions.views');
+    }
+    // Trigger a re-render of the calendar
+    this.calendarOptions = { ...this.calendarOptions };
+  }
+
+  getRandomLightColor() {
+    const letters = 'CDEF'; // Limiting to higher range to ensure lighter colors
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 4)];
+    }
+    return color;
+  }
+
+  darkenColor(hex: string, amount: number = 40) {
+    let usePound = false;
+
+    if (hex[0] === "#") {
+      hex = hex.slice(1);
+      usePound = true;
+    }
+
+    let num = parseInt(hex, 16);
+
+    let r = (num >> 16) - amount;
+    let b = ((num >> 8) & 0x00FF) - amount;
+    let g = (num & 0x0000FF) - amount;
+
+    r = r < 0 ? 0 : r;
+    b = b < 0 ? 0 : b;
+    g = g < 0 ? 0 : g;
+
+    const newColor = (r << 16) | (b << 8) | g;
+    return (usePound ? "#" : "") + newColor.toString(16).padStart(6, '0');
+  }
+
+  getAppointmentsOfRange(startDate: Date, endDate: Date) {
+    const formattedStartDate = this.formatDateForAPI(startDate);
+    const formattedEndDate = this.formatDateForAPI(endDate);
+
+    this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
+      data => {
+        console.log(this.events);
+        this.events = this.transformToEventInput(data);
+        console.log(this.events);
+
+        // Update the FullCalendar events directly using its API
+        const calendarApi = this.calendarComponent.getApi();
+        calendarApi.removeAllEvents();
+        calendarApi.addEventSource(this.events);
+        this.cdr.detectChanges();
+        // Print the rendered events
+        this.printRenderedEvents();
+      },
+      err => {
+        console.error('Error fetching appointments:', err);
+      }
+    );
+  }
+
+  formatDateForAPI(date: Date): string {
+    return formatDate(date, 'yyyy-MM-dd', 'en-US');
+  }
+  handleDatesSet(arg: any) {
+    this.printRenderedEvents()
+
+    this.startDate = arg.start;
+    this.endDate = arg.end;
+
+
+
+
+  }
+
+
+  updateDateRangeText(start?: Date, end?: Date) {
+    const calendarApi = this.calendarComponent.getApi();
+    const view = calendarApi.view;
+    console.log("the view")
+    console.log(view.activeEnd)
+    const startDate = start || view.activeStart;
+    const endDate = new Date(startDate);
+
+    endDate.setDate(endDate.getDate()+this.calendarDaysLength)
+    
+    // Subtract one day from the endDate
+    const adjustedEndDate = new Date(endDate);
+    adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
+
+    const startDay = formatDate(startDate, 'dd', 'el');
+    const endDay = formatDate(adjustedEndDate, 'dd', 'el');
+    const monthYear = formatDate(adjustedEndDate, 'MMMM yyyy', 'el');
+
+    this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
+  }
+  transformToEventInput(data: any[]): EventInput[] {
+    return data.map(appointment => {
+      const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
+      const backgroundColor = resource ? resource.extendedProps.color : '#b7d7d7';
+      const borderColor = resource ? resource.extendedProps.borderColor : '#b7d7d7';
+
+      return {
+        id: appointment.id,
+        title: appointment.title.replace("$", " ") || 'No Title',
+        start: this.formatDateForIncomingAPI(appointment.start),
+        end: this.formatDateForIncomingAPI(appointment.end),
+        backgroundColor: backgroundColor,  // Use resource background color
+        borderColor: borderColor,  // Use resource border color
+        resourceIds: [appointment.resourceId]  // Ensure this is an array
+      };
+    });
+  }
+
+
+  formatDateForIncomingAPI(date: any): string {
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error('Invalid date format');
+    }
+    return parsedDate.toISOString().replace(" ", 'T').split(".")[0];
+  }
+
+  printRenderedEvents() {
+    const calendarApi = this.calendarComponent.getApi();
+    const events = calendarApi.getEvents();
+    const resources = calendarApi.getResources();
+
+    console.log('Rendered Events:', events);
+    events.forEach((event: { id: any; title: any; start: any; end: any; getResources: () => any[]; }) => {
+      console.log(`Event ID: ${event.id}, Title: ${event.title}, Start: ${event.start}, End: ${event.end}, ResourceIds: ${event.getResources().map((r: { id: any; }) => r.id).join(', ')}`);
+    });
+
+    console.log('Rendered Resources:', resources);
+    resources.forEach((resource: { id: any; title: any; }) => {
+      console.log(`Resource ID: ${resource.id}, Title: ${resource.title}`);
+    });
+  }
+
+
+async handleEventClick(info: any) {
+  const eventId = info.event.id;
+  const modal = await this.modalController.create({
+    component: KrathshPage,
+    componentProps: {
+      'appointment_id': eventId
+    }
+  });
+  modal.onWillDismiss().then((dataReturned) => {
+    if (this.userService.getNavData() == true) {
+      this.page = 0;
+      this.krathseis = [];
+      this.getKrathseis(this.statusChosen);
+    }
+  });
+  return await modal.present();
+}
+
 };
 
 

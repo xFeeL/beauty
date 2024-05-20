@@ -287,6 +287,16 @@ export class UserService {
     );
   }
 
+  
+  getAppointmentsRange(startDate: string, endDate: string): Observable<any> {
+    let apiUrl = `${beautyAuthenticated_API_URL}get-appointments-range?startDate=${startDate}&endDate=${endDate}`;
+
+    return this.http.get(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+}
+
+
   noShow(appointment_id: string): Observable<any> {
     
     return this.http.post(beautyAuthenticated_API_URL + "no-show?appointment_id="+appointment_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(

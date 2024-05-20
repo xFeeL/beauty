@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -56,9 +56,10 @@ import {MatCardModule} from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { CustomHttpInterceptorService } from '../app/services/custom-http-interceptor.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
-
-
+import { registerLocaleData } from '@angular/common';
+import localeEl from '@angular/common/locales/el';
 import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
+registerLocaleData(localeEl, 'el');
 
 @NgModule({
   declarations: [AppComponent,CropperDialog],
@@ -106,6 +107,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     { provide: LY_THEME, useClass: MinimaDark, multi: true }, // name: `minima-dark`
     // Gestures
     { provide: HAMMER_GESTURE_CONFIG, useClass: LyHammerGestureConfig }, // Required for <ly-carousel>,
+   { provide: LOCALE_ID, useValue: 'el' },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptorService,

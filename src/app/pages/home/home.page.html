@@ -386,10 +386,9 @@
           </ion-row>
           <ion-row>
             <ion-col>
-
               <ion-list class="list">
                 <div class="date-container cursor" id="open-popover1">
-                  <ion-text class="datepicker-text" slot="start" >{{ dateExample | date: 'MMM yyyy' }}</ion-text>
+                  <ion-text class="datepicker-text" slot="start">{{ dateRangeText }}</ion-text>
                   <ion-icon name="chevron-down-outline" class="dropdown-icon ion-margin-start" slot="start" color="primary"></ion-icon>
                 </div>
                 <ion-popover trigger="open-popover1" class="custom-datetime" cssClass="width-80 custom-popover">
@@ -397,26 +396,25 @@
                     <ion-datetime presentation="date" [(ngModel)]="dateExample" class="custom-datetime" (ionChange)="onDateSelected($event)" size="cover"></ion-datetime>
                   </ng-template>
                 </ion-popover>
+                
                 <div class="toolbar">
                   <ion-button (click)="prev()" id="prevButton" fill="clear">
                     <ion-icon name="chevron-back"></ion-icon>
                   </ion-button>
-                  <ion-button (click)="today()" id="todayButton" class="todayButton" fill="clear">Today</ion-button>
+                  <ion-button (click)="today()" id="todayButton" class="todayButton" fill="clear">Σήμερα</ion-button>
                   <ion-button (click)="next()" id="nextButton" fill="clear">
                     <ion-icon name="chevron-forward"></ion-icon>
                   </ion-button>
                 </div>
               </ion-list>
-              
-          </ion-col>
-
-            <!-- (mousemove)="handleMouseEnter($event)" -->
+            </ion-col>
+          
             <div #calendarContainer class="calendar-container">
               <full-calendar class="full-calendar" #calendar [options]="calendarOptions"
                 [events]="eventsPromise | async"></full-calendar>
             </div>
-
           </ion-row>
+          
         </ion-grid>
 
 

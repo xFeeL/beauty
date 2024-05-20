@@ -19,7 +19,7 @@
   </ion-list>
   <!-- (mousemove)="handleMouseEnter($event)" -->
   <div #calendarContainer class="calendar-container">
-    <full-calendar class="full-calendar" #calendar [options]="calendarOptions"
+    <full-calendar class="full-calendar" #calendar [options]="calendarOptions"     locale="el"
       [events]="eventsPromise | async"></full-calendar>
   </div>
 
