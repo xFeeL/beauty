@@ -126,6 +126,7 @@ export class HomePage implements OnInit {
   totalAppointments: any = 0;
   totalRevenue: any = 0;
   topClients: any = [];
+  private backgroundEvents: EventInput[] = [];
   statsLoading: boolean = false;
   activeSegment: string = 'all'; // default value
   statusChosen: string = "0,0,0,0,0";
@@ -139,6 +140,7 @@ export class HomePage implements OnInit {
   endDate: any;
   dateRangeText: string = "";
   calendarDaysLength: number = 2;
+  employeeIds: any="";
   constructor(private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
@@ -157,6 +159,8 @@ export class HomePage implements OnInit {
       this.goToKrathseis();
     });
   }
+
+
   ionViewWillEnter() {
     if (this.userService.isMobile()) {
       this.rout.navigate(['/tabs/krathseis']);
@@ -164,7 +168,8 @@ export class HomePage implements OnInit {
     this.userService.getEmployeesOfExpert().subscribe(
       data => {
         this.employees = data;
-        this.calendarOptions.resources = this.employees.map((employee: any, index: any) => {
+        this.employeeIds = this.employees.map((employee: any) => employee.id).join(',');
+        this.calendarOptions.resources = this.employees.map((employee: any) => {
           const color = this.getRandomLightColor();
           return {
             id: employee.id,
@@ -174,21 +179,35 @@ export class HomePage implements OnInit {
             image: employee.image === "default" ? '../../assets/icon/default-profile.png' : employee.image
           };
         });
-        this.changeAgendaDuration(data.length)
-        this.ngAfterViewChecked()
+        this.changeAgendaDuration(data.length);
+        this.ngAfterViewChecked();
+    
+        if (!this.startDate) {
+          this.startDate = new Date();
+        }
+        if (!this.endDate) {
+          this.endDate = new Date();
+          this.endDate.setDate(this.startDate.getDate() + this.calendarDaysLength);
+        }
+    
         this.getAppointmentsOfRange(this.startDate, this.endDate);
-        this.calendarComponent.getApi().removeAllEvents();
-        this.calendarComponent.getApi().addEventSource(this.events);
         this.updateDateRangeText();
         this.calendarComponent.getApi().setOption('locale', 'el');
-        console.log(this.calendarComponent)
+        
+        this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(data2 => {
+          this.addBackgroundEvents(data2);
+        });
       },
       err => {
         console.error(err);
       }
     );
-    //this.ngAfterViewChecked();
   }
+  
+  
+  
+  
+  
 
 
 
@@ -394,9 +413,14 @@ export class HomePage implements OnInit {
       console.log(dataReturned)
       if (dataReturned.data == true) {
         // Your logic here, 'dataReturned' is the data returned from modal
-        this.page = 0;
-        this.krathseis = []
-        this.getKrathseis(this.statusChosen);
+        if(this.listView){
+          this.page = 0;
+          this.krathseis = []
+          this.getKrathseis(this.statusChosen);
+        }else{
+          this.getAppointmentsOfRange(this.startDate, this.endDate);
+        }
+     
       }
     });
 
@@ -891,6 +915,7 @@ export class HomePage implements OnInit {
   calendarOptions: CalendarOptions = {
     initialView: 'resourceTimeGridWeek',
     datesAboveResources: true,
+    timeZone: 'local', 
     plugins: [timeGridPlugin, interactionPlugin, resourceTimeGridPlugin, dayGridPlugin],
     views: {
       resourceTimeGridWeek: {
@@ -898,40 +923,34 @@ export class HomePage implements OnInit {
         duration: { days: 2 },
         buttonText: 'Week',
         allDaySlot: false,
-
       }
-
     },
-    events: this.events,
+    events: [],  // Initialize with an empty array
     eventLongPressDelay: 1000,
-    resources: [
-
-    ],
+    resources: [],
     headerToolbar: false,
     weekends: true,
     eventDurationEditable: false,
     editable: true,
     height: 'auto',
     stickyHeaderDates: true,
-    locale: elLocale, // Use the imported locale here
-
+    locale: elLocale,  // Use the imported locale here
     slotDuration: '00:15:00',
-    //slotLabelInterval: { hour: 1 },
-    //slotLabelFormat: { hour: 'numeric' },
-    datesSet: this.handleDatesSet.bind(this),
     slotLabelInterval: { minutes: 30 },
     slotLabelFormat: { hour: 'numeric', minute: '2-digit' },
-    slotMinTime: '08:00',
-    slotMaxTime: '24:00',
+    slotMinTime: '00:00',  // Will be dynamically updated
+    slotMaxTime: '24:00',  // Will be dynamically updated
     dayHeaderFormat: { weekday: 'long', month: 'long', day: 'numeric' },
+    datesSet: this.handleDatesSet.bind(this), // Add this line
     dateClick: this.addEvent.bind(this),
     eventDrop: this.handleEventDrop.bind(this),
-    eventClick: this.handleEventClick.bind(this), 
+    eventClick: this.handleEventClick.bind(this),
     dayHeaderContent: this.dayHeaderContent.bind(this),
     resourceLabelContent: this.getResourceLabelContent.bind(this),
     eventContent: this.eventContent.bind(this),
-    //eventResize: this.eventResize.bind(this),
   };
+  
+  
   eventContent(arg: any) {
     const timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
     document.body.addEventListener('mousemove', (event) => {
@@ -946,7 +965,7 @@ export class HomePage implements OnInit {
     const html = `
        <div class="custom-day-header" style="display: flex; justify-content: space-between; width: 100%;margin: 5px; padding: 5px;">
        <div>
-         <div style="font-weight: bold;">${dayOfWeek}</div>
+         <div style="font-weight: bold;text-align: left;">${dayOfWeek}</div>
          <div style="font-weight: normal; text-align: left;">${formattedDate}</div>
          </div>
        <div>
@@ -1084,6 +1103,8 @@ export class HomePage implements OnInit {
     const year = currentDate.getFullYear();
     this.dateExample = `${month} ${year}`;
     this.updateDateRangeText();
+    this.getAppointmentsOfRange(this.startDate,this.endDate)
+    this.addBackgroundEvents(this.employeeIds);
 
   }
   onDateSelected(event: any) {
@@ -1278,66 +1299,72 @@ export class HomePage implements OnInit {
     const newColor = (r << 16) | (b << 8) | g;
     return (usePound ? "#" : "") + newColor.toString(16).padStart(6, '0');
   }
-
   getAppointmentsOfRange(startDate: Date, endDate: Date) {
+    if (!startDate || !endDate) {
+      console.error('startDate or endDate is undefined');
+      return;
+    }
+  
     const formattedStartDate = this.formatDateForAPI(startDate);
     const formattedEndDate = this.formatDateForAPI(endDate);
-
+  
     this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
       data => {
-        console.log(this.events);
         this.events = this.transformToEventInput(data);
-        console.log(this.events);
-
-        // Update the FullCalendar events directly using its API
-        const calendarApi = this.calendarComponent.getApi();
-        calendarApi.removeAllEvents();
-        calendarApi.addEventSource(this.events);
-        this.cdr.detectChanges();
-        // Print the rendered events
-        this.printRenderedEvents();
+        
+        // Merge and update the calendar with all events
+        this.mergeAndSetEvents();
       },
       err => {
         console.error('Error fetching appointments:', err);
       }
     );
   }
+  
+  
+  
 
   formatDateForAPI(date: Date): string {
-    return formatDate(date, 'yyyy-MM-dd', 'en-US');
+    if (!date || isNaN(date.getTime())) {
+      console.error('Invalid date provided:', date);
+      return '';
+    }
+    return formatDate(date, 'yyyy-MM-dd', 'el-GR');
   }
-  handleDatesSet(arg: any) {
-    this.printRenderedEvents()
 
+  
+  handleDatesSet(arg: any) {
     this.startDate = arg.start;
     this.endDate = arg.end;
-
-
-
-
+    this.updateDateRangeText(this.startDate, this.endDate);
+  
+    // Fetch appointments for the new date range
+    this.getAppointmentsOfRange(this.startDate, this.endDate);
   }
+  
 
 
   updateDateRangeText(start?: Date, end?: Date) {
     const calendarApi = this.calendarComponent.getApi();
     const view = calendarApi.view;
-    console.log("the view")
-    console.log(view.activeEnd)
+    console.log("the view");
+    console.log(view.activeEnd);
     const startDate = start || view.activeStart;
-    const endDate = new Date(startDate);
-
-    endDate.setDate(endDate.getDate()+this.calendarDaysLength)
-    
+    const endDate = end ? new Date(end) : new Date(startDate);
+  
+    endDate.setDate(endDate.getDate() + this.calendarDaysLength);
+  
     // Subtract one day from the endDate
     const adjustedEndDate = new Date(endDate);
     adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
-
+  
     const startDay = formatDate(startDate, 'dd', 'el');
     const endDay = formatDate(adjustedEndDate, 'dd', 'el');
     const monthYear = formatDate(adjustedEndDate, 'MMMM yyyy', 'el');
-
+  
     this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
   }
+  
   transformToEventInput(data: any[]): EventInput[] {
     return data.map(appointment => {
       const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
@@ -1358,13 +1385,35 @@ export class HomePage implements OnInit {
 
 
   formatDateForIncomingAPI(date: any): string {
-    const parsedDate = new Date(date);
-    if (isNaN(parsedDate.getTime())) {
-      throw new Error('Invalid date format');
-    }
-    return parsedDate.toISOString().replace(" ", 'T').split(".")[0];
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Europe/Athens',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    };
+  
+    const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
+  
+    // Format the date in the Greek timezone
+    const [
+      { value: day },,
+      { value: month },,
+      { value: year },,
+      { value: hour },,
+      { value: minute },,
+      { value: second }
+    ] = dateTimeFormat.formatToParts(new Date(date));
+  
+    // Construct ISO string
+    const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+  
+    return isoString;
   }
-
+  
   printRenderedEvents() {
     const calendarApi = this.calendarComponent.getApi();
     const events = calendarApi.getEvents();
@@ -1383,6 +1432,11 @@ export class HomePage implements OnInit {
 
 
 async handleEventClick(info: any) {
+  console.log(info.event.title)
+  if(info.event.title==""){
+    console.log("MPIKA")
+    return ; 
+  }
   const eventId = info.event.id;
   const modal = await this.modalController.create({
     component: KrathshPage,
@@ -1392,13 +1446,133 @@ async handleEventClick(info: any) {
   });
   modal.onWillDismiss().then((dataReturned) => {
     if (this.userService.getNavData() == true) {
-      this.page = 0;
-      this.krathseis = [];
-      this.getKrathseis(this.statusChosen);
+     
+      this.getAppointmentsOfRange(this.startDate, this.endDate);
     }
   });
   return await modal.present();
 }
+
+addBackgroundEvents(workingPlans: any[]) {
+  const backgroundEvents: EventInput[] = [];
+  let minStartTime = '24:00';
+  let maxEndTime = '00:00';
+
+  const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+
+  workingPlans.forEach(plan => {
+    const resourceId = plan.objectId; // Assuming each working plan has an objectId
+    const daysWithSchedule: { [key: string]: boolean } = {};
+
+    plan.personSchedule.forEach((schedule: any) => {
+      daysWithSchedule[schedule.day] = true;
+      const unavailableIntervals = this.getUnavailableIntervals(schedule.intervals);
+      unavailableIntervals.forEach((interval: string) => {
+        const [start, end] = interval.split('-');
+        backgroundEvents.push({
+          resourceId: resourceId, // Assign resourceId to each event
+          startTime: start,
+          endTime: end,
+          daysOfWeek: [this.getDayOfWeek(schedule.day)],
+          display: 'background',
+          color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+          editable: false,
+        });
+
+        // Update minStartTime and maxEndTime based on the available intervals
+        schedule.intervals.forEach((availableInterval: string) => {
+          const [availableStart, availableEnd] = availableInterval.split('-');
+          if (availableStart < minStartTime) {
+            minStartTime = availableStart;
+          }
+          if (availableEnd > maxEndTime) {
+            maxEndTime = availableEnd;
+          }
+        });
+      });
+    });
+
+    // Block days not in the schedule
+    daysOfWeek.forEach((day, index) => {
+      if (!daysWithSchedule[day]) {
+        backgroundEvents.push({
+          resourceId: resourceId, // Assign resourceId to each event
+          startTime: '00:00',
+          endTime: '24:00',
+          daysOfWeek: [index],
+          display: 'background',
+          color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+          editable: false,
+        });
+      }
+    });
+
+    plan.exceptions.forEach((exception: any) => {
+      backgroundEvents.push({
+        resourceId: resourceId, // Assign resourceId to each event
+        start: exception.start,
+        end: exception.end,
+        display: 'background',
+        color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+        editable: false
+      });
+    });
+  });
+
+  // Store background events
+  this.backgroundEvents = backgroundEvents;
+
+  // Set minStartTime and maxEndTime for the calendar
+  this.calendarOptions.slotMinTime = minStartTime;
+  this.calendarOptions.slotMaxTime = maxEndTime;
+
+  // Merge and update the calendar with all events
+  this.mergeAndSetEvents();
+}
+
+
+mergeAndSetEvents() {
+  const mergedEvents = [...this.events, ...this.backgroundEvents];
+
+  const calendarApi = this.calendarComponent.getApi();
+  calendarApi.removeAllEvents();
+  calendarApi.addEventSource(mergedEvents);
+
+  // Apply the updated options
+  calendarApi.setOption('slotMinTime', this.calendarOptions.slotMinTime);
+  calendarApi.setOption('slotMaxTime', this.calendarOptions.slotMaxTime);
+  calendarApi.setOption('events', mergedEvents);
+
+  this.cdr.detectChanges();
+}
+
+
+getUnavailableIntervals(availableIntervals: string[]): string[] {
+  const fullDayStart = '00:00';
+  const fullDayEnd = '24:00';
+  let lastEnd = fullDayStart;
+
+  const unavailableIntervals = availableIntervals.reduce((acc: string[], interval: string) => {
+    const [start, end] = interval.split('-');
+    if (start > lastEnd) {
+      acc.push(`${lastEnd}-${start}`);
+    }
+    lastEnd = end;
+    return acc;
+  }, []);
+
+  if (lastEnd < fullDayEnd) {
+    unavailableIntervals.push(`${lastEnd}-${fullDayEnd}`);
+  }
+
+  return unavailableIntervals;
+}
+
+getDayOfWeek(day: string): number {
+  const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+  return days.indexOf(day);
+}
+
 
 };
 
