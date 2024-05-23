@@ -814,8 +814,10 @@ ion-popover {
 }
 
 ::ng-deep .time-div{
-  padding-right: 4px;
+  padding-right: 0px;
   margin-top: -2px;
+  width:100%;
+  font-size:10px;
 }
 ::ng-deep .fc thead {
   background-color: #F7F7F7 !important;
@@ -901,6 +903,7 @@ ion-popover {
   height: 30px !important;
   border-left: none !important;
   margin-left: 10px !important;
+  cursor: pointer;
   // padding-right: 15px !important;
 }
 
@@ -1027,5 +1030,10 @@ ion-popover {
   ::ng-deep .fc-col-header {
     position: inherit;
   }
+  .fc-bgevent {
+    pointer-events: none; /* Prevent background events from being clickable */
+  }
+  
+  
 }
 

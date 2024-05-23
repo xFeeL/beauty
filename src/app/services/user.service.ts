@@ -1330,6 +1330,15 @@ export class UserService {
     );
   }
 
+  updateAppointments(updates: any[]): Observable<any> {
+    const body = { updates };
+    return this.http.post(beautyAuthenticated_API_URL + "update-appointments", updates, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+  );
+  }
+  
+
+
   /**
    * Get the number of reservations for a client
    * @param user_id User ID
