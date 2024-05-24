@@ -176,6 +176,8 @@ export class KrathshPage implements OnInit {
       if (dataReturned.data === true) {
         // Do something when the modal returns true
         this.ionViewWillEnter()
+        this.reload=true
+
       }
     });
 

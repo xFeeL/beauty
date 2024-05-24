@@ -397,12 +397,19 @@ export class HomePage implements OnInit {
       }
     });
     modal.onWillDismiss().then((dataReturned) => {
+      console.log("RETURNED")
+      console.log(dataReturned)
       // Your logic here, 'dataReturned' is the data returned from modal
-      if (this.userService.getNavData() == true) {
+      if (this.userService.getNavData() == true || dataReturned) {
+        if(this.listView){
+
+       
         this.page = 0;
         this.krathseis = []
         this.getKrathseis(this.statusChosen);
-
+      }else{
+        this.getAppointmentsOfRange(this.startDate,this.endDate)
+      }
         //this.getKrathseisNew();
 
       }
@@ -899,8 +906,6 @@ export class HomePage implements OnInit {
 
 
 
-
-
   //Agenda
 
   lastKnownMinute: number = 0;
@@ -960,12 +965,20 @@ export class HomePage implements OnInit {
 
 
   eventContent(arg: any) {
-    const timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
+    let timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
+  
+    // Check if the event status is pending
+    if (arg.event.extendedProps.status === 'pending') {
+      // Add a striped background
+      timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1; background-image: linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1) 75%, transparent 75%, transparent); background-size: 20px 20px;">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
+    }
+  
     document.body.addEventListener('mousemove', (event) => {
       this.handleMouseEnter(event, arg.event);
     });
     return { html: timeAndTitle };
   }
+  
   dayHeaderContent(arg: any) {
     const date = arg.date;
     const dayOfWeek = date.toLocaleString('el-GR', { weekday: 'long' });
@@ -1061,9 +1074,7 @@ export class HomePage implements OnInit {
       }
     }
   }
-  /*eventResize(info: any) {
-    this.handleEventDrop(info)
-  }*/
+
   handleEventDrop(info: any) {
     const event = info.event;
     const newResource = info.newResource;
@@ -1150,6 +1161,7 @@ export class HomePage implements OnInit {
               response => {
                 console.log('Appointments updated successfully', response);
                 this.getAppointmentsOfRange(this.startDate, this.endDate);
+                this.userService.presentToast("Η κράτηση ενημερώθηκε επιτυχώς!","success")
               },
               error => {
                 console.error('Error updating appointments:', error);
@@ -1164,18 +1176,6 @@ export class HomePage implements OnInit {
       alert.present();
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   addEvent(info: any) {
     // Check if the clicked date is within a background event
@@ -1489,7 +1489,7 @@ export class HomePage implements OnInit {
       const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
       const backgroundColor = resource ? resource.extendedProps.color : '#b7d7d7';
       const borderColor = resource ? resource.extendedProps.borderColor : '#b7d7d7';
-
+  
       return {
         id: appointment.appointmentId, // Use appointmentId as the event ID
         groupId: appointment.appointmentId,
@@ -1501,11 +1501,14 @@ export class HomePage implements OnInit {
         resourceIds: [appointment.resourceId],  // Ensure this is an array
         extendedProps: {
           employeeAppointmentId: appointment.employeeAppointmentId, // Add employeeAppointmentId as an extra property,
-          yphresiaId: appointment.yphresiaId
+          yphresiaId: appointment.yphresiaId,
+          status: appointment.status // Include the status in the extendedProps
         }
       };
     });
   }
+
+  
 
 
 
@@ -1571,7 +1574,7 @@ export class HomePage implements OnInit {
       }
     });
     modal.onWillDismiss().then((dataReturned) => {
-      if (this.userService.getNavData() == true) {
+      if (this.userService.getNavData() == true || dataReturned) {
         this.getAppointmentsOfRange(this.startDate, this.endDate);
       }
     });
@@ -1641,7 +1644,7 @@ export class HomePage implements OnInit {
         plan.exceptions.forEach((exception: any) => {
             const start = new Date(exception.start);
             const end = new Date(exception.end);
-            end.setHours(end.getHours() + 1); // Manually add 1 hour to the end time
+            end.setHours(end.getHours() ); // Manually add 1 hour to the end time
 
             backgroundEvents.push({
                 resourceId: resourceId, // Assign resourceId to each event
@@ -1661,7 +1664,7 @@ export class HomePage implements OnInit {
     this.generalScheduleExceptions.forEach((exception: any) => {
         const start = new Date(exception.start);
         const end = new Date(exception.end);
-        end.setHours(end.getHours() + 1); // Manually add 1 hour to the end time
+        end.setHours(end.getHours() ); // Manually add 1 hour to the end time
 
         backgroundEvents.push({
             start: start.toISOString(),

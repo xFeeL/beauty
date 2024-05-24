@@ -151,42 +151,43 @@ export class SettingsPage implements OnInit {
         component: TeamServicesPage,
       });
     } else if (item.page == "social-media") {
-     
       modal = await this.modalController.create({
         component: SocialMediaPage,
       });
-    }  else if (item.page == "automated-notifications") {
-     
+    } else if (item.page == "automated-notifications") {
       modal = await this.modalController.create({
         component: AutomatedNotificationsPage,
       });
     } else if (item.page == "reservations") {
-     
       modal = await this.modalController.create({
         component: ReservationSettingsPage,
       });
-    } 
-    else if (item.page == "schedule") {
-     
+    } else if (item.page == "schedule") {
       modal = await this.modalController.create({
         component: WrarioPage,
       });
-    } 
-    else if (item.page == "change-password") {
-     
+    } else if (item.page == "change-password") {
       modal = await this.modalController.create({
         component: ChangePasswordPage,
       });
     } else if (item.page == "dark-mode") {
-       this.themeToggle=!this.themeToggle
-    this.toggleChange()
-      } 
-
-    
+      this.themeToggle = !this.themeToggle;
+      this.toggleChange();
+    }
+  
     if (modal !== null) {
+      modal.onDidDismiss().then((result) => {
+        console.log("RESULT")
+        console.log(result)
+        if (result.data || result.data.needRefresh) {
+          this.needRefresh = true;
+        }
+      });
       await modal.present();
     }
   }
+  
+ 
 
   formatHour(hour: number, minutes: string): string {
     return this.pad(hour) + ':' + minutes;

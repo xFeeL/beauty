@@ -18,7 +18,7 @@ import { TeamServicesPage } from './pages/team-services/team-services.page';
 import { StatsPage } from './pages/stats/stats.page';
 import { ThemeService } from '../app/services/theme.service';
 const STYLES = (theme: ThemeVariables) => ({
-  $global: lyl `{
+  $global: lyl`{
     body {
       background-color: ${theme.background.default}
       color: ${theme.text.default}
@@ -27,7 +27,7 @@ const STYLES = (theme: ThemeVariables) => ({
       direction: ${theme.direction}
     }
   }`,
-  root: lyl `{
+  root: lyl`{
     display: block
   }`
 });
@@ -47,149 +47,151 @@ register();
     ])
   ]
 })
-export class AppComponent implements WithStyles  {
-  authenticated: boolean=false;
+export class AppComponent implements WithStyles {
+  authenticated: boolean = false;
   private authSubscription: Subscription = new Subscription;
-  isAuthenticated: boolean=false;
+  isAuthenticated: boolean = false;
   iconName: string = 'clipboard-outline';
   themeToggle = false;
 
-  image: any="Error";
+  image: any = "Error";
   name: any;
   surname: any;
   email: any;
-  initialized: boolean=false;
+  initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
-  urlToCopy: string="";
-  constructor(private themeService:ThemeService,
-              private userService:UserService,
-              private rout : Router,    readonly sRenderer: StyleRenderer,private modalController:ModalController) {
-                this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
-              
-              }
-  $priority?: number | undefined;
-
-  
- 
-  
-  logout(){
-    this.userService.logout().subscribe(data => console.log(data),err=>{});
+  urlToCopy: string = "";
+  constructor(private themeService: ThemeService,
+    private userService: UserService,
+    private rout: Router, readonly sRenderer: StyleRenderer, private modalController: ModalController) {
+    this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
 
   }
- 
-   
+  $priority?: number | undefined;
 
 
-  login(){
-    this.rout.navigate(['login']);   
+
+
+  logout() {
+    this.userService.logout().subscribe(data => console.log(data), err => { });
+
+  }
+
+
+
+
+  login() {
+    this.rout.navigate(['login']);
   }
 
   showClipboard: boolean = true;
-fadeState: string = 'in';
+  fadeState: string = 'in';
 
-toggleIcon() {
-  this.copyToClipboard(this.urlToCopy);
-  this.fadeState = 'out';
-  setTimeout(() => {
-    this.showClipboard = !this.showClipboard;
-    this.fadeState = 'in';
-  }, 300);  // 300ms matches the animation duration
+  toggleIcon() {
+    this.copyToClipboard(this.urlToCopy);
+    this.fadeState = 'out';
+    setTimeout(() => {
+      this.showClipboard = !this.showClipboard;
+      this.fadeState = 'in';
+    }, 300);  // 300ms matches the animation duration
 
-  setTimeout(() => {
-    this.showClipboard = !this.showClipboard;
-  }, 3000)
+    setTimeout(() => {
+      this.showClipboard = !this.showClipboard;
+    }, 3000)
 
-    this.userService.presentToast("Ο σύνδεσμος κρατήσεων αντιγράφηκε στο πρόχειρο!","success")
-  
-}
+    this.userService.presentToast("Ο σύνδεσμος κρατήσεων αντιγράφηκε στο πρόχειρο!", "success")
 
-copyToClipboard(url: string) {
-  navigator.clipboard.writeText(url).then(() => {
-    console.log('URL copied to clipboard');
-    // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
-  }).catch(err => {
-    console.error('Could not copy text: ', err);
-  });
-}
+  }
 
-
-async goToProfile() {
-  const modal = await this.modalController.create({
-      component: EditProfilePage,
-  });
-  
-  modal.onDidDismiss().then((result) => {
-      if (result.data === true) {
-          window.location.reload(); // To reload the entire window
-          // Or you can implement any other logic to refresh the component/view as needed.
-      }
-  });
-  
-  return await modal.present();
-}
-
-
-  async goToClients(){
-
-   const modal = await this.modalController.create({
-        component: ClientsPage,
+  copyToClipboard(url: string) {
+    navigator.clipboard.writeText(url).then(() => {
+      console.log('URL copied to clipboard');
+      // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
     });
-    return await modal.present();
-}
+  }
 
-async goToKrathseis() {
-  this.userService.callGoToKrathseis();
-}
 
-async goToMessages(){
+  async goToProfile() {
+    const modal = await this.modalController.create({
+      component: EditProfilePage,
+    });
 
-  const modal = await this.modalController.create({
-       component: MessagesPage,
-   });
-   return await modal.present();
-}
-
-async goToTeamServices(){
-
-  const modal = await this.modalController.create({
-       component: TeamServicesPage,
-       backdropDismiss:false
-   });
-   modal.onDidDismiss().then((result) => {
-    if (result.data === true) {
+    modal.onDidDismiss().then((result) => {
+      if (result.data === true) {
         window.location.reload(); // To reload the entire window
         // Or you can implement any other logic to refresh the component/view as needed.
-    }
-});
-return await modal.present();
+      }
+    });
 
-}
-
-async goToSettings(){
-
-  const modal = await this.modalController.create({
-       component: SettingsPage,
-       backdropDismiss:false
-      });
-      modal.onDidDismiss().then((result) => {
-       if (result.data === true) {
-           window.location.reload(); // To reload the entire window
-           // Or you can implement any other logic to refresh the component/view as needed.
-       }
-   });
-   return await modal.present();
-  }   
+    return await modal.present();
+  }
 
 
+  async goToClients() {
 
-
- 
-  async goToReviews() {
     const modal = await this.modalController.create({
-        component: ReviewsPage,
+      component: ClientsPage,
     });
     return await modal.present();
-}
+  }
+
+  async goToKrathseis() {
+    this.userService.callGoToKrathseis();
+  }
+
+  async goToMessages() {
+
+    const modal = await this.modalController.create({
+      component: MessagesPage,
+    });
+    return await modal.present();
+  }
+
+  async goToTeamServices() {
+
+    const modal = await this.modalController.create({
+      component: TeamServicesPage,
+      backdropDismiss: false
+    });
+    modal.onDidDismiss().then((result) => {
+      if (result.data === true) {
+        window.location.reload(); // To reload the entire window
+        // Or you can implement any other logic to refresh the component/view as needed.
+      }
+    });
+    return await modal.present();
+
+  }
+
+  async goToSettings() {
+
+    const modal = await this.modalController.create({
+      component: SettingsPage,
+      backdropDismiss: false
+    });
+    modal.onDidDismiss().then((result) => {
+      console.log("THE RESULTS")
+      console.log(result)
+      if (result.data === true) {
+        window.location.reload(); // To reload the entire window
+        // Or you can implement any other logic to refresh the component/view as needed.
+      }
+    });
+    return await modal.present();
+  }
+
+
+
+
+
+  async goToReviews() {
+    const modal = await this.modalController.create({
+      component: ReviewsPage,
+    });
+    return await modal.present();
+  }
 
 
 
@@ -198,100 +200,100 @@ async goToSettings(){
 
 
 
-async goToPortfolio() {
-  const modal = await this.modalController.create({
+  async goToPortfolio() {
+    const modal = await this.modalController.create({
       component: PortfolioPage,
-  });
-  return await modal.present();
-}
+    });
+    return await modal.present();
+  }
 
-isMobile(){
-  return this.userService.isMobile()
-}
+  isMobile() {
+    return this.userService.isMobile()
+  }
 
-  
-  onMenuOpen(){
 
-    this.image="error"
-    this.name="error"
-    this.email="error"
+  onMenuOpen() {
+
+    this.image = "error"
+    this.name = "error"
+    this.email = "error"
 
     this.userService.getExpertData().subscribe(data => {
-      this.name=data.name;
-      
-      this.email=data.email;
-      this.image=data.image;
-      this.initialized=true;
+      this.name = data.name;
 
-    },err=>{
-      this.initialized=true;
+      this.email = data.email;
+      this.image = data.image;
+      this.initialized = true;
+
+    }, err => {
+      this.initialized = true;
 
 
     })
-    
-  
+
+
   }
 
-   
+
   async goToStats() {
     const modal = await this.modalController.create({
-        component: StatsPage,
+      component: StatsPage,
     });
     return await modal.present();
-}
+  }
 
 
 
 
   ngOnInit() {
-    
+
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
       console.log("asdasdasdasdasd")
-      if(localStorage.getItem('authenticated')=='true'){
+      if (localStorage.getItem('authenticated') == 'true') {
         this.onMenuOpen();
-        this.userService.getAccountId().subscribe(data=>{
-          this.urlToCopy="https://www.fyx.gr/book/"+data.id
-        },err=>{
-  
+        this.userService.getAccountId().subscribe(data => {
+          this.urlToCopy = "https://www.fyx.gr/book/" + data.id
+        }, err => {
+
         })
       }
-      });
-  
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-  
-  // Check for a saved theme preference in localStorage
-  const savedDarkModePreference = localStorage.getItem('darkMode');
-  if (savedDarkModePreference) {
-    this.initializeDarkTheme(savedDarkModePreference === 'true');
-  } else {
-    // If there is no saved preference, use the system preference
-    this.initializeDarkTheme(prefersDark.matches);
+    });
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Check for a saved theme preference in localStorage
+    const savedDarkModePreference = localStorage.getItem('darkMode');
+    if (savedDarkModePreference) {
+      this.initializeDarkTheme(savedDarkModePreference === 'true');
+    } else {
+      // If there is no saved preference, use the system preference
+      this.initializeDarkTheme(prefersDark.matches);
+    }
+
+    // Listen for changes to the prefers-color-scheme media query
+    prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
   }
 
-  // Listen for changes to the prefers-color-scheme media query
-  prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
-}
-  
-initializeDarkTheme(isDark:any) {
-  this.themeToggle = isDark;
-  this.toggleDarkTheme(isDark);
-}
+  initializeDarkTheme(isDark: any) {
+    this.themeToggle = isDark;
+    this.toggleDarkTheme(isDark);
+  }
 
 
-// Listen for the toggle check/uncheck to toggle the dark theme
-toggleChange(event: any): void {
-  this.themeService.toggleDarkTheme(event.detail.checked);
-}
-// Add or remove the "dark" class on the document body
-toggleDarkTheme(shouldAdd:any) {
-  document.body.classList.toggle('dark', shouldAdd);
-  // Save the preference to localStorage
-  localStorage.setItem('darkMode', shouldAdd ? 'true' : 'false');
-}
+  // Listen for the toggle check/uncheck to toggle the dark theme
+  toggleChange(event: any): void {
+    this.themeService.toggleDarkTheme(event.detail.checked);
+  }
+  // Add or remove the "dark" class on the document body
+  toggleDarkTheme(shouldAdd: any) {
+    document.body.classList.toggle('dark', shouldAdd);
+    // Save the preference to localStorage
+    localStorage.setItem('darkMode', shouldAdd ? 'true' : 'false');
+  }
 
 }
 
 
-  
+
 

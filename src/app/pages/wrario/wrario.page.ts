@@ -42,6 +42,7 @@ export class WrarioPage implements OnInit {
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
   addedExceptions: boolean = false;
+  needReload: boolean=false;
   constructor(private alertController: AlertController, private modalController: ModalController, private userService: UserService) {
 
     for (let i = 0; i < 24; i++) {
@@ -134,28 +135,6 @@ export class WrarioPage implements OnInit {
     }
   }
 
-
-  /* async openDateTimePicker() {
-     this.mySelect.close()
-     const modal = await this.modalController.create({
-       component: AddScheduleExceptionPage,
-       componentProps: {
-         // room: room, // Pass the entire room object
-       }
-     });
-     await modal.present();
-     //; // Close the MatSelect dropdown
- 
-     const { data } = await modal.onDidDismiss();
-     this.scheduleExceptions = []
-     this.getScheduleExceptions()
- 
-     if (data) {
- 
-       // room.tableTypes = data.tableTypes; // Update the room's table types with the returned data
-     }
-   }*/
-
   async openDateTimePicker() {
     this.mySelect.close();
     const modal = await this.modalController.create({
@@ -200,7 +179,8 @@ export class WrarioPage implements OnInit {
 
 
   goBack() {
-    this.modalController.dismiss()
+    console.log("Return with : "+this.needReload)
+    this.modalController.dismiss(this.needReload)
   }
 
 
@@ -366,8 +346,8 @@ export class WrarioPage implements OnInit {
 
     this.userService.saveWrario(this.daysWrario, this.deformatExceptions(this.daysControl.value), safeToSave, cancelAllFutureOverlappedAppointments).subscribe(data => {
       this.userService.presentToast("Το ωράριο αποθηκεύτηκε με επιτυχία.", "success")
-      this.modalController.dismiss()
-
+      this.modalController.dismiss(true)
+      
     }, err => {
       if (err.status === 406 && err.error && err.error["Overlapping appointments"]) {
         this.presentAlertWithChoices(err.error["Overlapping appointments"]);

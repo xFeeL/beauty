@@ -57,6 +57,7 @@ async deleteEmployee(employee: any) {
             data => {
               this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
               this.goToTeam();
+              this.reloadAppointments=true
             },
             async err => {
               if (err.status === 409) { // Conflict status code
@@ -148,6 +149,7 @@ async deleteEmployee(employee: any) {
     
     if (data.edited) {
       this.goToTeam()
+      this.reloadAppointments=true
       if(data.new_image=="true"){
         window.location.reload();
 
