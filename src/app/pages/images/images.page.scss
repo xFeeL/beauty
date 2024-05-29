@@ -125,9 +125,27 @@
     color: white;
     word-break: break-word;
   }
-  
   .image-wrapper {
     position: relative;
+  }
+  
+  .icon-wrapper {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Shadow for the button */
+  }
+  
+  .icon2 {
+    font-size: 20px; /* Adjust as needed */
   }
   
   .icon2 {

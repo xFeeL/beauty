@@ -28,17 +28,17 @@ export class NewPackagePage implements OnInit {
     this.onboarding=this.navParams.get('onboarding');
     if(this.onboarding){
       this.services = this.navParams.get('services');
-      console.log(this.services)
+      
     }else{
       this.userService.getAllServicesAndVariations().subscribe(data => {
-        console.log(data);
+        
         // Filter services to include only those where has_variations is false
         this.services = data.filter((service: { hasVariations: any; }) => !service.hasVariations);
     }, err => {
         // Handle error
     });
   }
-    console.log("The services before modification:", this.services);
+    
     this.services = this.services.reduce((acc: any[], service: { variations: any[]; name: any; }) => {
       // Check if the service has variations
       if (service.variations && service.variations.length > 0) {
@@ -65,8 +65,8 @@ export class NewPackagePage implements OnInit {
     }, []); // Initialize accumulator as an empty array
     
     this.packageToEdit=this.navParams.get('package');
-    console.log("The services after modification:", this.services);
-    console.log("The package to edit is:", this.packageToEdit);
+    
+    
     if(this.packageToEdit.name!=""){
       this.editMode=true
       this.packageName=this.packageToEdit.name;
@@ -83,14 +83,14 @@ export class NewPackagePage implements OnInit {
   }
 
   updateSelectedServices(event: any) {
-    console.log("The pick is:")
-    console.log(this.services)
-    console.log(this.selectedServices)
-    console.log(event.detail)
+    
+    
+    
+    
     this.selectedServices = event.detail.value;
-    console.log("The pick is:")
-    console.log(this.services)
-    console.log(this.selectedServices)
+    
+    
+    
 
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
@@ -101,7 +101,7 @@ export class NewPackagePage implements OnInit {
     // Complete the reorder and position the item in the DOM based on where the gesture ended
     ev.detail.complete();
   
-    console.log('Reordered services:', this.selectedServices);
+    
   }
   
   getSelectedServiceName(serviceId: string): string {
@@ -145,8 +145,8 @@ export class NewPackagePage implements OnInit {
       }))
     };
   
-    console.log("THE BODY IS");
-    console.log(packageData);
+    
+    
   
     this.userService.savePackage(packageData).subscribe((res: any) => {
       this.userService.presentToast("Το πακέτο αποθηκεύτηκε με επιτυχία","success")
@@ -177,7 +177,7 @@ export class NewPackagePage implements OnInit {
       })
     }
     
-    console.log("The new package is:", newPackage)
+    
     this.modalController.dismiss({
       'newPackage': newPackage
     });

@@ -8,12 +8,12 @@
     
   </ion-tab-button>-->  
   <ion-tab-button tab="notifications">
-    <ion-badge  *ngIf="newNotification()" color="danger"></ion-badge>
+    <ion-badge  *ngIf="newNotifications" color="danger"></ion-badge>
     <ion-img src="../../assets/icon/notification-bell.png" class="tab-icon"></ion-img>  
         <ion-label>Ειδοποιήσεις</ion-label>
   </ion-tab-button>
     <ion-tab-button tab="messages">
-    <ion-badge *ngIf="newMessage()" color="danger"></ion-badge>
+    <ion-badge *ngIf="newMessages" color="danger"></ion-badge>
     <ion-img src="../../assets/icon/messenger.png" class="tab-icon"></ion-img>  
         <ion-label>Μηνύματα</ion-label>
   </ion-tab-button>

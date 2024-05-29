@@ -77,7 +77,7 @@ export class OtpVerificationPage implements OnInit {
       user.password=this.navData[1];
       if(this.navData[2]=="ordinary"){
         this.userService.login(user).subscribe(data => {
-          //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
+          //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => );
       
             //Wait 1 second, then redirect it to home page.
             setTimeout(() => {

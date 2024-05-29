@@ -52,7 +52,7 @@ export class ClientsPage implements OnInit {
         }
         
       }
-      console.log(data)
+      
       this.loadingClients=false;
 
     },err=>{

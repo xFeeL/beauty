@@ -77,8 +77,8 @@ export class KrathshPage implements OnInit {
     this.resetView()
     this.appointment_id = this.navParams.get('appointment_id');
     this.userService.getAppointment(this.appointment_id).subscribe(data => {
-      console.log("RETRIEVEED")
-      console.log(data)
+      
+      
       this.date = moment(data.date).locale("el").format('DD-MMM-YYYY')
       this.time = data.time
       this.profile_image = data.image;
@@ -140,8 +140,8 @@ export class KrathshPage implements OnInit {
         this.text_color = "#000000"
 
       }
-      console.log("The combined list is")
-      console.log(this.combinedList)
+      
+      
       this.initialized = true;
     })
 
@@ -304,7 +304,7 @@ noShow() {
   acceptAppointment() {
     this.userService.acceptAppointment(this.appointment_id).subscribe(data => {
       this.status = "accepted"
-      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
+      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
       this.text_color = "#2dd36f"
       this.booking_status = "Η κράτηση έχει επιβεβαιωθεί.";
       this.booking_status_color = "success";

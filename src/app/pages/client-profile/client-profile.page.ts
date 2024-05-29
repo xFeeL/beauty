@@ -44,7 +44,7 @@ export class ClientProfilePage implements OnInit {
     this.userId = data;
     this.userService.getExpertData().subscribe(data => {
       this.expert = data
-      console.log(data)
+      
     })
     this.userService.getNumberOfReservationsClient(this.userId).subscribe(data => {
       this.numberOfReservations = data
@@ -117,7 +117,7 @@ export class ClientProfilePage implements OnInit {
     this.userService.getUserData(this.userId).subscribe(data => {
       this.userData = data;
       this.name = this.userData.name.split('$')
-      console.log(data)
+      
       this.initialized = true;
     }, err => {
 
@@ -152,7 +152,7 @@ export class ClientProfilePage implements OnInit {
   }
 
   sendResponse(review: any) {
-    console.log(review)
+    
     this.userService.sendResponseToReview(review[9], review[5]).subscribe(data => {
       this.userService.presentToast("Η απάντηση σας ανέβηκε με επιτυχία!", "success");
       this.getReviewsByUserId();
@@ -246,7 +246,7 @@ export class ClientProfilePage implements OnInit {
           break;
         }
       }
-      this.userService.presentToast("Η κράτηση έγινε accepted!", "success")
+      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
 
@@ -311,7 +311,7 @@ export class ClientProfilePage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Edit canceled');
+            
           }
         }, {
           text: 'Αποθηκευση',
@@ -325,7 +325,7 @@ export class ClientProfilePage implements OnInit {
               this.userService.presentToast("Οι αλλαγές αποθηκεύτηκαν με επιτυχία.", "success")
               this.needReload = true
             }, err => {
-              console.log(err)
+              
               if (err.error == "phone") {
                 this.userService.presentToast("Ο αριθμός τηλεφώνου πρέπει να έχει τη μορφή 6999999999 ή +306999999999.", "danger")
               } else if (err.error == "name") {
@@ -337,7 +337,7 @@ export class ClientProfilePage implements OnInit {
 
             // If needed, you can then save this data to your backend or database here
 
-            // console.log('Client updated:', this.client);
+            // 
           }
         }
       ]

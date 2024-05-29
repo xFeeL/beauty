@@ -66,7 +66,6 @@ export class ChatPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.userService.newMessage = false
 
     this.page = 0;
 
@@ -143,7 +142,7 @@ export class ChatPage implements OnInit {
 
       this.scrollToBottomSetTimeOut(300);
     })
-    //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
+    //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => );
 
     this.userService.messageReceived.subscribe((message: any) => {
       let message_received = new Message()

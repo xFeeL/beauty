@@ -383,3 +383,32 @@ ion-select {
 .fc-timegrid-slot-label-cushion{
   padding:0px !important;
 }
+
+.fc-timegrid-slot{
+  //background:var(--ion-color-dark-contrast)
+  //top:10px;
+}
+
+.fc-timegrid-slot{
+  bottom:10px;
+}
+
+.fc-timegrid-body{
+  margin-top:9px;
+}
+.fc-view-container { 
+  overflow-x: scroll; 
+
+}
+
+.fc-timegrid-axis{
+  overflow-x: scroll; 
+  position: sticky;
+
+
+}
+
+.googleImage{
+  width:80px;
+  height:auto;
+}

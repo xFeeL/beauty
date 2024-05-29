@@ -122,7 +122,7 @@ export class OnboardingPage {
 
 
   async deletePerson(person: any) {
-    console.log('Considering deletion of person', person);
+    
 
     // Identify the services that will be affected
     const affectedServices = this.services.filter(service =>
@@ -170,12 +170,12 @@ export class OnboardingPage {
       service.people = service.people.filter((servicePerson: any) => servicePerson !== person.name);
     });
 
-    console.log('Το άτομο διαγράφηκε. Επηρεασμένες υπηρεσίες:', affectedServices);
+    
   }
 
 
   deleteService(service: any) {
-    console.log('Deleting person', service);
+    
     this.services = this.services.filter(r => r !== service);
   }
 
@@ -194,7 +194,7 @@ export class OnboardingPage {
             text: 'Ακυρο',
             role: 'cancel',
             handler: () => {
-              console.log('Category deletion cancelled.');
+              
             }
           },
           {
@@ -203,7 +203,7 @@ export class OnboardingPage {
               // Delete the category and its associated services
               this.serviceCategories = this.serviceCategories.filter((r: any) => r !== category);
               this.services = this.services.filter(r => r.selectedCategory !== category);
-              console.log('Category and associated services deleted.');
+              
             }
           }
         ]
@@ -243,7 +243,7 @@ export class OnboardingPage {
         return '23:59';
       }
     } else {
-      console.log('Invalid time format');
+      
       return '';
     }
   }
@@ -277,7 +277,7 @@ export class OnboardingPage {
   }
 
   onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-    console.log('Selected start time: ', selectedStartTime);
+    
 
     const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
 
@@ -291,12 +291,12 @@ export class OnboardingPage {
 
       if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
         this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-        console.log(timeInterval.start)
+        
 
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
           timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
           selectedStartTime = timeInterval.start;
-          console.log(this.days);
+          
         });
 
         break;
@@ -306,27 +306,27 @@ export class OnboardingPage {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
 
 
   onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-    console.log('Selected end time: ', selectedEndTime);
+    
 
     const parsedEndTime = moment(selectedEndTime, 'HH:mm');
     const parsedStartTime = moment(timeInterval.start, 'HH:mm');
 
     if (parsedEndTime.isBefore(parsedStartTime)) {
       this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
-      console.log(timeInterval.start)
+      
 
       // delay setting the new value until next event loop to give the UI a chance to update
       new Promise(resolve => setTimeout(resolve, 0)).then(() => {
         timeInterval.end = this.addHours(timeInterval.start, 2);
         selectedEndTime = timeInterval.end;
-        console.log(this.days);
+        
       });
 
     } else {
@@ -334,7 +334,7 @@ export class OnboardingPage {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
@@ -429,8 +429,8 @@ export class OnboardingPage {
 
       }
     }
-    console.log("the expertImage is ")
-    console.log(this.expertImage)
+    
+    
     this.userService.onBoarding(this.expertName, expertCategories, this.address,this.coordinates, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
       this.userService.presentToast("Τα στοιχεία σας καταχωρήθηκαν με επιτυχία!", "success")
       localStorage.setItem('authenticated', "true");
@@ -438,7 +438,7 @@ export class OnboardingPage {
       window.location.href = '/tabs/home';
 
     }, err => {
-      console.log(err)
+      
       if (err.error == "Slug") {
         this.userService.presentToast("Το όνομα επιχείρησης υπάρχει ήδη. Πρακαλώ επιλέξτε κάποιο άλλο.", "danger")
         this.swiper.slideTo(1)
@@ -577,8 +577,8 @@ export class OnboardingPage {
       surname: person.surname,
       selected: person.selected
     }));
-    console.log("The categories")
-    console.log(this.serviceCategories)
+    
+    
     const modal = await this.modalController.create({
       component: NewServicePage,
       componentProps: {
@@ -607,7 +607,7 @@ export class OnboardingPage {
       const serviceIndex = this.services.findIndex((s) => s.name === data.deletedServiceName);
       if (serviceIndex !== -1) {
         this.services.splice(serviceIndex, 1);
-        console.log("Service deleted:", data.deletedServiceName);
+        
       }
     } else if (data) {
       const processedService = {
@@ -629,8 +629,8 @@ export class OnboardingPage {
       }
     }
 
-    console.log("Actions on service completed");
-    console.log(this.services);
+    
+    
   }
 
 
@@ -657,13 +657,13 @@ export class OnboardingPage {
         {
           text: 'Προσθηκη',
           handler: async (data: { categoryName: any; }) => {
-            console.log('Category Attempt:', data.categoryName);
+            
             if (this.categoryExists(data.categoryName)) {
               // Present a toast to the user
               this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger")
               return false;
             } else {
-              console.log('Category Added:', data.categoryName);
+              
               this.serviceCategories.push(data.categoryName);
               return true;
 
@@ -708,7 +708,7 @@ export class OnboardingPage {
               return false; // Keep the alert open
             }
 
-            console.log('Category Updated:', data.categoryName);
+            
 
             // Find the index of the category to replace
             const index = this.serviceCategories.indexOf(currentCategory);
@@ -734,7 +734,7 @@ export class OnboardingPage {
 
 
   async addService() {
-    console.log(this.serviceCategories);
+    
 
     const transformedPeople = this.people.map((person: any) => ({
       name: person.name,
@@ -750,7 +750,7 @@ export class OnboardingPage {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    console.log(data);
+    
 
     if (data) {
       const service = {
@@ -766,9 +766,9 @@ export class OnboardingPage {
       this.services.push(service);
       this.serviceCategories = data.categories
 
-      console.log("After closing newService")
-      console.log(service)
-      console.log(this.serviceCategories)
+      
+      
+      
     }
     this._cd.detectChanges();
   }
@@ -780,7 +780,7 @@ export class OnboardingPage {
 
 
   openCropperDialog(imageURL: string | undefined) {
-    console.log(imageURL)
+    
     this.cropped = null!;
     this._dialog.open(CropperDialog, {
       data: imageURL,
@@ -801,7 +801,7 @@ export class OnboardingPage {
     const actionSheet = await this.actionSheetController.create({
       header: 'Επιλέξτε πηγή εικόνας',
       buttons: [
-        {
+        /*{
           text: 'Facebook',
           icon: 'logo-facebook',
           handler: () => {
@@ -814,7 +814,7 @@ export class OnboardingPage {
           handler: () => {
             this.selectImageFromInstagram();
           }
-        },
+        },*/
 
         {
           text: 'Αποθηκευτικός Χώρος',
@@ -856,7 +856,7 @@ export class OnboardingPage {
       allowEditing: false,
       resultType: CameraResultType.Uri,
     });
-    console.log(image)
+    
     // do something with the captured image
     this.openCropperDialog(image.webPath)
   }
@@ -880,7 +880,7 @@ export class OnboardingPage {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
+      
     }
   }
 
@@ -895,7 +895,7 @@ export class OnboardingPage {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
+      
     }
   }
 
@@ -941,7 +941,7 @@ export class OnboardingPage {
           this.userService.presentToast("Υπάρχει ήδη πακέτο με αυτό το όνομα. Παρακαλώ επιλέξτε διαφορετικό όνομα.", "danger")
         } else {
           this.packages.push(newPackage);
-          console.log("Package added:", newPackage);
+          
         }
       }
     });
@@ -988,7 +988,7 @@ export class OnboardingPage {
   queryWait: boolean = false;
   suggestions:any=[]
   searchAddress() {
-    console.log('search', this.autocompleteInput);
+    
     if (this.autocompleteInput.length < 1) {
       this.suggestions = [];
       this.loadingOn = false;
@@ -1003,7 +1003,7 @@ export class OnboardingPage {
         this.queryWait = false;
         this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
           this.suggestions = data;
-          console.log(data);
+          
           this.loadingOn = false;
         }, err => {
           console.error(err);

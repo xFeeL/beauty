@@ -25,11 +25,11 @@ export class ChooseAddressPage implements OnInit {
 
   searchAddress() {
     this.suggestions = []
-    console.log('search', this.autocompleteInput);
+    
     // whenever a search is triggered
     // a 1 second delay is set to avoid excesive calls to API
     /*if (this.autocompleteInput.length < 1) {
-      console.log('query is too short, bye');
+      
       return;
     }*/
 
@@ -45,13 +45,13 @@ export class ChooseAddressPage implements OnInit {
         this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
 
           this.suggestions = data
-          console.log(data)
+          
           this.loadingOn = false;
 
         })
       }, 0);
     } else {
-      console.log('wait ...');
+      
     }
   }
 

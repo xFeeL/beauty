@@ -697,7 +697,7 @@ ion-popover {
   display: flex;
   justify-content: space-between;
   align-items: center;  /* This aligns items vertically */
-  background: white;
+  background: var(--ion-color-dark-contrast);
   z-index: 998;
 }
 
@@ -713,7 +713,7 @@ ion-popover {
   font-size:10px;
 }
 ::ng-deep .fc thead {
-  background-color: #F7F7F7 !important;
+  background-color: var(--ion-color-dark-contrast) !important;
 }
 
 ::ng-deep .fc-col-header {
@@ -739,6 +739,17 @@ ion-popover {
   text-transform: capitalize;
 }
 
+@media only screen and (max-width: 600px) {
+  .todayButton {
+    //margin-left: 0;
+    margin-top: -26px;
+
+    font-size: 0.85em; /* Adjust the font size as needed */
+    font-weight: normal;
+
+  }
+}
+
 .datepicker-text {
   margin-left: 20px;
   margin-top: 2px;
@@ -748,9 +759,16 @@ ion-popover {
   cursor: pointer;
 }
 
+@media only screen and (max-width: 600px) {
+  .datepicker-text {
+    margin-left: 0;
+    font-size: 1em; /* Adjust the font size as needed */
+  }
+}
+
 :host ::ng-deep .fc-direction-ltr .fc-timegrid-slot-label-frame {
   color: #8c8c8c !important;
-  font-size: 0.75em;
+  font-size: 11px !important;
 }
 
 ::ng-deep .fc-v-event {
@@ -775,18 +793,19 @@ ion-popover {
   color: #007aff !important;
   font-size: 11.5px;
   text-align: right;
+  bottom:6px !important;
 }
 ::ng-deep .blue-line{
   width: 100%;
   color: #6fb5ff !important;
-  margin-top: 0px;
+  margin-top: 10px;
   background: #6fb5ff !important;;
 }
 ::ng-deep .fc col{
   width: 50px !important;
 }
 ::ng-deep .fc-col-header-cell-cushion {
-  color: #000 !important;
+  color: var(--ion-color-dark) !important;
   font-size: 16px;
   font-weight: bold;
   line-height: 20px;
@@ -813,11 +832,11 @@ ion-popover {
 }
 
 ::ng-deep .fc .fc-timegrid-col.fc-day-today {
-  background-color: white;
+  background-color: var(--ion-color-dark-contrast) !important;
 }
 
 ::ng-deep .fc .fc-timegrid-col {
-  background-color: white !important;
+  background-color: var(--ion-color-dark-contrast) !important;
 }
 
 ::ng-deep .fc-scrollgrid {

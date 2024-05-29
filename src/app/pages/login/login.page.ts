@@ -59,7 +59,7 @@ export class LoginPage implements OnInit {
     
     this.userService.login(this.user).subscribe(data => {
     this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
-   // this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
+   // this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => );
 
       //Wait 1 second, then redirect it to home page.
       setTimeout(() => {

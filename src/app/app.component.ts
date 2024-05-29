@@ -10,13 +10,12 @@ import { ReviewsPage } from './pages/reviews/reviews.page';
 import { SettingsPage } from './pages/settings/settings.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { Subscription } from 'rxjs';
-import { KrathseisPage } from './pages/krathseis/krathseis.page';
 import { MessagesPage } from './pages/messages/messages.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ChangePasswordPage } from './pages/change-password/change-password.page';
 import { TeamServicesPage } from './pages/team-services/team-services.page';
 import { StatsPage } from './pages/stats/stats.page';
 import { ThemeService } from '../app/services/theme.service';
+import { ImagesPage } from './pages/images/images.page';
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
     body {
@@ -50,6 +49,8 @@ register();
 export class AppComponent implements WithStyles {
   authenticated: boolean = false;
   private authSubscription: Subscription = new Subscription;
+  private newMessageSubscription: Subscription = new Subscription;
+
   isAuthenticated: boolean = false;
   iconName: string = 'clipboard-outline';
   themeToggle = false;
@@ -61,6 +62,7 @@ export class AppComponent implements WithStyles {
   initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
+  hasNewMessages: boolean = false;
   constructor(private themeService: ThemeService,
     private userService: UserService,
     private rout: Router, readonly sRenderer: StyleRenderer, private modalController: ModalController) {
@@ -105,7 +107,7 @@ export class AppComponent implements WithStyles {
 
   copyToClipboard(url: string) {
     navigator.clipboard.writeText(url).then(() => {
-      console.log('URL copied to clipboard');
+      
       // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
     }).catch(err => {
       console.error('Could not copy text: ', err);
@@ -172,8 +174,8 @@ export class AppComponent implements WithStyles {
       backdropDismiss: false
     });
     modal.onDidDismiss().then((result) => {
-      console.log("THE RESULTS")
-      console.log(result)
+      
+      
       if (result.data === true) {
         window.location.reload(); // To reload the entire window
         // Or you can implement any other logic to refresh the component/view as needed.
@@ -200,9 +202,9 @@ export class AppComponent implements WithStyles {
 
 
 
-  async goToPortfolio() {
+  async goToImages() {
     const modal = await this.modalController.create({
-      component: PortfolioPage,
+      component: ImagesPage,
     });
     return await modal.present();
   }
@@ -249,7 +251,7 @@ export class AppComponent implements WithStyles {
 
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
-      console.log("asdasdasdasdasd")
+      
       if (localStorage.getItem('authenticated') == 'true') {
         this.onMenuOpen();
         this.userService.getAccountId().subscribe(data => {
@@ -273,6 +275,14 @@ export class AppComponent implements WithStyles {
 
     // Listen for changes to the prefers-color-scheme media query
     prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
+
+    this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
+      
+      
+      this.hasNewMessages = newMessage
+    });
+
+
   }
 
   initializeDarkTheme(isDark: any) {

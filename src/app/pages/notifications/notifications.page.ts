@@ -46,7 +46,7 @@ export class NotificationsPage implements OnInit {
 
   getNotifications() {
     this.userService.getNotifications(this.page).subscribe(data1 => {
-      this.userService.newNotification = false;
+      this.userService.newNotification$.next(false);
       if (data1.length < 10) {
         this.disableInfiniteScroll = true
       }
@@ -76,7 +76,7 @@ export class NotificationsPage implements OnInit {
   loadData(event: any) {
     this.page = this.page + 1
     this.getNotifications();
-    console.log(this.disableInfiniteScroll)
+    
     if (this.disableInfiniteScroll) {
       event.target.complete();
 

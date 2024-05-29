@@ -75,7 +75,7 @@ export class SearchKrathshPage implements OnInit {
   searchKrathsh() {
 
     this.userService.searchAppointment(this.searchTerm, this.page).subscribe(data => {
-      console.log(data)
+      
       for (let k = 0; k < data.length; k++) {
         data[k][3] = moment(data[k][3]).locale("el").format('Do MMM , h:mm a')
         data[k][5] = data[k][5].split('$')[0] + " " + data[k][5].split('$')[1]
@@ -206,27 +206,26 @@ export class SearchKrathshPage implements OnInit {
   }
 
   isAfterOneHourAgo(appointment: any): boolean {
-    console.log("Starting isAfterOneHourAgo check");
     const foundAppointment = this.krathseis.find(a => a[0] === appointment[0]);
     if (!foundAppointment) {
-        console.log("Appointment not found for id:", appointment[0]);
+        
         return false;
     }
     const appointmentStartTime = new Date(foundAppointment[11]);
     const currentDate = new Date(); // The current time
     const oneHourFromNow = new Date(currentDate.getTime() + 3600000); // One hour from the current time
 
-    console.log("Current Date:", currentDate);
-    console.log("Appointment Start Time:", appointmentStartTime);
-    console.log("One Hour From Now:", oneHourFromNow);
+    
+    
+    
 
     // Check if the appointment start time is before or exactly at the current time or within the next hour
     const hasAlreadyStarted = appointmentStartTime <= currentDate;
     const isStartingSoon = appointmentStartTime > currentDate && appointmentStartTime <= oneHourFromNow;
     const isStartingSoonOrAlreadyStarted = hasAlreadyStarted || isStartingSoon;
-    console.log("Is the appointment already started?:", hasAlreadyStarted);
-    console.log("Is the appointment starting soon?:", isStartingSoon);
-    console.log("Is the appointment starting soon or already started?:", isStartingSoonOrAlreadyStarted);
+    
+    
+    
 
     return isStartingSoonOrAlreadyStarted; // Return true if the appointment has already started or is about to start within the next hour
 }

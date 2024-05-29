@@ -56,20 +56,20 @@ goToPage(page:any){
   this.pageName=page.name
   let tempToken;
   if(this.facebookUserAccountId==page.id){
-    console.log("User token")
+    
 
     this.getAlbums(this.facebookAccessToken,page.id)
 
   }else if (page.token==undefined){
-    console.log("Paw gia token")
-    console.log(page.token)
+    
+    
    this.externalService.getPageAccessToken(this.facebookAccessToken,page.id).subscribe(data2=>{
       page.token=data2.access_token
       this.getAlbums(page.token,page.id)
     })
 
   }else{
-    console.log("Exei to page token")
+    
     this.getAlbums(page.token,page.id)
 
   }
@@ -91,7 +91,7 @@ this.choosePage=true
   const FACEBOOK_PERMISSIONS = ['user_photos','pages_show_list','pages_read_engagement']
   const result = await this.fbLogin.login({ permissions: FACEBOOK_PERMISSIONS });
   if (result && result.accessToken) {
-    console.log("MPIKA??A?S?")
+    
     this.facebookAccessToken=result.accessToken.token
     this.externalService.getFacebookUserNameAndImage(this.facebookAccessToken).subscribe(data=>{
       let temp = {
@@ -104,8 +104,8 @@ this.choosePage=true
 
     })
     this.externalService.getFacebookPagesNameAndImage(this.facebookAccessToken).subscribe(pages=>{
-      console.log("THE PAGES")
-      console.log(pages)
+      
+      
       for(let i=0;i<pages.data.length;i++){
         let temp = {
           name: pages.data[i].name,
@@ -115,7 +115,7 @@ this.choosePage=true
         };
           this.pagesToChoose.push(temp)
       }
-      console.log(this.pagesToChoose)
+      
       this.pageChosen=false;
       this.choosePage=true;
       this.albumChosen=false;
@@ -154,12 +154,11 @@ this.choosePage=true
     this.selectedImage = { imageLink: '', selected: false };
   
   
-    console.log
     this.currentAlbum = album;
     this.currentAlbumPhotos=[]
     this.externalService.getFacebookPhotosFromAlbumId(this.facebookAccessToken, album.id).subscribe(data => {
-      console.log("THE DATA")
-      console.log(data)
+      
+      
       for (let i=0;i<data.photos.data.length;i++){
         const photo = { imageLink: data.photos.data[i].images[0].source, selected:false};
   
@@ -168,9 +167,9 @@ this.choosePage=true
   
         
       }
-      console.log("THE DATA23")
+      
   
-      console.log(this.currentAlbumPhotos)
+      
     });
   }
   

@@ -273,7 +273,7 @@ export class PortfolioPage implements OnInit {
       const actionSheet = await this.actionSheetController.create({
        header: 'Επιλέξτε πηγή εικόνας',
        buttons: [
-         {
+        /* {
            text: 'Facebook',
            icon: 'logo-facebook',
            handler: () => {
@@ -286,7 +286,7 @@ export class PortfolioPage implements OnInit {
            handler: () => {
             this.selectImageFromInstagram();
           }
-         },
+         },*/
        
          {
            text: 'Αποθηκευτικός Χώρος',
@@ -421,7 +421,7 @@ async selectImageFromInstagram() {
   if (data) {
     this.selectedImage = data.imageSelected; // Update the room's table types with the returned data
     this.saveImage();
-    console.log(data)
+    
   }
 }
 

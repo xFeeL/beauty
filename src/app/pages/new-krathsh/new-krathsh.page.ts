@@ -85,12 +85,12 @@ export class NewKrathshPage implements OnInit {
 
   ionViewWillEnter() {
    
-    console.log(this.theDate)
+    
     if (this.navParams.get("appointment_data") != undefined) {
       this.editing = true
       this.appointment_data = this.navParams.get("appointment_data")
-      console.log("THE DATA")
-      console.log(this.appointment_data)
+      
+      
       this.appointmentId = this.appointment_data.appointmentId
       this.theDate = this.appointment_data.date
       // Map services with isSelected and indexOrder
@@ -146,14 +146,14 @@ export class NewKrathshPage implements OnInit {
         this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
         this.updateServiceEmployees()
-        console.log("the selected services")
-        console.log(this.selectedServices)
+        
+        
         this.onMonthChange();
 
 
       }, err => {
         if (err.error == "Service doesn't exist") {
-          console.log("MPIKA")
+          
           this.selectedServices = []
         }
       });
@@ -267,21 +267,21 @@ export class NewKrathshPage implements OnInit {
 
       this.dateSelected = true;
       if (this.editing && !this.dataChanged) {
-        console.log("MPAASDASDASDASD")
+        
         // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
         let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
 
         // Find the slot from the time_slots array that matches the converted time
         let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
-        console.log(convertedTime)
-        console.log(this.appointment_data.time)
+        
+        
         this.saveButtonEnabled = true
         // If the slot is found, call slotSelected on it
         if (foundSlot) {
-          console.log("Found slot")
+          
           this.slotSelected(foundSlot);
         } else {
-          console.log("Not Found slot")
+          
 
           // If the slot is not found, add it to the time_slots array and select it
           let newSlot = {
@@ -293,16 +293,16 @@ export class NewKrathshPage implements OnInit {
 
           // Sort the time_slots array to maintain order
         }
-        console.log("Timne slots before sorting")
-        console.log(this.time_slots)
+        
+        
         this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
           let [hourA, minuteA] = a.value.split(':').map(Number);
           let [hourB, minuteB] = b.value.split(':').map(Number);
           if (hourA !== hourB) return hourA - hourB;
           return minuteA - minuteB;
         });
-        console.log("Timne slots after sorting")
-        console.log(this.time_slots)
+        
+        
 
       }
       else {
@@ -443,7 +443,7 @@ export class NewKrathshPage implements OnInit {
     }, err => {
       this.saveButtonEnabled = true
 
-      console.log(err)
+      
       if (err.error == "Slot taken") {
         this.userService.presentToast("Η συγκεκριμένη χρονική περιόδος δεν είναι πλέον διαθέσιμη.", "danger")
       } else {
@@ -452,17 +452,17 @@ export class NewKrathshPage implements OnInit {
     })
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-    console.log('Dragged from index', ev.detail.from, 'to', ev.detail.to);
+    
 
     // Reorder the selectedServicesAndPackages array
     const itemToMove = this.selectedServicesAndPackages.splice(ev.detail.from, 1)[0];
     this.selectedServicesAndPackages.splice(ev.detail.to, 0, itemToMove);
 
-    console.log('Item to Move:', itemToMove);
+    
     this.processSelectedServices(this.selectedServicesAndPackages)
     this.updateServiceEmployees()
-    console.log("The date")
-    console.log(this.theDate)
+    
+    
     if(this.theDate!=undefined){
       this.dateChanged()
     }else{
@@ -505,8 +505,8 @@ export class NewKrathshPage implements OnInit {
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
-      console.log("DATA RECEIVED")
-      console.log(data)
+      
+      
       if(this.editing){
       this.dateChanged();
       }
@@ -544,11 +544,11 @@ export class NewKrathshPage implements OnInit {
 
 
 
-    console.log("Selected Services:", this.selectedServices);
-    console.log("Selected Services And Packages:", this.selectedServicesAndPackages);
+    
+    
 
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
-    console.log("Can select date:", this.canSelectDate);
+    
 
     if (this.editing && this.canSelectDate ) {
       this.dateSelected = true;
@@ -581,7 +581,7 @@ export class NewKrathshPage implements OnInit {
       }
 
     }, err => {
-      console.log("Error:", err);
+      
       if (err.error == "Service doesn't exist") {
         this.selectedServices = [];
       }
@@ -592,8 +592,8 @@ export class NewKrathshPage implements OnInit {
 
 
   toggleSelectService(service: any) {
-    console.log("TOGGLE SELECT SERVICE");
-    console.log(service);
+    
+    
 
     service.isSelected = !service.isSelected; // Toggle the isSelected property
 
@@ -641,10 +641,10 @@ export class NewKrathshPage implements OnInit {
 
   filterTimeSlots() {
     if (this.toggleValue === 'all') {
-      console.log("ALL")
+      
       this.filteredTimeSlots = [...this.time_slots];
-      console.log(this.time_slots)
-      console.log(this.filteredTimeSlots)
+      
+      
     } else {
       this.filteredTimeSlots = this.time_slots.filter((slot: { value: string; }) => this.isInPeriod(slot.value, this.toggleValue));
     }

@@ -15,7 +15,7 @@
               <ion-icon color="light" name="add"></ion-icon>
               <ion-label color="light" class="ion-margin-start" *ngIf="!isMobile">Νέα Κράτηση</ion-label>
             </ion-button> <button (click)="goToNotifications()" class="notif" slot="end">
-              <svg *ngIf="newNotification()==false || newNotification()==undefined" width="22" height="22"
+              <svg *ngIf="hasNewNotifications==false || hasNewNotifications==undefined" width="22" height="22"
                 viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
@@ -27,7 +27,7 @@
                   d="M21.6668 7.94439C23.6611 7.94439 25.2779 6.32764 25.2779 4.33328C25.2779 2.33892 23.6611 0.722168 21.6668 0.722168C19.6724 0.722168 18.0557 2.33892 18.0557 4.33328C18.0557 6.32764 19.6724 7.94439 21.6668 7.94439Z"
                   fill="#B0B0B0" />
               </svg>
-              <svg *ngIf="newNotification()==true" class="ringing-bell" width="22" height="22" viewBox="0 0 26 26"
+              <svg *ngIf="hasNewNotifications==true" class="ringing-bell" width="22" height="22" viewBox="0 0 26 26"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M13 24.7577C13.455 24.7473 13.8916 24.5762 14.2326 24.2749C14.5736 23.9735 14.797 23.5613 14.8633 23.1111H11.0645C11.1327 23.5735 11.3666 23.9955 11.7226 24.2984C12.0787 24.6013 12.5326 24.7645 13 24.7577V24.7577Z"
@@ -372,7 +372,7 @@
                 </h3>
               </div>
             </ion-col>
-            <ion-col class="right-align-button p10 ion-margin-end">
+            <ion-col class="right-align-button p10 ion-margin-end" *ngIf="!isMobile">
               <ion-row class="align-items-center">
                 <ion-icon name="calendar-outline" color="primary" class="listIcon left-rad" (click)="switchView()">
                 </ion-icon>

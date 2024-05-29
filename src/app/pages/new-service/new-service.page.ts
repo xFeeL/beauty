@@ -37,16 +37,16 @@ export class NewServicePage implements OnInit {
 
   ionViewWillEnter() {
     this.onboarding = this.navParams.get('onboarding');
-    console.log("Entering with ")
+    
     this.people = this.navParams.get('people');
 
     this.categories = this.navParams.get('categories');
     this.service_id = this.navParams.get('serviceId');
     if(!this.onboarding){
       this.userService.getServiceVariations(this.service_id).subscribe(data=>{
-        console.log(data)
+        
         this.variations=data;
-        console.log(this.variations)
+        
   
       },err=>{
   
@@ -54,8 +54,8 @@ export class NewServicePage implements OnInit {
     }
     
     this.variations = this.navParams.get('variations') || [];
-    console.log("Entering with ")
-    console.log(this.variations)
+    
+    
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
@@ -220,7 +220,7 @@ export class NewServicePage implements OnInit {
     // Set the value of the input field to the filtered value
     ev.target.value = filteredValue;
 
-    console.log(filteredValue);
+    
   }
 
   isSaveDisabled() {
@@ -328,7 +328,7 @@ export class NewServicePage implements OnInit {
           text: 'Ακυρωση', // 'Cancel' in Greek
           role: 'cancel',
           handler: () => {
-            console.log('Deletion cancelled');
+            
           }
         },
         {

@@ -23,58 +23,44 @@ export class MessagesPage implements OnInit {
 
   ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
-
-    this.chats = []
+  
+    this.chats = [];
     this.userService.getChats().subscribe(data => {
-      this.chats = data;
-      for (let i = 0; i < data.length; i++) {
-        this.userService.getUserImage(data[i].idUser).subscribe(data2 => {
-          this.chats[i].image = data2;
-        }, err => {
-          this.chats[i].image = err.error.text;
-          this.userService.getLastMessage(data[i].idUser).subscribe(data3 => {
-            if (data3.content.length > 20) {
-              data3.content = data3.content.slice(0, 8) + "..."
-            }
-            if (data3.id_receiver != data[i].idUser) {
-              this.chats[i].isReceiver = true
-            } else {
-              this.chats[i].isReceiver = false
-
-            }
-            this.chats[i].lastMessage = data3;
-
-
-
-
-
-          });
-        });
-      }
-
-      if (data.length == 0) {
-        this.content_class = "theContent"
-      } else {
-        this.content_class = ""
-
-      }
+      this.chats = data.map((chat: { lastMessage: { content: string; id_receiver: any; fullDateTime: string; }; isReceiver: boolean; idUser: any; image: any; userProfileImage: string; }) => {
+        // If the last message content is longer than 20 characters, truncate it
+        if (chat.lastMessage.content.length > 20) {
+          chat.lastMessage.content = chat.lastMessage.content.slice(0, 8) + "...";
+        }
+  
+        // Determine if the current user is the receiver of the last message
+        chat.isReceiver = chat.lastMessage.id_receiver !== chat.idUser;
+  
+        // Assign the user image, handling the case where it's a default or error
+        chat.image = chat.userProfileImage === 'default' ? 'default-image-path' : chat.userProfileImage;
+  
+        return chat;
+      });
+  
+      // Sort the chats by fullDateTime of the last message in descending order
+      this.chats.sort((a: { lastMessage: { fullDateTime: string | number | Date; }; }, b: { lastMessage: { fullDateTime: string | number | Date; }; }) => new Date(b.lastMessage.fullDateTime).getTime() - new Date(a.lastMessage.fullDateTime).getTime());
+  
+      this.content_class = data.length === 0 ? "theContent" : "";
       this.initialized = true;
-
     }, err => {
-      this.content_class = "theContent"
-
+      this.content_class = "theContent";
     });
-    if (this.userService.newMessage == true) {
-      this.userService.gotMessageNotifications().subscribe(data => {
-        this.userService.newMessage = false
-      }, err => {
-        this.userService.newMessage = false
+  
+    if (this.userService.newMessage$) {
+      this.userService.gotMessageNotifications().subscribe(() => {
+        this.userService.newMessage$.next(false);
+
+      }, () => {
+        this.userService.newMessage$.next(false);
 
       });
     }
-
-
   }
+  
 
   handleRefresh(event: any) {
     window.location.reload();

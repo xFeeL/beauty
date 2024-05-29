@@ -146,8 +146,8 @@ export class WrarioPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    console.log("THE DATA RETURNED")
-    console.log(data)
+    
+    
     if (data) {
       const formattedException = this.formatException(data);
       if (this.scheduleExceptions) {
@@ -158,8 +158,8 @@ export class WrarioPage implements OnInit {
         console.error("scheduleExceptions is not initialized");
       }
 
-      console.log("NEW EXCEPTIONs");
-      console.log(this.scheduleExceptions);
+      
+      
     }
   }
 
@@ -179,7 +179,7 @@ export class WrarioPage implements OnInit {
 
 
   goBack() {
-    console.log("Return with : "+this.needReload)
+    
     this.modalController.dismiss(this.needReload)
   }
 
@@ -188,7 +188,7 @@ export class WrarioPage implements OnInit {
   onDayToggle(day: any) {
     // Toggle the day
     //day.open = event.detail.checked;
-    console.log(day)
+    
     day.open = !day.open
     if (day.open) {
       // If this is the first day toggled, store it
@@ -214,7 +214,7 @@ export class WrarioPage implements OnInit {
 
 
   onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-    console.log('Selected start time: ', selectedStartTime);
+    
 
     const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
 
@@ -228,7 +228,7 @@ export class WrarioPage implements OnInit {
 
       if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
         this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-        console.log(timeInterval.start)
+        
 
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
           timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
@@ -242,21 +242,21 @@ export class WrarioPage implements OnInit {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
 
 
   onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-    console.log('Selected end time: ', selectedEndTime);
+    
 
     const parsedEndTime = moment(selectedEndTime, 'HH:mm');
     const parsedStartTime = moment(timeInterval.start, 'HH:mm');
 
     if (parsedEndTime.isBefore(parsedStartTime)) {
       this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
-      console.log(timeInterval.start)
+      
 
       // delay setting the new value until next event loop to give the UI a chance to update
       new Promise(resolve => setTimeout(resolve, 0)).then(() => {
@@ -269,7 +269,7 @@ export class WrarioPage implements OnInit {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
@@ -297,7 +297,7 @@ export class WrarioPage implements OnInit {
         return '23:30';
       }
     } else {
-      console.log('Invalid time format');
+      
       return '';
     }
   }
@@ -309,15 +309,15 @@ export class WrarioPage implements OnInit {
     repeat: string
   }>): any[] {
     return exceptionsArray.map(exception => {
-      console.log("Processing exception:", exception);
+      
 
       const start = exception.originalStart;
       const end = exception.originalEnd;
       const repeat = exception.repeat === "Επαναλαμβανόμενο";
 
-      console.log("Extracted start:", start);
-      console.log("Extracted end:", end);
-      console.log("Extracted repeat:", repeat);
+      
+      
+      
 
       return {
         start: start,
@@ -366,9 +366,9 @@ export class WrarioPage implements OnInit {
         {
           text: 'ακυρωση ολων',
           handler: () => {
-            console.log("PREPEI NA EINAI TRUE")
+            
             /*this.needRefresh=true
-            console.log(this.needRefresh)*/
+            */
             this.saveAll(true, true);
           }
         },

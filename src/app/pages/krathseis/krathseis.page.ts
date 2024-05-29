@@ -155,9 +155,6 @@ export class KrathseisPage implements OnInit {
     }
   }
 
-  public newNotification() {
-    return this.userService.newNotification;
-  }
 
 
   goBack() {
@@ -239,8 +236,8 @@ export class KrathseisPage implements OnInit {
         data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
         this.krathseis.push(data[k])
       }
-      console.log("APPOINTMETNS")
-      console.log(this.krathseis)
+      
+      
       this.initialized = true;
     }, err => {
       if(err.error.text=='No more data'){
@@ -279,7 +276,7 @@ export class KrathseisPage implements OnInit {
   }
 
   toggleItem(item: any) {
-    console.log(item)
+    
     item.selected = !item.selected
   }
 
@@ -287,27 +284,22 @@ export class KrathseisPage implements OnInit {
  
 
   isAfterOneHourAgo(appointment: any): boolean {
-    console.log("Starting isAfterOneHourAgo check");
+    
     const foundAppointment = this.krathseis.find(a => a[0] === appointment[0]);
     if (!foundAppointment) {
-        console.log("Appointment not found for id:", appointment[0]);
         return false;
     }
     const appointmentStartTime = new Date(foundAppointment[11]);
     const currentDate = new Date(); // The current time
     const oneHourFromNow = new Date(currentDate.getTime() + 3600000); // One hour from the current time
 
-    console.log("Current Date:", currentDate);
-    console.log("Appointment Start Time:", appointmentStartTime);
-    console.log("One Hour From Now:", oneHourFromNow);
+
 
     // Check if the appointment start time is before or exactly at the current time or within the next hour
     const hasAlreadyStarted = appointmentStartTime <= currentDate;
     const isStartingSoon = appointmentStartTime > currentDate && appointmentStartTime <= oneHourFromNow;
     const isStartingSoonOrAlreadyStarted = hasAlreadyStarted || isStartingSoon;
-    console.log("Is the appointment already started?:", hasAlreadyStarted);
-    console.log("Is the appointment starting soon?:", isStartingSoon);
-    console.log("Is the appointment starting soon or already started?:", isStartingSoonOrAlreadyStarted);
+
 
     return isStartingSoonOrAlreadyStarted; // Return true if the appointment has already started or is about to start within the next hour
 }
@@ -414,7 +406,7 @@ export class KrathseisPage implements OnInit {
    
 
   getColorForStatus(status: string): string {
-    console.log(status)
+    
     switch (status) {
       case 'canceled':
         return 'danger-line cursor w100 rad10 ion-margin-bottom ';
@@ -464,7 +456,7 @@ export class KrathseisPage implements OnInit {
 
   acceptAppointment(event: Event, appointment: any) {
     event.stopPropagation();
-    console.log(appointment)
+    
     this.userService.acceptAppointment(appointment[0]).subscribe(data => {
       appointment[2] = "accepted"
       this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")

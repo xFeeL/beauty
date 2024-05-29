@@ -60,8 +60,8 @@ export class NewPasswordPage implements OnInit {
       
     });
   }else {
-    console.log("THE SIGNUP FORM")
-    console.log(this.signUpForm)
+    
+    
 
     this.signup_user.password=this.the_password;
     this.signup_user.repeated_password=this.repeated_password;
@@ -86,7 +86,7 @@ export class NewPasswordPage implements OnInit {
 
       this.route.navigate(['otp-verification']);  
     }, err => {
-      console.log(err)
+      
       if(err.error=="Phone exists"){
       this.userService.presentToast("Το τηλέφωνο που χρησιμοποιήσατε υπάρχει. Παρακαλώ επιλέξτε άλλο τηλέφωνο.", "danger");
       this.navCtrl.back();

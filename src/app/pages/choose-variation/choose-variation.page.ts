@@ -21,7 +21,7 @@ export class ChooseVariationPage implements OnInit {
     this.service_name=this.navParams.get("service_name");
 
       this.userService.getVariationsOfService(this.service_id).subscribe(data=>{
-        console.log(data)
+        
         this.variations=data
       },err=>{
 
@@ -34,7 +34,7 @@ export class ChooseVariationPage implements OnInit {
   }
 
   select(variation:any){
-    console.log(variation)
+    
     
     this.selectedVariation=variation;
   }
@@ -45,7 +45,7 @@ export class ChooseVariationPage implements OnInit {
 
 
   saveChoice() {
-    console.log("Returning with", this.selectedVariation); // Ensure clear separation of text and object in logs
+     // Ensure clear separation of text and object in logs
     this.modalController.dismiss(this.selectedVariation); // Dismiss modal with the selectedVariation object
   }
   

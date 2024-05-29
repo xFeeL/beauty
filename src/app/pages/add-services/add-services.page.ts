@@ -42,7 +42,7 @@ export class AddServicesPage implements OnInit {
     const servicesFromNav = this.navParams.get('selectedServicesAndPackages');
     if (servicesFromNav) {
       this.selectedServicesAndPackages = JSON.parse(JSON.stringify(servicesFromNav));
-      console.log("Services from Nav:", servicesFromNav);
+      
     }
   }
 
@@ -64,8 +64,8 @@ export class AddServicesPage implements OnInit {
 
     const { data } = await modal.onDidDismiss();
     if (data) {
-      console.log(data)
-      console.log(service)
+      
+      
       service.chosenVariation=data
       if(service.selected && service.chosenVariation!=null){
         service.variationName==null
@@ -156,7 +156,7 @@ export class AddServicesPage implements OnInit {
       isSelected: this.selectedServicesAndPackages.some((selected: { id: any; }) => selected.id === item.id)
     }));
   
-    console.log("The combined list is", this.services);
+    
   }
   
   
@@ -223,7 +223,7 @@ export class AddServicesPage implements OnInit {
 
 
   toggleSelectService(item: any) {
-    console.log(item)
+    
     if(item.hasVariations==true && item.isSelected==false){
       this.chooseVariation(item)
       return
@@ -249,7 +249,7 @@ export class AddServicesPage implements OnInit {
 
       }
     } else {
-      console.log("EDW MPIKA TELIKA")
+      
       this.reintegrateService(service);
     }
   }
@@ -301,8 +301,8 @@ export class AddServicesPage implements OnInit {
 
 
   saveServices() {
-    console.log("Closing with")
-    console.log(this.selectedServicesAndPackages)
+    
+    
     this.modalController.dismiss(this.selectedServicesAndPackages)
   }
 

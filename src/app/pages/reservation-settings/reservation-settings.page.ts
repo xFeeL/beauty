@@ -29,8 +29,8 @@ isVisible: boolean = true;
 loadKrathseisSettings() {
 
   this.userService.getAppointmentsSettings().subscribe(data => {
-    console.log("THE DATA");
-    console.log(data);
+    
+    
 
     this.maxReservationMinutes = data.maxReservationMinutes;
     this.slotInterval = data.slotInterval.toString();

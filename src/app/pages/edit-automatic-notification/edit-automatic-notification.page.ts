@@ -23,7 +23,7 @@ export class EditAutomaticNotificationPage implements OnInit {
     this.smsToggle=this.navParams.get("sms")
     this.emailToggle=this.navParams.get("email")
     this.timeBefore=this.navParams.get("timeBefore")
-    console.log(this.timeBefore)
+    
     this.timeBefore=this.convertTimeCode(this.timeBefore)
     this.type=this.navParams.get("type")
   }

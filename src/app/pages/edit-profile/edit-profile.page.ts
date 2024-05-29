@@ -172,7 +172,7 @@ export class EditProfilePage {
     });
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
-        console.log(data.data)
+        
         this.address = data.data.address
         this.coordinates = data.data.longitude + "," + data.data.latitude
         this.needReferesh = true
@@ -230,9 +230,9 @@ export class EditProfilePage {
     const instagramValid = this.instagramLink == "" || (this.instagramLink != "" && this.linkValid(this.instagramLink));
     const tiktokValid = this.tiktokLink == "" || (this.tiktokLink != "" && this.linkValid(this.tiktokLink));
 
-    console.log("facebook " + facebookValid + " " + this.facebookLink);
-    console.log("insta " + instagramValid);
-    console.log("tiktok " + tiktokValid);
+    
+    
+    
 
     let saveButtonEnabled = basicChecks && facebookValid && instagramValid && tiktokValid;
     return !saveButtonEnabled;  // Return true to disable the save button if conditions are not met
@@ -331,7 +331,7 @@ export class EditProfilePage {
     const actionSheet = await this.actionSheetController.create({
       header: 'Επιλέξτε πηγή εικόνας',
       buttons: [
-        {
+        /*{
           text: 'Facebook',
           icon: 'logo-facebook',
           handler: () => {
@@ -344,7 +344,7 @@ export class EditProfilePage {
           handler: () => {
             this.selectImageFromInstagram();
           }
-        },
+        },*/
 
         {
           text: 'Αποθηκευτικός Χώρος',
@@ -428,7 +428,7 @@ export class EditProfilePage {
   queryWait: boolean = false;
   suggestions:any=[]
   searchAddress() {
-    console.log('search', this.autocompleteInput);
+    
     if (this.autocompleteInput.length < 1) {
       this.suggestions = [];
       this.loadingOn = false;
@@ -443,7 +443,7 @@ export class EditProfilePage {
         this.queryWait = false;
         this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
           this.suggestions = data;
-          console.log(data);
+          
           this.loadingOn = false;
         }, err => {
           console.error(err);

@@ -134,7 +134,7 @@ export class SettingsPage implements OnInit {
   }
 
   goBack() {
-    console.log("going back with:"+this.needRefresh)
+    
     this.modalController.dismiss(this.needRefresh)
   }
 
@@ -177,8 +177,8 @@ export class SettingsPage implements OnInit {
   
     if (modal !== null) {
       modal.onDidDismiss().then((result) => {
-        console.log("RESULT")
-        console.log(result)
+        
+        
         if (result.data || result.data.needRefresh) {
           this.needRefresh = true;
         }

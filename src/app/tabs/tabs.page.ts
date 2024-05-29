@@ -7,32 +7,35 @@ import { UserService } from '../services/user.service';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
+  newNotifications: boolean=false;
+  newMessages: boolean=false;
 
-  constructor(private userService:UserService) {}
+  constructor(private userService: UserService) { }
 
-  ionViewWillEnter(){
-    this.newMessage()
-    //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => console.log(data));
+  ionViewWillEnter() {
 
-    
+
     this.userService.checkForNotifications().subscribe(data => {
-      if(data[0]==1){
-        this.userService.newMessage=true;
-      }else if(data[1]==1){
-        this.userService.newNotification=true;
-
-      }else if(data[0]==0){
-        this.userService.newMessage=false
+      if (data.hasNewNotifications == 1) {
+        this.userService.newNotification$.next(true);
+        this.newNotifications=true
+      } else {
+        this.userService.newNotification$.next(false);
+        this.newNotifications=false
 
       }
-    
-  })}
-  public newMessage() {
-  
-    return this.userService.newMessage;
-}
+      if (data.hasNewMessages == 1) {
+        this.userService.newMessage$.next(true);
+        this.newMessages=true
 
-public newNotification() {
-  return this.userService.newNotification;
-}
+      } else {
+        this.userService.newMessage$.next(false);
+        this.newMessages=false
+
+
+      }
+    })
+  }
+
+
 }

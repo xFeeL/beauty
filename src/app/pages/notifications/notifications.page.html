@@ -45,10 +45,11 @@
                     <ion-row> <ion-label *ngIf="not[0]=='review'" class="ion-text-wrap">
                         Έχετε νέες κριτικές! Δείτε τις και απαντήστε στους πελάτες σας.
                       </ion-label>
-                      <ion-label *ngIf="not[0]=='appointment'" class="ion-text-wrap">
-                        Έχετε νέες κρατήσεις! </ion-label>
-                      <ion-label *ngIf="not[0]=='proposal'" class="ion-text-wrap">
-                        Μία προσφορά σας έγινε accepted! </ion-label> </ion-row>
+                      <ion-label *ngIf="not[0]=='appointment' && not[1]=='pending'" class="ion-text-wrap">
+                        Έχετε νέες κρατήσεις που περιμένουν απάντηση!</ion-label>
+                        <ion-label *ngIf="not[0]=='appointment' && not[1]=='accepted'" class="ion-text-wrap">
+                          Έχετε νέες κρατήσεις!</ion-label>
+                      </ion-row>
                     <ion-row>
                       <ion-label> <ion-text color="medium">{{not[3]}}</ion-text></ion-label> </ion-row>
                   </ion-grid> </ion-row> </ion-grid>
@@ -76,8 +77,11 @@
                       <ion-label *ngIf="notif[0]=='review'" class="ion-text-wrap">
                         Έχετε νέες κριτικές! Δείτε τις και απαντήστε στους πελάτες σας.
                       </ion-label>
-                      <ion-label *ngIf="notif[0]=='appointment'" class="ion-text-wrap">
-                        Έχετε νέες κρατήσεις! </ion-label> </ion-row>
+                      <ion-label *ngIf="notif[0]=='appointment' && notif[1]=='pending'" class="ion-text-wrap">
+                        Έχετε νέες κρατήσεις που περιμένουν απάντηση!</ion-label>
+                        <ion-label *ngIf="notif[0]=='appointment' && notif[1]=='accepted'" class="ion-text-wrap">
+                          Έχετε νέες κρατήσεις!</ion-label>
+                        </ion-row>
                     <ion-row>
                       <ion-label> <ion-text color="medium">{{notif[3]}}</ion-text></ion-label> </ion-row>
                   </ion-grid> </ion-row> </ion-grid>

@@ -53,13 +53,12 @@ export class UserService {
    * Indicates whether a new message has been received.
    * @type {boolean | undefined}
    */
-  public newMessage: boolean | undefined = false;
-  /**
-   * Indicates whether a new notification has been received.
-   * @type {boolean | undefined}
-   */
-  public newNotification: boolean | undefined;
 
+  public newNotification$: Subject<boolean> = new Subject<boolean>();
+
+  public newMessage$: Subject<boolean> = new Subject<boolean>();
+
+  public newAppointment$: Subject<boolean> = new Subject<boolean>();
   /**
  * Observable that emits the authentication status of the user.
  * @returns {Observable<boolean>} - The Observable that emits the authentication status of the user.
@@ -111,20 +110,19 @@ export class UserService {
     return Observable.create((observer: { next: (arg0: MessageEvent<any>) => void; error: (arg0: Event) => void; }) => {
       this.eventSource.onmessage = (event: MessageEvent<any>) => {
         this._zone.run(() => {
+          console.log(event.data)
           const jsonObject = JSON.parse(event.data);
           const type = jsonObject.Type;
           if (type == "New Message") {
             this.messageReceived.emit(event.data);
-            if (this.newMessage == false) {
-              this.newMessage = true
-            }
-          } else if (type == "New Project") {
-            this.newNotification = true
-            this.presentToast("Μία νέα εργασία είναι διαθέσιμη για εσάς. Δώστε την προσφορά σας!", "primary")
-          } else if (type == "Proposal Accepted") {
-            this.newNotification = true
-            this.presentToast("Μία προσφορά σας έγινε accepted! Δείτε λεπτομέρειες στις ειδοποιήσεις.", "success")
-          }
+            this.newMessage$.next(true);
+
+          } else if (type == "New Appointment") {
+            this.newAppointment$.next(true);
+            this.newNotification$.next(true);
+
+            this.presentToast("Έχετε μία νέα κράτηση!", "success")
+          } 
           observer.next(event);
         });
       };
@@ -135,8 +133,8 @@ export class UserService {
         });
         console.log('SSE error:', error);
         if (this.eventSource.readyState === EventSource.CLOSED) {
-          console.log('SSE connection closed, reconnecting...');
-          console.log('Trying...');
+          
+          
           setTimeout(() => {
             this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
             this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
@@ -191,7 +189,7 @@ export class UserService {
   private requestsQueue: any[] = [];
 
   private handleError(error: any, method: string = 'GET', body?: any, onboarding: boolean = false): Observable<any> {
-        if (error.status === 403 && !error.skipRefresh && (localStorage.getItem('authenticated') == "true") || onboarding==true) {
+    if (error.status === 403 && !error.skipRefresh && (localStorage.getItem('authenticated') == "true") || onboarding == true) {
       return this.getNewJwtWithRefreshToken().pipe(
         mergeMap(() => {
           console.log("The method is " + method)
@@ -211,13 +209,13 @@ export class UserService {
           return throwError(refreshError);
         })
       );
-    } else if(error.status === 403){
+    } else if (error.status === 403) {
       window.location.href = '/login';
       localStorage.setItem('authenticated', "false");
       this._isAuthenticated.next(false);
       return throwError(error);
     } else {
-      console.log("Den mpika");
+      
       console.error('API Error:', error);
       return throwError(error);
     }
@@ -287,27 +285,27 @@ export class UserService {
     );
   }
 
-  
+
   getAppointmentsRange(startDate: string, endDate: string): Observable<any> {
     let apiUrl = `${beautyAuthenticated_API_URL}get-appointments-range?startDate=${startDate}&endDate=${endDate}`;
 
     return this.http.get(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
-}
+  }
 
 
   noShow(appointment_id: string): Observable<any> {
-    
-    return this.http.post(beautyAuthenticated_API_URL + "no-show?appointment_id="+appointment_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+    return this.http.post(beautyAuthenticated_API_URL + "no-show?appointment_id=" + appointment_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', {}))
     );
   }
 
 
-  
+
   saveService(body: any): Observable<any> {
-    
+
     return this.http.post(beautyAuthenticated_API_URL + "save-service", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
@@ -315,24 +313,24 @@ export class UserService {
   }
 
   deletePackage(package_id: string): Observable<any> {
-    
-    return this.http.post(beautyAuthenticated_API_URL + "delete-package?package_id="+package_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+    return this.http.post(beautyAuthenticated_API_URL + "delete-package?package_id=" + package_id, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', {}))
     );
 
   }
- 
- 
 
-  saveEmployee(body: any,safeDelete:boolean,cancelAllForDeletedEmployees:boolean, cancelAllForNewException:boolean): Observable<any> {
-    return this.http.post(beautyAuthenticated_API_URL + "save-employee?safeDelete="+safeDelete+"&cancelAllForDeletedEmployees="+cancelAllForDeletedEmployees+"&cancelAllForNewException="+cancelAllForNewException, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+
+  saveEmployee(body: any, safeDelete: boolean, cancelAllForDeletedEmployees: boolean, cancelAllForNewException: boolean): Observable<any> {
+    return this.http.post(beautyAuthenticated_API_URL + "save-employee?safeDelete=" + safeDelete + "&cancelAllForDeletedEmployees=" + cancelAllForDeletedEmployees + "&cancelAllForNewException=" + cancelAllForNewException, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }
 
-  
+
   savePackage(body: any): Observable<any> {
-    
+
     return this.http.post(beautyAuthenticated_API_URL + "save-package", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
@@ -340,9 +338,9 @@ export class UserService {
   }
 
   saveServiceCategory(category: any): Observable<any> {
-    const body = { 
+    const body = {
       id: category.id,
-      name: category.name 
+      name: category.name
     };
     return this.http.post(beautyAuthenticated_API_URL + "save-service-category", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
@@ -351,26 +349,26 @@ export class UserService {
   }
 
   deleteService(service: any): Observable<any> {
-  
-    return this.http.post(beautyAuthenticated_API_URL + "delete-service?service_id="+service, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+    return this.http.post(beautyAuthenticated_API_URL + "delete-service?service_id=" + service, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', {}))
     );
 
   }
 
-  deleteEmployee(employee: any,safeDelete:boolean,cancelAllForDeletedEmployee:boolean): Observable<any> {
-  
-    return this.http.post(beautyAuthenticated_API_URL + "delete-employee?employee_id="+employee+"&safeDelete="+safeDelete+"&cancelAllForDeletedEmployee="+cancelAllForDeletedEmployee, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+  deleteEmployee(employee: any, safeDelete: boolean, cancelAllForDeletedEmployee: boolean): Observable<any> {
+
+    return this.http.post(beautyAuthenticated_API_URL + "delete-employee?employee_id=" + employee + "&safeDelete=" + safeDelete + "&cancelAllForDeletedEmployee=" + cancelAllForDeletedEmployee, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', {}))
     );
 
   }
 
-  
+
 
   deleteServiceCategory(category: any): Observable<any> {
-  
-    return this.http.post(beautyAuthenticated_API_URL + "delete-service-category?category_id="+category, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+    return this.http.post(beautyAuthenticated_API_URL + "delete-service-category?category_id=" + category, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', {}))
     );
 
@@ -461,7 +459,7 @@ export class UserService {
   }
 
 
-  
+
 
   getServiceVariations(serviceId: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-service-variations?service_id=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(
@@ -469,7 +467,7 @@ export class UserService {
     );
 
   }
-  
+
   getNotificationSettings(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-notification-settings", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
@@ -573,10 +571,10 @@ export class UserService {
     let phone = btoa(user.phone)
     let password = btoa(user.password)
     const darkMode = localStorage.getItem('darkMode');
-  
+
     // Clear all items in localStorage
     localStorage.clear();
-  
+
     // Restore darkMode if it was set
     if (darkMode !== null) {
       localStorage.setItem('darkMode', darkMode);
@@ -587,7 +585,7 @@ export class UserService {
     return this.http.post<any>(API_URL + 'login', params, { withCredentials: true }).pipe(
       tap(response => {
         if (response && response.statusCode === 200) {
-          console.log("MPIKA");
+          
           localStorage.setItem('authenticated', "true");
           this._isAuthenticated.next(true);
           this.pushSetup(response.token);
@@ -689,7 +687,7 @@ export class UserService {
   }
 
 
-    
+
 
 
   /**
@@ -701,7 +699,7 @@ export class UserService {
     return this.http.post(API_URL + "forgot-password", email).toPromise();
   }
 
-  
+
 
   /**
    * Sends onboarding data to the server.
@@ -713,7 +711,7 @@ export class UserService {
    * @param floors The expert's floors.
    * @returns An Observable that resolves to the server response.
    */
-  onBoarding(name: string, expertCategories: string, address: string,coordinates: string ,photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[],packages:any[]): Observable<any> {
+  onBoarding(name: string, expertCategories: string, address: string, coordinates: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[], packages: any[]): Observable<any> {
     const body = {
       name: name,
       expertCategories: expertCategories,
@@ -724,11 +722,11 @@ export class UserService {
       people: people,
       services: services,
       servicesCategories: servicesCategories,
-      packages:packages
+      packages: packages
     };
     console.log(body)
     return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', body,true))
+      catchError(error => this.handleError(error, 'POST', body, true))
 
     );
   }
@@ -743,7 +741,7 @@ export class UserService {
     );
   }
 
-  
+
   getAccountId(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-account-id", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
@@ -775,10 +773,10 @@ export class UserService {
     */
   logout(): Observable<any> {
     const darkMode = localStorage.getItem('darkMode');
-  
+
     // Clear all items in localStorage
     localStorage.clear();
-  
+
     // Restore darkMode if it was set
     if (darkMode !== null) {
       localStorage.setItem('darkMode', darkMode);
@@ -789,7 +787,7 @@ export class UserService {
         localStorage.setItem('authenticated', 'false');
         this._isAuthenticated.next(false);
         window.location.href = '/login';
-      
+
       }),
       catchError(error => this.handleError(error, 'POST', ""))
     );
@@ -897,7 +895,7 @@ export class UserService {
     );;
   }
 
-  saveNotificationSetting(body:any): Observable<any> {
+  saveNotificationSetting(body: any): Observable<any> {
     return this.http.post(beautyAuthenticated_API_URL + "save-notification-setting", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
@@ -983,9 +981,9 @@ export class UserService {
    * @param image_id The ID of the image to delete.
    * @returns An Observable that resolves with the server response.
    */
-  deleteImagePortfolio(folder_id: string, image_id: string): Observable<any> {
-    const body = { folder_id: folder_id, image_id: image_id };
-    return this.http.post(Authenticated_API_URL + "delete-image-portfolio", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+  deleteImagePortfolio(image_id: string): Observable<any> {
+    const body = { image_id: image_id };
+    return this.http.post(Authenticated_API_URL + "delete-image", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }
@@ -996,8 +994,8 @@ export class UserService {
    * @param folder_id The ID of the folder.
    * @returns An Observable that resolves to the images of the portfolio folder.
    */
-  getPortfolioFolderImages(folder_id: string): Observable<any> {
-    return this.http.get(Authenticated_API_URL + "portfolio-images-links?folder_id=" + folder_id, { headers: this.getHeaders(), withCredentials: true }).pipe(
+  getExpertImages(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "expert-images-links", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -1008,13 +1006,10 @@ export class UserService {
    * @param folderId The ID of the folder to add the photos to.
    * @returns An Observable that resolves with the server response.
    */
-  addNewPhotos(images: string[], folderId: string): Observable<any> {
-    const body = {
-      images: images,
-      folderId: folderId
-    };
-    return this.http.post(Authenticated_API_URL + "new-photos", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error, 'POST', body))
+  addNewPhotos(images: string[]): Observable<any> {
+
+    return this.http.post(Authenticated_API_URL + "new-photos", images, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'POST', images))
     );
   }
 
@@ -1091,12 +1086,12 @@ export class UserService {
   saveServices(packages: any, services: any, serviceCategories: any): Observable<any> {
     // Adding an index to each service in packages and renaming the services property
     const indexedPackages = packages.map((packageItem: { services: any[]; }, packageIndex: any) => ({
-        ...packageItem,
-        servicesWithIndex: packageItem.services.map((serviceId: any, serviceIndex: any) => ({ // Renamed property
-            id: serviceId,
-            index: serviceIndex // Adding an index here
-        })),
-        services: packageItem.services // Keep original services if needed, else remove this line
+      ...packageItem,
+      servicesWithIndex: packageItem.services.map((serviceId: any, serviceIndex: any) => ({ // Renamed property
+        id: serviceId,
+        index: serviceIndex // Adding an index here
+      })),
+      services: packageItem.services // Keep original services if needed, else remove this line
     }));
 
     // Preparing the body with indexedPackages
@@ -1104,13 +1099,13 @@ export class UserService {
     console.log(body);
 
     return this.http.post(beautyAuthenticated_API_URL + "save-services", body, {
-        headers: this.getHeaders(),
-        withCredentials: true
+      headers: this.getHeaders(),
+      withCredentials: true
     }).pipe(
-        catchError(error => this.handleError(error, 'POST', body))
+      catchError(error => this.handleError(error, 'POST', body))
     );
-}
-  
+  }
+
 
   /**
    * Get working hours
@@ -1127,17 +1122,17 @@ export class UserService {
    * @param days Working hours to save
    * @returns Observable of the response
    */
-  saveWrario(days: any[], exceptions: any,safeToSave:boolean,cancelAllFutureOverlappedAppointments:boolean): Observable<any> {
+  saveWrario(days: any[], exceptions: any, safeToSave: boolean, cancelAllFutureOverlappedAppointments: boolean): Observable<any> {
     // Create a new object that includes both days and exceptions
     const payload = {
       days: days,
       exceptions: exceptions
     };
-  
+
     // Use the new payload object in the HTTP POST request
-    return this.http.post(beautyAuthenticated_API_URL + "save-wrario?safeToSave="+safeToSave+"&cancelAllFutureOverlappedAppointments="+cancelAllFutureOverlappedAppointments, payload, { 
-      headers: this.getHeaders(), 
-      withCredentials: true 
+    return this.http.post(beautyAuthenticated_API_URL + "save-wrario?safeToSave=" + safeToSave + "&cancelAllFutureOverlappedAppointments=" + cancelAllFutureOverlappedAppointments, payload, {
+      headers: this.getHeaders(),
+      withCredentials: true
     }).pipe(
       catchError(error => this.handleError(error, 'POST', payload))
     );
@@ -1175,11 +1170,11 @@ export class UserService {
    * @param scheduleExceptions Schedule exceptions to save
    * @returns Observable of the response
    */
-  saveScheduleExceptions(scheduleExceptions: any,safeToSave:boolean,cancelAllFutureOverlappedAppointments:boolean): Observable<any> {
+  saveScheduleExceptions(scheduleExceptions: any, safeToSave: boolean, cancelAllFutureOverlappedAppointments: boolean): Observable<any> {
     const body = {
       exceptions: scheduleExceptions,
     };
-    return this.http.post(beautyAuthenticated_API_URL + "save-schedule-exceptions?safeToSave="+safeToSave+"&cancelAllFutureOverlappedAppointments="+cancelAllFutureOverlappedAppointments, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.post(beautyAuthenticated_API_URL + "save-schedule-exceptions?safeToSave=" + safeToSave + "&cancelAllFutureOverlappedAppointments=" + cancelAllFutureOverlappedAppointments, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }
@@ -1292,13 +1287,13 @@ export class UserService {
   }
 
 
-  getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }, appointmentId?: string|null): Observable<any> {
+  getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }, appointmentId?: string | null): Observable<any> {
     // Start with the date as a query parameter
     let params = new HttpParams().set('date', date);
 
     // Add appointment_id to the parameters only if it is not null
     if (appointmentId != null) {
-        params = params.set('appointment_id', appointmentId);
+      params = params.set('appointment_id', appointmentId);
     }
 
     // Use the provided servicesEmployeesMap as the body directly
@@ -1309,15 +1304,15 @@ export class UserService {
       params: params,
       withCredentials: true
     })
-    .pipe(
+      .pipe(
         catchError(error => this.handleError(error, 'POST', body))
-    );
-}
+      );
+  }
 
 
 
 
-  saveAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string,appointmentId:string|null): Observable<any> {
+  saveAppointment(servicesEmployees: any, theDate: string, timeSelected: string, selectedClientId: string, appointmentId: string | null): Observable<any> {
     const body = {
       servicesEmployees: servicesEmployees,
       bookingDate: theDate,
@@ -1325,7 +1320,7 @@ export class UserService {
       selectedClientId: selectedClientId
     };
 
-    return this.http.post(beautyAuthenticated_API_URL + "save-appointment?appointmentId="+appointmentId, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+    return this.http.post(beautyAuthenticated_API_URL + "save-appointment?appointmentId=" + appointmentId, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }
@@ -1334,9 +1329,9 @@ export class UserService {
     const body = { updates };
     return this.http.post(beautyAuthenticated_API_URL + "update-appointments", updates, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
-  );
+    );
   }
-  
+
 
 
   /**
@@ -1425,16 +1420,16 @@ export class UserService {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const totalLength = 20; // Desired total length of the ID
     const timePartLength = timePart.length; // Length of the time part
-  
+
     // Calculate how many random characters are needed, interspersing time characters
     let randomPartsLength = totalLength - timePartLength;
     let randomPart = '';
-  
+
     // Generate the random part
     for (let i = 0; i < randomPartsLength; i++) {
       randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-  
+
     // Intersperse timePart and randomPart characters
     for (let i = 0, j = 0, k = 0; i < totalLength; i++) {
       if (i % 2 == 0 && j < timePartLength) {
@@ -1443,7 +1438,7 @@ export class UserService {
         result += randomPart.charAt(k++);
       }
     }
-  
+
     // Adjust in case the time part is shorter than needed
     if (result.length < totalLength) {
       let additionalRandom = '';
@@ -1452,10 +1447,10 @@ export class UserService {
       }
       result += additionalRandom;
     }
-  
+
     return result;
   }
-  
+
 
 
 
@@ -1487,9 +1482,9 @@ export class UserService {
     );
   }
 
-  
-  getEmployeeWorkingPlans(employeeIds:string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-employee-working-plans?employeeIds="+employeeIds, { headers: this.getHeaders(), withCredentials: true }).pipe(
+
+  getEmployeeWorkingPlans(employeeIds: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-employee-working-plans?employeeIds=" + employeeIds, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }

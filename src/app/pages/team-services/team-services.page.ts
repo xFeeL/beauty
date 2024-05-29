@@ -159,10 +159,10 @@ async deleteEmployee(employee: any) {
   }
 
   isScheduleDefault(personschedule: any[]) {
-    console.log("PERSON SCHEDULE");
-    console.log(personschedule);
-    console.log("DAYS");
-    console.log(this.days);
+    
+    
+    
+    
   
     const personScheduleMap = new Map(personschedule.map(day => [day.day, day]));
   
@@ -258,7 +258,7 @@ async deleteEmployee(employee: any) {
         this.services.forEach(service => {
           // Find the corresponding object in employeesData based on serviceId
           const serviceData = employeesData.find((data: { serviceId: any; }) => data.serviceId === service.id);
-          console.log('serviceData for serviceId ' + service.id + ':', serviceData);
+          
 
           // Access the employees directly
           if (serviceData && serviceData.employees) {
@@ -267,7 +267,7 @@ async deleteEmployee(employee: any) {
               return rest;  // Return the rest of the properties, effectively omitting 'image'
             });
           } else {
-            console.log('No employees data found for serviceId:', service.id);
+            
             service.employees = [];
           }
         });
@@ -436,8 +436,8 @@ async deleteEmployee(employee: any) {
                 categoryToUpdate.name = data.categoryName;
             }
         
-            console.log("THE CATEGORY");
-            console.log(categoryToUpdate);
+            
+            
         
             // Use a Promise to handle the asynchronous operation
             return new Promise((resolve, reject) => {

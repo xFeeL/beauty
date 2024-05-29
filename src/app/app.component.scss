@@ -46,6 +46,22 @@ ion-menu ion-content {
   ion-menu.md ion-item ion-icon {
     color: #616e7e;
   }
+
+  .item {
+    position: relative;
+  }
+  
+  .badge {
+    position: absolute;
+    top: 18px; /* Adjust as needed */
+    right: 35px; /* Adjust to avoid the arrow */
+    height: 10px; /* Adjust as needed */
+    width: 10px; /* Adjust as needed */
+    background-color: rgb(222, 0, 0);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  
   
   ion-menu.md ion-item ion-label {
     font-weight: 500;

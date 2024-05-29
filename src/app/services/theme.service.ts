@@ -13,10 +13,10 @@ export class ThemeService {
    }
 
    toggleDarkTheme(shouldAdd: boolean): void {
-    console.log(shouldAdd)
+    
     document.body.classList.toggle('dark', shouldAdd);
     localStorage.setItem('darkMode', shouldAdd ? 'true' : 'false');
-    console.log("darkmode"+localStorage.getItem('darkMode'));
+    
 
     this.themeDark.next(shouldAdd);
   }

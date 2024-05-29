@@ -84,7 +84,7 @@ export class AddPersonPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    console.log(this.navParams);
+    
     this.defaultImage = this.navParams.get('defaultImage');;
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
@@ -100,11 +100,11 @@ export class AddPersonPage implements OnInit {
     if (!this.onboarding) {
       if (this.navParams.get('scheduleExceptions') != undefined) {
         this.scheduleExceptions = this.navParams.get('scheduleExceptions');
-        console.log("THE EXCEPTIONS");
-        console.log(this.scheduleExceptions);
+        
+        
         this.scheduleExceptions = this.scheduleExceptions.map(this.formatException);
-        console.log("THE EXCEPTIONS2");
-        console.log(this.scheduleExceptions);
+        
+        
         this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
       } else {
         this.scheduleExceptions = [];
@@ -115,7 +115,7 @@ export class AddPersonPage implements OnInit {
       this.applypersonSchedule();
     }
 
-    console.log(this.personName);
+    
   }
 
 
@@ -190,8 +190,8 @@ export class AddPersonPage implements OnInit {
       const selectedExceptions = this.daysControl.value;
 
       // Deformat only these selected exceptions
-      console.log("THE SELECTED EXCEPTIONS");
-      console.log(selectedExceptions);
+      
+      
       if (selectedExceptions != null) {
         deformattedSelectedExceptions = this.deformatExceptions(selectedExceptions);
 
@@ -232,8 +232,8 @@ export class AddPersonPage implements OnInit {
             };
           }),
       };
-      console.log("The body")
-      console.log(body)
+      
+      
       this.saveEmployee(body)
     } else {
       if (this.customSchedule) {
@@ -274,8 +274,8 @@ export class AddPersonPage implements OnInit {
       this.dismissModalAfterEdit()
     }, err => {
       if (err.status === 409) {
-        console.log("THE ERROR");
-        console.log(err.error);
+        
+        
         this.presentChoiceAlert(err.error, body);
       } else {
         this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -395,7 +395,7 @@ export class AddPersonPage implements OnInit {
   }
 
   onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-    console.log('Selected start time: ', selectedStartTime);
+    
 
     const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
 
@@ -409,12 +409,12 @@ export class AddPersonPage implements OnInit {
 
       if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
         this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-        console.log(timeInterval.start)
+        
 
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
           timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
           selectedStartTime = timeInterval.start;
-          console.log(this.days);
+          
         });
 
         break;
@@ -424,27 +424,27 @@ export class AddPersonPage implements OnInit {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
 
 
   onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-    console.log('Selected end time: ', selectedEndTime);
+    
 
     const parsedEndTime = moment(selectedEndTime, 'HH:mm');
     const parsedStartTime = moment(timeInterval.start, 'HH:mm');
 
     if (parsedEndTime.isBefore(parsedStartTime)) {
       this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
-      console.log(timeInterval.start)
+      
 
       // delay setting the new value until next event loop to give the UI a chance to update
       new Promise(resolve => setTimeout(resolve, 0)).then(() => {
         timeInterval.end = this.addHours(timeInterval.start, 2);
         selectedEndTime = timeInterval.end;
-        console.log(this.days);
+        
       });
 
     } else {
@@ -452,7 +452,7 @@ export class AddPersonPage implements OnInit {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      console.log("MPIKA")
+      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
@@ -472,7 +472,7 @@ export class AddPersonPage implements OnInit {
         return '23:59';
       }
     } else {
-      console.log('Invalid time format');
+      
       return '';
     }
   }
@@ -485,7 +485,7 @@ export class AddPersonPage implements OnInit {
 
 
   openCropperDialog(imageURL: string | undefined) {
-    console.log(imageURL)
+    
     this.cropped = null!;
     this._dialog.open(CropperDialog, {
       data: imageURL,
@@ -507,7 +507,7 @@ export class AddPersonPage implements OnInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'Επιλέξτε πηγή εικόνας',
       buttons: [
-        {
+        /*{
           text: 'Facebook',
           icon: 'logo-facebook',
           handler: () => {
@@ -520,7 +520,7 @@ export class AddPersonPage implements OnInit {
           handler: () => {
             this.selectImageFromInstagram();
           }
-        },
+        },*/
 
         {
           text: 'Αποθηκευτικός Χώρος',
@@ -562,7 +562,7 @@ export class AddPersonPage implements OnInit {
       allowEditing: false,
       resultType: CameraResultType.Uri,
     });
-    console.log(image)
+    
     // do something with the captured image
     this.openCropperDialog(image.webPath)
   }
@@ -586,7 +586,7 @@ export class AddPersonPage implements OnInit {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
+      
     }
   }
 
@@ -601,7 +601,7 @@ export class AddPersonPage implements OnInit {
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
       this.openCropperDialog(this.selectedImage.imageLink)
-      console.log(data)
+      
     }
   }
 
@@ -627,8 +627,8 @@ export class AddPersonPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    console.log("THE DATA RETURNED")
-    console.log(data)
+    
+    
     if (data) {
       const formattedException = this.formatException(data);
       if (this.scheduleExceptions) {
@@ -639,8 +639,8 @@ export class AddPersonPage implements OnInit {
         console.error("scheduleExceptions is not initialized");
       }
 
-      console.log("NEW EXCEPTIONs");
-      console.log(this.scheduleExceptions);
+      
+      
     }
   }
 
@@ -663,15 +663,15 @@ export class AddPersonPage implements OnInit {
     repeat: string
   }>): any[] {
     return exceptionsArray.map(exception => {
-      console.log("Processing exception:", exception);
+      
 
       const start = exception.originalStart;
       const end = exception.originalEnd;
       const repeat = exception.repeat === "Επαναλαμβανόμενο";
 
-      console.log("Extracted start:", start);
-      console.log("Extracted end:", end);
-      console.log("Extracted repeat:", repeat);
+      
+      
+      
 
       return {
         start: start,

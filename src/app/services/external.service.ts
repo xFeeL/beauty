@@ -15,13 +15,13 @@ export class ExternalService {
   constructor(private http: HttpClient) { }
 
   getFacebookPages(accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/me/accounts?fields=name,picture,instagram_business_account&access_token=' + accessToken.token;
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
-        console.log("mpika2")
+        
 
-        console.log('Got pages', response.data);
+        
         return response;
       }
     }));
@@ -29,33 +29,33 @@ export class ExternalService {
 
 
   getFacebookPageCTA(accessToken: any, pageId: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/' + pageId + '?fields=call_to_actions&access_token=' + accessToken.token
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
-        console.log("mpika2")
+        
 
-        console.log('Got pages', response.data);
+        
         return response;
       }
     }));
   }
 
   getPhotos(userId: any, accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/' + userId + '/albums?access_token=' + accessToken.token
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
-        console.log("mpika2")
+        
 
-        console.log('Got Photos', response.data);
+        
         return response;
       }
     }));
   }
 
   getFacebookPagesNameAndImage(accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/me/accounts?access_token=' + accessToken + '&fields=picture,name'
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -67,7 +67,7 @@ export class ExternalService {
   }
 
   getFacebookUserNameAndImage(accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/me?access_token=' + accessToken + '&fields=picture,name'
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -91,7 +91,7 @@ export class ExternalService {
 
 
   getAlbums(accessToken: any, id: string) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/' + id + '/albums?access_token=' + accessToken + '&fields=picture,id,name'
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -103,7 +103,7 @@ export class ExternalService {
   }
 
   getFacebookImageLinkFromId(accessToken: any, imageId: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/' + imageId + '?fields=images&access_token=' + accessToken
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -115,7 +115,7 @@ export class ExternalService {
   }
 
   getFacebookPhotosFromAlbumId(accessToken: any, albumId: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.facebook.com/v16.0/' + albumId + '?fields=photos{images}&access_token=' + accessToken
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -128,7 +128,7 @@ export class ExternalService {
 
 
   getInstagramPhotos(accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.instagram.com/me/media' + '?fields=children{media_url,media_type},media_url,media_type&access_token=' + accessToken
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -141,7 +141,7 @@ export class ExternalService {
 
 
   getInstagramUser(accessToken: any) {
-    console.log(accessToken)
+    
     const url = 'https://graph.instagram.com/me?fields=id,username&access_token=' + accessToken
     return this.http.get<any>(url).pipe(map(response => {
       if (response) {
@@ -200,7 +200,7 @@ export class ExternalService {
       return this.http.post<any>(url, getStartedBody).pipe(
         switchMap(response => {
           if (response) {
-            console.log('Get Started button set successfully');
+            
             return setPersistentMenu();
           } else {
             throw new Error('Get Started button set failed');

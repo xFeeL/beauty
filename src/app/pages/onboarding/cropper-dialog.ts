@@ -81,19 +81,19 @@ const STYLES = (_theme: ThemeVariables, ref: ThemeRef) => {
 
   ngAfterViewInit() {
     // Load image when dialog animation has finished
-    console.log("AA")
-    console.log(this.imageUrl)
+    
+    
     this.dialogRef.afterOpened.subscribe(() => {
-      console.log("EVENT")
+      
       this.cropper.loadImage(this.imageUrl);
     });
   }
 
   onCropped(e: ImgCropperEvent) {
-    console.log('cropped img: ', e);
+    
   }
   onLoaded(e: ImgCropperEvent) {
-    console.log('img loaded', e);
+    
   }
   onError(e: ImgCropperErrorEvent) {
     console.warn(`'${e.name}' is not a valid image`, e);
