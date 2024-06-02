@@ -16,7 +16,7 @@ export class TabsPage {
 
 
     this.userService.checkForNotifications().subscribe(data => {
-      if (data.hasNewNotifications == 1) {
+      if (data.hasNewNotifications == true) {
         this.userService.newNotification$.next(true);
         this.newNotifications=true
       } else {
@@ -24,7 +24,7 @@ export class TabsPage {
         this.newNotifications=false
 
       }
-      if (data.hasNewMessages == 1) {
+      if (data.hasNewMessages == true) {
         this.userService.newMessage$.next(true);
         this.newMessages=true
 

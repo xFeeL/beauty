@@ -123,6 +123,10 @@ export class UserService {
 
             this.presentToast("Έχετε μία νέα κράτηση!", "success")
           } 
+          else if (type == "New Review") {
+            this.newNotification$.next(true);
+
+          } 
           observer.next(event);
         });
       };
