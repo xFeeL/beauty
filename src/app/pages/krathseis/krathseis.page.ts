@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
-import { IonCheckbox, IonModal, IonPopover, ModalController, NavController } from '@ionic/angular';
+import { IonCheckbox, IonModal, IonPopover, ModalController, NavController, NavParams } from '@ionic/angular';
 import { KrathshPage } from '../krathsh/krathsh.page';
 import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
 import { SearchKrathshPage } from '../search-krathsh/search-krathsh.page';
@@ -94,7 +94,7 @@ export class KrathseisPage implements OnInit {
   mode: string = "upcoming";
   cancelReason: string = "";
   reloadAppointments: any=false;
-  constructor(private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  constructor(private navParams:NavParams,private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
   }
   ngOnInit() {
   }
@@ -104,12 +104,26 @@ export class KrathseisPage implements OnInit {
     this.krathseis = []
     this.krathshIds = []
     this.krathseistatus = "0,0,0,0,0"
-
+    let status = this.navParams.get('status');
+    console.log(status)
+    if (status == "pending") {
+        this.krathseistatus = "1,0,0,0,0"
+        this.itemsKrathsh[0].selected = true;
+        this.itemsKrathsh[1].selected = false;
+        this.itemsKrathsh[2].selected = false;
+        this.itemsKrathsh[3].selected = false;
+        this.itemsKrathsh[4].selected = false;
+        
+        this.krathshChip = "selected-chip";
+        this.krathshChipIconCOlor = "primary";
+        this.allChipClass = "not-selected-chip";
+    }
     this.disableInfiniteScroll = false;
-    this.page = 0
+    this.page = 0;
 
     this.getKrathseis();
-  }
+}
+
 
   isMobile(){
     return this.userService.isMobile();
@@ -308,63 +322,54 @@ export class KrathseisPage implements OnInit {
 
   
 
+openKrathshPopover() {
+  // Ensure itemsKrathsh reflects the current krathseistatus
+  const statusArray = this.krathseistatus.split(',').map(status => status === "1");
 
+  this.itemsKrathsh = this.itemsKrathsh.map((item, index) => {
+      item.selected = statusArray[index];
+      return item;
+  });
 
-
-
-  openKrathshPopover() {
-    this.itemsKrathsh = this.tempItemsKrathsh
-    const itemsKrathshCopy = JSON.parse(JSON.stringify(this.tempItemsKrathsh));
-    this.krathshPopoverValues = {
+  const itemsKrathshCopy = JSON.parse(JSON.stringify(this.itemsKrathsh));
+  this.krathshPopoverValues = {
       itemsKrathsh: itemsKrathshCopy,
-    };
-  }
+  };
+  this.krathshPop.present();
+}
 
 
 
   applyKrathshPopover() {
     this.page = 0;
 
-    let temp = ""
+    let temp = "";
     for (let i = 0; i < this.itemsKrathsh.length; i++) {
-      if (i == this.itemsKrathsh.length - 1) {
-        if (this.itemsKrathsh[i].selected) {
-          temp += "1"
+        if (i == this.itemsKrathsh.length - 1) {
+            temp += this.itemsKrathsh[i].selected ? "1" : "0";
         } else {
-          temp += "0"
+            temp += this.itemsKrathsh[i].selected ? "1," : "0,";
         }
-      } else {
-        if (this.itemsKrathsh[i].selected) {
-          temp += "1,"
-        } else {
-          temp += "0,"
-        }
-      }
     }
     this.krathseistatus = temp;
     this.tempItemsKrathsh = JSON.parse(JSON.stringify(this.itemsKrathsh));
 
-    this.krathseis = []
-    this.krathshIds = []
+    this.krathseis = [];
+    this.krathshIds = [];
     if (this.krathseistatus.includes("1")) {
-
-      this.krathshChip = "selected-chip";
-      this.krathshChipIconCOlor = "primary";
-      this.allChipClass = "not-selected-chip";
-
+        this.krathshChip = "selected-chip";
+        this.krathshChipIconCOlor = "primary";
+        this.allChipClass = "not-selected-chip";
     } else {
-      this.krathshChip = "not-selected-chip";
-      this.krathshChipIconCOlor = "light";
-      this.allChipClass = "selected-chip";
-
-
+        this.krathshChip = "not-selected-chip";
+        this.krathshChipIconCOlor = "light";
+        this.allChipClass = "selected-chip";
     }
     this.getKrathseis();
 
-
     this.krathshPop.dismiss();
+}
 
-  }
 
   closeKrathshPopover() {
     this.itemsKrathsh = JSON.parse(JSON.stringify(this.krathshPopoverValues.itemsKrathsh));

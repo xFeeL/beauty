@@ -58,7 +58,7 @@ export class UserService {
 
   public newMessage$: Subject<boolean> = new Subject<boolean>();
 
-  public newAppointment$: Subject<boolean> = new Subject<boolean>();
+  public refreshAppointment$: Subject<boolean> = new Subject<boolean>();
   /**
  * Observable that emits the authentication status of the user.
  * @returns {Observable<boolean>} - The Observable that emits the authentication status of the user.
@@ -118,15 +118,24 @@ export class UserService {
             this.newMessage$.next(true);
 
           } else if (type == "New Appointment") {
-            this.newAppointment$.next(true);
+            this.refreshAppointment$.next(true);
             this.newNotification$.next(true);
 
             this.presentToast("Έχετε μία νέα κράτηση!", "success")
           } 
-          else if (type == "New Review") {
+          else if (type == "Cancelled Appointment") {
+            this.refreshAppointment$.next(true);
             this.newNotification$.next(true);
 
+            this.presentToast("Μία κράτηση ακυρώθηκε.", "warning")
+          } else if (type == "Updated Appointment") {
+            this.refreshAppointment$.next(true);
+            this.newNotification$.next(true);
+
+            this.presentToast("Μία κράτηση άλλαξε.", "warning")
           } 
+          
+         
           observer.next(event);
         });
       };

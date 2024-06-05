@@ -134,7 +134,7 @@
                         </div>
                       </ion-content>
                       <ion-footer class="ion-no-padding" (click)="applyRejectPopover(krathsh)">
-                        <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
+                        <ion-button [disabled]="cancelReason==''" class="ion-no-padding ion-no-margin" expand="full" color="primary">
                           <ion-label class="ion-no-padding"
                             class="ion-text-center capsoff">Αποθήκευση</ion-label>
                         </ion-button>

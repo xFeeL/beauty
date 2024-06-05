@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { UserService } from '../../services/user.service';
 import { ReviewsPage } from '../reviews/reviews.page';
 import { KrathseisPage } from '../krathseis/krathseis.page';
+import { KrathshPage } from '../krathsh/krathsh.page';
 
 @Component({
   selector: 'app-notifications',
@@ -12,8 +13,8 @@ import { KrathseisPage } from '../krathseis/krathseis.page';
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
-  notifications: any[][] = new Array<any[]>;
-  new_notifications: any[][] = new Array<any[]>;
+  notifications:any=[];
+  new_notifications: any=[];
   notifications_length: number = 0;
   new_notifications_length: number = 0;
   page = 0;
@@ -44,51 +45,75 @@ export class NotificationsPage implements OnInit {
 
 
 
-  getNotifications() {
+  getNotifications(event?: any) {
     this.userService.getNotifications(this.page).subscribe(data1 => {
       this.userService.newNotification$.next(false);
+      console.log(data1.length);
+      
       if (data1.length < 10) {
-        this.disableInfiniteScroll = true
+        this.disableInfiniteScroll = true;
       }
-
-      for (let i = 0; i < data1.length; i++) {
-        data1[i][3] = moment(data1[i][3]).locale("el").format('DD MMM, YYYY')
-        data1[i].expert = ""
-        data1[i].project_title = ""
-        if (data1[i][4] == false) {
-          this.new_notifications.push(data1[i]);
-        } else if (data1[i][4] == true) {
-          this.notifications.push(data1[i]);
+  
+      data1.forEach((notification: { datetime: moment.MomentInput; expert: string; text: string; type: string; status: any; user_name: any; project_title: string; is_read: boolean; }) => {
+        notification.datetime = moment(notification.datetime).locale("el").format('DD MMM, YYYY');
+        notification.expert = "";
+        notification.text = "";
+  
+        if (notification.type == "appointment") {
+          switch(notification.status) {
+            case "APPOINTMENT_NEW":
+              notification.text = "Έχετε νέες κράτησεις που χρειάζονται επιβεβαίωση.";
+              break;
+            case "APPOINTMENT_ACCEPTED":
+              notification.text = `${notification.user_name}: Νέα κράτηση!`;
+              break;
+            case "APPOINTMENT_CANCELLED":
+              notification.text = `${notification.user_name}: Η κράτηση ακυρώθηκε από τον χρήστη.`;
+              break;
+            case "APPOINTMENT_UPDATED":
+              notification.text = `${notification.user_name}: Η κράτηση άλλαξε από τον χρήστη. Επιλέξτε για να δείτε λεπτομέρειες.`;
+              break;
+          }
         }
-
-
+  
+        notification.project_title = "";
+        if (notification.is_read == false) {
+          this.new_notifications.push(notification);
+        } else {
+          this.notifications.push(notification);
+        }
+      });
+  
+      if (event) {
+        event.target.complete();
       }
-
-
-
-
     }, err => {
-
-
+      if (event) {
+        event.target.complete();
+      }
     });
   }
+  
 
   loadData(event: any) {
-    this.page = this.page + 1
-    this.getNotifications();
+    this.page += 1;
+    this.getNotifications(event);
     
     if (this.disableInfiniteScroll) {
       event.target.complete();
-
     }
   }
-
+  
   goToSpecificPage(item: any) {
 
-    if (item[0] == "review") {
+    if (item.type == "review") {
       this.goToReviews()
-    } else if (item[0] == "appointment") {
-      this.goToAppointments()
+    } else if (item.type == "appointment") {
+      if(item.status=='APPOINTMENT_NEW'){
+        this.goToPendingAppointments()
+      }else{
+        this.goToAppointment(item.reference_id)
+      }
     }
   }
 
@@ -101,10 +126,25 @@ export class NotificationsPage implements OnInit {
     return await modal.present();
   }
 
-  async goToAppointments() {
+  async goToPendingAppointments() {
 
     const modal = await this.modalController.create({
       component: KrathseisPage,
+      componentProps:{
+        'status':'pending'
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async goToAppointment(appointment_id:string) {
+
+    const modal = await this.modalController.create({
+      component: KrathshPage,
+      componentProps:{
+        'appointment_id':appointment_id
+      }
     });
 
     return await modal.present();

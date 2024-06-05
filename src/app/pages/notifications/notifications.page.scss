@@ -30,7 +30,7 @@ ion-content {
 }
 
 .itemB {
-    --background: #D7E8FF;
+    --background: var(--ion-color-newnot);
     width: 100%
 }
 
@@ -95,3 +95,7 @@ ion-header{
     }
   }
   
+  .notificationImage{
+    width:40px;  
+    margin-right:16px;
+  }

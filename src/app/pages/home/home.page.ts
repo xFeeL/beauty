@@ -151,11 +151,11 @@ export class HomePage implements OnInit {
   constructor(private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
-    this.newAppointmentSubscription = this.userService.newAppointment$.subscribe((newAppointment) => {
+    this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
       console.log("NEW APPOINTEMNT INC")
       if (newAppointment) {
         // Handle the new appointment logic here
-        this.userService.newAppointment$.next(false);  // Reset the newAppointment flag
+        this.userService.refreshAppointment$.next(false);  // Reset the newAppointment flag
         console.log("Calling new appointemtns")
 
         this.getAppointmentsOfRange(this.startDate,this.endDate)
@@ -925,9 +925,11 @@ export class HomePage implements OnInit {
   lastKnownMinute: number = 0;
 
   ngAfterViewChecked() {
-    this.addBorderToDayChange();
-    this.highlightCurrentTimeElement();
-    this.calendarComponent.local = 'el'
+      this.addBorderToDayChange();
+      this.highlightCurrentTimeElement();
+      this.calendarComponent.local = 'el'
+    
+
   }
 
   @ViewChild(FullCalendarComponent) calendarComponent: FullCalendarComponent | any;
@@ -1021,7 +1023,9 @@ export class HomePage implements OnInit {
 
 
   handleMouseEnter(event: MouseEvent, calendarEvent: any) {
-
+    if (this.listView) {
+      return; // Exit the function if listView is true
+    }
     const target = event.target as HTMLElement;
     if (this.calendarContainer.nativeElement.contains(event.target)) {
       if (target.classList.contains('fc-timegrid-slot') && target.classList.contains('fc-timegrid-slot-lane') && target.classList.contains('fc-timegrid-slot-minor') && target.getAttribute('data-time')) {
@@ -1243,10 +1247,17 @@ export class HomePage implements OnInit {
 
       if (prevDate && prevDate !== currentDate) {
         if (this.calendarDaysLength == 2) {
-          if (index !== this.calendarDaysLength && index !== 10) {
-
-            element.classList.add('solid-border');
+          if (this.employees.length >= 4) {
+            // Calculate the border index dynamically
+            const baseIndex = 10; // Base index for 4 employees
+            const extraEmployees = this.employees.length - 4;
+            const borderIndex = baseIndex + (extraEmployees * 2);
+  
+            if (index !== this.calendarDaysLength && index !== borderIndex) {
+              element.classList.add('solid-border');
+            }
           }
+         
         } else if (this.calendarDaysLength == 5) {
           if (index !== this.calendarDaysLength && index !== 15) {
 
@@ -1602,7 +1613,7 @@ export class HomePage implements OnInit {
                     endTime: end,
                     daysOfWeek: [this.getDayOfWeek(schedule.day)],
                     display: 'background',
-                    color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+                    color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
                     editable: false,
                     extendedProps: {
                         isBackgroundEvent: true // Custom property to indicate background event
@@ -1631,7 +1642,7 @@ export class HomePage implements OnInit {
                     endTime: '24:00',
                     daysOfWeek: [index],
                     display: 'background',
-                    color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+                    color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
                     editable: false,
                     extendedProps: {
                         isBackgroundEvent: true // Custom property to indicate background event
@@ -1650,7 +1661,7 @@ export class HomePage implements OnInit {
                 start: start.toISOString(),
                 end: end.toISOString(),
                 display: 'background',
-                color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+                color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
                 editable: false,
                 extendedProps: {
                     isBackgroundEvent: true // Custom property to indicate background event
@@ -1669,7 +1680,7 @@ export class HomePage implements OnInit {
             start: start.toISOString(),
             end: end.toISOString(),
             display: 'background',
-            color: 'rgba(0, 0, 0, 0.2)', // Color for unavailable timeslots
+            color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
             editable: false,
             extendedProps: {
                 isBackgroundEvent: true // Custom property to indicate background event

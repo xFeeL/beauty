@@ -6,29 +6,29 @@
     </ion-buttons>
     <ion-title color="light">Κράτηση</ion-title>
     <ion-buttons slot="end" *ngIf="status=='accepted' || status=='noshow' || status=='completed' "
-    class="ion-margin-end">
-    <div>
-      <mat-icon class="white-icon" [matMenuTriggerFor]="menu">more_vert</mat-icon>
-      <mat-menu #menu="matMenu">
-        <button *ngIf="checkedIn=='false'" mat-menu-item [disabled]="isAfterOneHourAgo()" (click)="checkIn()"
-          [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
-          Έφτασε
-        </button>
-        <button *ngIf="checkedIn=='true'" mat-menu-item (click)="checkIn()"
-          [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
-          Αναίρεση άφιξης
-        </button>
-        <button *ngIf="status!='noshow'" mat-menu-item [disabled]="isAfterOneHourAgo()" (click)="noShow()"
-          [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
-          Δεν εμφανίστηκε
-        </button>
-        <button *ngIf="status=='noshow'" mat-menu-item (click)="noShow()"
-          [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
-          Αναίρεση μη εμφάνισης
-        </button>
-      </mat-menu>
-    </div>
-  </ion-buttons>
+      class="ion-margin-end">
+      <div>
+        <mat-icon class="white-icon" [matMenuTriggerFor]="menu">more_vert</mat-icon>
+        <mat-menu #menu="matMenu">
+          <button *ngIf="checkedIn=='false'" mat-menu-item [disabled]="isAfterOneHourAgo()" (click)="checkIn()"
+            [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+            Έφτασε
+          </button>
+          <button *ngIf="checkedIn=='true'" mat-menu-item (click)="checkIn()"
+            [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+            Αναίρεση άφιξης
+          </button>
+          <button *ngIf="status!='noshow'" mat-menu-item [disabled]="isAfterOneHourAgo()" (click)="noShow()"
+            [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+            Δεν εμφανίστηκε
+          </button>
+          <button *ngIf="status=='noshow'" mat-menu-item (click)="noShow()"
+            [matTooltip]="isAfterOneHourAgo() ? 'Θα ενεργοποιηθεί 1 ώρα πριν από την έναρξη της κράτησης' : ''">
+            Αναίρεση μη εμφάνισης
+          </button>
+        </mat-menu>
+      </div>
+    </ion-buttons>
   </ion-toolbar></ion-header><ion-content [fullscreen]="true" class="background">
   <ion-grid class="ion-no-padding">
     <ion-row class="ion-justify-content-center">
@@ -54,7 +54,8 @@
                         <ion-row class="bgL">
                           <ion-item button lines="none" class="w100  paddBt bgL">
                             <ion-avatar class="custAvatar" (click)="goToClient()">
-                              <ion-img [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' : profile_image)"></ion-img>
+                              <ion-img
+                                [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' : profile_image)"></ion-img>
                             </ion-avatar>
                             <ion-grid class="ion-no-padding p8">
                               <ion-row>
@@ -110,62 +111,63 @@
                     </ion-col>
                   </ion-row>
                   <ion-row class="ion-margin-bottom ">
-                    
-                        <ion-item class="w100" *ngFor="let item of combinedList">
-                          
-                          <div *ngIf="item.type === 'package'" class="package-line"></div>
-      
-                          <div *ngIf="item.type === 'service'" class="normal-line"></div>
-                    
-                          <div class="item-content">
-                            <div *ngIf="item.type === 'package'">
-                              <!-- Package Display Logic -->
-                              <ion-grid class="ion-no-padding ion-margin-top">
-                                <ion-row class="ion-margin-bottom">
-                                  <div class="ion-flex"
-                                    style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                                    <ion-label class="custom-text-wrap">
-                                      <h2 class="customFontHeader custom-text-wrap">{{item.name}}</h2>
-                                    </ion-label>
-                                    <ion-label class="align-right">€{{item.price}}</ion-label>
-                                  </div>
-                                </ion-row>
-                    
-                                <!-- Grid for package services -->
-                                <div *ngFor="let package_service of item.serviceObjects" class="ion-margin-bottom">
-                                  <ion-row *ngIf="package_service.parentName!=null">
-                                    <ion-note >{{package_service.parentName}}</ion-note><br>
 
-                                  </ion-row>
-                                  <ion-row>
-                                    <ion-note >{{package_service.name}}</ion-note><br>
+                    <ion-item class="w100" *ngFor="let item of combinedList">
 
-                                  </ion-row>
-                                  <ion-row>
-                                    <ion-note>{{package_service.duration}} λεπτά με {{package_service.employee}}</ion-note>
-                                  </ion-row>
-                                </div>
-                              </ion-grid>
-                            </div>
-                            <div *ngIf="item.type === 'service'">
-                              <!-- Service Display Logic -->
+                      <div *ngIf="item.type === 'package'" class="package-line"></div>
+
+                      <div *ngIf="item.type === 'service'" class="normal-line"></div>
+
+                      <div class="item-content">
+                        <div *ngIf="item.type === 'package'">
+                          <!-- Package Display Logic -->
+                          <ion-grid class="ion-no-padding ion-margin-top">
+                            <ion-row class="ion-margin-bottom">
                               <div class="ion-flex"
-                              style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                              <ion-label style="flex-grow: 1; white-space: normal;">
-                                 
-                                  <h2 class="custom-text-wrap" text-wrap *ngIf="item.parentName!=null">{{item.parentName}} </h2>
-                                  <ion-note class="custom-text-wrap"> {{item.name}}</ion-note>  
-                                  <p text-wrap >{{item.duration}} λεπτά με {{item.employee}}</p>
+                                style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                                <ion-label class="custom-text-wrap">
+                                  <h2 class="customFontHeader custom-text-wrap">{{item.name}}</h2>
                                 </ion-label>
-                                <ion-label class="align-right" style="flex-shrink: 0;">
-                                  €{{item.price}}
-                                </ion-label>
+                                <ion-label class="align-right">€{{item.price}}</ion-label>
                               </div>
+                            </ion-row>
+
+                            <!-- Grid for package services -->
+                            <div *ngFor="let package_service of item.serviceObjects" class="ion-margin-bottom">
+                              <ion-row *ngIf="package_service.parentName!=null">
+                                <ion-note>{{package_service.parentName}}</ion-note><br>
+
+                              </ion-row>
+                              <ion-row>
+                                <ion-note>{{package_service.name}}</ion-note><br>
+
+                              </ion-row>
+                              <ion-row>
+                                <ion-note>{{package_service.duration}} λεπτά με {{package_service.employee}}</ion-note>
+                              </ion-row>
                             </div>
+                          </ion-grid>
+                        </div>
+                        <div *ngIf="item.type === 'service'">
+                          <!-- Service Display Logic -->
+                          <div class="ion-flex"
+                            style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <ion-label style="flex-grow: 1; white-space: normal;">
+
+                              <h2 class="custom-text-wrap" text-wrap *ngIf="item.parentName!=null">{{item.parentName}}
+                              </h2>
+                              <ion-note class="custom-text-wrap"> {{item.name}}</ion-note>
+                              <p text-wrap>{{item.duration}} λεπτά με {{item.employee}}</p>
+                            </ion-label>
+                            <ion-label class="align-right" style="flex-shrink: 0;">
+                              €{{item.price}}
+                            </ion-label>
                           </div>
-                        </ion-item>
-                    
-                  
+                        </div>
+                      </div>
+                    </ion-item>
+
+
                   </ion-row>
                   <ion-row class="ion-margin-top ion-padding-top">
                     <ion-label class="ion-margin-start"><ion-note color="medium">Σημειώσεις</ion-note></ion-label>
@@ -179,7 +181,7 @@
               </ion-list> </ion-col>
           </ion-row>
         </ion-grid>
-       
+
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -189,7 +191,7 @@
       <ion-col size="6" class="ion-no-padding">
         <ion-button class="ion-no-margin" *ngIf="status=='accepted'" color="danger" expand="block"
           (click)="openRejectionPopover()">
-          
+
           <ion-text color="light"> Ακύρωση Κράτησης
           </ion-text>
         </ion-button>
@@ -202,43 +204,50 @@
       </ion-col> <ion-col size="6" *ngIf="status=='pending'">
         <ion-button fill="outline" color="danger" expand="block" (click)="cancelAppointment()">
           <ion-icon style="margin-right:3px;" name="close-circle-outline"></ion-icon>
-          
+
           <ion-text color="danger"> Απόρριψη
           </ion-text>
         </ion-button>
       </ion-col> <ion-popover #rejectPop (ionPopoverDidDismiss)="closeRejectPopover()">
         <ng-template>
-          <ion-header > <ion-toolbar class="toolbarBack">
-            <ion-buttons slot="start">
-              <ion-button color="light" (click)="closeRejectPopover()" slot="start" fill="clear">
-                <ion-icon name="arrow-back"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <ion-title color="light">Αιτία απόρριψης</ion-title>
+          <ion-header> <ion-toolbar class="toolbarBack">
+              <ion-buttons slot="start">
+                <ion-button color="light" (click)="closeRejectPopover()" slot="start" fill="clear">
+                  <ion-icon name="arrow-back"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+              <ion-title color="light">Αιτία απόρριψης</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content class="background">
             <ion-textarea [counter]="true" maxlength="200" [autoGrow]="true" class="cancelReason ion-padding"
-              label="Λόγος απόρριψης" labelPlacement="floating" fill="outline" [value]="cancelReason"></ion-textarea>
+              label="Λόγος απόρριψης" labelPlacement="floating" fill="outline" [(ngModel)]="cancelReason">
+            </ion-textarea>
             <div class="scrolling-wrapper reasonChips">
               <ion-chip outline color="primary" style="font-size: 12px;"
-                (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">Μη
-                διαθέσιμη ώρα</ion-chip>
+                (click)="appendToTextArea('Η ώρα που διαλέξατε δεν είναι διαθέσιμη. Παρακαλούμε κάντε μία νέα κράτηση.')">
+                Μη διαθέσιμη ώρα
+              </ion-chip>
               <ion-chip outline color="secondary" style="font-size: 12px;"
-                (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">Αναπάντεχο
-                συμβάν</ion-chip>
+                (click)="appendToTextArea('Λόγω ενός αναπάντεχου περιστατικού, αναγκαζόμαστε να ακυρώσουμε την κράτησή σας. Παρακαλούμε κάντε μία νέα κράτηση.')">
+                Αναπάντεχο συμβάν
+              </ion-chip>
             </div>
           </ion-content>
-          <ion-footer class="ion-no-padding" (click)="applyRejectPopover()">
-            <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
-              <ion-label color="light" class="ion-no-padding" class="ion-text-center capsoff">Αποθήκευση</ion-label>
+          <ion-footer class="ion-no-padding">
+            <ion-button [disabled]="!cancelReason" class="ion-no-padding ion-no-margin" expand="full" color="primary"
+              (click)="applyRejectPopover()">
+              <ion-label color="light" class="ion-no-padding ion-text-center capsoff">
+                Αποθήκευση
+              </ion-label>
             </ion-button>
-          </ion-footer> </ng-template>
+          </ion-footer>
+        </ng-template>
       </ion-popover>
       <ion-col size="6" *ngIf="status=='pending'"> <ion-button fill="solid" color="success" expand="block"
           (click)="acceptAppointment()">
           <ion-icon name="checkmark-circle-outline" style="margin-right:3px;"></ion-icon>
-          
+
           <ion-text color="light"> Αποδοχή
           </ion-text>
         </ion-button>

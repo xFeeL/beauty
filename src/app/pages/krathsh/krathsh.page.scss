@@ -353,7 +353,8 @@
   
   ion-popover {
     --width: 300px;
-    --height: 360px;
+
+    --max-height: 400px;
   }
   
   .round {

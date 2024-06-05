@@ -509,8 +509,8 @@ ion-button.rounded-btn {
 
 ion-popover {
   --width: 300px;
-  --height: auto;
 
+    --max-height: 400px;
 }
 
 .cancelChip {

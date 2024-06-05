@@ -1,6 +1,7 @@
-<ion-content class="background"> <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+<ion-content class="background"> 
+  <!--<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher>-->
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" sizeXs="12" sizeSm="12" sizeMd="11" sizeLg="12" sizeXl="11.5" class="ion-no-padding">
@@ -220,7 +221,7 @@
                                     </div>
                                   </ion-content>
                                   <ion-footer class="ion-no-padding" (click)="applyRejectPopover(element.id)">
-                                    <ion-button class="ion-no-padding ion-no-margin" expand="full" color="primary">
+                                    <ion-button [disabled]="cancelReason==''" class="ion-no-padding ion-no-margin" expand="full" color="primary">
                                       <ion-label class="ion-no-padding"
                                         class="ion-text-center capsoff">Αποθήκευση</ion-label>
                                     </ion-button>
@@ -411,8 +412,8 @@
               </ion-list>
             </ion-col>
 
-            <div #calendarContainer class="calendar-container">
-              <full-calendar class="full-calendar" #calendar [options]="calendarOptions"
+            <div #calendarContainer class="calendar-container" >
+              <full-calendar class="full-calendar ion-margin-start" #calendar [options]="calendarOptions"
                 [events]="eventsPromise | async"></full-calendar>
             </div>
           </ion-row>
