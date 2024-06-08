@@ -23,12 +23,13 @@
               (click)="goToKrathseis()">
               <ion-img src="../assets/icon/calendar.png" class="ion-margin-end menu-icon"></ion-img>
               <ion-label>Κρατήσεις</ion-label> </ion-item>
-              <ion-item class="pr10 item" routerDirection="root" routerLink="" lines="none" detail="true" (click)="goToMessages()">
-                <ion-img src="../assets/icon/messenger.png" class="ion-margin-end menu-icon"></ion-img>
-                <ion-label>Μηνύματα</ion-label>
-                <span class="badge" *ngIf="hasNewMessages"></span>
-              </ion-item>
-               </ion-menu-toggle>
+            <ion-item class="pr10 item" routerDirection="root" routerLink="" lines="none" detail="true"
+              (click)="goToMessages()">
+              <ion-img src="../assets/icon/messenger.png" class="ion-margin-end menu-icon"></ion-img>
+              <ion-label>Μηνύματα</ion-label>
+              <span class="badge" *ngIf="hasNewMessages"></span>
+            </ion-item>
+          </ion-menu-toggle>
         </ion-list>
         <ion-list id="inbox-list">
           <ion-list-header><ion-note>Βιτρίνα</ion-note></ion-list-header>

@@ -1322,6 +1322,25 @@ export class UserService {
       );
   }
 
+  getNextAvailableDay(startDate: string, servicesEmployeesMap: { [key: string]: string }, appointmentId?: string | null): Observable<any> {
+    let params = new HttpParams().set('start_date', startDate);
+
+    if (appointmentId != null) {
+      params = params.set('appointment_id', appointmentId);
+    }
+
+    const body = servicesEmployeesMap;
+
+    return this.http.post(beautyAuthenticated_API_URL + "get-next-available-day", body, {
+      headers: this.getHeaders(),
+      params: params,
+      withCredentials: true
+    })
+    .pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+
 
 
 

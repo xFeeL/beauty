@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
 import { IonCheckbox, IonModal, IonPopover, ModalController, NavController, NavParams } from '@ionic/angular';
@@ -93,62 +93,67 @@ export class KrathseisPage implements OnInit {
   krathshIds: string[] = [];
   mode: string = "upcoming";
   cancelReason: string = "";
-  reloadAppointments: any=false;
-  constructor(private navParams:NavParams,private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  reloadAppointments: any = false;
+  constructor(private route: ActivatedRoute,  private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
   }
   ngOnInit() {
   }
 
   ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
-    this.krathseis = []
-    this.krathshIds = []
-    this.krathseistatus = "0,0,0,0,0"
-    let status = this.navParams.get('status');
+    this.krathseis = [];
+    this.krathshIds = [];
+    this.resetFilters()
+    this.krathseistatus = '0,0,0,0,0';
+    let status=this.userService.getNavData()
+    this.userService.setNavData("");
+    // Check for parameters passed via the router and query parameters
+   
+
     console.log(status)
     if (status == "pending") {
-        this.krathseistatus = "1,0,0,0,0"
-        this.itemsKrathsh[0].selected = true;
-        this.itemsKrathsh[1].selected = false;
-        this.itemsKrathsh[2].selected = false;
-        this.itemsKrathsh[3].selected = false;
-        this.itemsKrathsh[4].selected = false;
-        
-        this.krathshChip = "selected-chip";
-        this.krathshChipIconCOlor = "primary";
-        this.allChipClass = "not-selected-chip";
+      this.krathseistatus = "1,0,0,0,0"
+      this.itemsKrathsh[0].selected = true;
+      this.itemsKrathsh[1].selected = false;
+      this.itemsKrathsh[2].selected = false;
+      this.itemsKrathsh[3].selected = false;
+      this.itemsKrathsh[4].selected = false;
+
+      this.krathshChip = "selected-chip";
+      this.krathshChipIconCOlor = "primary";
+      this.allChipClass = "not-selected-chip";
     }
     this.disableInfiniteScroll = false;
     this.page = 0;
 
     this.getKrathseis();
-}
+  }
 
 
-  isMobile(){
+  isMobile() {
     return this.userService.isMobile();
   }
   appendToTextArea(reason: string) {
-    this.cancelReason = ""; 
+    this.cancelReason = "";
     setTimeout(() => { this.cancelReason = reason; }, 0);
-}
+  }
 
   closeRejectPopover() {
     this.rejectPop.dismiss()
 
   }
   openRejectionPopover(event: any, krathsh: any) {
-    event.stopPropagation(); 
+    event.stopPropagation();
     this.rejectPop.present();
-}
+  }
 
 
   applyRejectPopover(appointment: any) {
     this.userService.rejectAppointment(appointment[0], this.cancelReason).subscribe(data => {
-    
+
       appointment[2] = "canceled"
-       
-      
+
+
       this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
     }, err => {
       this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
@@ -190,7 +195,7 @@ export class KrathseisPage implements OnInit {
     modal.onWillDismiss().then((dataReturned) => {
       // Your logic here, 'dataReturned' is the data returned from modal
       if (dataReturned && dataReturned.data) {
-        this.reloadAppointments=true
+        this.reloadAppointments = true
         this.page = 0;
         this.krathseis = []
         this.getKrathseis();
@@ -209,7 +214,7 @@ export class KrathseisPage implements OnInit {
     });
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned !== null) {
-        this.reloadAppointments=true
+        this.reloadAppointments = true
 
         // Your logic here, 'dataReturned' is the data returned from modal
         this.page = 0;
@@ -245,17 +250,17 @@ export class KrathseisPage implements OnInit {
   getKrathseis() {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
       for (let k = 0; k < data.length; k++) {
-        data[k][11]=data[k][3]
+        data[k][11] = data[k][3]
         data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
         data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
         this.krathseis.push(data[k])
       }
-      
-      
+
+
       this.initialized = true;
     }, err => {
-      if(err.error.text=='No more data'){
-        this.disableInfiniteScroll=true;
+      if (err.error.text == 'No more data') {
+        this.disableInfiniteScroll = true;
       }
       this.initialized = true;
 
@@ -290,18 +295,18 @@ export class KrathseisPage implements OnInit {
   }
 
   toggleItem(item: any) {
-    
+
     item.selected = !item.selected
   }
 
-  
- 
+
+
 
   isAfterOneHourAgo(appointment: any): boolean {
-    
+
     const foundAppointment = this.krathseis.find(a => a[0] === appointment[0]);
     if (!foundAppointment) {
-        return false;
+      return false;
     }
     const appointmentStartTime = new Date(foundAppointment[11]);
     const currentDate = new Date(); // The current time
@@ -316,27 +321,27 @@ export class KrathseisPage implements OnInit {
 
 
     return isStartingSoonOrAlreadyStarted; // Return true if the appointment has already started or is about to start within the next hour
-}
+  }
 
 
 
-  
 
-openKrathshPopover() {
-  // Ensure itemsKrathsh reflects the current krathseistatus
-  const statusArray = this.krathseistatus.split(',').map(status => status === "1");
 
-  this.itemsKrathsh = this.itemsKrathsh.map((item, index) => {
+  openKrathshPopover() {
+    // Ensure itemsKrathsh reflects the current krathseistatus
+    const statusArray = this.krathseistatus.split(',').map(status => status === "1");
+
+    this.itemsKrathsh = this.itemsKrathsh.map((item, index) => {
       item.selected = statusArray[index];
       return item;
-  });
+    });
 
-  const itemsKrathshCopy = JSON.parse(JSON.stringify(this.itemsKrathsh));
-  this.krathshPopoverValues = {
+    const itemsKrathshCopy = JSON.parse(JSON.stringify(this.itemsKrathsh));
+    this.krathshPopoverValues = {
       itemsKrathsh: itemsKrathshCopy,
-  };
-  this.krathshPop.present();
-}
+    };
+    this.krathshPop.present();
+  }
 
 
 
@@ -345,11 +350,11 @@ openKrathshPopover() {
 
     let temp = "";
     for (let i = 0; i < this.itemsKrathsh.length; i++) {
-        if (i == this.itemsKrathsh.length - 1) {
-            temp += this.itemsKrathsh[i].selected ? "1" : "0";
-        } else {
-            temp += this.itemsKrathsh[i].selected ? "1," : "0,";
-        }
+      if (i == this.itemsKrathsh.length - 1) {
+        temp += this.itemsKrathsh[i].selected ? "1" : "0";
+      } else {
+        temp += this.itemsKrathsh[i].selected ? "1," : "0,";
+      }
     }
     this.krathseistatus = temp;
     this.tempItemsKrathsh = JSON.parse(JSON.stringify(this.itemsKrathsh));
@@ -357,18 +362,18 @@ openKrathshPopover() {
     this.krathseis = [];
     this.krathshIds = [];
     if (this.krathseistatus.includes("1")) {
-        this.krathshChip = "selected-chip";
-        this.krathshChipIconCOlor = "primary";
-        this.allChipClass = "not-selected-chip";
+      this.krathshChip = "selected-chip";
+      this.krathshChipIconCOlor = "primary";
+      this.allChipClass = "not-selected-chip";
     } else {
-        this.krathshChip = "not-selected-chip";
-        this.krathshChipIconCOlor = "light";
-        this.allChipClass = "selected-chip";
+      this.krathshChip = "not-selected-chip";
+      this.krathshChipIconCOlor = "light";
+      this.allChipClass = "selected-chip";
     }
     this.getKrathseis();
 
     this.krathshPop.dismiss();
-}
+  }
 
 
   closeKrathshPopover() {
@@ -408,10 +413,10 @@ openKrathshPopover() {
     }
   }
 
-   
+
 
   getColorForStatus(status: string): string {
-    
+
     switch (status) {
       case 'canceled':
         return 'danger-line cursor w100 rad10 ion-margin-bottom ';
@@ -436,7 +441,7 @@ openKrathshPopover() {
   }
 
   checkIn(krathsh: any) {
-    this.reloadAppointments=true
+    this.reloadAppointments = true
     if (krathsh[5] == "true") {
       this.userService.changeCheckInStatus(krathsh[0], "false").subscribe(data => {
         krathsh[5] = "false"
@@ -461,12 +466,12 @@ openKrathshPopover() {
 
   acceptAppointment(event: Event, appointment: any) {
     event.stopPropagation();
-    
+
     this.userService.acceptAppointment(appointment[0]).subscribe(data => {
       appointment[2] = "accepted"
       this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
 
-    
+
 
 
 
@@ -479,7 +484,7 @@ openKrathshPopover() {
   }
 
 
-  
+
 
 
 

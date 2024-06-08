@@ -5,6 +5,7 @@ import { PopoverController } from '@ionic/angular';
 import * as moment from 'moment';
 import { trigger, state, style, animate, transition, AnimationEvent } from '@angular/animations';
 import { AddServicesPage } from '../add-services/add-services.page';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-new-krathsh',
@@ -253,68 +254,71 @@ export class NewKrathshPage implements OnInit {
     this.time_slots = [];
 
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
-    this.updateServiceEmployees()
-    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees,this.appointmentId).subscribe(response => {
+    this.updateServiceEmployees();
 
-      // Populate the time_slots array with the start of the outerTimePeriods
-      for (let i = 0; i < response.length; i++) {
-        let slot = {
-          value: response[i].outerTimePeriod.start.slice(0, 5),
-          selected: false
-        };
-        this.time_slots.push(slot);
-      }
+    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees, this.appointmentId).subscribe(response => {
+        if (response.length === 0) {
+            // If no time slots are available, clear the time_slots and set flags accordingly
+            this.time_slots = [];
+            this.filteredTimeSlots = [];
+            this.dateSelected = true;  // Set to true to ensure template checks work correctly
+            this.timeSelected = false;
+            this.timeSlotSelected = null;
+            this.scrollToBottomSetTimeout(150);
 
-      this.dateSelected = true;
-      if (this.editing && !this.dataChanged) {
-        
-        // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
-        let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
-
-        // Find the slot from the time_slots array that matches the converted time
-        let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
-        
-        
-        this.saveButtonEnabled = true
-        // If the slot is found, call slotSelected on it
-        if (foundSlot) {
-          
-          this.slotSelected(foundSlot);
-        } else {
-          
-
-          // If the slot is not found, add it to the time_slots array and select it
-          let newSlot = {
-            value: convertedTime,
-            selected: true
-          };
-          this.time_slots.push(newSlot);
-          this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
-
-          // Sort the time_slots array to maintain order
+            //this.userService.presentToast("No available time slots for the selected date.", "warning");
+            return;
         }
-        
-        
-        this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-          let [hourA, minuteA] = a.value.split(':').map(Number);
-          let [hourB, minuteB] = b.value.split(':').map(Number);
-          if (hourA !== hourB) return hourA - hourB;
-          return minuteA - minuteB;
-        });
-        
-        
 
-      }
-      else {
-        this.scrollToBottomSetTimeout(150);
-        this.timeSelected = false;
-        this.timeSlotSelected = null;
+        // Populate the time_slots array with the start of the outerTimePeriods
+        for (let i = 0; i < response.length; i++) {
+            let slot = {
+                value: response[i].outerTimePeriod.start.slice(0, 5),
+                selected: false
+            };
+            this.time_slots.push(slot);
+        }
 
-      }
-      this.filteredTimeSlots = [...this.time_slots];
+        this.dateSelected = true;
 
+        if (this.editing && !this.dataChanged) {
+            // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
+            let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
+
+            // Find the slot from the time_slots array that matches the converted time
+            let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
+
+            this.saveButtonEnabled = true;
+            // If the slot is found, call slotSelected on it
+            if (foundSlot) {
+                this.slotSelected(foundSlot);
+            } else {
+                // If the slot is not found, add it to the time_slots array and select it
+                let newSlot = {
+                    value: convertedTime,
+                    selected: true
+                };
+                this.time_slots.push(newSlot);
+                this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
+
+                // Sort the time_slots array to maintain order
+                this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+                    let [hourA, minuteA] = a.value.split(':').map(Number);
+                    let [hourB, minuteB] = b.value.split(':').map(Number);
+                    if (hourA !== hourB) return hourA - hourB;
+                    return minuteA - minuteB;
+                });
+            }
+        } else {
+            this.scrollToBottomSetTimeout(150);
+            this.timeSelected = false;
+            this.timeSlotSelected = null;
+        }
+        this.filteredTimeSlots = [...this.time_slots];
     });
-  }
+}
+
+
 
   convertTimeFormatForEdit(time: string): string {
     let timeParts = time.split(' ');
@@ -670,7 +674,39 @@ export class NewKrathshPage implements OnInit {
     return parseInt(time.split(':')[0], 10);
   }
 
-}
+  async goToNextAvailable() {
+    const temp_date = moment(this.theDate).format('YYYY-MM-DD');
+  
+    try {
+      const response = await lastValueFrom(this.userService.getNextAvailableDay(temp_date, this.servicesEmployees, this.appointmentId));
+      
+      if (response && response.nextAvailableDate) {
+        this.theDate = response.nextAvailableDate;
+    
+        const timeSlotsResponse = await lastValueFrom(this.userService.getAvailableTimeBooking(response.nextAvailableDate, this.servicesEmployees, this.appointmentId));
+        
+        if (timeSlotsResponse && timeSlotsResponse.length > 0) {
+          this.time_slots = timeSlotsResponse.map((slot: { outerTimePeriod: { start: string | any[]; }; }) => ({
+            value: slot.outerTimePeriod.start.slice(0, 5),
+            selected: false
+          }));
+          this.filteredTimeSlots = [...this.time_slots];
+          this.dateSelected = true;
+          this.timeSelected = false;
+          this.timeSlotSelected = null;
+        } else {
+          this.userService.presentToast("Δεν βρέθηκαν διαθέσιμες ώρες για την επιλεγμένη ημέρα.", "danger");
+        }
+      } else {
+        this.userService.presentToast("Δεν βρέθηκαν διαθέσιμες ημέρες εντός 6 μηνών.", "danger");
+      }
+    } catch (error) {
+      console.error('Error fetching available time slots', error);
+      this.userService.presentToast("Προέκυψε σφάλμα κατά την εύρεση διαθέσιμων ημερών.", "danger");
+    }
+  }
+  
+}  
 interface ServiceEmployee {
   yphresiaId: any;  // You can replace 'any' with more specific types if known
   employeeId: any;

@@ -1,25 +1,25 @@
-<ion-tabs>  <ion-tab-bar slot="bottom">
-  <ion-tab-button tab="home">
-    <ion-img src="../../assets/icon/calendar.png" class="tab-icon"></ion-img>  
-    <ion-label>Ατζέντα</ion-label>
-  </ion-tab-button> 
-  <ion-tab-button tab="krathseis">
-    <ion-img src="../../assets/icon/list.png" class="tab-icon"></ion-img>  
-    <ion-label>Κρατήσεις</ion-label>
-  </ion-tab-button>    <!--<ion-tab-button tab="prosfores">
-    <ion-icon name="file-tray-full-outline"></ion-icon>
-    <ion-label>Προσφορές</ion-label>
-    
-  </ion-tab-button>-->  
-  <ion-tab-button tab="notifications">
-    <ion-badge  *ngIf="newNotifications" color="danger"></ion-badge>
-    <ion-img src="../../assets/icon/notification-bell.png" class="tab-icon"></ion-img>  
-        <ion-label>Ειδοποιήσεις</ion-label>
-  </ion-tab-button>
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-badge *ngIf="newNotifications" color="danger"></ion-badge>
+      <ion-icon name="calendar-outline" class="tab-icon"></ion-icon>
+      <ion-label>Ατζέντα</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="krathseis">
+      <ion-icon name="file-tray-full-outline" class="tab-icon"></ion-icon>
+      <ion-label>Κρατήσεις</ion-label>
+    </ion-tab-button>
+
     <ion-tab-button tab="messages">
-    <ion-badge *ngIf="newMessages" color="danger"></ion-badge>
-    <ion-img src="../../assets/icon/messenger.png" class="tab-icon"></ion-img>  
-        <ion-label>Μηνύματα</ion-label>
-  </ion-tab-button>
-  <!--<ion-menu-button  color="dark"></ion-menu-button>   
-  -->  </ion-tab-bar></ion-tabs>
+      <ion-badge *ngIf="newMessages" color="danger"></ion-badge>
+      <ion-icon name="chatbubbles-outline" class="tab-icon"></ion-icon>
+      <ion-label>Μηνύματα</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="openMenu()">
+      <ion-icon name="menu-outline" class="tab-icon"></ion-icon>
+      <ion-label>Περισσότερα</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

@@ -134,20 +134,24 @@
             </ion-col>
           </ion-row>
           
-          <ion-row class="ion-margin scrollable-content">
-            <ng-container *ngIf="filteredTimeSlots && filteredTimeSlots.length > 0; else noSlotsAvailable">
-              <div *ngFor="let slot of filteredTimeSlots"
-                [class]="slot.selected ? 'ion-text-center timDiv selected cursor' : 'ion-text-center timDiv avail cursor'"
-                (click)="slotSelected(slot)">
-                <ion-label>{{slot.value}}</ion-label>
-              </div>
+          <ion-row class="ion-margin scrollable-content ion-justify-content-center ion-text-center">
+            <ng-container *ngIf="dateSelected && filteredTimeSlots && filteredTimeSlots.length > 0; else noSlotsAvailable">
+                <div *ngFor="let slot of filteredTimeSlots"
+                    [class]="slot.selected ? 'ion-text-center timDiv selected cursor' : 'ion-text-center timDiv avail cursor'"
+                    (click)="slotSelected(slot)">
+                    <ion-label>{{slot.value}}</ion-label>
+                </div>
             </ng-container>
             <ng-template #noSlotsAvailable>
-              <ion-note class="no_results_text ion-justify-content-center">
-                Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα ή περίοδο.
-              </ion-note>
+                <ion-note class="no_results_text ion-justify-content-center">
+                    Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα ή περίοδο.
+                </ion-note>
+                <ion-button expand="full" color="primary" (click)="goToNextAvailable()">
+                    <ion-text color="light" class="capsoff">Επόμενη Διαθέσιμη</ion-text>
+                </ion-button>
             </ng-template>
-          </ion-row>
+        </ion-row>
+        
         </ion-grid>
 
 

@@ -1,20 +1,20 @@
 <ion-header> <ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-      <ion-icon name="arrow-back"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-  <ion-title color="light">Προφίλ Πελάτη</ion-title>
-  <ion-buttons slot="end">
-    <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
-      *ngIf="userData.email!='manual_clients'">
-      <ion-icon color="light" name="chatbox"></ion-icon>
-    </ion-button>
-    <!-- Material Menu Trigger -->
-    <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
-      *ngIf="userData.email=='manual_clients'"></ion-icon>
-  </ion-buttons>
-</ion-toolbar>  <!-- Material Menu Content -->
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Προφίλ Πελάτη</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
+        *ngIf="userData.email!='manual_clients'">
+        <ion-icon color="light" name="chatbox"></ion-icon>
+      </ion-button>
+      <!-- Material Menu Trigger -->
+      <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
+        *ngIf="userData.email=='manual_clients'"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar> <!-- Material Menu Content -->
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="editClient()">
       Επεξεργασία
@@ -27,7 +27,8 @@
           class="w100 ion-no-padding ion-item2  light-blue-background ion-padding-bottom ion-padding-top">
           <div class="centered-content">
             <ion-avatar class="custAvatarHed2">
-              <ion-img [src]="(userData.profile_image === 'default' ? '../../../assets/icon/default-profile.png' : userData.profile_image)"></ion-img>
+              <ion-img
+                [src]="(userData.profile_image === 'default' ? '../../../assets/icon/default-profile.png' : userData.profile_image)"></ion-img>
 
             </ion-avatar>
             <h4 class="p5 ion-no-margin">
@@ -37,6 +38,40 @@
               userData.email }}</ion-note>
           </div>
         </ion-item>
+        <ion-grid>
+          <ion-row class="ion-justify-content-center">
+            <ion-col size="12" class="ion-justify-content-center custom-col">
+              <ion-item lines="none" class="ion-justify-content-center custom-item custom-item-revenue">
+                <ion-text>
+                  <ion-text color="primary"><strong>Συνολικά Έσοδα:</strong></ion-text>
+                  <ion-note class="ml5" color="medium">€{{userData.revenue}}</ion-note>
+                </ion-text>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-center custom-row">
+            <ion-col size="4" class="ion-justify-content-center custom-col">
+              <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
+                <ion-img class="statsImage" src="../../../assets/icon/Accepted Appointment.png"></ion-img>
+                <ion-label class="statsText">{{userData.jobs_reservations}}</ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col size="4" class="ion-justify-content-center custom-col">
+              <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
+                <ion-img class="statsImage" src="../../../assets/icon/Rejected Appointment.png"></ion-img>
+                <ion-label class="statsText">{{userData.cancelled_appointments}}</ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col size="4" class="ion-justify-content-center custom-col">
+              <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
+                <ion-img class="statsImage" src="../../../assets/icon/No Show.png"></ion-img>
+                <ion-label class="statsText">{{userData.noshow_appointments}}</ion-label>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+
         <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.email!='manual_clients'" class="custom-segment ">
           <ion-segment-button value="projects">
             <ion-label>Κρατήσεις <ion-note color="dark"></ion-note></ion-label>
@@ -48,15 +83,15 @@
         <div [ngSwitch]="type">
           <div *ngSwitchCase="'projects'" cla>
 
-            <ion-item>
+            <!--<ion-item>
               <ion-label class="text-center">
                 <ion-note>
                   Ολοκληρωμένες κρατήσεις: {{userData.jobs_reservations}}
                 </ion-note>
               </ion-label>
-              <ion-label slot="end" >€{{userData.revenue}}</ion-label>
+              <ion-label slot="end">€{{userData.revenue}}</ion-label>
             </ion-item>
-
+          -->
 
             <ion-item class=" cursor w100" *ngFor="let krathsh of krathseis; let i = index"
               (click)="goToKrathsh(krathsh[0])">

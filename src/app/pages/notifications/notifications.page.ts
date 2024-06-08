@@ -13,13 +13,13 @@ import { KrathshPage } from '../krathsh/krathsh.page';
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
-  notifications:any=[];
-  new_notifications: any=[];
+  notifications: any = [];
+  new_notifications: any = [];
   notifications_length: number = 0;
   new_notifications_length: number = 0;
   page = 0;
   disableInfiniteScroll = false;
-  constructor(private route: Router, private userService: UserService, private navCtl: NavController, private modalController: ModalController) { }
+  constructor(private router: Router, private route: Router, private userService: UserService, private navCtl: NavController, private modalController: ModalController) { }
 
   ngOnInit() {
 
@@ -27,7 +27,7 @@ export class NotificationsPage implements OnInit {
 
   ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
-
+    
     this.disableInfiniteScroll = false;
     this.page = 0;
     this.notifications.splice(0);
@@ -49,18 +49,18 @@ export class NotificationsPage implements OnInit {
     this.userService.getNotifications(this.page).subscribe(data1 => {
       this.userService.newNotification$.next(false);
       console.log(data1.length);
-      
+
       if (data1.length < 10) {
         this.disableInfiniteScroll = true;
       }
-  
+
       data1.forEach((notification: { datetime: moment.MomentInput; expert: string; text: string; type: string; status: any; user_name: any; project_title: string; is_read: boolean; }) => {
         notification.datetime = moment(notification.datetime).locale("el").format('DD MMM, YYYY');
         notification.expert = "";
         notification.text = "";
-  
+
         if (notification.type == "appointment") {
-          switch(notification.status) {
+          switch (notification.status) {
             case "APPOINTMENT_NEW":
               notification.text = "Έχετε νέες κράτησεις που χρειάζονται επιβεβαίωση.";
               break;
@@ -75,7 +75,7 @@ export class NotificationsPage implements OnInit {
               break;
           }
         }
-  
+
         notification.project_title = "";
         if (notification.is_read == false) {
           this.new_notifications.push(notification);
@@ -83,7 +83,7 @@ export class NotificationsPage implements OnInit {
           this.notifications.push(notification);
         }
       });
-  
+
       if (event) {
         event.target.complete();
       }
@@ -93,29 +93,35 @@ export class NotificationsPage implements OnInit {
       }
     });
   }
-  
+
 
   loadData(event: any) {
     this.page += 1;
     this.getNotifications(event);
-    
+
     if (this.disableInfiniteScroll) {
       event.target.complete();
     }
   }
-  
+
   goToSpecificPage(item: any) {
 
     if (item.type == "review") {
       this.goToReviews()
     } else if (item.type == "appointment") {
-      if(item.status=='APPOINTMENT_NEW'){
+      if (item.status == 'APPOINTMENT_NEW') {
         this.goToPendingAppointments()
-      }else{
+      } else {
         this.goToAppointment(item.reference_id)
       }
     }
   }
+
+  isMobile() {
+    return this.userService.isMobile()
+  }
+
+
 
   async goToReviews() {
 
@@ -127,23 +133,27 @@ export class NotificationsPage implements OnInit {
   }
 
   async goToPendingAppointments() {
+    this.userService.setNavData("pending")
+    if (this.isMobile()) {
+      this.route.navigate(['/tabs/krathseis']);
 
-    const modal = await this.modalController.create({
+    } else {
+
+     const modal = await this.modalController.create({
       component: KrathseisPage,
-      componentProps:{
-        'status':'pending'
-      }
+
     });
 
     return await modal.present();
   }
+  }
 
-  async goToAppointment(appointment_id:string) {
+  async goToAppointment(appointment_id: string) {
 
     const modal = await this.modalController.create({
       component: KrathshPage,
-      componentProps:{
-        'appointment_id':appointment_id
+      componentProps: {
+        'appointment_id': appointment_id
       }
     });
 

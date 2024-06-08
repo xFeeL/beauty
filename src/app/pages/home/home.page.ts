@@ -337,10 +337,15 @@ export class HomePage implements OnInit {
 
 
   async goToNotifications() {
-    const modal = await this.modalController.create({
-      component: NotificationsPage,
-    });
-    return await modal.present();
+    if(!this.isMobile){
+      const modal = await this.modalController.create({
+        component: NotificationsPage,
+      });
+      return await modal.present();
+    }else{
+      this.rout.navigate(['/tabs/notifications']);
+    }
+  
   }
 
 
@@ -1433,22 +1438,38 @@ export class HomePage implements OnInit {
       console.error('startDate or endDate is undefined');
       return;
     }
-
+  
     const formattedStartDate = this.formatDateForAPI(startDate);
     const formattedEndDate = this.formatDateForAPI(endDate);
-
+    const calendarApi = this.calendarComponent.getApi();
+    
     this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
       data => {
+        // Clear only appointment events
+        const allEvents = calendarApi.getEvents();
+        allEvents.forEach((event: { extendedProps: { isBackgroundEvent: any; }; remove: () => void; }) => {
+          if (!event.extendedProps.isBackgroundEvent) {
+            event.remove();
+          }
+        });
         this.events = this.transformToEventInput(data);
-
+  
         // Merge and update the calendar with all events
         this.mergeAndSetEvents();
       },
       err => {
+        // Clear only appointment events in case of error
+        const allEvents = calendarApi.getEvents();
+        allEvents.forEach((event: { extendedProps: { isBackgroundEvent: any; }; remove: () => void; }) => {
+          if (!event.extendedProps.isBackgroundEvent) {
+            event.remove();
+          }
+        });
         console.error('Error fetching appointments:', err);
       }
     );
   }
+  
 
 
 

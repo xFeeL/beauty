@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -9,8 +12,21 @@ import { UserService } from '../services/user.service';
 export class TabsPage {
   newNotifications: boolean=false;
   newMessages: boolean=false;
+  private hasNewNotificationsSubscription: Subscription;
+  private newMessageSubscription: Subscription;
 
-  constructor(private userService: UserService) { }
+  constructor(private menu: MenuController,private rout:Router,private userService: UserService) {
+    this.hasNewNotificationsSubscription = this.userService.newNotification$.subscribe(hasNewNotif => {
+      this.newNotifications = hasNewNotif
+
+    });
+
+    this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
+      
+      
+      this.newMessages = newMessage
+    });
+   }
 
   ionViewWillEnter() {
 
@@ -37,5 +53,8 @@ export class TabsPage {
     })
   }
 
+ openMenu() {
+    this.menu.open();
+  }
 
 }
