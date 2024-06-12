@@ -50,6 +50,7 @@ export class AppComponent implements WithStyles {
   authenticated: boolean = false;
   private authSubscription: Subscription = new Subscription;
   private newMessageSubscription: Subscription = new Subscription;
+  hasNewMessages: boolean = false;
 
   isAuthenticated: boolean = false;
   iconName: string = 'clipboard-outline';
@@ -62,7 +63,6 @@ export class AppComponent implements WithStyles {
   initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
-  hasNewMessages: boolean = false;
   constructor(private themeService: ThemeService,
     private userService: UserService,
     private rout: Router, readonly sRenderer: StyleRenderer, private modalController: ModalController) {

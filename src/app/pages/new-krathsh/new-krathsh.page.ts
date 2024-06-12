@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { trigger, state, style, animate, transition, AnimationEvent } from '@angular/animations';
 import { AddServicesPage } from '../add-services/add-services.page';
 import { lastValueFrom } from 'rxjs';
+import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
 
 @Component({
   selector: 'app-new-krathsh',
@@ -63,9 +64,14 @@ export class NewKrathshPage implements OnInit {
   dataChanged = false;
   appointmentId: string | null = null;
   selectedServicesAndPackages: any = [];
-  filteredTimeSlots: any[]=[];
-  toggleValue="all"
-
+  filteredTimeSlots: any[] = [];
+  toggleValue = "all"
+  phoneMask: MaskitoOptions = {
+    mask: ['+', '3', '0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
+  };
+  isInputValid: boolean = false;
+  readonly options: MaskitoOptions = this.phoneMask;
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   constructor(private modalController: ModalController, private userService: UserService, private navParams: NavParams, private _cd: ChangeDetectorRef) {
     this.minDate = new Date().toISOString().split('T')[0];
     this.animationState = 'in';
@@ -85,13 +91,13 @@ export class NewKrathshPage implements OnInit {
 
 
   ionViewWillEnter() {
-   
-    
+
+
     if (this.navParams.get("appointment_data") != undefined) {
       this.editing = true
       this.appointment_data = this.navParams.get("appointment_data")
-      
-      
+
+
       this.appointmentId = this.appointment_data.appointmentId
       this.theDate = this.appointment_data.date
       // Map services with isSelected and indexOrder
@@ -147,18 +153,18 @@ export class NewKrathshPage implements OnInit {
         this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
         this.updateServiceEmployees()
-        
-        
+
+
         this.onMonthChange();
 
 
       }, err => {
         if (err.error == "Service doesn't exist") {
-          
+
           this.selectedServices = []
         }
       });
-    }else{
+    } else {
       this.chooseServices();
     }
 
@@ -177,7 +183,7 @@ export class NewKrathshPage implements OnInit {
       this.currentService = this.selectedServices[currentIndex + 1];
     } else {
       this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
-     
+
 
 
       this.onMonthChange();
@@ -257,66 +263,66 @@ export class NewKrathshPage implements OnInit {
     this.updateServiceEmployees();
 
     this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees, this.appointmentId).subscribe(response => {
-        if (response.length === 0) {
-            // If no time slots are available, clear the time_slots and set flags accordingly
-            this.time_slots = [];
-            this.filteredTimeSlots = [];
-            this.dateSelected = true;  // Set to true to ensure template checks work correctly
-            this.timeSelected = false;
-            this.timeSlotSelected = null;
-            this.scrollToBottomSetTimeout(150);
+      if (response.length === 0) {
+        // If no time slots are available, clear the time_slots and set flags accordingly
+        this.time_slots = [];
+        this.filteredTimeSlots = [];
+        this.dateSelected = true;  // Set to true to ensure template checks work correctly
+        this.timeSelected = false;
+        this.timeSlotSelected = null;
+        this.scrollToBottomSetTimeout(150);
 
-            //this.userService.presentToast("No available time slots for the selected date.", "warning");
-            return;
-        }
+        //this.userService.presentToast("No available time slots for the selected date.", "warning");
+        return;
+      }
 
-        // Populate the time_slots array with the start of the outerTimePeriods
-        for (let i = 0; i < response.length; i++) {
-            let slot = {
-                value: response[i].outerTimePeriod.start.slice(0, 5),
-                selected: false
-            };
-            this.time_slots.push(slot);
-        }
+      // Populate the time_slots array with the start of the outerTimePeriods
+      for (let i = 0; i < response.length; i++) {
+        let slot = {
+          value: response[i].outerTimePeriod.start.slice(0, 5),
+          selected: false
+        };
+        this.time_slots.push(slot);
+      }
 
-        this.dateSelected = true;
+      this.dateSelected = true;
 
-        if (this.editing && !this.dataChanged) {
-            // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
-            let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
+      if (this.editing && !this.dataChanged) {
+        // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
+        let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
 
-            // Find the slot from the time_slots array that matches the converted time
-            let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
+        // Find the slot from the time_slots array that matches the converted time
+        let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
 
-            this.saveButtonEnabled = true;
-            // If the slot is found, call slotSelected on it
-            if (foundSlot) {
-                this.slotSelected(foundSlot);
-            } else {
-                // If the slot is not found, add it to the time_slots array and select it
-                let newSlot = {
-                    value: convertedTime,
-                    selected: true
-                };
-                this.time_slots.push(newSlot);
-                this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
-
-                // Sort the time_slots array to maintain order
-                this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-                    let [hourA, minuteA] = a.value.split(':').map(Number);
-                    let [hourB, minuteB] = b.value.split(':').map(Number);
-                    if (hourA !== hourB) return hourA - hourB;
-                    return minuteA - minuteB;
-                });
-            }
+        this.saveButtonEnabled = true;
+        // If the slot is found, call slotSelected on it
+        if (foundSlot) {
+          this.slotSelected(foundSlot);
         } else {
-            this.scrollToBottomSetTimeout(150);
-            this.timeSelected = false;
-            this.timeSlotSelected = null;
+          // If the slot is not found, add it to the time_slots array and select it
+          let newSlot = {
+            value: convertedTime,
+            selected: true
+          };
+          this.time_slots.push(newSlot);
+          this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
+
+          // Sort the time_slots array to maintain order
+          this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+            let [hourA, minuteA] = a.value.split(':').map(Number);
+            let [hourB, minuteB] = b.value.split(':').map(Number);
+            if (hourA !== hourB) return hourA - hourB;
+            return minuteA - minuteB;
+          });
         }
-        this.filteredTimeSlots = [...this.time_slots];
+      } else {
+        this.scrollToBottomSetTimeout(150);
+        this.timeSelected = false;
+        this.timeSlotSelected = null;
+      }
+      this.filteredTimeSlots = [...this.time_slots];
     });
-}
+  }
 
 
 
@@ -363,6 +369,20 @@ export class NewKrathshPage implements OnInit {
 
   }
 
+  validateInputs() {
+    const nameValid = this.newClientName.trim().length > 0;
+    const surnameValid = this.newClientSurname.trim().length > 0;
+    const phoneValid = this.validatePhone(this.newClientPhone);
+
+    this.isInputValid = nameValid && surnameValid && phoneValid;
+  }
+
+  validatePhone(phone: string): boolean {
+    const phonePattern = /^\+30\s69\d{1}\s\d{3}\s\d{4}$/;
+    return phonePattern.test(phone);
+  }
+
+
   addNewClient() {
     this.newClientName = ""
     this.newClientPhone = ""
@@ -378,20 +398,22 @@ export class NewKrathshPage implements OnInit {
   }
 
   createClient() {
-    // Handle new client creation here
-    this.selectedClient = `${this.newClientName} ${this.newClientSurname}`;
-    this.selectedClientPhone = this.newClientPhone;
-    this.userService.newManualClient(this.newClientName, this.newClientSurname, this.selectedClientPhone).subscribe(data => {
-      this.selectedClientId = data.clientId
-      this.selectedClientImage = data.profileImage
-      this.userService.presentToast("Ο νέος πελάτης καταχωρήθηκε!", "success")
-      this.clientModal.dismiss();
-      this.isAddingNewClient = false;
-      this.saveButtonEnabled = true
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+    if (this.isInputValid) {
+      // Handle new client creation here
+      this.selectedClient = `${this.newClientName} ${this.newClientSurname}`;
+      this.selectedClientPhone = this.newClientPhone;
+      this.userService.newManualClient(this.newClientName, this.newClientSurname, this.selectedClientPhone).subscribe(data => {
+        this.selectedClientId = data.clientId
+        this.selectedClientImage = data.profileImage
+        this.userService.presentToast("Ο νέος πελάτης καταχωρήθηκε!", "success")
+        this.clientModal.dismiss();
+        this.isAddingNewClient = false;
+        this.saveButtonEnabled = true
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
 
-    })
+      })
+    }
   }
 
   selectClient(suggestion: any) {
@@ -447,7 +469,7 @@ export class NewKrathshPage implements OnInit {
     }, err => {
       this.saveButtonEnabled = true
 
-      
+
       if (err.error == "Slot taken") {
         this.userService.presentToast("Η συγκεκριμένη χρονική περιόδος δεν είναι πλέον διαθέσιμη.", "danger")
       } else {
@@ -456,20 +478,20 @@ export class NewKrathshPage implements OnInit {
     })
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-    
+
 
     // Reorder the selectedServicesAndPackages array
     const itemToMove = this.selectedServicesAndPackages.splice(ev.detail.from, 1)[0];
     this.selectedServicesAndPackages.splice(ev.detail.to, 0, itemToMove);
 
-    
+
     this.processSelectedServices(this.selectedServicesAndPackages)
     this.updateServiceEmployees()
-    
-    
-    if(this.theDate!=undefined){
+
+
+    if (this.theDate != undefined) {
       this.dateChanged()
-    }else{
+    } else {
 
     }
 
@@ -482,20 +504,20 @@ export class NewKrathshPage implements OnInit {
     this.selectedServices.forEach((service, index) => {
       // Determine the appropriate id to use based on whether chosenVariation is not null
       const idToUse = service.chosenVariation ? service.chosenVariation.id : service.id;
-  
+
       // Initialize the serviceEmployee entry with the determined id
       let serviceEmployeeEntry: ServiceEmployee = { yphresiaId: idToUse, employeeId: service.selectedEmployeeId };
-  
+
       // Add packageId to the entry if it exists
       if (service.packageId) {
         serviceEmployeeEntry.packageId = service.packageId;
       }
-  
+
       // Push the constructed entry to the servicesEmployees array
       this.servicesEmployees.push(serviceEmployeeEntry);
     });
   }
-  
+
 
 
   async chooseServices() {
@@ -509,10 +531,10 @@ export class NewKrathshPage implements OnInit {
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
-      
-      
-      if(this.editing){
-      this.dateChanged();
+
+
+      if (this.editing) {
+        this.dateChanged();
       }
       this._cd.detectChanges();
       this.processSelectedServices(data);
@@ -548,13 +570,13 @@ export class NewKrathshPage implements OnInit {
 
 
 
-    
-    
+
+
 
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
-    
 
-    if (this.editing && this.canSelectDate ) {
+
+    if (this.editing && this.canSelectDate) {
       this.dateSelected = true;
     } else {
       this.resetDateAndTimeSelection();
@@ -585,7 +607,7 @@ export class NewKrathshPage implements OnInit {
       }
 
     }, err => {
-      
+
       if (err.error == "Service doesn't exist") {
         this.selectedServices = [];
       }
@@ -596,8 +618,8 @@ export class NewKrathshPage implements OnInit {
 
 
   toggleSelectService(service: any) {
-    
-    
+
+
 
     service.isSelected = !service.isSelected; // Toggle the isSelected property
 
@@ -634,7 +656,7 @@ export class NewKrathshPage implements OnInit {
     this.timeSelected = false;
     this.timeSlotSelected = null;
     this.dataChanged = true;
-    
+
     this.theDate = undefined;
     if (this.selectedServices.length != 0) {
       this.canSelectDate = this.selectedServices.every((s: { selectedEmployeeId: any; }) => s.selectedEmployeeId);
@@ -645,10 +667,10 @@ export class NewKrathshPage implements OnInit {
 
   filterTimeSlots() {
     if (this.toggleValue === 'all') {
-      
+
       this.filteredTimeSlots = [...this.time_slots];
-      
-      
+
+
     } else {
       this.filteredTimeSlots = this.time_slots.filter((slot: { value: string; }) => this.isInPeriod(slot.value, this.toggleValue));
     }
@@ -676,15 +698,15 @@ export class NewKrathshPage implements OnInit {
 
   async goToNextAvailable() {
     const temp_date = moment(this.theDate).format('YYYY-MM-DD');
-  
+
     try {
       const response = await lastValueFrom(this.userService.getNextAvailableDay(temp_date, this.servicesEmployees, this.appointmentId));
-      
+
       if (response && response.nextAvailableDate) {
         this.theDate = response.nextAvailableDate;
-    
+
         const timeSlotsResponse = await lastValueFrom(this.userService.getAvailableTimeBooking(response.nextAvailableDate, this.servicesEmployees, this.appointmentId));
-        
+
         if (timeSlotsResponse && timeSlotsResponse.length > 0) {
           this.time_slots = timeSlotsResponse.map((slot: { outerTimePeriod: { start: string | any[]; }; }) => ({
             value: slot.outerTimePeriod.start.slice(0, 5),
@@ -705,8 +727,8 @@ export class NewKrathshPage implements OnInit {
       this.userService.presentToast("Προέκυψε σφάλμα κατά την εύρεση διαθέσιμων ημερών.", "danger");
     }
   }
-  
-}  
+
+}
 interface ServiceEmployee {
   yphresiaId: any;  // You can replace 'any' with more specific types if known
   employeeId: any;

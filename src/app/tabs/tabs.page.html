@@ -11,13 +11,17 @@
       <ion-label>Κρατήσεις</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="messages">
-      <ion-badge *ngIf="newMessages" color="danger"></ion-badge>
-      <ion-icon name="chatbubbles-outline" class="tab-icon"></ion-icon>
-      <ion-label>Μηνύματα</ion-label>
+
+    <ion-tab-button tab="notifications">
+      <ion-badge *ngIf="newNotifications" color="danger"></ion-badge>
+
+      <ion-icon name="notifications-outline" class="tab-icon"></ion-icon>
+      <ion-label>Ειδοποιήσεις</ion-label>
     </ion-tab-button>
 
     <ion-tab-button (click)="openMenu()">
+      <ion-badge *ngIf="newMessages" color="danger"></ion-badge>
+
       <ion-icon name="menu-outline" class="tab-icon"></ion-icon>
       <ion-label>Περισσότερα</ion-label>
     </ion-tab-button>

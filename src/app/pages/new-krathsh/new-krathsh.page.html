@@ -27,12 +27,17 @@
                   <div class="success-line"></div>
                   <ion-label class="custom-text-wrap">
                     <h2 *ngIf="service.chosenVariation==null && service.parentName==null">{{ service.name }}</h2>
-                    <h2 *ngIf="service.chosenVariation==null && service.parentName!=null">{{service.parentName}} <ion-note>({{ service.name}})</ion-note></h2>
+                    <h2 *ngIf="service.chosenVariation==null && service.parentName!=null">{{service.parentName}}
+                      <ion-note>({{ service.name}})</ion-note></h2>
 
-                    <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{ service.chosenVariation.name }})</ion-note></h2>
+                    <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{
+                        service.chosenVariation.name }})</ion-note></h2>
 
-                    <ion-note *ngIf="service.type!='package' && service.chosenVariation==null">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration}} λεπτά</ion-note>
-                      <ion-note *ngIf="service.type!='package' && service.chosenVariation!=null">Τιμή: €{{ service.chosenVariation.price }} • Διάρκεια: {{ service.chosenVariation.duration}} λεπτά</ion-note>
+                    <ion-note *ngIf="service.type!='package' && service.chosenVariation==null">Τιμή: €{{ service.price
+                      }} • Διάρκεια: {{ service.duration}} λεπτά</ion-note>
+                    <ion-note *ngIf="service.type!='package' && service.chosenVariation!=null">Τιμή: €{{
+                      service.chosenVariation.price }} • Διάρκεια: {{ service.chosenVariation.duration}}
+                      λεπτά</ion-note>
                     <ion-note *ngIf="service.type=='package'">
                       Τιμή: €{{ service.price }} • Διάρκεια:
                       {{ calculateTotalDuration(service) }} λεπτά
@@ -64,9 +69,12 @@
             <ion-accordion-group [value]="currentService" class="ion-padding custom-accordion transparent">
               <ion-accordion *ngFor="let service of selectedServices" [value]="service" class="custom-accordion-item">
                 <ion-item slot="header" class="custom-accordion-header">
-                  <ion-label  *ngIf="service.chosenVariation==null"><ion-label *ngIf="service.parentName!=null">{{service.parentName}} - </ion-label>{{ service.name }}<span *ngIf="service.packageName"> ({{ service.packageName
+                  <ion-label *ngIf="service.chosenVariation==null"><ion-label
+                      *ngIf="service.parentName!=null">{{service.parentName}} - </ion-label>{{ service.name }}<span
+                      *ngIf="service.packageName"> ({{ service.packageName
                       }})</span></ion-label>
-                      <ion-label *ngIf="service.chosenVariation!=null">{{service.name}} - <ion-label>{{ service.chosenVariation.name }}</ion-label></ion-label>
+                  <ion-label *ngIf="service.chosenVariation!=null">{{service.name}} - <ion-label>{{
+                      service.chosenVariation.name }}</ion-label></ion-label>
                 </ion-item>
                 <div slot="content" class="horizontal-scroll backgroundColor">
 
@@ -85,10 +93,11 @@
                     <div class="person-avatar" (click)="selectEmployee(service, person.id)">
                       <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for each employee -->
                       <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === person.id">
-                        <ion-img [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
+                        <ion-img
+                          [src]="(person.image === 'default' ? '../../../assets/icon/default-profile.png' : person.image)"></ion-img>
 
                       </ion-avatar>
-                      
+
                       <ion-note>{{person.name}}</ion-note>
                     </div>
                   </div>
@@ -118,13 +127,13 @@
         <h4 *ngIf="dateSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
           <ion-text color="dark"><b>Ώρας</b></ion-text>
         </h4>
-        
-        
+
+
         <ion-grid class="customGrid" *ngIf="dateSelected" [@moveToBottom]="'*'">
           <ion-row class="ion-margin scrollable-content">
             <ion-col>
-              <mat-button-toggle-group class="toggleGroup" #group="matButtonToggleGroup" value="all"  [(ngModel)]="toggleValue"
-                (change)="filterTimeSlots()" name="fontStyle" aria-label="Font Style">
+              <mat-button-toggle-group class="toggleGroup" #group="matButtonToggleGroup" value="all"
+                [(ngModel)]="toggleValue" (change)="filterTimeSlots()" name="fontStyle" aria-label="Font Style">
                 <mat-button-toggle value="all">Όλα</mat-button-toggle>
                 <mat-button-toggle value="morning">Πρωί</mat-button-toggle>
                 <mat-button-toggle value="afternoon">Μεσημέρι</mat-button-toggle>
@@ -133,25 +142,26 @@
               </mat-button-toggle-group>
             </ion-col>
           </ion-row>
-          
+
           <ion-row class="ion-margin scrollable-content ion-justify-content-center ion-text-center">
-            <ng-container *ngIf="dateSelected && filteredTimeSlots && filteredTimeSlots.length > 0; else noSlotsAvailable">
-                <div *ngFor="let slot of filteredTimeSlots"
-                    [class]="slot.selected ? 'ion-text-center timDiv selected cursor' : 'ion-text-center timDiv avail cursor'"
-                    (click)="slotSelected(slot)">
-                    <ion-label>{{slot.value}}</ion-label>
-                </div>
+            <ng-container
+              *ngIf="dateSelected && filteredTimeSlots && filteredTimeSlots.length > 0; else noSlotsAvailable">
+              <div *ngFor="let slot of filteredTimeSlots"
+                [class]="slot.selected ? 'ion-text-center timDiv selected cursor' : 'ion-text-center timDiv avail cursor'"
+                (click)="slotSelected(slot)">
+                <ion-label>{{slot.value}}</ion-label>
+              </div>
             </ng-container>
             <ng-template #noSlotsAvailable>
-                <ion-note class="no_results_text ion-justify-content-center">
-                    Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα ή περίοδο.
-                </ion-note>
-                <ion-button expand="full" color="primary" (click)="goToNextAvailable()">
-                    <ion-text color="light" class="capsoff">Επόμενη Διαθέσιμη</ion-text>
-                </ion-button>
+              <ion-note class="no_results_text ion-justify-content-center">
+                Δεν υπάρχει διαθεσιμότητα. Δοκιμάστε κάποια άλλη ημέρα ή περίοδο.
+              </ion-note>
+              <ion-button expand="full" color="primary" (click)="goToNextAvailable()">
+                <ion-text color="light" class="capsoff">Επόμενη Διαθέσιμη</ion-text>
+              </ion-button>
             </ng-template>
-        </ion-row>
-        
+          </ion-row>
+
         </ion-grid>
 
 
@@ -165,7 +175,8 @@
           (click)="presentClientPop()">
           <ion-label class="full-width-label"> <ion-item lines="none" *ngIf="selectedClientImage!=''">
               <ion-avatar class="custAvatarHed2">
-                <ion-img [src]="(selectedClientImage === 'default' ? '../../../assets/icon/default-profile.png' : selectedClientImage)"></ion-img>
+                <ion-img
+                  [src]="(selectedClientImage === 'default' ? '../../../assets/icon/default-profile.png' : selectedClientImage)"></ion-img>
 
               </ion-avatar>
               <ion-grid>
@@ -198,57 +209,60 @@
           </ion-buttons>
           <ion-title color="light" class="ion-padding">
             <b>Επιλογή Πελάτη</b><br>
-          </ion-title> </ion-toolbar>
+          </ion-title>
+        </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding backgroundChooseClient">
         <ng-container *ngIf="!isAddingNewClient">
-          <ion-searchbar class="blackFont" placeholder="Εισάγετε όνομα" [(ngModel)]="searchTerm" (keyup)="searchClient()"></ion-searchbar>
+          <ion-searchbar class="blackFont" placeholder="Εισάγετε όνομα" [(ngModel)]="searchTerm"
+            (keyup)="searchClient()"></ion-searchbar>
           <ion-list class="ion-no-padding">
             <ion-item *ngIf="isLoading">
               <ion-spinner slot="start" name="crescent" color="primary"></ion-spinner>
               <ion-label class="ion-padding-start">Αναζήτηση...</ion-label>
             </ion-item>
-            <ion-item class="shadow cursor" *ngFor="let suggestion of suggestionsNames" (click)="selectClient(suggestion)">
+            <ion-item class="shadow cursor" *ngFor="let suggestion of suggestionsNames"
+              (click)="selectClient(suggestion)">
               <ion-avatar class="custAvatarHed">
-                <ion-img [src]="(suggestion.image === 'default' ? '../../../assets/icon/default-profile.png' : suggestion.image)"></ion-img>
-
+                <ion-img
+                  [src]="(suggestion.image === 'default' ? '../../../assets/icon/default-profile.png' : suggestion.image)"></ion-img>
               </ion-avatar>
               <ion-label>{{suggestion.name}} <ion-note>({{suggestion.phone}})</ion-note></ion-label>
             </ion-item>
           </ion-list>
           <ion-button expand="full" color="primary" (click)="addNewClient()" class="capsoff">
-            <ion-icon color="light"  slot="start" name="add-circle"></ion-icon>
+            <ion-icon color="light" slot="start" name="add-circle"></ion-icon>
             <ion-text color="light"> Προσθήκη νέου πελάτη </ion-text>
           </ion-button>
-        </ng-container> <ng-container *ngIf="isAddingNewClient">
+        </ng-container>
+        <ng-container *ngIf="isAddingNewClient">
           <ion-grid>
             <ion-row class="ion-margin-top ion-margin-bottom">
               <ion-col size="6">
-
-                <ion-input [(ngModel)]="newClientName" label="Όνομα" label-placement="floating" fill="solid"
-                  placeholder="Εισάγετε όνομα"></ion-input>
+                <ion-input [(ngModel)]="newClientName" (keyup)="validateInputs()" label="Όνομα"
+                  label-placement="floating" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
               </ion-col>
               <ion-col size="6">
-                <ion-input [(ngModel)]="newClientSurname" label="Επίθετο" label-placement="floating" fill="solid"
-                  placeholder="Εισάγετε επίθετο"></ion-input>
-
+                <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputs()" label="Επίθετο"
+                  label-placement="floating" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
               </ion-col>
             </ion-row>
             <ion-row class="ion-margin-top ion-margin-bottom">
-              <ion-input [(ngModel)]="newClientPhone" label="Τηλέφωνο" label-placement="floating" fill="solid"
-                placeholder="Εισάγετε τηλέφωνο"></ion-input>
-
+              <ion-input label="Τηλέφωνο" label-placement="floating" fill="solid" placeholder="+30 69x xxx xxxx"
+                [(ngModel)]="newClientPhone" [maskito]="options" [maskitoElement]="maskPredicate"
+                (keyup)="validateInputs()"></ion-input>
             </ion-row>
           </ion-grid>
-
         </ng-container>
       </ion-content>
       <ion-footer *ngIf="isAddingNewClient">
         <ion-button class="apply-button ion-no-margin" fill="solid" expand="full" color="primary"
-          [disabled]="!newClientName || !newClientSurname || !newClientPhone"
-          (click)="createClient()"><ion-text color="light">Δημιουργία</ion-text> </ion-button>
+          [disabled]="!isInputValid" (click)="createClient()">
+          <ion-text color="light">Δημιουργία</ion-text>
+        </ion-button>
       </ion-footer>
     </ng-template>
+
   </ion-modal></ion-content><ion-footer> <ion-button class="ion-no-margin" [disabled]="!saveButtonEnabled" expand="full"
     color="primary" (click)="saveKrathsh()">
     <ion-label class="ion-text-center capsoff" color="light">Αποθήκευση</ion-label>

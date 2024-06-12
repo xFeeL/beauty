@@ -57,6 +57,12 @@
               <ion-img src="../assets/icon/clients.png" class="ion-margin-end menu-icon"></ion-img>
               <ion-label>Πελάτες</ion-label>
             </ion-item>
+            <ion-item *ngIf="isMobile()" class="pr10 item" routerDirection="root" routerLink="" lines="none" detail="true"
+            (click)="goToMessages()">
+            <ion-img src="../assets/icon/messenger.png" class="ion-margin-end menu-icon"></ion-img>
+            <ion-label>Μηνύματα</ion-label>
+            <span class="badge" *ngIf="hasNewMessages"></span>
+          </ion-item>
             <ion-item routerDirection="root" routerLink="" lines="none" detail="true" class="menuOption"
               (click)="goToReviews()">
               <ion-img src="../assets/icon/review.png" class="ion-margin-end menu-icon"></ion-img>

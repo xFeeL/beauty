@@ -930,9 +930,15 @@ export class HomePage implements OnInit {
   lastKnownMinute: number = 0;
 
   ngAfterViewChecked() {
+    if (!this.calendarContainer || !this.calendarContainer.nativeElement) {
+      return; // Exit the function if calendarContainer is undefined
+    }else{
+      this.calendarComponent.local = 'el'
       this.addBorderToDayChange();
       this.highlightCurrentTimeElement();
-      this.calendarComponent.local = 'el'
+    }
+   
+     
     
 
   }
@@ -1243,6 +1249,10 @@ export class HomePage implements OnInit {
     this.popoverController.dismiss();
   }
   addBorderToDayChange() {
+    if (!this.calendarContainer || !this.calendarContainer.nativeElement) {
+      return; // Exit the function if calendarContainer is undefined
+    }
+  
     const elementsWithDataDate = Array.from(this.calendarContainer.nativeElement.querySelectorAll('[data-date]'));
     let prevDate: any = null;
 
@@ -1619,6 +1629,9 @@ export class HomePage implements OnInit {
 
     const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
 
+    // Get the current background event color from the Ionic CSS variable
+    const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--ion-color-medium').trim();
+
     workingPlans.forEach(plan => {
         const resourceId = plan.objectId; // Assuming each working plan has an objectId
         const daysWithSchedule: { [key: string]: boolean } = {};
@@ -1634,7 +1647,7 @@ export class HomePage implements OnInit {
                     endTime: end,
                     daysOfWeek: [this.getDayOfWeek(schedule.day)],
                     display: 'background',
-                    color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
+                    color: backgroundColor, // Use Ionic CSS variable for color
                     editable: false,
                     extendedProps: {
                         isBackgroundEvent: true // Custom property to indicate background event
@@ -1663,7 +1676,7 @@ export class HomePage implements OnInit {
                     endTime: '24:00',
                     daysOfWeek: [index],
                     display: 'background',
-                    color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
+                    color: backgroundColor, // Use Ionic CSS variable for color
                     editable: false,
                     extendedProps: {
                         isBackgroundEvent: true // Custom property to indicate background event
@@ -1682,7 +1695,7 @@ export class HomePage implements OnInit {
                 start: start.toISOString(),
                 end: end.toISOString(),
                 display: 'background',
-                color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
+                color: backgroundColor, // Use Ionic CSS variable for color
                 editable: false,
                 extendedProps: {
                     isBackgroundEvent: true // Custom property to indicate background event
@@ -1701,7 +1714,7 @@ export class HomePage implements OnInit {
             start: start.toISOString(),
             end: end.toISOString(),
             display: 'background',
-            color: 'rgba(210, 215, 211, 1)', // Color for unavailable timeslots
+            color: backgroundColor, // Use Ionic CSS variable for color
             editable: false,
             extendedProps: {
                 isBackgroundEvent: true // Custom property to indicate background event
@@ -1718,8 +1731,8 @@ export class HomePage implements OnInit {
 
     // Merge and update the calendar with all events
     this.mergeAndSetEvents();
- 
 }
+
 
 
   convertToLocalTimezone(dateString: string): Date {

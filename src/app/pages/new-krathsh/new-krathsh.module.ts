@@ -10,6 +10,8 @@ import { NewKrathshPage } from './new-krathsh.page';
 import {MatChipsModule} from '@angular/material/chips'; 
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { MaskitoModule } from '@maskito/angular';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -18,6 +20,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     MatIconModule,
     MatButtonToggleModule,
     MatChipsModule,
+    MaskitoModule,
     NewKrathshPageRoutingModule
   ],
   declarations: [NewKrathshPage]

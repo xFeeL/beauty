@@ -62,18 +62,7 @@
     /* occupy the full space */
   }
   
-  ion-icon[name="arrow-back"] {
-    display: none;
-    /* Hide by default */
-  }
-  
-  /* Desktop screens */
-  @media only screen and (min-width: 992px) {
-    ion-icon[name="arrow-back"] {
-      display: inline-block;
-      /* Show only on desktop */
-    }
-  }
+
   
   ion-header{
     background: var(--ion-color-primary);
