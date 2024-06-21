@@ -53,22 +53,23 @@
             <ion-col size="4" class="ion-justify-content-center custom-col">
               <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
                 <ion-img class="statsImage" src="../../../assets/icon/Accepted Appointment.png"></ion-img>
-                <ion-label class="statsText">{{userData.jobs_reservations}}</ion-label>
+                <ion-label class="statsText">{{ userData.jobs_reservations != null ? userData.jobs_reservations : 0 }}</ion-label>
               </ion-item>
             </ion-col>
             <ion-col size="4" class="ion-justify-content-center custom-col">
               <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
                 <ion-img class="statsImage" src="../../../assets/icon/Rejected Appointment.png"></ion-img>
-                <ion-label class="statsText">{{userData.cancelled_appointments}}</ion-label>
+                <ion-label class="statsText">{{ userData.cancelled_appointments != null ? userData.cancelled_appointments : 0 }}</ion-label>
               </ion-item>
             </ion-col>
             <ion-col size="4" class="ion-justify-content-center custom-col">
               <ion-item lines="none" class="ion-justify-content-center custom-item align-center">
                 <ion-img class="statsImage" src="../../../assets/icon/No Show.png"></ion-img>
-                <ion-label class="statsText">{{userData.noshow_appointments}}</ion-label>
+                <ion-label class="statsText">{{ userData.noshow_appointments != null ? userData.noshow_appointments : 0 }}</ion-label>
               </ion-item>
             </ion-col>
           </ion-row>
+          
         </ion-grid>
 
 

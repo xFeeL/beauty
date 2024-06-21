@@ -596,11 +596,11 @@ export class HomePage implements OnInit {
     switch (status) {
       case 'canceled':
         return 'danger';
-      case 'completed':
-        return 'warning';
-      case 'accepted':
-        return 'success';
       case 'pending':
+        return 'warning';
+      case 'completed':
+        return 'success';
+      case 'accepted':
         return 'primary';
       default:
         return 'medium';
@@ -1274,10 +1274,18 @@ export class HomePage implements OnInit {
           }
          
         } else if (this.calendarDaysLength == 5) {
-          if (index !== this.calendarDaysLength && index !== 15) {
+          if(this.employees.length==2){
+            if (index !== this.calendarDaysLength && index !== 15) {
 
-            element.classList.add('solid-border');
+              element.classList.add('solid-border');
+            }
+          }else{
+            if (index !== this.calendarDaysLength && index !== 10) {
+
+              element.classList.add('solid-border');
+            }
           }
+          
 
         } else if (this.calendarDaysLength == 3) {
           if (index !== this.calendarDaysLength && index !== 12) {
@@ -1685,13 +1693,35 @@ export class HomePage implements OnInit {
             }
         });
 
-        plan.exceptions.forEach((exception: any) => {
+        if (plan.exceptions) {
+            plan.exceptions.forEach((exception: any) => {
+                const start = new Date(exception.start);
+                const end = new Date(exception.end);
+                end.setHours(end.getHours()); // Manually add 1 hour to the end time
+
+                backgroundEvents.push({
+                    resourceId: resourceId, // Assign resourceId to each event
+                    start: start.toISOString(),
+                    end: end.toISOString(),
+                    display: 'background',
+                    color: backgroundColor, // Use Ionic CSS variable for color
+                    editable: false,
+                    extendedProps: {
+                        isBackgroundEvent: true // Custom property to indicate background event
+                    }
+                });
+            });
+        }
+    });
+
+    // Add general schedule exceptions
+    if (this.generalScheduleExceptions) {
+        this.generalScheduleExceptions.forEach((exception: any) => {
             const start = new Date(exception.start);
             const end = new Date(exception.end);
-            end.setHours(end.getHours() ); // Manually add 1 hour to the end time
+            end.setHours(end.getHours()); // Manually add 1 hour to the end time
 
             backgroundEvents.push({
-                resourceId: resourceId, // Assign resourceId to each event
                 start: start.toISOString(),
                 end: end.toISOString(),
                 display: 'background',
@@ -1702,25 +1732,7 @@ export class HomePage implements OnInit {
                 }
             });
         });
-    });
-
-    // Add general schedule exceptions
-    this.generalScheduleExceptions.forEach((exception: any) => {
-        const start = new Date(exception.start);
-        const end = new Date(exception.end);
-        end.setHours(end.getHours() ); // Manually add 1 hour to the end time
-
-        backgroundEvents.push({
-            start: start.toISOString(),
-            end: end.toISOString(),
-            display: 'background',
-            color: backgroundColor, // Use Ionic CSS variable for color
-            editable: false,
-            extendedProps: {
-                isBackgroundEvent: true // Custom property to indicate background event
-            }
-        });
-    });
+    }
 
     // Store background events
     this.backgroundEvents = backgroundEvents;
@@ -1732,6 +1744,7 @@ export class HomePage implements OnInit {
     // Merge and update the calendar with all events
     this.mergeAndSetEvents();
 }
+
 
 
 

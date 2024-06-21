@@ -17,6 +17,11 @@
   .header-md::after {
     background-image: none;
   }
+
+  .icon-blue {
+    color: #3880ff !important;
+}
+
   
   .paddSE {
     padding-left: 12px;
@@ -103,7 +108,7 @@
   
   .cusItemSuccess{
     --background:#C8DDFF;
-    border: 1px solid var(--ion-color-primary) ; 
+    border: 1px solid #4B91E9 ; 
   }
   
   .cusItemOrang{
@@ -383,7 +388,7 @@
   }
   
   .normal-line {
-    background: var(--ion-color-primary);
+    background: #4B91E9;
   }
   
   .package-line {

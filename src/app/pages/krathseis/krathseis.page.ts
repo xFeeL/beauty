@@ -101,33 +101,31 @@ export class KrathseisPage implements OnInit {
 
   ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
-    this.krathseis = [];
-    this.krathshIds = [];
-    this.resetFilters()
+    this.resetFilters();
     this.krathseistatus = '0,0,0,0,0';
-    let status=this.userService.getNavData()
+    let status = this.userService.getNavData();
     this.userService.setNavData("");
-    // Check for parameters passed via the router and query parameters
-   
-
-    console.log(status)
+  
+    console.log(status);
     if (status == "pending") {
-      this.krathseistatus = "1,0,0,0,0"
+      this.krathseistatus = "1,0,0,0,0";
       this.itemsKrathsh[0].selected = true;
       this.itemsKrathsh[1].selected = false;
       this.itemsKrathsh[2].selected = false;
       this.itemsKrathsh[3].selected = false;
       this.itemsKrathsh[4].selected = false;
-
+  
       this.krathshChip = "selected-chip";
       this.krathshChipIconCOlor = "primary";
       this.allChipClass = "not-selected-chip";
+      this.krathseis=[]
+      this.getKrathseis();
     }
     this.disableInfiniteScroll = false;
     this.page = 0;
-
-    this.getKrathseis();
+  
   }
+  
 
 
   isMobile() {
@@ -420,11 +418,11 @@ export class KrathseisPage implements OnInit {
     switch (status) {
       case 'canceled':
         return 'danger-line cursor w100 rad10 ion-margin-bottom ';
-      case 'completed':
-        return 'warning-line cursor w100 rad10 ion-margin-bottom ';
-      case 'accepted':
-        return 'success-line cursor w100 rad10 ion-margin-bottom';
       case 'pending':
+        return 'warning-line cursor w100 rad10 ion-margin-bottom ';
+      case 'completed':
+        return 'success-line cursor w100 rad10 ion-margin-bottom';
+      case 'accepted':
         return 'pending-line cursor w100 rad10 ion-margin-bottom';
       case 'noshow':
         return 'noshow-line cursor w100 rad10 ion-margin-bottom';
@@ -433,12 +431,14 @@ export class KrathseisPage implements OnInit {
     }
   }
   getDate(datetime: string): string {
-    return moment(datetime, 'Do MMM, h:mm a', 'el').format('D MMM, YYYY');
+    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('D MMM, YYYY');
   }
 
   getTime(datetime: string): string {
-    return moment(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
+    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
   }
+
+
 
   checkIn(krathsh: any) {
     this.reloadAppointments = true

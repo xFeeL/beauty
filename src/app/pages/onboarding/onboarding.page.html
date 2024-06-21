@@ -4,7 +4,7 @@
         <swiper-container allow-touch-move="false" scrollbar="true" #swiperElRef slides-per-view="1"
           class="my-custom-slides">
           <swiper-slide class="ion-padding" data-hash="slide1">
-            <img src="../../../assets/imgs/onboarding.png">
+            <img src="../../../assets/imgs/onboarding.svg">
             <div class="slider-text">
               <h3>Καλώς ήρθατε!</h3> <ion-note>
                 Είμαστε ενθουσιασμένοι που σας έχουμε στην πλατφόρμας μας.
@@ -204,7 +204,7 @@
             <div class="slider-text">
               <h3>Ωράριο λειτουργίας</h3>
             </div>
-            <ion-list class="scrollable-list rad">
+            <ion-list class="scrollable-list rad whiteBack">
               <div *ngFor="let day of days">
                 <ion-item lines="none">
                   <ion-label>{{day.name}}</ion-label>

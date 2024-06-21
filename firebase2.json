@@ -1,0 +1,29 @@
+{
+  "hosting": {
+    "site": "beauty-fyx",
+    "public": "www",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "redirects": [
+      {
+        "source": "http://beauty.fyx.gr",
+        "type": 301,
+        "destination": "https://beauty.fyx.gr"
+      },
+      {
+        "source": "/:any*",
+        "type": 301,
+        "destination": "https://beauty.fyx.gr/:any"
+      }
+    ]
+  }
+}

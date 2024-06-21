@@ -1,7 +1,7 @@
 .bgtool {
   //background-image: url('../../../assets/imgs/bgtoolbar2.png');
   //background-blend-mode: multiply;
-  background-color: #246EE9;
+  background-color: var(--ion-color-primary);
   //opacity: 0.75;
 }
 
@@ -9,6 +9,13 @@
   background: var(--ion-color-primary) !important;
 
 }
+
+.transparent {
+  --background: transparent !important;
+  background: transparent !important;
+
+}
+
 
 ion-header {
   background: var(--ion-color-primary);
@@ -38,7 +45,7 @@ ion-toolbar {
 }
 
 .not-selected-chip {
-  --background: #4B91E9;
+  --background: #6055fd;
   --color: white;
   border: 1px solid #FFFFFF;
   border-radius: 15px;
@@ -376,7 +383,7 @@ ion-icon[name="arrow-back"] {
 
 
 .pending-line {
-  border-left: 10px solid var(--ion-color-primary);
+  border-left: 10px solid #4B91E9;
 }
 
 .danger-line {

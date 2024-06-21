@@ -4,7 +4,7 @@
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #4B91E9;
+  --ion-color-primary: #6055fd;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -81,6 +81,7 @@
 
   --ion-color-messages: #BFD7FF;
   --ion-color-newnot: #D7E8FF;
+  --ion-color-blue:#4B91E9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,7 +91,7 @@
    */
 
   body {
-    --ion-color-primary: #4B91E9;
+    --ion-color-primary: #6055fd;
     --ion-color-primary-rgb: 66, 140, 255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -155,6 +156,7 @@
 
     --ion-color-messages: #8A9FAD;
     --ion-color-newnot: #D7E8FF;
+    --ion-color-blue:#4B91E9;
 
   }
 
@@ -244,13 +246,14 @@
     --ion-tab-bar-background: #121212;
     --ion-color-messages: #8A9FAD;
     --ion-color-newnot: #5B6E88;
+    --ion-color-blue:#4B91E9;
 
     --ion-card-background: #121212;
   }
 }
 
 body.dark {
-  --ion-color-primary: #428cff;
+  --ion-color-primary: #6055fd;
   --ion-color-primary-rgb: 66, 140, 255;
   --ion-color-primary-contrast: #121212;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -356,6 +359,7 @@ body.dark {
 
   --ion-color-messages: #8A9FAD;
   --ion-color-newnot: #5B6E88;
+  --ion-color-blue:#4B91E9;
 
 }
 
@@ -406,6 +410,7 @@ body.dark {
   --ion-tab-bar-background: #121212;
   --ion-color-messages: #8A9FAD;
   --ion-color-newnot: #5B6E88;
+  --ion-color-blue:#4B91E9;
 
   --ion-card-background: #121212;
 }

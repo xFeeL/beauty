@@ -35,13 +35,15 @@
       <ion-col size="12" class="ion-no-padding">
         <ion-grid>
           <ion-row class="ion-justify-content-center ion-margin-top">
-            <ion-col size="12" class="ion-text-center"> <ion-badge [class]="booking_status_class"> <ion-icon item-start
-                  [name]="booking_status_icon" [color]="booking_status_color" class="bdgC"></ion-icon>
-                <span [style.color]="text_color" class="status">{{booking_status}}</span>
-              </ion-badge>
-            </ion-col>
+              <ion-col size="12" class="ion-text-center">
+                  <ion-badge [class]="booking_status_class">
+                      <ion-icon item-start [name]="booking_status_icon" [color]="booking_status_color" [ngClass]="icon_blue_class" class="bdgC"></ion-icon>
+                      <span [style.color]="text_color" class="status">{{booking_status}}</span>
+                  </ion-badge>
+              </ion-col>
           </ion-row>
-        </ion-grid> <ion-grid class="paddSE p10 rad">
+      </ion-grid>
+       <ion-grid class="paddSE p10 rad">
           <ion-row class="bgL rad"> <ion-col size="12" class=" rad">
               <ion-list class="bgL ion-no-padding rad">
                 <ion-item lines="none" class="rad">

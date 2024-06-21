@@ -56,47 +56,56 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    
     this.userService.login(this.user).subscribe(data => {
-    this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
-   // this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => );
-
-      //Wait 1 second, then redirect it to home page.
+      this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
       setTimeout(() => {
-        
-        //this.redirectPage(data);
-        //this.userService.pushSetup();
+        window.location.href = '/tabs/home';
+        localStorage.setItem('authenticated', "true");
       }, 1000);
-      
-      window.location.href = '/tabs/home';
-      localStorage.setItem('authenticated',"true");
-
-      //this.router.navigate(['/tabs/arxikh']);
     }, err => {
-      if(err.error=="Mobile"){
-        this.userService.requestOTP(this.user.phone).subscribe(data=>{
-          this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
-        this.userService.setNavData([this.user.email,this.user.password,"ordinary",this.user.phone]);
-        
-
-        this.router.navigate(['/otp-verification']);
-
-        },err=>{
-          
-        });
-
-      }else if(err.error=="Onboarding"){
-             
-        this.router.navigate(['/onboarding']);  //PREPEI NA TO KANEIS GIA KATHE REQUEST P KANEIS, PROTINW MESA STO USER SERVICE OLA TA RESPONSES CHECK OTI EXI TELIWSEI TO ONBOARDING
-      
-    }
-      else{
-        this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
-
-      }
-      
+      this.handleLoginError(err);
     });
   }
+  
+  handleLoginError(err: any) {
+    if (err.error == "Mobile") {
+      this.userService.requestOTP(this.user.phone).subscribe(data => {
+        this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
+        this.userService.setNavData({ email: this.user.email, password: this.user.password, authType: "ordinary", phone: this.user.phone });
+        this.router.navigate(['/otp-verification']);
+      });
+    } else if (err.error == "Onboarding") {
+      this.router.navigate(['/onboarding']);
+    } else {
+      this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
+    }
+  }
+  
+  googleOAuth() {
+    GoogleAuth.signIn().then(user => {
+      this.userService.loginOAuth(user.authentication.idToken, "google").subscribe(data => {
+        window.location.href = '/tabs/home';
+        localStorage.setItem('authenticated', "true");
+      }, err => {
+        this.handleOAuthError(err, user);
+      });
+    });
+  }
+  
+  handleOAuthError(err: any, user: any) {
+    if (err.error == "Mobile") {
+      this.userService.requestOTP(user.email).subscribe(data => {
+        this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
+        this.userService.setNavData({ email: user.email, token: user.authentication.idToken, authType: "google" });
+        this.router.navigate(['/otp-verification']);
+      });
+    } else if (err.error == "Onboarding") {
+      this.router.navigate(['/onboarding']);
+    } else {
+      this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
+    }
+  }
+  
   onAppChange(event: any) {
     const selectedValue = event.detail.value;
   
@@ -163,36 +172,7 @@ passwordChange(){
     }
 
 
-    async googleOAuth(){
-      const user = await GoogleAuth.signIn();
 
-      if (user) {
-        this.userService.loginOAuth(user.authentication.idToken,"google").subscribe(data=>{
-          window.location.href = '/tabs/home';
-          localStorage.setItem('authenticated',"true");
-
-        },err=>{         
-            if(err.error=="Mobile"){
-              this.userService.requestOTP(user.email).subscribe(data=>{
-                this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
-                this.userService.setNavData([user.email,user.authentication.idToken,"google"]);
-                this.router.navigate(['/otp-verification']);
-              },err=>{
-              });
-            }else if(err.error=="Onboarding"){
-             
-                this.router.navigate(['/onboarding']);  //PREPEI NA TO KANEIS GIA KATHE REQUEST P KANEIS, PROTINW MESA STO USER SERVICE OLA TA RESPONSES CHECK OTI EXI TELIWSEI TO ONBOARDING
-              
-            }
-            else{
-              this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");      
-            }
-          });
-        
-        
-    }
-     
-    }
 
 
    

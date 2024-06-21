@@ -67,6 +67,7 @@ export class KrathshPage implements OnInit {
   service: any;
   start: string | number | Date="";
   reload: any=false;
+  icon_blue_class: string="";
 
   constructor(private alertController: AlertController, private navParams: NavParams, private actRouter: ActivatedRoute, private rout: Router, private navCtrl: NavController, private userService: UserService, public modalController: ModalController) { }
 
@@ -103,43 +104,43 @@ export class KrathshPage implements OnInit {
       this.checkedIn = data.checkedIn
       this.note = data.note
       if (data.status == "accepted") {
-
-        this.text_color = "#2dd36f"
+        this.text_color = "#3880ff"; // Color previously for "pending"
         if (data.checkedIn == "false") {
-          this.booking_status = "Η κράτηση έχει επιβεβαιωθεί.";
+            this.booking_status = "Η κράτηση έχει επιβεβαιωθεί.";
         } else {
-          this.booking_status = "Η κράτηση έχει φτάσει.";
+            this.booking_status = "Η κράτηση έχει φτάσει.";
         }
-        this.booking_status_color = "success";
-        this.booking_status_icon = "checkmark-outline";
-        this.booking_status_class = "custBadge p7 custItemGreen"
-       } else if (data.status == "canceled") {
+        this.booking_status_color = ""; // Color previously for "pending"
+        this.booking_status_icon = "checkmark-outline"; // Icon for "accepted"
+        this.booking_status_class = "custBadge p7 cusItemSuccess";
+        this.icon_blue_class = "icon-blue"; // New class for blue icon
+    
+      } else if (data.status == "canceled") {
         this.booking_status = "Η κράτηση έχει ακυρωθεί.";
         this.booking_status_color = "danger";
         this.booking_status_icon = "close-circle-outline";
-        this.booking_status_class = "custBadge p7 cusItemOrang"
-        this.text_color = "#eb445a"
-       } else if (data.status == "pending") {
+        this.booking_status_class = "custBadge p7 cusItemOrang";
+        this.text_color = "#eb445a";
+      } else if (data.status == "pending") {
         this.booking_status = "Εκκρεμεί επιβεβαίωση";
-        this.booking_status_color = "primary";
-        this.booking_status_icon = "time-outline";
-        this.booking_status_class = "custBadge p7 cusItemSuccess";
-        this.text_color = "#3880ff"
-        
+        this.booking_status_color = "warning"; // Color previously for "completed"
+        this.booking_status_icon = "time-outline"; // Icon for "pending"
+        this.booking_status_class = "custBadge p7 custItemYellow"; // Class previously for "completed"
+        this.text_color = "#ffc409"; // Color previously for "completed"
       } else if (data.status == "completed") {
         this.booking_status = "Η κράτηση έχει ολοκληρωθεί.";
-        this.booking_status_color = "warning";
-        this.booking_status_icon = "checkmark-circle-outline";
-        this.booking_status_class = "custBadge p7 custItemYellow";
-        this.text_color = "#ffc409"
-      }  else if (data.status == "noshow") {
+        this.booking_status_color = "success"; // Color previously for "accepted"
+        this.booking_status_icon = "checkmark-circle-outline"; // Icon for "completed"
+        this.booking_status_class = "custBadge p7 custItemGreen"; // Class previously for "accepted"
+        this.text_color = "#2dd36f"; // Color previously for "accepted"
+      } else if (data.status == "noshow") {
         this.booking_status = "Η κράτηση δεν εμφανίστηκε.";
         this.booking_status_color = "dark";
         this.booking_status_icon = "alert-circle-outline";
         this.booking_status_class = "custBadge p7 custItemBlack";
-        this.text_color = "#000000"
-
+        this.text_color = "#000000";
       }
+      
       
       
       this.initialized = true;

@@ -97,7 +97,7 @@
 <path fill-rule="evenodd" clip-rule="evenodd" d="M93.397 109.701C89.3317 107.044 83.1856 100.802 80.2086 96.3527C75.9512 89.9505 73.1342 83.1002 71.7577 75.7377C70.7654 70.3919 70.7974 62.1651 71.7897 57.3955C72.8141 52.5299 74.1265 48.8166 76.4633 44.111C79.1842 38.6692 82.0652 34.6679 86.3867 30.3464C90.6244 26.1086 71.7897 43.6336 76.4633 74.9894C80.2086 101.266 96.3044 111.617 93.397 109.701Z" fill="#E7EAEE"/>
 <defs>
 <linearGradient id="paint0_linear_704_412" x1="150" y1="11.2219" x2="150" y2="240.883" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0083FD"/>
+<stop stop-color="#6055FD"/>
 <stop offset="1" stop-color="#0083FD" stop-opacity="0"/>
 </linearGradient>
 </defs>

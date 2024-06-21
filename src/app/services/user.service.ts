@@ -557,9 +557,8 @@ export class UserService {
    * @param {string} email - The email to request the OTP for.
    * @returns {Observable<any>} - The Observable that emits the OTP request response.
    */
-  requestOTP(email: string): Observable<any> {
-    console.log(email);
-    return this.http.get<any>(API_URL + 'request-otp?email=' + email).pipe(map(response => {
+  requestOTP(contact: string): Observable<any> {
+    return this.http.get<any>(API_URL + 'request-otp?contact=' + contact).pipe(map(response => {
       if (response) {
         console.log(response)
       }
@@ -692,8 +691,8 @@ export class UserService {
   * @param otp The OTP to send.
   * @returns An Observable that resolves with the server response.
   */
-  sendOTP(phone: string, otp: string): Observable<any> {
-    const params = new HttpParams().append('OTP', otp).append('phone', phone);
+  sendOTP(contact: string, otp: string): Observable<any> {
+    const params = new HttpParams().append('OTP', otp).append('contact', contact);
     return this.http.post<any>(API_URL + 'verify-otp', params).pipe(
       catchError(error => this.handleError(error))
     );
@@ -1556,6 +1555,22 @@ export class UserService {
     }
   }
 
+  logMessage(message: string, severity: string = 'INFO', requestBody?: any) {
+    const logEntry = { 
+      message, 
+      severity, 
+      requestBody: requestBody ? JSON.stringify(requestBody) : null 
+    };
+    this.http.post(API_URL+"log", logEntry).subscribe(
+      response => {
+        console.log('Log sent successfully', response);
+      },
+      error => {
+        console.error('Error sending log', error);
+      }
+    );
+  }
 
+ 
 
 }

@@ -66,52 +66,44 @@ export class SignUpPage implements OnInit {
   }
 
   next() {
-    if (this.google == false && this.facebook == false) {
-      this.navParams = [this.mobile, "", "", this.email_input];
-      this.userService.setNavData(this.navParams)
+    if (!this.google && !this.facebook) {
+      this.userService.setNavData({ phone: this.mobile, email: this.email_input });
       this.rout.navigate(['new-password']);
-    } else if (this.google == true) {
+    } else if (this.google) {
       this.user = new User();
-      this.user.app = "beauty"
+      this.user.app = "beauty";
       this.user.email = this.email_input;
       this.user.phone = this.mobile;
-      this.user.password = this.token
+      this.user.password = this.token;
       this.userService.registerOAuth(this.user, "google").subscribe(data => {
-        this.userService.setNavData([this.user.phone, this.token, "google", this.user.email])
-
+        this.userService.setNavData({ phone: this.user.phone, token: this.token, authType: "google", email: this.user.email });
         this.rout.navigate(['otp-verification']);
       }, err => {
-        if (err.error.text == "Email exists") {
-          this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger")
-        } else if (err.error.text == "Phone exists") {
-          this.userService.presentToast("Αυτός ο αριθμός τηλεφώνου χρησιμοποείται ήδη.", "danger")
-        } else if (err.error.text == "OK") {
-          this.userService.setNavData([this.user.phone, this.token, "google", this.user.email])
-
-          this.rout.navigate(['otp-verification']);
-        }
-      })
-
-    } else if (this.facebook == true) {
+        this.handleOAuthError(err);
+      });
+    } else if (this.facebook) {
       this.user = new User();
-      this.user.app = "beauty"
+      this.user.app = "beauty";
       this.user.phone = this.mobile;
-      this.user.phone = this.mobile;
-      this.user.password = this.logininfo.token
+      this.user.password = this.logininfo.token;
       this.userService.registerOAuth(this.user, "facebook").subscribe(data => {
+        this.userService.setNavData({ phone: this.user.phone, token: this.logininfo.token, authType: "facebook", email: this.user.email });
+        this.rout.navigate(['otp-verification']);
       }, err => {
-        if (err.error.text == "Email exists") {
-          this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger")
-        } else if (err.error.text == "Phone exists") {
-          this.userService.presentToast("Αυτός ο αριθμός τηλεφώνου χρησιμοποείται ήδη.", "danger")
-        } else if (err.error.text == "OK") {
-          this.userService.setNavData([this.user.phone, this.logininfo.token, "facebook", this.user.email])
-          this.rout.navigate(['otp-verification']);
-        }
-      })
+        this.handleOAuthError(err);
+      });
     }
-
-
+  }
+  
+  handleOAuthError(err: any) {
+    if (err.error.text == "Email exists") {
+      this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger");
+    } else if (err.error.text == "Phone exists") {
+      this.userService.presentToast("Αυτός ο αριθμός τηλεφώνου χρησιμοποείται ήδη.", "danger");
+    } else if (err.error.text == "OK") {
+      this.userService.setNavData({ phone: this.user.phone, token: this.token, authType: "google", email: this.user.email });
+      this.rout.navigate(['otp-verification']);
+    }
   }
 
   emailCheck() {
@@ -186,6 +178,9 @@ export class SignUpPage implements OnInit {
     this.token = user.authentication.idToken;
     this.google = true
     this.emailCheck()
+    console.log(this.email_input)
+    console.log(this.disabledEmail)
+
   }
 
   async facebookOAuth(): Promise<void> {

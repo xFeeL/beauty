@@ -82,7 +82,7 @@
                 <ion-label position="floating">Facebook Profile</ion-label>
                 <ion-input [(ngModel)]="facebookLink" [value]="facebookLink" name="facebookLink" #facebookForm="ngModel"
                   pattern="https?://.+"></ion-input>
-                <ion-icon slot="end" name="logo-facebook" color="primary"></ion-icon>
+                <ion-icon slot="end" name="logo-facebook" class="fblogo"></ion-icon>
                 <ion-text color="danger"
                   *ngIf="facebookForm.errors?.['pattern'] && facebookForm.touched && facebookLink">
                   Το link πρέπει να περιέχει το "https://"

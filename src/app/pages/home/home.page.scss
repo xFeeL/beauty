@@ -82,54 +82,6 @@
 }
 
 
-.modal-toolbar {
-  --opacity: 100 !important;
-}
-
-.custRow {
-  background-color: var(--ion-color-primary-contrast);
-  border-radius: 15px;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
-  display: block;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.45));
-  margin: 16px;
-  padding-top: 5px;
-  padding-bottom: 0px;
-  height: auto;
-}
-
-.chip-container {
-  margin-left: 0px;
-  margin-right: auto;
-  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-  --height: 17px;
-  --padding-start: 5px;
-  --padding-end: 5px;
-  --padding-top: 10px;
-  --padding-bottom: 10px;
-  font-size: 0.7rem;
-}
-
-.chip-container2 {
-  margin-left: 0px;
-  margin-right: auto;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
-  --background: var(--ion-color-primary);
-  color: white;
-  --padding-start: 5px;
-  --padding-end: 5px;
-  font-size: 0.7rem;
-}
-
-.container-time-people {
-  padding-top: 0px;
-  padding-left: 6px;
-}
-
-.small-icon {
-  font-size: 17px;
-}
 
 .pr5 {
   padding-right: 3px;
@@ -167,7 +119,6 @@ ion-segment-button {
 /* iOS styles */
 ion-segment-button.ios {
   --color: var(--ion-color-primary);
-  //--color-checked: #fff;
   --border-radius: 10px;
 }
 
@@ -238,22 +189,17 @@ ion-segment-button.ios {
 
 .avatar-column {
   width: 55px !important;
-  /* use !important to ensure the width is applied */
   max-width: 55px;
   min-width: 55px;
   overflow: hidden;
-  /* this is to ensure that the content doesn't spill over */
 
 }
 
 
 .custom-cell {
   color: gray;
-  /* Set the text color to gray */
   font-size: 0.9em;
-  /* Make the text a bit smaller */
   padding-left: 5px !important;
-  //min-width: 150px; /* Adjust this value as needed */+
   text-align: left;
 }
 
@@ -269,11 +215,11 @@ ion-segment-button.ios {
 }
 
 .icon-spacing {
-  margin-right: 0px; // adjust this value as needed
+  margin-right: 0px; 
 }
 
 ion-icon[name="checkmark-circle-outline"].icon-spacing {
-  margin-right: 10px; // adjust this value as needed
+  margin-right: 10px; 
 }
 
 ion-icon[name="checkmark-circle-outline"] {
@@ -324,9 +270,7 @@ h3 {
 .stats-container {
   display: flex;
   justify-content: space-between;
-  /* if you want them spaced out evenly */
   gap: 20px;
-  /* you can adjust this value to change the gap */
 }
 
 .stat-number {
@@ -338,7 +282,6 @@ h3 {
   align-items: center;
   justify-content: center;
   margin: 2px 0;
-  /* Reduce margin value here */
   gap: 10px;
 }
 
@@ -360,13 +303,9 @@ h3 {
   margin: 0;
   display: flex;
   flex-direction: column;
-  /* stack children vertically */
   align-items: center;
-  /* center children horizontally */
   justify-content: center;
-  /* center children vertically */
   margin: 4px 0;
-  /* Adjust the value as needed */
   gap: 10px;
 }
 
@@ -383,15 +322,12 @@ h3 {
   color: var(--ion-color-dark)
 }
 
-/* Makes sure sticky columns appear above other table cells */
 th.mat-header-cell.sticky,
 td.mat-cell.sticky {
   z-index: 1;
   background-color: inherit;
-  /* or whatever background-color you want */
 }
 
-/* Optional: If you have a shadow or something to differentiate the sticky column from others */
 th.mat-header-cell.sticky:after {
   content: '';
   position: absolute;
@@ -400,7 +336,6 @@ th.mat-header-cell.sticky:after {
   width: 1px;
   height: 100%;
   background: #ddd;
-  /* Adjust as needed */
 }
 
 .mat-table {
@@ -412,19 +347,15 @@ th.mat-header-cell.sticky:after {
 @media (max-width: 768px) {
   .table-container::-webkit-scrollbar {
     height: 15px;
-    /* adjust as needed */
   }
 
   .table-container::-webkit-scrollbar-thumb {
     background-color: #ccc;
-    /* adjust as needed */
     border-radius: 4px;
-    /* adjust as needed */
   }
 
   .table-container::-webkit-scrollbar-track {
     background-color: #f7f7f7;
-    /* adjust as needed */
   }
 }
 
@@ -464,7 +395,6 @@ th.mat-header-cell.sticky:after {
 
 .third-rank {
   color: #cd7f32;
-  /* bronze */
   font-weight: 400;
 
 }
@@ -486,20 +416,17 @@ ion-button.rounded-btn {
   padding-left: 3px;
 }
 
-/* Styles for the container div */
 .badge-avatar-container {
   display: flex;
   align-items: center;
-  /* Vertically center the badge and the avatar */
+
 }
 
-/* Styles for the badge */
 .cancel-badge {
   padding: 8px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: 12px; // A bigger border-radius to make it more circular
-  //box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); // A subtle shadow to lift it off the page a bit
+  border-radius: 12px; 
 }
 
 
@@ -577,11 +504,9 @@ ion-popover {
 @media (max-width: 600px) {
   .name-column {
     width: 100px !important;
-    /* use !important to ensure the width is applied */
     max-width: 100px;
     min-width: 100px;
     overflow: hidden;
-    /* this is to ensure that the content doesn't spill over */
 
   }
 }
@@ -601,7 +526,6 @@ ion-popover {
 
 .border-column {
   border-bottom: 0px solid var(--ion-color-dark) !important;
-  /* Adjust as per your requirement */
   color: var(--ion-color-dark);
   text-align: left;
 
@@ -674,7 +598,6 @@ body {
 }
 
 #calendar {
-  // max-width: 1100px;
   margin: 40px auto;
 }
 
@@ -720,7 +643,6 @@ ion-popover {
   position: sticky;
   top: 0;
   z-index: 998;
-  //margin-top: 56px;
 }
 
 ::ng-deep .fc-scrollgrid-section-body {
@@ -729,7 +651,7 @@ ion-popover {
 }
 
 .todayButton {
-  color: #007aff;
+  color: var(--ion-color-medium);
   font-weight: bold;
   padding: 0;
   line-height: 2.25em;
@@ -741,7 +663,6 @@ ion-popover {
 
 @media only screen and (max-width: 600px) {
   .todayButton {
-    //margin-left: 0;
     margin-top: -26px;
 
     font-size: 0.85em; /* Adjust the font size as needed */
@@ -755,9 +676,9 @@ ion-popover {
 .datepicker-text {
   margin-left: 16px;
   margin-top: 2px;
-  font-size: 1.5em;
+  font-size: 1.3em;
   line-height: 1.666667em;
-  color: #007aff;
+  color: var(--ion-color-medium);
   cursor: pointer;
 }
 
@@ -774,34 +695,31 @@ ion-popover {
 }
 
 ::ng-deep .fc-v-event {
-  // padding: 5px;
   border: none !important;
 }
 
 ::ng-deep .highlighted {
-  color: #007aff !important;
+  color: #6055fd !important;
   font-size: 11.5px;
   text-align: center;
 }
 
 ::ng-deep .current-slot {
-  // box-shadow: 0 -1px 0 0 #007aff !important;
-  // border:1px solid #007aff !important;
-  // border-bottom: none !important;
+ 
   vertical-align: middle;
   align-items: center;
 }
 ::ng-deep .current-time {
-  color: #007aff !important;
+  color: #6055fd !important;
   font-size: 11.5px;
   text-align: right;
   bottom:6px !important;
 }
 ::ng-deep .blue-line{
   width: 100%;
-  color: #6fb5ff !important;
+  color: #6055fd !important;
   margin-top: 10px;
-  background: #6fb5ff !important;;
+  background: #6055fd !important;;
 }
 ::ng-deep .fc col{
   width: 50px !important;
@@ -818,7 +736,6 @@ ion-popover {
   border-left: none !important;
   margin-left: 10px !important;
   cursor: pointer;
-  // padding-right: 15px !important;
 }
 
 ::ng-deep .fc .fc-col-header-cell-cushion {
@@ -904,15 +821,13 @@ ion-popover {
 
   ::ng-deep .fc-col-header {
     position: inherit;
-    // width: 87em;
   }
 
   ::ng-deep .fc thead {
     overflow-x: scroll !important;
     white-space: nowrap;
     scrollbar-width: thin;
-    // display: block;
-    // width:  100vw;
+
   }
 
   ion-popover {

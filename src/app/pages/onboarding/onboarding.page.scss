@@ -338,14 +338,14 @@ ion-toolbar {
 .normal-line {
   width: 4px; /* Adjust width as desired */
   height: 100%; /* Take full height of the ion-item */
-  background: var(--ion-color-primary);
+  background: #4B91E9;
   margin-right: 10px; /* Space between the line and the label */
 }
 
 .success-line {
   width: 4px; /* Adjust width as desired */
   height: 100%; /* Take full height of the ion-item */
-  background: var(--ion-color-primary);
+  background: #4B91E9;;
   margin-right: 10px; /* Space between the line and the label */
 }
 
@@ -393,4 +393,10 @@ ion-toolbar {
   height: 100%; 
   background: var(--ion-color-warning);
   margin-right: 10px; 
+}
+
+.whiteBack{
+  background: white !important;
+
+  
 }

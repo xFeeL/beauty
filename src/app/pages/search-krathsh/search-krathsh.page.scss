@@ -293,27 +293,29 @@
   }
 
   .completed-line {
-    border-left: 20px solid  var(--ion-color-warning); /* Adjust the color and width as needed */
+    border-left: 10px solid  var(--ion-color-warning); /* Adjust the color and width as needed */
 
   }
 
   .success-line {
-    border-left: 20px solid  var(--ion-color-success); /* Adjust the color and width as needed */
+    border-left: 10px solid  var(--ion-color-success); /* Adjust the color and width as needed */
 }
 
 
 .pending-line {
-  border-left: 20px solid  var(--ion-color-pending); /* Adjust the color and width as needed */
+  border-left: 10px solid  #4B91E9; /* Adjust the color and width as needed */
 }
 
   .danger-line {
-    border-left: 20px solid  var(--ion-color-danger); /* Adjust the color and width as needed */
+    border-left: 10px solid  var(--ion-color-danger); /* Adjust the color and width as needed */
 
   }
 
   .noshow-line {
-    border-left: 20px solid  var(--ion-color-dark); /* Adjust the color and width as needed */
+    border-left: 10px solid  var(--ion-color-dark); /* Adjust the color and width as needed */
 }
+
+
 
 
   .align-right2 {

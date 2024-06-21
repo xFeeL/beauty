@@ -196,11 +196,11 @@ export class ClientProfilePage implements OnInit {
     switch (status) {
       case 'canceled':
         return 'danger-line';
-      case 'completed':
-        return 'warning-line';
-      case 'accepted':
-        return 'success-line';
       case 'pending':
+        return 'warning-line';
+      case 'completed':
+        return 'success-line';
+      case 'accepted':
         return 'pending-line';
       case 'noshow':
         return 'noshow-line';

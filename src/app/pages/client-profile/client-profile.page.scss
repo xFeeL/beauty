@@ -111,35 +111,7 @@ ion-item {
   margin-bottom: 10px;
 }
 
-.pro {
-  height: 7px;
-  border-radius: 5px;
-}
 
-.proGood {
-  --progress-background: rgba(67, 230, 67, 0.612);
-  --background: var(--ion-color-light);
-}
-
-.proDownAvrg {
-  --progress-background: rgb(235, 239, 116);
-  --background: var(--ion-color-light);
-}
-
-.proWarn {
-  --progress-background: var(--ion-color-warning);
-  --background: var(--ion-color-light);
-}
-
-.proDang {
-  --progress-background: var(--ion-color-danger);
-  --background: var(--ion-color-light);
-}
-
-.proSucc {
-  --progress-background: var(--ion-color-success);
-  --background: var(--ion-color-light);
-}
 
 .sm {
   width: 50px;
@@ -820,7 +792,7 @@ ion-segment {
   /* Adjust width as desired */
   height: 100%;
   /* Take full height of the ion-item */
-  background: var(--ion-color-primary);
+  background: #4B91E9;
   margin-right: 10px;
   /* Space between the line and the label */
 }
