@@ -58,6 +58,8 @@ export class ChooseAddressPage implements OnInit {
 
   returnAddress(item: any) {
     localStorage.setItem('address', item.address);
+    localStorage.setItem('latitude', item.latitude);
+    localStorage.setItem('longitude', item.longitude);
 
     this.modalController.dismiss(item);
   }

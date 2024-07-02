@@ -14,6 +14,7 @@ export class ReservationSettingsPage implements OnInit {
   constructor(private modalController: ModalController, private userService: UserService) {
   }
   ngOnInit() {
+    this.loadKrathseisSettings()
   }
 
 

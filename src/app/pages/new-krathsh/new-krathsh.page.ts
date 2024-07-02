@@ -209,19 +209,25 @@ export class NewKrathshPage implements OnInit {
       const config = { attributes: true, childList: true, subtree: true };
       let that = this;
       const callback = (mutationsList: any, observer: any) => {
+        console.log("Here I am12:")
+
         for (const mutation of mutationsList) {
           if (mutation.type === 'attributes') {
             let datetimeElement = document.querySelector('ion-datetime.mxw') as HTMLElement;
+            console.log("Here I am1:")
 
             if (datetimeElement && datetimeElement.shadowRoot) {
               let labelElement = datetimeElement.shadowRoot.querySelector('ion-label');
 
               if (labelElement) {
                 let e = labelElement.textContent;
+                console.log("Here I am:")
+                console.log(e)
+
                 if (e !== this.previous) {
                   that.dayValues = ""
                   this.previous = e;
-
+                  console.log(e)
                   if (e) {
                     this.month = that.months.indexOf(e.split(' ')[0]) + 1;
                     this.year = e.split(' ')[1]
@@ -369,7 +375,7 @@ export class NewKrathshPage implements OnInit {
 
   }
 
-  validateInputs() {
+  validateInputsNewClient() {
     const nameValid = this.newClientName.trim().length > 0;
     const surnameValid = this.newClientSurname.trim().length > 0;
     const phoneValid = this.validatePhone(this.newClientPhone);

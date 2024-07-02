@@ -11,6 +11,7 @@ import { User } from 'src/app/models/user';
   styleUrls: ['./otp-verification.page.scss'],
 })
 export class OtpVerificationPage implements OnInit {
+  loading: boolean=false;;
 
   constructor(private navCtrl: NavController, private rout: Router, private user: UserService, private menu: MenuController,
     private loadingCtrl: LoadingController, private userService: UserService,
@@ -24,6 +25,10 @@ export class OtpVerificationPage implements OnInit {
   isDismiss = false;
   field3: any
   field4: any
+  field5: any
+
+  field6: any
+
   buttonDisabled: any;
   variableIcon!: string;
   variableColor!: string;
@@ -52,18 +57,27 @@ export class OtpVerificationPage implements OnInit {
 
   toTab3() {
     this.OTPbuttonDisabled = "false";
-    this.otp = this.field1 + this.field2 + this.field3 + this.field4;
+    this.otp = this.field1 + this.field2 + this.field3 + this.field4+this.field5+this.field6;
     this.buttonDisabled = false;
+    this.loading=true
+    const contact = this.navData.authType === "ordinary" ? this.navData.phone : this.navData.email;
 
-    this.user.sendOTP(this.navData.phone, this.otp).subscribe(data => {
+    this.user.sendOTP(contact, this.otp).subscribe(data => {
+      this.loading=false
+
       if (data && data.message == "Wrong OTP") {
         this.userService.presentToast("Λάθος Κωδικός", "danger");
       } else {
         this.completeLogin();
       }
+    },err=>{
+      if (err && err.error == "Wrong OTP") {
+        this.userService.presentToast("Λάθος Κωδικός", "danger");
+      } 
+      this.loading=false
+
     });
   }
-
   completeLogin() {
 
     if (this.navData.authType === "ordinary") {
@@ -113,49 +127,14 @@ export class OtpVerificationPage implements OnInit {
 
 
   goBack() {
-    // if(this.tabID==1){
     this.navCtrl.back();
-
-    // }else{
-    // this.tabID--;
-    // }
-
   }
 
-  emailValidation() {
-    return 1;
-  }
-  emailCheck(eve: any) {
-    const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-    const test = regexp.test(this.email);
-
-    if (test) {
-      this.variableIcon = "checkmark-outline"
-      this.variableColor = "success"
-      this.variableClass = "valid-item"
-      this.variableDisabled = "false";
-
-    } else if (!test) {
-      this.variableIcon = "close-outline"
-      this.variableColor = "danger"
-      this.variableClass = "invalid-item"
-      this.variableDisabled = "true";
-
+  gotoNextField(event: any, nextElement: any) {
+    if (event.target.value.length === 1 && nextElement) {
+      nextElement.setFocus();
     }
-
   }
-
-  gotoNextField(nextElement: { setFocus: () => void; }) {
-    nextElement.setFocus();
-  }
-
-
-
-
-  submit() {
-
-  }
-
   resendOTP() {
     const contact = this.navData.authType === "ordinary" ? this.navData.phone : this.navData.email;
     this.userService.requestOTP(contact).subscribe(data => {
@@ -164,5 +143,12 @@ export class OtpVerificationPage implements OnInit {
       this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
     });
   }
+
+  gotoPrevField(event: any, prevElement: any) {
+    if ((event.key === 'Backspace') && event.target.value.length === 0 && prevElement) {
+      prevElement.setFocus();
+    }
+  }
+  
 
 }

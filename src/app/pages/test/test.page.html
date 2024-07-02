@@ -3,7 +3,7 @@
     <ion-text class="datepicker-text" slot="start" id="open-popover1">{{ dateExample | date: 'MMM yyyy' }}</ion-text>
     <ion-popover trigger="open-popover1" class="custom-datetime" cssClass="width-80 custom-popover">
       <ng-template>
-        <ion-datetime presentation="date" [(ngModel)]="dateExample" class="custom-datetime"
+        <ion-datetime locale="el-GR" presentation="date" [(ngModel)]="dateExample" class="custom-datetime"
           (ionChange)="onDateSelected($event)" size="cover"></ion-datetime>
       </ng-template>
     </ion-popover>

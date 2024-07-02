@@ -63,11 +63,14 @@ export class AppComponent implements WithStyles {
   initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
-  constructor(private themeService: ThemeService,
+  constructor(
+    private themeService: ThemeService,
     private userService: UserService,
-    private rout: Router, readonly sRenderer: StyleRenderer, private modalController: ModalController) {
+    private rout: Router, 
+    readonly sRenderer: StyleRenderer, 
+    private modalController: ModalController
+  ) {
     this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
-
   }
   $priority?: number | undefined;
 
@@ -248,60 +251,32 @@ export class AppComponent implements WithStyles {
 
 
   ngOnInit() {
-
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
-      
       if (localStorage.getItem('authenticated') == 'true') {
         this.onMenuOpen();
         this.userService.getAccountId().subscribe(data => {
-          this.urlToCopy = "https://www.fyx.gr/book/" + data.id
-        }, err => {
-
-        })
+          this.urlToCopy = "https://www.fyx.gr/book/" + data.id;
+        }, err => {});
       }
     });
-
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Check for a saved theme preference in localStorage
-    const savedDarkModePreference = localStorage.getItem('darkMode');
-    if (savedDarkModePreference) {
-      this.initializeDarkTheme(savedDarkModePreference === 'true');
-    } else {
-      // If there is no saved preference, use the system preference
-      this.initializeDarkTheme(prefersDark.matches);
-    }
-
-    // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
-
-    this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
-      
-      
-      this.hasNewMessages = newMessage
+  
+    this.themeService.themeDark$.subscribe(isDark => {
+      this.themeToggle = isDark;
     });
-
-
-  }
-
-  initializeDarkTheme(isDark: any) {
-    this.themeToggle = isDark;
-    this.toggleDarkTheme(isDark);
+  
+    this.themeService.initializeTheme();
+  
+    this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
+      this.hasNewMessages = newMessage;
+    });
   }
 
 
   // Listen for the toggle check/uncheck to toggle the dark theme
-  toggleChange(event: any): void {
+  toggleChange(event: CustomEvent): void {
     this.themeService.toggleDarkTheme(event.detail.checked);
   }
-  // Add or remove the "dark" class on the document body
-  toggleDarkTheme(shouldAdd: any) {
-    document.body.classList.toggle('dark', shouldAdd);
-    // Save the preference to localStorage
-    localStorage.setItem('darkMode', shouldAdd ? 'true' : 'false');
-  }
-
 }
 
 

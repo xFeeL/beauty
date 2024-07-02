@@ -40,7 +40,7 @@ export class ForgetPasswordPage implements OnInit {
  
   goHome() {
     this.user.forgotPassword(this.phone);
-    this.userService.presentToast("Αν υπάρχει το κινητό που εισάγατε, θα σταλεί ο σύνδεσμος επαναφοράς.", "warning");
+    this.userService.presentToast("Αν υπάρχει το κινητό που εισάγατε, θα σταλεί ο σύνδεσμος επαναφοράς στο E-mail σας.", "warning");
     this.navCtrl.back();
 
   }

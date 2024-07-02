@@ -18,67 +18,93 @@
   </ion-row>
 </ion-grid>  <ion-grid class="ion-no-padding">
   <ion-row class="ion-justify-content-center"> 
-    <ion-col  size="12"  sizeXs="12"  sizeSm="7" sizeMd="5.5" sizeLg="4" sizeXl="4" class="ion-no-padding">    
+    <ion-col size="12" sizeXs="12" sizeSm="7" sizeMd="5.5" sizeLg="4" sizeXl="4" class="ion-no-padding">    
       <ion-grid class="custGrid ion-margin-bottom">
-   <ion-row class="ion-justify-content-center">
-  <ion-col size="10" >
-   <ion-card class="bordernon w100 bgL" >
-    <ion-card-header>
-      <ion-card-title>
-       <h3 ><b>Εισάγετε τον κωδικό που λάβατε στο κινητό σας.</b></h3> 
-      </ion-card-title>
-      <ion-card-subtitle>
-        Αν υπάρχει το ο αριθμός κινητού θα σας αποσταλεί ο κωδικός επιβεβαίωσης.
-      </ion-card-subtitle>
-    </ion-card-header>
-     <ion-grid>
-      <!-- <ion-row class="ion-padding-start">
-        <ion-label>Enter 4 Digit Code</ion-label> 
-      </ion-row> -->
-      <ion-row class="ion-margin"> 
-        <ion-col size="12">
-          <ion-label>Εισάγετε τον 4-ψήφιο κωδικό</ion-label> 
-          </ion-col> 
-        <ion-col> 
-          <ion-item class="ion-margin-end">              <ion-input maxlength="1" clear-on-edit="true"  [(ngModel)]="field1" #Field1 (keyup)="gotoNextField(Field2)"  style="text-align: center" ></ion-input>
-          </ion-item> 
-        </ion-col>
-        <ion-col> 
-          <ion-item class="ion-margin-end">
-            <ion-input maxlength="1" clear-on-edit="true" [(ngModel)]="field2" #Field2 (keyup)="gotoNextField(Field3)" style="text-align: center"  ></ion-input>
-          </ion-item> 
-        </ion-col>
-        <ion-col > 
-          <ion-item class="ion-margin-end">
-            <ion-input maxlength="1" [(ngModel)]="field3" #Field3 (keyup)="gotoNextField(Field4)" clear-on-edit="true" style="text-align: center"  ></ion-input>
-          </ion-item> 
-        </ion-col>
-        <ion-col > 
-          <ion-item class="ion-margin-end">
-            <ion-input maxlength="1" clear-on-edit="true"  [(ngModel)]="field4" #Field4 (keyup)="toTab3()"  onclick="this.value=''" style="text-align: center" ></ion-input>
-          </ion-item> 
-        </ion-col> 
-      </ion-row> 
-      <ion-row class="ion-justify-content-start">
-        <ion-button fill="clear" (click)="resendOTP()">
-          <ion-label><ion-text color="primary"><b>Επαναποστολη</b></ion-text></ion-label>
-        </ion-button>
-      </ion-row> 
-      <ion-row class="ion-margin">
-        <ion-col size="12">
-          <ion-item color="primary" button class="otp_button" (click)="toTab3()" [disabled]="OTPbuttonDisabled" >
-            <ion-label class="ion-text-center" color="light">Επαλήθευση</ion-label> 
-          </ion-item>
-        </ion-col>
-      </ion-row> 
-      <ion-row class="ion-margin">
-        <ion-col size="12">          </ion-col>
-      </ion-row> 
-     </ion-grid> 
-    </ion-card>
-  </ion-col>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="10" >
+            <ion-card class="bordernon w100 bgL" >
+              <ion-card-header>
+                <ion-card-title>
+                  <h3><b>Εισάγετε τον κωδικό που λάβατε στο κινητό σας.</b></h3> 
+                </ion-card-title>
+                <ion-card-subtitle>
+                  Αν υπάρχει το ο αριθμός κινητού θα σας αποσταλεί ο κωδικός επιβεβαίωσης.
+                </ion-card-subtitle>
+              </ion-card-header>
+              <ion-grid>
+                <ion-row class="ion-margin"> 
+                  <ion-col size="12">
+                    <ion-label>Εισάγετε τον 6-ψήφιο κωδικό</ion-label> 
+                  </ion-col> 
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1"[(ngModel)]="field1" #Field1 
+                        (keyup)="gotoNextField($event, Field2)" (keydown)="gotoPrevField($event, null)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1" [(ngModel)]="field2" #Field2 
+                        (keyup)="gotoNextField($event, Field3)" (keydown)="gotoPrevField($event, Field1)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1"  [(ngModel)]="field3" #Field3 
+                        (keyup)="gotoNextField($event, Field4)" (keydown)="gotoPrevField($event, Field2)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1" [(ngModel)]="field4" #Field4 
+                        (keyup)="gotoNextField($event, Field5)" (keydown)="gotoPrevField($event, Field3)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1" [(ngModel)]="field5" #Field5 
+                        (keyup)="gotoNextField($event, Field6)" (keydown)="gotoPrevField($event, Field4)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-margin-end" lines="none">
+                      <ion-input maxlength="1" [(ngModel)]="field6" #Field6 
+                        (keyup)="toTab3()" (keydown)="gotoPrevField($event, Field5)" 
+                        style="text-align: center">
+                      </ion-input>
+                    </ion-item> 
+                  </ion-col>
+                  
+                </ion-row>
+                <ion-row class="ion-justify-content-start">
+                  <ion-button fill="clear" (click)="resendOTP()">
+                    <ion-label><ion-text color="primary"><b>Επαναποστολη</b></ion-text></ion-label>
+                  </ion-button>
+                </ion-row>
+                <ion-row class="ion-margin">
+                  <ion-col size="12">
+                    <ion-item color="primary" button class="otp_button" (click)="toTab3()" [disabled]="OTPbuttonDisabled">
+                      <ion-spinner *ngIf="loading" color="light"></ion-spinner>
+                      <ion-label *ngIf="!loading" class="ion-text-center" color="light">Επαλήθευση</ion-label> 
+                    </ion-item>
+                  </ion-col>
+                </ion-row> 
+              </ion-grid> 
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-col>
   </ion-row>
 </ion-grid>
-</ion-col>
-</ion-row>
-</ion-grid></ion-content>
+</ion-content>

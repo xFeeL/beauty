@@ -31,6 +31,7 @@ import { PopoverController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
 import elLocale from '@fullcalendar/core/locales/el';
 import { Subscription } from 'rxjs';
+import { ThemeService } from 'src/app/services/theme.service';
 
 export interface PeriodicElement {
   avatar: string;
@@ -148,7 +149,7 @@ export class HomePage implements OnInit {
   private hasNewNotificationsSubscription: Subscription;
   hasNewNotifications: boolean=false;
 
-  constructor(private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  constructor(private themeService: ThemeService,private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
@@ -173,6 +174,7 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.checkScreenWidth();
+    
     this.resizeListener = this.platform.resize.subscribe(() => {
       this.checkScreenWidth();
     });

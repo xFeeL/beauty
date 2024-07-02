@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, filter, map, mergeMap, of, switchMap, take, tap, throwError } from 'rxjs';
 import { AppearanceAnimation, DialogLayoutDisplay, DisappearanceAnimation, ToastNotificationInitializer, ToastPositionEnum, ToastProgressBarEnum, ToastUserViewTypeEnum } from '@costlydeveloper/ngx-awesome-popup';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/ngx';
 import { User } from '../models/user';
 import { Router } from '@angular/router';
@@ -9,20 +9,20 @@ import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
 
 
-//let API_URL = "http://localhost:8080/common/";
-//let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-//let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+//let API_URL = "https://api.fyx.gr/common/";
+//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
-let API_URL = "http://localhost:8080/common/";
-let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+let API_URL = "https://api.fyx.gr/common/";
+let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-
+  private isLogging: boolean = false;
   /**
    * Holds navigation data.
    * @type {any}
@@ -77,12 +77,12 @@ export class UserService {
   sseConnect(call: string) {
     console.log("Getting called from " + call)
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-      this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       console.log(this.eventSource)
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -149,8 +149,8 @@ export class UserService {
           
           
           setTimeout(() => {
-            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-            this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -548,7 +548,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("http://localhost:8080/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -1556,21 +1556,41 @@ export class UserService {
   }
 
   logMessage(message: string, severity: string = 'INFO', requestBody?: any) {
+    if (this.isLogging) {
+      // If already logging a message, do not log again to prevent infinite loop
+      return;
+    }
+
+    this.isLogging = true; // Set flag to true to indicate logging in progress
+
     const logEntry = { 
       message, 
       severity, 
       requestBody: requestBody ? JSON.stringify(requestBody) : null 
     };
-    this.http.post(API_URL+"log", logEntry).subscribe(
+
+    this.http.post(API_URL + "log", logEntry).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 500) {
+          // If the logging itself fails with 500, skip logging this error
+          console.error('Error sending log (500):', error);
+          return of(null);
+        } else {
+          // Handle other errors if necessary
+          return throwError(error);
+        }
+      })
+    ).subscribe(
       response => {
         console.log('Log sent successfully', response);
+        this.isLogging = false; // Reset flag after successful log
       },
       error => {
-        console.error('Error sending log', error);
+        console.error('Error sending log:', error);
+        this.isLogging = false; // Reset flag after log failure
       }
     );
   }
-
  
 
 }

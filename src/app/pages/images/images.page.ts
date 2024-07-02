@@ -272,7 +272,7 @@ export class ImagesPage implements OnInit {
   async selectImages() {
     const images = await Camera.pickImages({
       quality: 100,
-      correctOrientation: true,
+      
     });
 
     if (images && images.photos.length > 0) {

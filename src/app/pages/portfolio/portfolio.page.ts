@@ -311,7 +311,6 @@ export class PortfolioPage implements OnInit {
   async importFromStorage() {
     const images = await Camera.pickImages({
       quality: 100,
-      correctOrientation:true,
     });
   
     if (images && images.photos.length > 0) {

@@ -71,10 +71,19 @@
     border-radius: 10px;
 }
 
-ion-content{
+ion-content {
     --background: var(--ion-color-dark-contrast) !important;
 }
 
-ion-item{
-    --border-color:var(--ion-color-primary)
+
+ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --border-color: var(--ion-color-primary);
+    border-bottom: 1px solid var(--ion-color-primary);
+    justify-content: center;
+}
+
+ion-input {
+    text-align: center;
 }

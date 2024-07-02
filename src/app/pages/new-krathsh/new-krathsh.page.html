@@ -120,7 +120,7 @@
         <h4 *ngIf="canSelectDate" [@moveToBottom]="'*'"><ion-text color="primary"><b>Διαλέξτε</b></ion-text><br>
           <ion-text color="dark"><b>Ημέρα</b></ion-text>
         </h4>
-        <ion-datetime *ngIf="canSelectDate" #datetime displayFormat="DD/MM/YYYY" [dayValues]="dayValues" class="mxw"
+        <ion-datetime  locale="el-GR" *ngIf="canSelectDate" #datetime displayFormat="DD/MM/YYYY" [dayValues]="dayValues" class="mxw"
           presentation="date" [min]="minDate" max="2099-10-31" [(ngModel)]="theDate"
           (ionChange)="dateChanged()"></ion-datetime>
 
@@ -239,18 +239,18 @@
           <ion-grid>
             <ion-row class="ion-margin-top ion-margin-bottom">
               <ion-col size="6">
-                <ion-input [(ngModel)]="newClientName" (keyup)="validateInputs()" label="Όνομα"
+                <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
                   label-placement="floating" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
               </ion-col>
               <ion-col size="6">
-                <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputs()" label="Επίθετο"
+                <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
                   label-placement="floating" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
               </ion-col>
             </ion-row>
             <ion-row class="ion-margin-top ion-margin-bottom">
               <ion-input label="Τηλέφωνο" label-placement="floating" fill="solid" placeholder="+30 69x xxx xxxx"
                 [(ngModel)]="newClientPhone" [maskito]="options" [maskitoElement]="maskPredicate"
-                (keyup)="validateInputs()"></ion-input>
+                (keyup)="validateInputsNewClient()"></ion-input>
             </ion-row>
           </ion-grid>
         </ng-container>
