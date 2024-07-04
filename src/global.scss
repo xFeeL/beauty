@@ -198,6 +198,12 @@ ion-alert {
   --min-width: 20% !important;
 }
 
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+  ion-alert {
+    --min-width: 70% !important;
+  }
+}
 .custom-toast {
   --background: #1c1c1e !important;
   --color: #fff !important;

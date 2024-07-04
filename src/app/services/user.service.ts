@@ -1529,7 +1529,7 @@ export class UserService {
   getNewJwtWithRefreshToken(): Observable<any> {
     if (!this.refreshTokenInProgress) {
       this.refreshTokenInProgress = true;
-
+  
       return this.http.post<any>(API_URL + 'refresh-token', {}, {
         headers: this.getHeaders(),
         withCredentials: true
@@ -1537,13 +1537,21 @@ export class UserService {
         tap((newToken) => {
           this.refreshTokenInProgress = false;
           this.refreshTokenSubject.next(newToken); // Emit the new token
-
+  
           // Retry all the queued requests
           this.requestsQueue.forEach(subscriber => subscriber(newToken));
           this.requestsQueue = [];
         }),
         catchError(err => {
           this.refreshTokenInProgress = false;
+          
+          // If error is 403, set authenticated to false in local storage
+          if (err.status === 403) {
+            localStorage.setItem('authenticated', 'false');
+            this._isAuthenticated.next(false);
+            window.location.reload();
+          }
+  
           this.refreshTokenSubject.next(err);
           return throwError(err);
         })
