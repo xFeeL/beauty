@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonPopover, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
@@ -10,6 +10,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   selector: 'app-search-krathsh',
   templateUrl: './search-krathsh.page.html',
   styleUrls: ['./search-krathsh.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('buttonAnimation', [
       state('collapsed', style({
@@ -42,15 +43,15 @@ export class SearchKrathshPage implements OnInit {
   @ViewChild('rejectPop') rejectPop!: IonPopover;
   cancelReason: string = "";
   disableInfiniteScroll: boolean = false;
-
-  constructor(private modalController: ModalController, private userService: UserService) { }
+  isMobile=false
+  constructor(private modalController: ModalController, private userService: UserService, private cdr: ChangeDetectorRef) {
+    this.isMobile= this.userService.isMobile();
+  }
 
   ngOnInit() {
   }
 
-  isMobile(){
-    return this.userService.isMobile();
-  }
+  
   onSearch(eve: any) {
     this.page = 0
     this.krathseis = []
@@ -71,16 +72,14 @@ export class SearchKrathshPage implements OnInit {
   goBack() {
     this.modalController.dismiss()
   }
-
   searchKrathsh() {
-
     this.userService.searchAppointment(this.searchTerm, this.page).subscribe(data => {
-      
       for (let k = 0; k < data.length; k++) {
         data[k][3] = moment(data[k][3]).locale("el").format('Do MMM , h:mm a')
         data[k][5] = data[k][5].split('$')[0] + " " + data[k][5].split('$')[1]
         this.krathseis.push(data[k])
       }
+      this.cdr.markForCheck(); // Force change detection after search
     })
   }
 

@@ -78,7 +78,7 @@
                 </ion-item>
                 <div slot="content" class="horizontal-scroll backgroundColor">
 
-                  <div class="person-item ion-margin" *ngIf="service.employees?.length>1">
+                  <div class="person-item ion-margin-start ion-margin-top ion-margin-bottom" *ngIf="service.employees?.length>1">
                     <div class="person-avatar" (click)="selectEmployee(service, 'anyone')">
                       <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for "anyone" -->
                       <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === 'anyone'">
@@ -240,15 +240,15 @@
             <ion-row class="ion-margin-top ion-margin-bottom">
               <ion-col size="6">
                 <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
-                  label-placement="floating" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
+                  label-placement="stacked" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
               </ion-col>
               <ion-col size="6">
                 <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
-                  label-placement="floating" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
+                  label-placement="stacked" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
               </ion-col>
             </ion-row>
             <ion-row class="ion-margin-top ion-margin-bottom">
-              <ion-input label="Τηλέφωνο" label-placement="floating" fill="solid" placeholder="+30 69x xxx xxxx"
+              <ion-input label="Τηλέφωνο" label-placement="stacked" fill="solid" placeholder="+30 69x xxx xxxx"
                 [(ngModel)]="newClientPhone" [maskito]="options" [maskitoElement]="maskPredicate"
                 (keyup)="validateInputsNewClient()"></ion-input>
             </ion-row>

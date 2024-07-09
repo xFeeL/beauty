@@ -8,21 +8,27 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./choose-variation.page.scss'],
 })
 export class ChooseVariationPage implements OnInit {
-  service_id: any="";
+  serviceId: any="";
   variations:any=[]
-  service_name: any="";
+  serviceName: any="";
+  serviceDescription=""
   constructor(private modalController:ModalController, private userService:UserService, private navParams:NavParams) { }
   selectedVariation: any=null;
   ngOnInit() {
   }
   
   ionViewWillEnter() {
-    this.service_id=this.navParams.get("service_id");
-    this.service_name=this.navParams.get("service_name");
+    this.serviceId=this.navParams.get("service_id");
+    this.serviceName=this.navParams.get("service_name");
 
-      this.userService.getVariationsOfService(this.service_id).subscribe(data=>{
+      this.userService.getVariationsOfService(this.serviceId).subscribe(data=>{
         
         this.variations=data
+      },err=>{
+
+      })
+      this.userService.getServiceDescription(this.serviceId).subscribe(data=>{
+        this.serviceDescription=data.description
       },err=>{
 
       })

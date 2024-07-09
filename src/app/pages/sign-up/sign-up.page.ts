@@ -48,8 +48,8 @@ export class SignUpPage implements OnInit {
 
   ngOnInit() {
     GoogleAuth.initialize({
-      clientId: '540023271547-stkp8t8p92h0k2td4hvi09qf9s3uhkmm.apps.googleusercontent.com',
-      scopes: ['profile', 'email'],
+      clientId: '1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com',
+      scopes: [],
       grantOfflineAccess: true,
     });
     FacebookLogin.initialize({ appId: '3238436183073244' });
@@ -178,8 +178,7 @@ export class SignUpPage implements OnInit {
     this.token = user.authentication.idToken;
     this.google = true
     this.emailCheck()
-    console.log(this.email_input)
-    console.log(this.disabledEmail)
+  
 
   }
 

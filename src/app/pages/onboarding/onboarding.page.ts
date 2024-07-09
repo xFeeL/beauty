@@ -73,6 +73,7 @@ export class OnboardingPage {
   pagesToChoose: any;
   addressEntered: boolean = false;
   coordinates: string="";
+  isMobile=false
   constructor(private alertController: AlertController, private userService: UserService, private router: Router, private modalController: ModalController, private _dialog: LyDialog,
     private _cd: ChangeDetectorRef, private actionSheetController: ActionSheetController) {
     // Initialize start and end times for each day
@@ -83,7 +84,7 @@ export class OnboardingPage {
       this.hours.push(this.formatHour(i, '30'));
     }
     this.hours.push(this.formatHour(23, '59'));
-
+    this.isMobile=this.userService.isMobile()
   }
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string | undefined;
@@ -635,9 +636,7 @@ export class OnboardingPage {
 
 
 
-  isMobile() {
-    return this.userService.isMobile();
-  }
+ 
 
   async newCategory() {
     const alert = await this.alertController.create({

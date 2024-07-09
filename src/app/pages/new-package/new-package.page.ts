@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IonSelect, ItemReorderEventDetail, ModalController, NavParams } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
@@ -7,6 +7,8 @@ import { UserService } from 'src/app/services/user.service';
   selector: 'app-new-package',
   templateUrl: './new-package.page.html',
   styleUrls: ['./new-package.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class NewPackagePage implements OnInit {
   services: any = [];
@@ -18,65 +20,53 @@ export class NewPackagePage implements OnInit {
   editMode: boolean=false;
   packageId: any=null;
   onboarding: any=false;
-  constructor(private userService:UserService,private changeDetectorRef: ChangeDetectorRef,private navParams: NavParams, private modalController: ModalController) { }
+  constructor(private userService: UserService, private changeDetectorRef: ChangeDetectorRef, private navParams: NavParams, private modalController: ModalController) { }
   @ViewChild('serviceSelect') serviceSelect!: IonSelect;
 
   ngOnInit() {
   }
 
   ionViewWillEnter() {
-    this.onboarding=this.navParams.get('onboarding');
-    if(this.onboarding){
+    this.onboarding = this.navParams.get('onboarding');
+    if (this.onboarding) {
       this.services = this.navParams.get('services');
-      
-    }else{
+    } else {
       this.userService.getAllServicesAndVariations().subscribe(data => {
-        
         // Filter services to include only those where has_variations is false
         this.services = data.filter((service: { hasVariations: any; }) => !service.hasVariations);
-    }, err => {
+        this.services = this.services.reduce((acc: any[], service: { variations: any[]; name: any; }) => {
+          if (service.variations && service.variations.length > 0) {
+            const variationsAsServices = service.variations.map((variation: { name: any; }) => ({
+              ...service,
+              ...variation, 
+              name: `${service.name} (${variation.name})`, 
+              selected: false, 
+            }));
+            acc.push(...variationsAsServices);
+          } else {
+            acc.push({
+              ...service,
+              selected: false
+            });
+          }
+          return acc;
+        }, []);
+        this.packageToEdit = this.navParams.get('package');
+        if (this.packageToEdit.name != "") {
+          this.editMode = true
+          this.packageName = this.packageToEdit.name;
+          this.packageId = this.packageToEdit.id;
+          this.packageDescription = this.packageToEdit.description;
+          this.packagePrice = this.packageToEdit.price;
+          this.selectedServices = this.packageToEdit.services;
+          this.changeDetectorRef.detectChanges();
+        }
+      }, err => {
         // Handle error
-    });
-  }
-    
-    this.services = this.services.reduce((acc: any[], service: { variations: any[]; name: any; }) => {
-      // Check if the service has variations
-      if (service.variations && service.variations.length > 0) {
-        // For each variation, create a new object based on the service
-        // but with the variation's details and the name formatted as "serviceName (variationName)"
-        const variationsAsServices = service.variations.map((variation: { name: any; }) => ({
-          ...service,
-          ...variation, // Spread variation to override any similar fields from service
-          name: `${service.name} (${variation.name})`, // Format name as "serviceName (variationName)"
-          selected: false, // Ensure selected is set to false for the variation
-        }));
-    
-        // Add all variations to the accumulator
-        acc.push(...variationsAsServices);
-      } else {
-        // If no variations, add the service itself to the accumulator
-        acc.push({
-          ...service,
-          selected: false
-        });
-      }
-    
-      return acc;
-    }, []); // Initialize accumulator as an empty array
-    
-    this.packageToEdit=this.navParams.get('package');
-    
-    
-    if(this.packageToEdit.name!=""){
-      this.editMode=true
-      this.packageName=this.packageToEdit.name;
-      this.packageId=this.packageToEdit.id;
-      this.packageDescription=this.packageToEdit.description;
-      this.packagePrice=this.packageToEdit.price;
-      this.selectedServices=this.packageToEdit.services;
-      this.changeDetectorRef.detectChanges();
+      });
     }
   }
+  
 
   goBack() {
     this.modalController.dismiss()
@@ -84,13 +74,8 @@ export class NewPackagePage implements OnInit {
 
   updateSelectedServices(event: any) {
     
-    
-    
-    
     this.selectedServices = event.detail.value;
-    
-    
-    
+
 
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {

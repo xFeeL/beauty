@@ -19,7 +19,7 @@ const STYLES = (_theme: ThemeVariables, ref: ThemeRef) => {
   return {
     root: lyl `{
       ${cropper.root} {
-        max-width: 320px
+        max-width: 700px
         height: 320px
       }
     }`,
@@ -67,36 +67,49 @@ const STYLES = (_theme: ThemeVariables, ref: ThemeRef) => {
     keepAspectRatio: true,
     responsiveArea: true,
     output: {
-      width: 100,
-      height: 100
+      width: 200,
+      height: 200
     },
     resizableArea: true
   };
 
-  constructor(
-    @Inject(LY_DIALOG_DATA) private imageUrl: string, // change the type to `string`
-       readonly sRenderer: StyleRenderer,
-    public dialogRef: LyDialogRef
-  ) { }
+  // Inside CropperDialog component:
+
+constructor(
+  @Inject(LY_DIALOG_DATA) public data: any, // data contains the imageURL and other settings
+  readonly sRenderer: StyleRenderer,
+  public dialogRef: LyDialogRef
+) {
+  this.data = data; 
+ 
+  // Initialize the configuration with dynamic values
+  this.myConfig = {
+    width: data.width, // Passed width from the dialog opener
+    height: data.height, // Passed height from the dialog opener
+    round: data.round, // Passed round from the dialog opener
+    keepAspectRatio: true,
+    responsiveArea: true,
+    output: {
+      width: data.width,
+      height: data.height
+    },
+    resizableArea: true
+    // ... any other configuration properties
+  };
+}
 
   ngAfterViewInit() {
     // Load image when dialog animation has finished
-    
-    
     this.dialogRef.afterOpened.subscribe(() => {
-      
-      this.cropper.loadImage(this.imageUrl);
-    });
+      this.cropper.loadImage(this.data.imageURL); // Use the imageUrl from this.data
+        });
   }
 
   onCropped(e: ImgCropperEvent) {
-    
   }
   onLoaded(e: ImgCropperEvent) {
-    
   }
   onError(e: ImgCropperErrorEvent) {
-    console.warn(`'${e.name}' is not a valid image`, e);
     // Close the dialog if it fails
     this.dialogRef.close();
   }

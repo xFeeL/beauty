@@ -49,7 +49,7 @@
        <ion-grid>
         <ion-row class="ion-text-center ion-justify-content-center">
           <ion-col  size="10" class="ion-text-center">
-            <ion-item button  color="light" lines="none" class="ion-margin-end ion-margin-start oauth_buttons" (click)="googleOAuth()">
+            <ion-item   color="light" lines="none" class="ion-margin-end ion-margin-start oauth_buttons cursor" (click)="googleOAuth()">
               <ion-img class="center googleImage" src="/assets/imgs/google.svg"></ion-img>              </ion-item>
           </ion-col>
           <!--<ion-col  size="6" sizeXs="6"  sizeSm="6" sizeMd="6" sizeLg="6" sizeXl="5" class="ion-text-center">
@@ -97,7 +97,7 @@
         </ion-row> 
         <ion-row class="ion-margin">
           <ion-col size="12">
-            <ion-item color="primary" button class="login_button" (click)="login()" [disabled]="disabledButton">
+            <ion-item color="primary"  class="login_button cursor" (click)="login()" [disabled]="disabledButton">
               <ion-label class="ion-text-center" color="light">Σύνδεση</ion-label>              </ion-item>
           </ion-col>
         </ion-row> 

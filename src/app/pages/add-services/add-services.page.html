@@ -40,9 +40,9 @@
           <ion-label>
             <h2>{{ service.name }}</h2>
             
-            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+            <ion-note class="f14" *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>
-            <ion-note *ngIf="service.type == 'package'">
+            <ion-note *ngIf="service.type == 'package'" class="f14">
               Τιμή: €{{ service.price }} • {{ service.services.length }}
               {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>
@@ -60,9 +60,9 @@
           <div [class]="service.type=='package'?'package-line':'normal-line'"></div>
           <ion-label>
             <h2>{{ service.name }}</h2>
-            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+            <ion-note class="f14" *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>
-            <ion-note *ngIf="service.type == 'package'">
+            <ion-note class="f14" *ngIf="service.type == 'package'">
               Τιμή: €{{ service.price }} • {{ service.services.length }}
               {{ service.services.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>
@@ -90,9 +90,9 @@
             <h2 *ngIf="service.chosenVariation!=null && service.parentName==null">{{ service.name }} <ion-note>({{ service.chosenVariation.name }})</ion-note></h2>
             <h2 *ngIf="service.parentName!=null">{{ service.parentName }} <ion-note>({{ service.name }})</ion-note></h2>
 
-            <ion-note *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
+            <ion-note class="f14" *ngIf="service.type!='package'">Τιμή: €{{ service.price }} • Διάρκεια: {{ service.duration }}
               λεπτά</ion-note>
-            <ion-note *ngIf="service.type == 'package'">
+            <ion-note class="f14" *ngIf="service.type == 'package'">
               Τιμή: €{{ service.price }} • {{ service.serviceObjects.length }}
               {{ service.serviceObjects.length === 1 ? 'υπηρεσία' : 'υπηρεσίες' }}
             </ion-note>

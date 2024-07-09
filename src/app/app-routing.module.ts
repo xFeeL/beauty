@@ -167,6 +167,10 @@ const routes: Routes = [
     path: 'edit-automatic-notification',
     loadChildren: () => import('./pages/edit-automatic-notification/edit-automatic-notification.module').then( m => m.EditAutomaticNotificationPageModule)
   },
+  {
+    path: 'contact',
+    loadChildren: () => import('./pages/contact/contact.module').then( m => m.ContactPageModule)
+  },
  
   
   

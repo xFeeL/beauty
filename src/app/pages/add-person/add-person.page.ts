@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, ModalController, NavParams } from '@ionic/angular';
 import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
@@ -18,6 +18,7 @@ import { FormControl } from '@angular/forms';
   selector: 'app-add-person',
   templateUrl: './add-person.page.html',
   styleUrls: ['./add-person.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('openClose', [
       state('open', style({
@@ -70,13 +71,14 @@ export class AddPersonPage implements OnInit {
   isEditing: any = false;
   addedExceptions: boolean = false;
   defaultImage = true;
-
+  isMobile=false
   constructor(private alertController: AlertController, private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
       this.hours.push(this.formatHour(i, '30'));
     }
     this.hours.push(this.formatHour(23, '59'));
+    this.isMobile=this.userService.isMobile();
   }
 
   ngOnInit() {
@@ -84,7 +86,6 @@ export class AddPersonPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    
     this.defaultImage = this.navParams.get('defaultImage');;
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
@@ -92,11 +93,11 @@ export class AddPersonPage implements OnInit {
     this.personName = this.navParams.get('personName'); // Get the name of the person
     this.onboarding = this.navParams.get('onboarding');
     this.isEditing = this.navParams.get('isEditing');
-
+  
     if (this.navParams.get('personImage') != undefined) {
       this.image = this.navParams.get('personImage');
     }
-
+  
     if (!this.onboarding) {
       if (this.navParams.get('scheduleExceptions') != undefined) {
         this.scheduleExceptions = this.navParams.get('scheduleExceptions');
@@ -110,13 +111,14 @@ export class AddPersonPage implements OnInit {
         this.scheduleExceptions = [];
       }
     }
-
+  
     if (this.customSchedule) {
       this.applypersonSchedule();
     }
-
     
+    this._cd.detectChanges();
   }
+  
 
 
 
@@ -269,7 +271,7 @@ export class AddPersonPage implements OnInit {
   }
 
   saveEmployee(body: any) {
-    this.userService.saveEmployee(body, this.addedExceptions, false, false).subscribe(data => {
+    this.userService.saveEmployee(body, !this.addedExceptions, false, false).subscribe(data => {
       this.userService.presentToast("Το άτομο αποθηκεύτηκε επιτυχώς.", "success");
       this.dismissModalAfterEdit()
     }, err => {
@@ -477,10 +479,7 @@ export class AddPersonPage implements OnInit {
     }
   }
 
-  isMobile() {
-    return this.userService.isMobile()
-  }
-
+ 
 
 
 

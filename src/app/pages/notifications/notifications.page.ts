@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -11,6 +11,8 @@ import { KrathshPage } from '../krathsh/krathsh.page';
   selector: 'app-notifications',
   templateUrl: './notifications.page.html',
   styleUrls: ['./notifications.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class NotificationsPage implements OnInit {
   notifications: any = [];
@@ -19,8 +21,18 @@ export class NotificationsPage implements OnInit {
   new_notifications_length: number = 0;
   page = 0;
   disableInfiniteScroll = false;
-  constructor(private router: Router, private route: Router, private userService: UserService, private navCtl: NavController, private modalController: ModalController) { }
-
+  isMobile: boolean=false;
+  constructor(
+    private router: Router, 
+    private route: Router, 
+    private userService: UserService, 
+    private navCtl: NavController, 
+    private modalController: ModalController,
+    private cdr: ChangeDetectorRef  // add this line
+  ) {
+    this.isMobile = this.userService.isMobile();
+  }
+  
   ngOnInit() {
 
   }
@@ -48,17 +60,16 @@ export class NotificationsPage implements OnInit {
   getNotifications(event?: any) {
     this.userService.getNotifications(this.page).subscribe(data1 => {
       this.userService.newNotification$.next(false);
-      console.log(data1.length);
-
+  
       if (data1.length < 10) {
         this.disableInfiniteScroll = true;
       }
-
+  
       data1.forEach((notification: { datetime: moment.MomentInput; expert: string; text: string; type: string; status: any; user_name: any; project_title: string; is_read: boolean; }) => {
         notification.datetime = moment(notification.datetime).locale("el").format('DD MMM, YYYY');
         notification.expert = "";
         notification.text = "";
-
+  
         if (notification.type == "appointment") {
           switch (notification.status) {
             case "APPOINTMENT_NEW":
@@ -75,7 +86,7 @@ export class NotificationsPage implements OnInit {
               break;
           }
         }
-
+  
         notification.project_title = "";
         if (notification.is_read == false) {
           this.new_notifications.push(notification);
@@ -83,16 +94,18 @@ export class NotificationsPage implements OnInit {
           this.notifications.push(notification);
         }
       });
-
+  
       if (event) {
         event.target.complete();
       }
+      this.cdr.markForCheck();  // add this line
     }, err => {
       if (event) {
         event.target.complete();
       }
     });
   }
+  
 
 
   loadData(event: any) {
@@ -117,11 +130,7 @@ export class NotificationsPage implements OnInit {
     }
   }
 
-  isMobile() {
-    return this.userService.isMobile()
-  }
-
-
+  
 
   async goToReviews() {
 
@@ -134,7 +143,7 @@ export class NotificationsPage implements OnInit {
 
   async goToPendingAppointments() {
     this.userService.setNavData("pending")
-    if (this.isMobile()) {
+    if (this.isMobile) {
       this.route.navigate(['/tabs/krathseis']);
 
     } else {

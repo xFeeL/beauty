@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
@@ -11,6 +11,7 @@ import { FormControl } from '@angular/forms';
   selector: 'app-wrario',
   templateUrl: './wrario.page.html',
   styleUrls: ['./wrario.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('openClose', [
       state('open', style({

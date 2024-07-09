@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content class="ion-padding background">
-  <ion-card class="rad">
+  <ion-card class="rad ion-no-margin">
     <ion-card-header>
       <ion-text color="primary"><b>Τύπος εξαίρεσης</b></ion-text>
     </ion-card-header>
@@ -22,20 +22,20 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card class="rad">
+  <ion-card  class="rad ion-margin-top ion-no-margin">
     <ion-card-header>
       <ion-text color="primary"><b>Ημερομηνία / Ώρα</b></ion-text>
     </ion-card-header>
     <ion-card-content>
       <!-- From datetime button -->
       <ion-item>
-        <ion-label>Από:</ion-label>
+        <ion-label class="ion-no-margin">Από:</ion-label>
         <ion-datetime-button datetime="fromDatetime"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
             <ion-datetime id="fromDatetime" [(ngModel)]="firstDateTime" presentation="date-time" hourCycle="h24"
               minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [max]="maxDate" [min]="minDate" locale="el-GR"
-              doneText="OK" cancelText="Ακυρο" [showDefaultButtons]="true" (ionChange)="onFirstDateTimeChange()">
+              doneText="OK" cancelText="Ακυρο" [showDefaultButtons]="true" >
             </ion-datetime>
           </ng-template>
         </ion-modal>
@@ -43,7 +43,7 @@
 
       <!-- To datetime button -->
       <ion-item>
-        <ion-label>Έως:</ion-label>
+        <ion-label class="ion-no-margin">Έως:</ion-label>
         <ion-datetime-button datetime="toDatetime"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>

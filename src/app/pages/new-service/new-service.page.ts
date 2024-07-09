@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, IonContent, IonInput, ModalController, NavParams } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { AlertController } from '@ionic/angular';
@@ -9,6 +9,8 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
   selector: 'app-new-service',
   templateUrl: './new-service.page.html',
   styleUrls: ['./new-service.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class NewServicePage implements OnInit {
 
@@ -30,43 +32,41 @@ export class NewServicePage implements OnInit {
   onboarding: any = false;
   variations: any = []
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-
-  constructor(private alertController: AlertController,private dialog: MatDialog, private modalController: ModalController, private userService: UserService, private navParams: NavParams, private actionSheetCtrl: ActionSheetController, private alertCtrl: AlertController) {
-  }
+isMobile=false
+constructor(
+  private alertController: AlertController,
+  private dialog: MatDialog,
+  private modalController: ModalController,
+  private userService: UserService,
+  private navParams: NavParams,
+  private actionSheetCtrl: ActionSheetController,
+  private alertCtrl: AlertController,
+  private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+) {
+  this.isMobile = this.userService.isMobile();
+}
   ngOnInit() { }
 
   ionViewWillEnter() {
     this.onboarding = this.navParams.get('onboarding');
-    
     this.people = this.navParams.get('people');
-
     this.categories = this.navParams.get('categories');
     this.service_id = this.navParams.get('serviceId');
-    if(!this.onboarding){
-      this.userService.getServiceVariations(this.service_id).subscribe(data=>{
-        
-        this.variations=data;
-        
-  
-      },err=>{
-  
-      })
+    
+    if (!this.onboarding) {
+      this.userService.getServiceVariations(this.service_id).subscribe(data => {
+        this.variations = data;
+        this.cdr.markForCheck(); // Manually trigger change detection
+      }, err => {});
     }
     
     this.variations = this.navParams.get('variations') || [];
-    
-    
     this.services = this.navParams.get('services');
     this.serviceCategory = this.navParams.get('serviceCategory');
     this.originalServiceName = this.navParams.get('serviceName');
 
-    // Make all people unselected by default
     this.people.forEach((person: { selected: boolean; }) => person.selected = false);
-
-    // Get the servicePeople from navParams
     let servicePeople = this.navParams.get('servicePeople');
-
-    // If servicePeople is found in the navParams, mark those people as selected
 
     if (servicePeople && servicePeople.length) {
       servicePeople.forEach((servicePersonName: string) => {
@@ -77,24 +77,18 @@ export class NewServicePage implements OnInit {
 
         if (person) {
           person.selected = true;
-        } else {
-        }
+        } else {}
       });
     }
 
     if (this.service_id == null) {
-      this.selectAll = true
+      this.selectAll = true;
       this.selectAllPeople();
     } else {
-      if (this.people.length == servicePeople.length) {
-        this.selectAll = true
-
-      } else {
-        this.selectAll = false
-
-      }
-
+      this.selectAll = this.people.length == servicePeople.length;
     }
+
+    this.cdr.markForCheck(); // Manually trigger change detection
   }
 
 
@@ -278,9 +272,6 @@ export class NewServicePage implements OnInit {
     }
   }
 
-  isMobile() {
-    return this.userService.isMobile()
-  }
 
 
   newVariation() {

@@ -42,7 +42,7 @@
               </ion-grid>
             </ion-item>
             <div class="slider-text">
-              <h3>Όνομα Επιχείρησης
+              <h3>Όνομα επιχείρησης
 
               </h3>
               <ion-note>
@@ -52,8 +52,10 @@
             <ion-grid class="ion-margin-top">
               <ion-row class="ion-justify-content-center">
                 <ion-col size="12">
-                  <ion-input class="small-input" label="Εισαγωγή ονόματος" label-placement="floating" fill="outline"
-                    text-wrap type="text" [(ngModel)]="expertName" placeholder="{{expertName}}"></ion-input>
+                  <ion-item><ion-input class="small-input" label="Όνομα επιχείρησης" label-placement="stacked"  placeholder="Εισάγετε όνομα"
+                       text-wrap type="text" [(ngModel)]="expertName"
+                      placeholder="{{expertName}}"></ion-input></ion-item>
+
 
                 </ion-col>
               </ion-row>
@@ -94,10 +96,10 @@
               Φωτογραφίας</ion-button>
             <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button>
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button>
               <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
-                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                  color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide4"> <ion-item lines="none"
@@ -147,10 +149,10 @@
             <ion-button fill="outline" (click)="chooseAddress()" expand="block" class="ion-margin-top">Επιλογή
               Διεύθυνσης</ion-button>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button color="primary"
                 class="beginButton" [disabled]="!addressEntered" no-caps (click)="nextSlide($event)"><ion-icon
-                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                  color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide5">
@@ -194,17 +196,18 @@
             </div> <ion-button fill="outline" id="open-modal" expand="block" class="ion-margin-top">Επιλογή
               Κατηγοριών</ion-button>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="!(selectedItems.length>0)" color="primary" class="beginButton" no-caps
-                (click)="nextSlide($event)"><ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                (click)="nextSlide($event)"><ion-icon color="light"
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide6">
             <div class="slider-text">
               <h3>Ωράριο λειτουργίας</h3>
             </div>
-            <ion-list class="scrollable-list rad whiteBack">
+            <ion-list class="scrollable-list rad whiteBack ion-no-padding">
               <div *ngFor="let day of days">
                 <ion-item lines="none">
                   <ion-label>{{day.name}}</ion-label>
@@ -215,14 +218,14 @@
                     class="ion-no-margin w100">
                     <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
                       <ion-col size="5">
-                        <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="floating" fill="outline"
+                        <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="stacked" fill="outline"
                           interface="popover" [(ngModel)]="timeInterval.start"
                           (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
                           <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
                         </ion-select>
                       </ion-col>
                       <ion-col size="5">
-                        <ion-select class="smaller-font" label="Κλείνει στις" label-placement="floating" fill="outline"
+                        <ion-select class="smaller-font" label="Κλείνει στις" label-placement="stacked" fill="outline"
                           interface="popover" [(ngModel)]="timeInterval.end"
                           (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
                           <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
@@ -238,8 +241,8 @@
               </div>
             </ion-list>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light"  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
                 color="primary" class="beginButton" no-caps (click)="nextSlide($event)">
                 <ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon>
               </ion-button>
@@ -307,10 +310,10 @@
               </ion-row>
             </ion-grid>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
-                color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
-                color="light" name="arrow-forward-circle-outline"></ion-icon></ion-button>
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
+                color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon color="light"
+                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
             </div>
           </swiper-slide>
           <swiper-slide class="ion-padding" data-hash="slide8">
@@ -321,16 +324,17 @@
               </ion-note>
             </div>
             <!-- Trigger for the menu -->
-            <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top" *ngIf="serviceCategories.length!=0">Προσθήκη</ion-button>
-            <div class="content-box cursor ion-margin-top"  (click)="newCategory()" *ngIf="serviceCategories.length==0">
+            <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top"
+              *ngIf="serviceCategories.length!=0">Προσθήκη</ion-button>
+            <div class="content-box cursor ion-margin-top" (click)="newCategory()" *ngIf="serviceCategories.length==0">
               <ion-grid>
                 <ion-row class="ion-text-center ion-justify-content-center mb8">
                   <ion-icon name="add-circle-outline" color="primary" class="s25"></ion-icon>
-        
+
                 </ion-row>
                 <ion-row class="ion-text-center ion-justify-content-center ">
                   <ion-label color="primary" class="ion-text-center">Νέα κατηγορία</ion-label>
-        
+
                 </ion-row>
               </ion-grid>
             </div>
@@ -442,8 +446,8 @@
               </ion-row>
             </ion-grid>
             <div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon
-                color="light" name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
                 (click)="saveData()"><ion-text color="light">Τέλος</ion-text> </ion-button>
             </div>
@@ -454,7 +458,7 @@
             <ion-header>
               <ion-toolbar>
                 <ion-buttons slot="start">
-                  <ng-container *ngIf="isMobile(); else cancelButton">
+                  <ng-container *ngIf="isMobile; else cancelButton">
                     <ion-button (click)="cancel()">
                       <ion-icon color="light" color="light" name="arrow-back"></ion-icon>
                     </ion-button>
@@ -468,7 +472,7 @@
                 <ion-title color="light" text-wrap>Κατηγορίες</ion-title>
 
                 <ion-buttons slot="end">
-                  <ng-container *ngIf="isMobile(); else confirmButton">
+                  <ng-container *ngIf="isMobile; else confirmButton">
                     <ion-button color="light" class="no-capitalization" (click)="confirm()">
                       <ion-icon color="light" name="checkmark"></ion-icon>
                     </ion-button>

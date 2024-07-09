@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { KrathseisPageRoutingModule } from './krathseis-routing.module';
 
 import { KrathseisPage } from './krathseis.page';
-
+import { DateFormatPipe } from 'src/app/date-format.pipe'; // Adjust the import path as necessary
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +15,6 @@ import { KrathseisPage } from './krathseis.page';
     IonicModule,
     KrathseisPageRoutingModule
   ],
-  declarations: [KrathseisPage]
+  declarations: [KrathseisPage, DateFormatPipe ]
 })
 export class KrathseisPageModule {}

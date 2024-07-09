@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonAlert, IonDatetime, IonModal, IonPopover, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
@@ -22,6 +22,8 @@ import { ThemeService } from 'src/app/services/theme.service';
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
   animations: [
     trigger('openClose', [
       state('open', style({
@@ -94,12 +96,12 @@ export class SettingsPage implements OnInit {
 
     },
 
-    {
+    /*{
       name: 'Σκοτεινή λειτουργία',
       icon: '../../../assets/icon/moon.png',
       page:'dark-mode'
 
-    }
+    }*/
   ];
   constructor(private themeService:ThemeService,private alertController:AlertController,private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
 

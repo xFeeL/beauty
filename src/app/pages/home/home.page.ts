@@ -54,51 +54,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  animations: [
-    trigger('buttonAnimation', [
-      state('collapsed', style({
-        width: '80px',  // replace with the initial width of the button
-      })),
-      state('expanded', style({
-        width: '110px',  // replace with the expanded width of the button
-      })),
-      transition('collapsed <=> expanded', animate('300ms ease-out'))
-    ]),
-    trigger('checkmarkAnimation', [
-      state('void', style({
-        opacity: 0,
-        transform: 'scale(0.5)'
-      })),
-      state('*', style({
-        opacity: 1,
-        transform: 'scale(1)'
-      })),
-      transition('void => *', animate('300ms ease-out')),
-      transition('* => void', animate('300ms ease-in'))
-    ]),
-    trigger('tableAnimation', [
-      transition('* <=> *', [
-        query(':enter',
-          [
-            style({ opacity: 0, transform: 'translateY(-15px)' }),
-            stagger('50ms', animate('550ms ease-out', style({ opacity: 1, transform: 'translateY(0px)' })))
-          ], { optional: true }
-        ),
-        query(':leave',
-          animate('50ms', style({ opacity: 0 })), { optional: true }
-        )
-      ])
-    ]),
-    trigger('removeRow', [
-      state('in', style({ opacity: 1, height: '*' })),
-      transition('* => void', [
-        animate('300ms', style({ opacity: 0, height: '0px', margin: '0px' }))
-      ]),
-    ]),
-  ]
-
-
-
 })
 export class HomePage implements OnInit {
   lineChartLabels: string[] = [];
@@ -117,7 +72,6 @@ export class HomePage implements OnInit {
   krathseis: Array<any> = new Array<any>;
   newKrathseis: Array<any> = new Array<any>;
   selectedTimeFrame: string = 'εβδομάδας';
-  listView = false
   initialized: boolean = false;
   cancelReason: string = "";
   statsNumberLoading = false;
@@ -144,22 +98,21 @@ export class HomePage implements OnInit {
   dateRangeText: string = "";
   calendarDaysLength: number = 2;
   employeeIds: any = "";
-  generalScheduleExceptions: any=[];
+  generalScheduleExceptions: any = [];
   private newAppointmentSubscription: Subscription;
   private hasNewNotificationsSubscription: Subscription;
-  hasNewNotifications: boolean=false;
+  hasNewNotifications: boolean = false;
+  fullCalendarWidth: string = "auto";
 
-  constructor(private themeService: ThemeService,private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  constructor(private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
-      console.log("NEW APPOINTEMNT INC")
       if (newAppointment) {
         // Handle the new appointment logic here
         this.userService.refreshAppointment$.next(false);  // Reset the newAppointment flag
-        console.log("Calling new appointemtns")
 
-        this.getAppointmentsOfRange(this.startDate,this.endDate)
+        this.getAppointmentsOfRange(this.startDate, this.endDate)
       }
     });
 
@@ -174,7 +127,7 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.checkScreenWidth();
-    
+
     this.resizeListener = this.platform.resize.subscribe(() => {
       this.checkScreenWidth();
     });
@@ -229,36 +182,36 @@ export class HomePage implements OnInit {
         console.error(err);
       }
     );
-    this.userService.getWrario().subscribe(data=>{
-      this.generalScheduleExceptions=data.exceptions
-   
+    this.userService.getWrario().subscribe(data => {
+      this.generalScheduleExceptions = data.exceptions
+
 
     })
 
-   
+
   }
 
 
+  async goToKrathseis() {
+    if (this.isMobile) {
+      this.rout.navigate(['/tabs/krathseis']);
+    } else {
+      const modal = await this.modalController.create({
+        component: KrathseisPage,
+        backdropDismiss: false
+      });
 
+      // Present the modal
+      await modal.present();
 
+      // Listen for the modal to be dismissed
+      const { data } = await modal.onDidDismiss();
+      if (data === true) {
+        // Execute the desired action when the returned data is true
+        this.getAppointmentsOfRange(this.startDate, this.endDate);
 
-
-
-
-  switchToListView() {
-    this.projects = []
-    this.page = 0
-    this.getKrathseis(this.statusChosen);
-
-    setInterval(() => {
-      this.getKrathseis(this.statusChosen);
-      this.getPendingAppointmentsNumber()
-
-    }, 300000);
-    this.getStatsNumbers(this.selectedTimeFrame);
-    this.getStats(this.selectedTimeFrame);
-    this.getPendingAppointmentsNumber()
-    this.getTopClients();
+      }
+    }
   }
 
 
@@ -291,128 +244,18 @@ export class HomePage implements OnInit {
 
 
 
-  getTopClients() {
-    this.userService.getTopClients().subscribe(data => {
-      this.topClients = data;
-    }, err => {
-
-    })
-  }
-
-  getPendingAppointmentsNumber() {
-    this.pendingAppointments = null;
-
-    this.userService.getPendingAppointmentsNumber().subscribe(data => {
-      this.pendingAppointments = data;
-    }, err => {
-
-    })
-
-
-  }
-
-
-  calculateTimeSince(dateString: string): string {
-    let eventDate = new Date(dateString);
-    let currentDate = new Date();
-    let timeDifference = currentDate.getTime() - eventDate.getTime();
-    let minutes = Math.round(timeDifference / (1000 * 60));
-    if (minutes < 60) {
-      return `πριν ${minutes} λεπ.`;
-    }
-
-    let hours = Math.round(timeDifference / (1000 * 60 * 60));
-    if (hours < 24) {
-      return `πριν ${hours} ώρ.`;
-    }
-
-    let days = Math.round(timeDifference / (1000 * 60 * 60 * 24));
-    if (days < 30) {
-      return `πριν ${days} ημ.`;
-    }
-
-    let months = (currentDate.getFullYear() - eventDate.getFullYear()) * 12 + (currentDate.getMonth() - eventDate.getMonth());
-    return `πριν ${months} μήν.`;
-  }
-
-
-
-
   async goToNotifications() {
-    if(!this.isMobile){
+    if (!this.isMobile) {
       const modal = await this.modalController.create({
         component: NotificationsPage,
       });
       return await modal.present();
-    }else{
+    } else {
       this.rout.navigate(['/tabs/notifications']);
     }
-  
+
   }
 
-
-  async goToProfile() {
-    const modal = await this.modalController.create({
-      component: EditProfilePage,
-    });
-    return await modal.present();
-  }
-
-  async goToClients() {
-    const modal = await this.modalController.create({
-      component: ClientsPage,
-    });
-    return await modal.present();
-  }
-
-  async goToClient(user_id: string) {
-    const modal = await this.modalController.create({
-      component: ClientProfilePage,
-      componentProps: {
-        'user_id': user_id
-      }
-    });
-    return await modal.present();
-  }
-
-
-  async goToReviews() {
-    const modal = await this.modalController.create({
-      component: ReviewsPage,
-    });
-    return await modal.present();
-  }
-
-  async goToPortfolio() {
-    const modal = await this.modalController.create({
-      component: PortfolioPage,
-    });
-    return await modal.present();
-  }
-
-
-
-  async goToKrathshMobile(item: any) {
-    const modal = await this.modalController.create({
-      component: KrathshPage,
-      componentProps: {
-        'appointment_id': item
-      }
-    });
-    modal.onWillDismiss().then((dataReturned) => {
-      // Your logic here, 'dataReturned' is the data returned from modal
-      if (this.userService.getNavData() == true) {
-        this.page = 0;
-        this.krathseis = []
-        this.getKrathseis(this.statusChosen);
-
-        //this.getKrathseisNew();
-
-      }
-
-    });
-    return await modal.present();
-  }
 
   async goToKrathsh(item: any) {
     const modal = await this.modalController.create({
@@ -422,22 +265,7 @@ export class HomePage implements OnInit {
       }
     });
     modal.onWillDismiss().then((dataReturned) => {
-      
-      // Your logic here, 'dataReturned' is the data returned from modal
-      if (this.userService.getNavData() == true || dataReturned) {
-        if(this.listView){
-
-       
-        this.page = 0;
-        this.krathseis = []
-        this.getKrathseis(this.statusChosen);
-      }else{
-        this.getAppointmentsOfRange(this.startDate,this.endDate)
-      }
-        //this.getKrathseisNew();
-
-      }
-
+      this.getAppointmentsOfRange(this.startDate, this.endDate)
     });
     return await modal.present();
   }
@@ -451,13 +279,9 @@ export class HomePage implements OnInit {
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data == true) {
         // Your logic here, 'dataReturned' is the data returned from modal
-        if (this.listView) {
-          this.page = 0;
-          this.krathseis = []
-          this.getKrathseis(this.statusChosen);
-        } else {
-          this.getAppointmentsOfRange(this.startDate, this.endDate);
-        }
+
+        this.getAppointmentsOfRange(this.startDate, this.endDate);
+
 
       }
     });
@@ -465,465 +289,6 @@ export class HomePage implements OnInit {
     return await modal.present();
   }
 
-
-  getKrathseis(status: string) {
-    this.statusChosen = status
-    this.dataSource = []
-    this.userService.getAppointments(this.statusChosen, this.page, "upcoming", false).subscribe(data => {
-      this.dataSource = [];
-   
-
-      for (let k = 0; k < data.length; k++) {
-        let el = data[k];
-        el[11] = el[3]
-        el[3] = moment.utc(el[3]).locale("el").format('Do MMM, h:mm a');
-
-
-      
-        el[4] = el[4].split('$')[0] + " " + el[4].split('$')[1];
-        this.krathseis.push(el);
-        if (el[2] === "accepted") {
-          el[2] = el[5] === "false" ? "not_checked_in" : "checked_in";
-        }
-
-        let uniqueNames = Array.from(new Set(el[6].split(',').map((name: string) => name.trim()))).join(', ');
-        if (k < 5) {
-          const periodicElement: PeriodicElement = {
-            avatar: el[10],
-            name: el[4],
-            date: el[3],
-            employee: uniqueNames,  // Using unique names now
-            service: el[7],  // Assuming tables is a string representation of the number of tables
-            status: el[2],
-            price: '€' + el[9],
-            id: el[0],
-            serviceEmployeeMapping: this.mergeServicesForEmployees(el[8])
-
-          };
-          this.dataSource.push(periodicElement);
-        }
-      }
-
-
-
-      this.cdr.detectChanges();
-
-
-      this.cdr.detectChanges();
-
-
-      this.initialized = true;
-    }, err => {
-      this.initialized = true;
-    });
-  }
-
-  mergeServicesForEmployees(input: string): string {
-    const serviceByEmployee = new Map<string, string[]>();
-
-    const pairs = input.split(', ');
-
-    for (let pair of pairs) {
-      const [employeeWithParenthesis, service] = pair.split(' (');
-      const employee = employeeWithParenthesis.trim(); // Cleaning up employee name
-      const cleanService = service.replace(')', '');   // Removing trailing parenthesis from service name
-
-      if (serviceByEmployee.has(employee)) {
-        serviceByEmployee.get(employee)!.push(cleanService);
-      } else {
-        serviceByEmployee.set(employee, [cleanService]);
-      }
-    }
-
-    const result = [];
-    for (let [employee, services] of serviceByEmployee.entries()) {
-      let combinedService = services.join(' & ');
-      result.push(`${employee}. (${combinedService})`);
-    }
-
-    return result.join(', ');
-  }
-
-  noShow(appointment: any) {
-    this.userService.noShow(appointment.id).subscribe(data => {
-      setTimeout(() => {
-        const index = this.dataSource.findIndex(e => e.id === appointment.id);
-        if (index !== -1) {
-          this.dataSource.splice(index, 1);
-          // Since dataSource is an array, re-assign it for Angular to detect the change:
-          this.dataSource = [...this.dataSource];
-        }
-
-        this.getKrathseis(this.statusChosen);
-
-      }, 0);
-      this.userService.presentToast("Η κράτηση ενημερώθηκε!", "success")
-
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
-
-    })
-  }
-
-
-  isAfterOneHourAgo(appointment: any): boolean {
-    const foundAppointment = this.krathseis.find(a => a[0] === appointment.id);
-    if (!foundAppointment) {
-      return false;
-    }
-    const appointmentStartTime = new Date(foundAppointment[11]);
-    const currentDate = new Date();
-    const appointmentStartTimeMinusOneHour = new Date(appointmentStartTime.getTime() - 3600000);
-    const isAfterToday = appointmentStartTime.getFullYear() > currentDate.getFullYear() ||
-      (appointmentStartTime.getFullYear() === currentDate.getFullYear() && appointmentStartTime.getMonth() > currentDate.getMonth()) ||
-      (appointmentStartTime.getFullYear() === currentDate.getFullYear() && appointmentStartTime.getMonth() === currentDate.getMonth() && appointmentStartTime.getDate() > currentDate.getDate());
-    if (isAfterToday) {
-      return true;
-    }
-    const isCurrentTimeAfterAppointmentTimeMinusOneHour = currentDate.getTime() > appointmentStartTimeMinusOneHour.getTime();
-    if (isCurrentTimeAfterAppointmentTimeMinusOneHour) {
-      return false;
-    }
-    return true;
-  }
-
-
-
-
-
-
-
-
-  getColorForStatus(status: string): string {
-    switch (status) {
-      case 'canceled':
-        return 'danger';
-      case 'pending':
-        return 'warning';
-      case 'completed':
-        return 'success';
-      case 'accepted':
-        return 'primary';
-      default:
-        return 'medium';
-    }
-  }
-
-  getDate(datetime: string): string {
-    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('D MMM');
-  }
-
-  getTime(datetime: string): string {
-    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
-  }
-
-
-  getEmployees(employeeString: string): string[] {
-    return employeeString.split(',').map(item => item.trim());
-  }
-
-  getAllEmployeeNames(employeeString: string): string {
-    return this.getEmployees(employeeString).join(', ');
-  }
-
-
-  openAcceptPopover() {
-    this.cancelReason = ""
-
-    this.acceptPop.present()
-  }
-
-  closeAcceptPopover() {
-    this.acceptPop.dismiss()
-
-  }
-  acceptAppointment(event: Event, appointment: any) {
-    event.stopPropagation();
-    this.userService.acceptAppointment(appointment.id).subscribe(data => {
-      appointment.status = "not_checked_in"
-      this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
-
-      setTimeout(() => {
-        const index = this.dataSource.findIndex(e => e.id === appointment.id);
-        if (index !== -1) {
-          this.dataSource.splice(index, 1);
-          // Since dataSource is an array, re-assign it for Angular to detect the change:
-          this.dataSource = [...this.dataSource];
-        }
-      }, 300);
-      this.getPendingAppointmentsNumber()
-      this.getKrathseis(this.statusChosen);
-
-
-
-
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
-
-    })
-    this.acceptPop.dismiss()
-
-  }
-
-
-  checkIn(appointment: any) {
-
-    this.userService.changeCheckInStatus(appointment.id, "true").subscribe(data => {
-      appointment.status = "checked_in"
-      setTimeout(() => {
-        const index = this.dataSource.findIndex(e => e.id === appointment.id);
-        if (index !== -1) {
-          this.dataSource.splice(index, 1);
-          // Since dataSource is an array, re-assign it for Angular to detect the change:
-          this.dataSource = [...this.dataSource];
-        }
-
-        this.getKrathseis(this.statusChosen);
-
-      }, 700);
-
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
-
-    })
-
-
-
-  }
-
-  closeRejectPopover() {
-    this.rejectPop.dismiss()
-
-  }
-  openRejectionPopover(event: Event, appointment: any) {
-    this.cancelReason = ""
-    event.stopPropagation();
-    this.rejectPop.present()
-  }
-
-  applyRejectPopover(appointment_id: string) {
-    this.userService.rejectAppointment(appointment_id, this.cancelReason).subscribe(data => {
-      this.getKrathseis(this.statusChosen);
-      this.getPendingAppointmentsNumber;
-      this.userService.presentToast("Η κράτηση ακυρώθηκε!", "success")
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Δοκιμάστε αργότερα.", "danger")
-
-    })
-    this.rejectPop.dismiss();
-    this.acceptPop.dismiss();
-
-  }
-
-  appendToTextArea(reason: string) {
-    this.cancelReason = ""
-    this.cancelReason = reason;
-  }
-
-  async goToKrathseis() {
-    if (this.isMobile) {
-      this.rout.navigate(['/tabs/krathseis']);
-    } else {
-      const modal = await this.modalController.create({
-        component: KrathseisPage,
-        backdropDismiss: false
-      });
-
-      // Present the modal
-      await modal.present();
-
-      // Listen for the modal to be dismissed
-      const { data } = await modal.onDidDismiss();
-      if (data === true) {
-        // Execute the desired action when the returned data is true
-        this.getKrathseis(this.statusChosen);
-      }
-    }
-  }
-
-
-  updateSelectedTimeFrame(newTimeFrame: string) {
-    this.selectedTimeFrame = newTimeFrame;
-    // Call any other function you want here
-    this.getStatsNumbers(this.selectedTimeFrame);
-    this.getStats(this.selectedTimeFrame)
-
-  }
-
-  getStatsNumbers(timeFrame: string) {
-
-    this.statsNumberLoading = true
-    this.userService.getStatsNumber(this.fixTimeFrameWording(timeFrame)).subscribe(data => {
-      this.totalAppointments = data.appointmentCount;
-      this.totalRevenue = data.totalRevenue;
-      this.statsNumberLoading = false
-
-    }, err => {
-      this.statsNumberLoading = false
-
-      // Handle your error here
-    });
-  }
-
-  fixTimeFrameWording(timeFrame: string) {
-    let mappedTimeFrame: string;
-
-    switch (timeFrame) {
-      case "μήνα":
-        mappedTimeFrame = "28";
-        break;
-      case "εβδομάδας":
-        mappedTimeFrame = "7";
-        break;
-      case "χρονιάς":
-        mappedTimeFrame = "365";
-        break;
-      default:
-        // Handle any default or error case
-        mappedTimeFrame = "unknown";
-    }
-    return mappedTimeFrame
-  }
-
-  getStats(timeFrame: string) {
-    this.statsLoading = true;
-
-    this.userService.getStats(this.fixTimeFrameWording(timeFrame)).subscribe(data => {
-      this.lineChartLabels = Object.keys(data); // Extracting the labels from the response data
-      this.lineChartData[0].data = Object.values(data); // Extracting the data values from the response data
-
-      this.statsLoading = false;
-    }, err => {
-      this.statsLoading = false;
-      console.error('Error fetching stats:', err);  // You might want to handle this more gracefully in your actual application.
-    });
-  }
-
-
-  lineChartData: ChartDataset[] = [
-    {
-      data: [], label: 'Έσοδα (€)', borderColor: 'lightblue',
-      backgroundColor: 'rgba(0, 123, 255, 0.1)',
-      fill: true, pointBorderColor: 'rgba(61,162,255,1)',       // This sets the border color of the points to blue.
-      pointBackgroundColor: 'rgba(61,162,255,1)',
-    },
-
-  ];
-
-  public lineChartOptions: ChartConfiguration['options'] = {
-    elements: {
-      line: {
-        tension: 0.5,
-      },
-    },
-    scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
-      y: {
-        position: 'left',
-      },
-
-    },
-
-    plugins: {
-      legend: { display: true },
-
-    },
-  };
-
-  isDatePassed(dateStr: string): boolean {
-    const date = this.convertGreekDate(dateStr);
-
-    return date < new Date();
-  }
-
-  shouldDisplayBadgeColumn(): boolean {
-    return this.dataSource.some(data => this.isDatePassed(data.date)) && !this.isMobile;
-  }
-
-
-  convertGreekDate(dateStr: string): Date {
-    const parts = dateStr.split(' ');
-
-    const day = parseInt(parts[0], 10);
-
-    const monthMap: { [key: string]: number } = {
-      'Ιαν': 0, 'Φεβ': 1, 'Μαρ': 2, 'Απρ': 3, 'Μάι': 4, 'Ιουν': 5,
-      'Ιουλ': 6, 'Αυγ': 7, 'Σεπ': 8, 'Οκτ': 9, 'Νοε': 10, 'Δεκ': 11
-    };
-
-    // Remove any commas
-    const monthStr = parts[1].replace(',', '');
-
-    const month = monthMap[monthStr];
-
-    const [hour, minute] = parts[2].split(':').map(val => parseInt(val, 10));
-
-    const finalHour = parts[3] === 'μμ' && hour !== 12 ? hour + 12 : hour;
-
-    return new Date(new Date().getFullYear(), month, day, finalHour, minute);
-  }
-
-  getHoursLeft(date: string): string {
-    const now = new Date();
-    const reservationDate = this.convertGreekDate(date);
-    let diffMs = now.getTime() - reservationDate.getTime(); // milliseconds since the reservation started
-
-    if (diffMs <= 0) return "Δεν έχει ξεκινήσει ακόμη";  // If the reservation hasn't started yet.
-
-    diffMs = Math.round(diffMs / (1000 * 60)); // Convert to minutes
-    diffMs -= this.maxMinutesPerReservation;
-    if (diffMs <= -60) {
-      const diffHrs = Math.floor(diffMs / 60);
-      return -diffHrs + ' ω';
-    } else {
-      return -diffMs + ' λ';
-    }
-  }
-
-  getTooltipHoursLeft(date: string): string {
-    const hoursLeft = this.getHoursLeft(date);
-
-    if (hoursLeft.includes('ω')) {
-      return hoursLeft.replace('ω', ' ώρες');
-    } else if (hoursLeft.includes('λ')) {
-      return hoursLeft.replace('λ', ' λεπτά');
-    }
-
-    return hoursLeft;
-  }
-
-  toggleTooltip(tooltip: MatTooltip, event: Event): void {
-    event.stopPropagation();
-    if (tooltip._isTooltipVisible()) {
-      tooltip.hide();
-    } else {
-      tooltip.show();
-    }
-
-  }
-
-  getAllServiceNames(services: string): string {
-    return services.split(',').map(service => service.trim()).join(', ');
-  }
-
-
-  setView(view: string) {
-    this.isListView = view === 'list';
-  }
-
-  handleDateClick(arg: any) {
-    alert('date click! ' + arg.dateStr);
-  }
-
-  switchView() {
-    this.listView = !this.listView
-    if (this.listView) {
-      this.switchToListView()
-    } else {
-      this.ionViewWillEnter()
-
-    }
-  }
 
 
 
@@ -934,14 +299,14 @@ export class HomePage implements OnInit {
   ngAfterViewChecked() {
     if (!this.calendarContainer || !this.calendarContainer.nativeElement) {
       return; // Exit the function if calendarContainer is undefined
-    }else{
+    } else {
       this.calendarComponent.local = 'el'
       this.addBorderToDayChange();
       this.highlightCurrentTimeElement();
     }
-   
-     
-    
+
+
+
 
   }
 
@@ -995,19 +360,19 @@ export class HomePage implements OnInit {
 
   eventContent(arg: any) {
     let timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
-  
+
     // Check if the event status is pending
     if (arg.event.extendedProps.status === 'pending') {
       // Add a striped background
       timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1; background-image: linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1) 75%, transparent 75%, transparent); background-size: 20px 20px;">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
     }
-  
+
     document.body.addEventListener('mousemove', (event) => {
       this.handleMouseEnter(event, arg.event);
     });
     return { html: timeAndTitle };
   }
-  
+
   dayHeaderContent(arg: any) {
     const date = arg.date;
     const dayOfWeek = date.toLocaleString('el-GR', { weekday: 'long' });
@@ -1027,18 +392,16 @@ export class HomePage implements OnInit {
     `;
     return { html: html };
   }
-  getResourceLabelContent(resourceInfo:any) {
+  getResourceLabelContent(resourceInfo: any) {
     return {
-      html: `<img src="${resourceInfo?.resource?._resource?.extendedProps?.image}" style="width: 40px; height: 40px; vertical-align: middle;"> <p style="font-size: 14px; font-weight: 600; color: var(--ion-color-dark);">${resourceInfo.resource.title}</p>`
+      html: `<img src="${resourceInfo?.resource?._resource?.extendedProps?.image}" style="width: 45px; height: 45px; vertical-align: middle;"> <p style="font-size: 14px; font-weight: 600; color: var(--ion-color-dark);">${resourceInfo.resource.title}</p>`
     };
   }
 
 
 
   handleMouseEnter(event: MouseEvent, calendarEvent: any) {
-    if (this.listView) {
-      return; // Exit the function if listView is true
-    }
+
     const target = event.target as HTMLElement;
     if (this.calendarContainer.nativeElement.contains(event.target)) {
       if (target.classList.contains('fc-timegrid-slot') && target.classList.contains('fc-timegrid-slot-lane') && target.classList.contains('fc-timegrid-slot-minor') && target.getAttribute('data-time')) {
@@ -1112,108 +475,108 @@ export class HomePage implements OnInit {
     const newResource = info.newResource;
     const oldResource = info.oldEvent.getResources()[0]; // Get the old resource
 
-    
+
     const originalResourceId = oldResource ? oldResource.id : null;
-   
+
 
     // Show confirmation alert
     this.alertController.create({
-        header: 'Επιβεβαίωση',
-        message: 'Είστε σίγουρος ότι θέλετε να μετακινήσετε αυτό το ραντεβού;',
-        buttons: [
-            {
-                text: 'Όχι',
-                role: 'cancel',
-                handler: () => {
-                    this.getAppointmentsOfRange(this.startDate, this.endDate); // Fetch appointments again
-                }
-            },
-            {
-                text: 'Ναι',
-                handler: () => {
-                    const newEmployeeId = newResource ? newResource.id : originalResourceId;
+      header: 'Επιβεβαίωση',
+      message: 'Είστε σίγουρος ότι θέλετε να μετακινήσετε αυτό το ραντεβού;',
+      buttons: [
+        {
+          text: 'Όχι',
+          role: 'cancel',
+          handler: () => {
+            this.getAppointmentsOfRange(this.startDate, this.endDate); // Fetch appointments again
+          }
+        },
+        {
+          text: 'Ναι',
+          handler: () => {
+            const newEmployeeId = newResource ? newResource.id : originalResourceId;
 
-                    const groupId = event.groupId;
-                    const groupEvents = this.calendarComponent.getApi().getEvents().filter((e: any) => e.groupId === groupId);
+            const groupId = event.groupId;
+            const groupEvents = this.calendarComponent.getApi().getEvents().filter((e: any) => e.groupId === groupId);
 
-                    const earliestStartTime = groupEvents.reduce((earliest: any, currentEvent: any) => {
-                        const currentStartTime = moment(currentEvent.start);
-                        return currentStartTime.isBefore(earliest) ? currentStartTime : earliest;
-                    }, moment(event.start));
+            const earliestStartTime = groupEvents.reduce((earliest: any, currentEvent: any) => {
+              const currentStartTime = moment(currentEvent.start);
+              return currentStartTime.isBefore(earliest) ? currentStartTime : earliest;
+            }, moment(event.start));
 
-                    const updates = groupEvents.map((groupEvent: any) => {
-                        const originalEmployeeId = groupEvent.getResources()[0].id || null;
-                        const employeeId = newResource ? newEmployeeId : originalEmployeeId;
+            const updates = groupEvents.map((groupEvent: any) => {
+              const originalEmployeeId = groupEvent.getResources()[0].id || null;
+              const employeeId = newResource ? newEmployeeId : originalEmployeeId;
 
-                        return {
-                            yphresiaId: groupEvent.extendedProps.yphresiaId,
-                            employeeId: employeeId
-                        };
-                    });
+              return {
+                yphresiaId: groupEvent.extendedProps.yphresiaId,
+                employeeId: employeeId
+              };
+            });
 
-                    this.userService.saveAppointment(
-                        updates,
-                        earliestStartTime.format('YYYY-MM-DD'),
-                        earliestStartTime.format('HH:mm:ss'),
-                        "", //blank clientId because it is update so it doesnt need
-                        event.id
-                    ).subscribe(
-                        response => {
-                            this.getAppointmentsOfRange(this.startDate, this.endDate);
-                            this.userService.presentToast("Η κράτηση ενημερώθηκε επιτυχώς!","success");
-                        },
-                        error => {
-                            this.userService.presentToast("Βεβαιωθείτε ότι το μέλος της ομάδας μπορεί να κάνει όλες τις υπηρεσίες.", "danger");
-                            this.getAppointmentsOfRange(this.startDate, this.endDate);
-                        }
-                    );
-                }
-            }
-        ]
+            this.userService.saveAppointment(
+              updates,
+              earliestStartTime.format('YYYY-MM-DD'),
+              earliestStartTime.format('HH:mm:ss'),
+              "", //blank clientId because it is update so it doesnt need
+              event.id
+            ).subscribe(
+              response => {
+                this.getAppointmentsOfRange(this.startDate, this.endDate);
+                this.userService.presentToast("Η κράτηση ενημερώθηκε επιτυχώς!", "success");
+              },
+              error => {
+                this.userService.presentToast("Βεβαιωθείτε ότι το μέλος της ομάδας μπορεί να κάνει όλες τις υπηρεσίες.", "danger");
+                this.getAppointmentsOfRange(this.startDate, this.endDate);
+              }
+            );
+          }
+        }
+      ]
     }).then(alert => {
-        alert.present();
+      alert.present();
     });
-}
+  }
 
 
   addEvent(info: any) {
     const calendarApi = this.calendarComponent.getApi();
     const events = calendarApi.getEvents();
-    
+
     // Check if the clicked date is within a background event for the specific resource
     const clickedDate = info.date;
     const clickedResourceId = info.resource.id;
-  
+
     // Get all events and background events for the clicked resource
     const resourceEvents = events.filter((event: { getResources: () => any[]; }) => event.getResources().some((resource: { id: any; }) => resource.id === clickedResourceId));
-    
+
     for (let event of resourceEvents) {
       if (event.extendedProps.isBackgroundEvent) {
         const eventStart = new Date(event.start);
         const eventEnd = new Date(event.end);
         if (clickedDate >= eventStart && clickedDate < eventEnd) {
-          
+
           return;
         }
       }
     }
-  
+
     // Ensure that the new event does not overlap with any existing events for the same resource
     for (let event of resourceEvents) {
       const eventStart = new Date(event.start);
       const eventEnd = new Date(event.end);
       const clickedEndDate = new Date(clickedDate.getTime() + 30 * 60000); // Assuming new event duration is 30 minutes
-  
+
       if ((clickedDate >= eventStart && clickedDate < eventEnd) || (clickedEndDate > eventStart && clickedEndDate <= eventEnd)) {
-        
+
         return;
       }
     }
-  
+
     // If the click is not on a background event and does not overlap, open the new reservation modal
     this.newKrathsh();
   }
-  
+
   prev() {
     this.calendarComponent.getApi().prev();
     this.updateCurrentMonth();
@@ -1254,7 +617,7 @@ export class HomePage implements OnInit {
     if (!this.calendarContainer || !this.calendarContainer.nativeElement) {
       return; // Exit the function if calendarContainer is undefined
     }
-  
+
     const elementsWithDataDate = Array.from(this.calendarContainer.nativeElement.querySelectorAll('[data-date]'));
     let prevDate: any = null;
 
@@ -1269,25 +632,25 @@ export class HomePage implements OnInit {
             const baseIndex = 10; // Base index for 4 employees
             const extraEmployees = this.employees.length - 4;
             const borderIndex = baseIndex + (extraEmployees * 2);
-  
+
             if (index !== this.calendarDaysLength && index !== borderIndex) {
               element.classList.add('solid-border');
             }
           }
-         
+
         } else if (this.calendarDaysLength == 5) {
-          if(this.employees.length==2){
+          if (this.employees.length == 2) {
             if (index !== this.calendarDaysLength && index !== 15) {
 
               element.classList.add('solid-border');
             }
-          }else{
+          } else {
             if (index !== this.calendarDaysLength && index !== 10) {
 
               element.classList.add('solid-border');
             }
           }
-          
+
 
         } else if (this.calendarDaysLength == 3) {
           if (index !== this.calendarDaysLength && index !== 12) {
@@ -1379,11 +742,6 @@ export class HomePage implements OnInit {
       this.lastKnownMinute = currentMinute;
     }
   }
-  // ngAfterViewInit() {
-  //   setTimeout(() => {
-  //     this.highlightCurrentTimeElement();
-  //   }, 5000);
-  // }
 
   formatTime(timeString: any) {
     const [hours, minutes] = timeString.split(':');
@@ -1411,12 +769,23 @@ export class HomePage implements OnInit {
 
 
       }
+      if (this.isMobile) {
+        this.calendarDaysLength = 1
+        if (employees_length <= 2) {
+          this.fullCalendarWidth = "auto";
+        } else {
+          this.fullCalendarWidth = `${20 + (employees_length - 2) * 15}em`; // Increase by 15em for each employee after 2
+        }
+        document.documentElement.style.setProperty('--full-calendar-width', this.fullCalendarWidth);
+
+      }
       this.calendarOptions.views['resourceTimeGridWeek'].duration = { days: this.calendarDaysLength };
 
       this.calendarOptions = { ...this.calendarOptions };
     } else {
       console.error('View "resourceTimeGridWeek" is not defined in calendarOptions.views');
     }
+
     // Trigger a re-render of the calendar
     this.calendarOptions = { ...this.calendarOptions };
     this.updateDateRangeText();
@@ -1458,11 +827,11 @@ export class HomePage implements OnInit {
       console.error('startDate or endDate is undefined');
       return;
     }
-  
+
     const formattedStartDate = this.formatDateForAPI(startDate);
     const formattedEndDate = this.formatDateForAPI(endDate);
     const calendarApi = this.calendarComponent.getApi();
-    
+
     this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
       data => {
         // Clear only appointment events
@@ -1473,7 +842,7 @@ export class HomePage implements OnInit {
           }
         });
         this.events = this.transformToEventInput(data);
-  
+
         // Merge and update the calendar with all events
         this.mergeAndSetEvents();
       },
@@ -1489,7 +858,7 @@ export class HomePage implements OnInit {
       }
     );
   }
-  
+
 
 
 
@@ -1517,30 +886,33 @@ export class HomePage implements OnInit {
   updateDateRangeText(start?: Date, end?: Date) {
     const calendarApi = this.calendarComponent.getApi();
     const view = calendarApi.view;
-    
-    
+  
     const startDate = start || view.activeStart;
     const endDate = end ? new Date(end) : new Date(startDate);
-
+  
     endDate.setDate(endDate.getDate() + this.calendarDaysLength);
-
+  
     // Subtract one day from the endDate
     const adjustedEndDate = new Date(endDate);
     adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
-
+  
     const startDay = formatDate(startDate, 'dd', 'el');
     const endDay = formatDate(adjustedEndDate, 'dd', 'el');
     const monthYear = formatDate(adjustedEndDate, 'MMMM yyyy', 'el');
-
-    this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
+  
+    if (startDay === endDay && formatDate(startDate, 'MMMM yyyy', 'el') === monthYear) {
+      this.dateRangeText = `${startDay} ${monthYear}`;
+    } else {
+      this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
+    }
   }
-
+  
   transformToEventInput(data: any[]): EventInput[] {
     return data.map(appointment => {
       const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
       const backgroundColor = resource ? resource.extendedProps.color : '#b7d7d7';
       const borderColor = resource ? resource.extendedProps.borderColor : '#b7d7d7';
-  
+
       return {
         id: appointment.appointmentId, // Use appointmentId as the event ID
         groupId: appointment.appointmentId,
@@ -1559,7 +931,7 @@ export class HomePage implements OnInit {
     });
   }
 
-  
+
 
 
 
@@ -1598,14 +970,14 @@ export class HomePage implements OnInit {
     const events = calendarApi.getEvents();
     const resources = calendarApi.getResources();
 
-    
+
     events.forEach((event: { id: any; title: any; start: any; end: any; getResources: () => any[]; }) => {
-      
+
     });
 
-    
+
     resources.forEach((resource: { id: any; title: any; }) => {
-      
+
     });
   }
 
@@ -1613,7 +985,7 @@ export class HomePage implements OnInit {
   async handleEventClick(info: any) {
     // Check if the clicked event is a background event
     if (info.event.extendedProps.isBackgroundEvent) {
-      
+
       return;
     }
 
@@ -1631,7 +1003,7 @@ export class HomePage implements OnInit {
     });
     return await modal.present();
   }
-  
+
   addBackgroundEvents(workingPlans: any[]) {
     const backgroundEvents: EventInput[] = [];
     let minStartTime = '24:00';
@@ -1643,97 +1015,97 @@ export class HomePage implements OnInit {
     const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--ion-color-medium').trim();
 
     workingPlans.forEach(plan => {
-        const resourceId = plan.objectId; // Assuming each working plan has an objectId
-        const daysWithSchedule: { [key: string]: boolean } = {};
+      const resourceId = plan.objectId; // Assuming each working plan has an objectId
+      const daysWithSchedule: { [key: string]: boolean } = {};
 
-        plan.personSchedule.forEach((schedule: any) => {
-            daysWithSchedule[schedule.day] = true;
-            const unavailableIntervals = this.getUnavailableIntervals(schedule.intervals);
-            unavailableIntervals.forEach((interval: string) => {
-                const [start, end] = interval.split('-');
-                backgroundEvents.push({
-                    resourceId: resourceId, // Assign resourceId to each event
-                    startTime: start,
-                    endTime: end,
-                    daysOfWeek: [this.getDayOfWeek(schedule.day)],
-                    display: 'background',
-                    color: backgroundColor, // Use Ionic CSS variable for color
-                    editable: false,
-                    extendedProps: {
-                        isBackgroundEvent: true // Custom property to indicate background event
-                    }
-                });
-
-                // Update minStartTime and maxEndTime based on the available intervals
-                schedule.intervals.forEach((availableInterval: string) => {
-                    const [availableStart, availableEnd] = availableInterval.split('-');
-                    if (availableStart < minStartTime) {
-                        minStartTime = availableStart;
-                    }
-                    if (availableEnd > maxEndTime) {
-                        maxEndTime = availableEnd;
-                    }
-                });
-            });
-        });
-
-        // Block days not in the schedule
-        daysOfWeek.forEach((day, index) => {
-            if (!daysWithSchedule[day]) {
-                backgroundEvents.push({
-                    resourceId: resourceId, // Assign resourceId to each event
-                    startTime: '00:00',
-                    endTime: '24:00',
-                    daysOfWeek: [index],
-                    display: 'background',
-                    color: backgroundColor, // Use Ionic CSS variable for color
-                    editable: false,
-                    extendedProps: {
-                        isBackgroundEvent: true // Custom property to indicate background event
-                    }
-                });
+      plan.personSchedule.forEach((schedule: any) => {
+        daysWithSchedule[schedule.day] = true;
+        const unavailableIntervals = this.getUnavailableIntervals(schedule.intervals);
+        unavailableIntervals.forEach((interval: string) => {
+          const [start, end] = interval.split('-');
+          backgroundEvents.push({
+            resourceId: resourceId, // Assign resourceId to each event
+            startTime: start,
+            endTime: end,
+            daysOfWeek: [this.getDayOfWeek(schedule.day)],
+            display: 'background',
+            color: backgroundColor, // Use Ionic CSS variable for color
+            editable: false,
+            extendedProps: {
+              isBackgroundEvent: true // Custom property to indicate background event
             }
+          });
+
+          // Update minStartTime and maxEndTime based on the available intervals
+          schedule.intervals.forEach((availableInterval: string) => {
+            const [availableStart, availableEnd] = availableInterval.split('-');
+            if (availableStart < minStartTime) {
+              minStartTime = availableStart;
+            }
+            if (availableEnd > maxEndTime) {
+              maxEndTime = availableEnd;
+            }
+          });
         });
+      });
 
-        if (plan.exceptions) {
-            plan.exceptions.forEach((exception: any) => {
-                const start = new Date(exception.start);
-                const end = new Date(exception.end);
-                end.setHours(end.getHours()); // Manually add 1 hour to the end time
-
-                backgroundEvents.push({
-                    resourceId: resourceId, // Assign resourceId to each event
-                    start: start.toISOString(),
-                    end: end.toISOString(),
-                    display: 'background',
-                    color: backgroundColor, // Use Ionic CSS variable for color
-                    editable: false,
-                    extendedProps: {
-                        isBackgroundEvent: true // Custom property to indicate background event
-                    }
-                });
-            });
+      // Block days not in the schedule
+      daysOfWeek.forEach((day, index) => {
+        if (!daysWithSchedule[day]) {
+          backgroundEvents.push({
+            resourceId: resourceId, // Assign resourceId to each event
+            startTime: '00:00',
+            endTime: '24:00',
+            daysOfWeek: [index],
+            display: 'background',
+            color: backgroundColor, // Use Ionic CSS variable for color
+            editable: false,
+            extendedProps: {
+              isBackgroundEvent: true // Custom property to indicate background event
+            }
+          });
         }
+      });
+
+      if (plan.exceptions) {
+        plan.exceptions.forEach((exception: any) => {
+          const start = new Date(exception.start);
+          const end = new Date(exception.end);
+          end.setHours(end.getHours()); // Manually add 1 hour to the end time
+
+          backgroundEvents.push({
+            resourceId: resourceId, // Assign resourceId to each event
+            start: start.toISOString(),
+            end: end.toISOString(),
+            display: 'background',
+            color: backgroundColor, // Use Ionic CSS variable for color
+            editable: false,
+            extendedProps: {
+              isBackgroundEvent: true // Custom property to indicate background event
+            }
+          });
+        });
+      }
     });
 
     // Add general schedule exceptions
     if (this.generalScheduleExceptions) {
-        this.generalScheduleExceptions.forEach((exception: any) => {
-            const start = new Date(exception.start);
-            const end = new Date(exception.end);
-            end.setHours(end.getHours()); // Manually add 1 hour to the end time
+      this.generalScheduleExceptions.forEach((exception: any) => {
+        const start = new Date(exception.start);
+        const end = new Date(exception.end);
+        end.setHours(end.getHours()); // Manually add 1 hour to the end time
 
-            backgroundEvents.push({
-                start: start.toISOString(),
-                end: end.toISOString(),
-                display: 'background',
-                color: backgroundColor, // Use Ionic CSS variable for color
-                editable: false,
-                extendedProps: {
-                    isBackgroundEvent: true // Custom property to indicate background event
-                }
-            });
+        backgroundEvents.push({
+          start: start.toISOString(),
+          end: end.toISOString(),
+          display: 'background',
+          color: backgroundColor, // Use Ionic CSS variable for color
+          editable: false,
+          extendedProps: {
+            isBackgroundEvent: true // Custom property to indicate background event
+          }
         });
+      });
     }
 
     // Store background events
@@ -1745,7 +1117,7 @@ export class HomePage implements OnInit {
 
     // Merge and update the calendar with all events
     this.mergeAndSetEvents();
-}
+  }
 
 
 

@@ -15,6 +15,17 @@
     height: 26px;
   }
   
+  .toggle-note-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .notes {
+    margin-left: 10px; /* Adjust as needed for spacing */
+  }
+
+  
+  
   .invalid-input {
     --border-color: red;
     --highlight-color-focused: red;

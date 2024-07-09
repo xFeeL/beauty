@@ -21,19 +21,19 @@
         <ion-grid class="whiteBackground ion-margin rad">
           <ion-row class="mt10">
             <ion-col size="12">
-              <ion-title size="large">Βασικές Πληροφορίες</ion-title> <!-- Grid Title -->
+              <h3 class="ion-margin-start">Βασικές Πληροφορίες</h3> 
             </ion-col>
           </ion-row>
           <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-input [counter]="true" maxlength="50" label="Όνομα πακέτου" label-placement="floating" fill="solid"
+              <ion-input [counter]="true" maxlength="50" label="Όνομα πακέτου" label-placement="stacked"  placeholder="Εισάγετε όνομα" fill="solid"
                 [(ngModel)]="packageName"></ion-input>
             </ion-col>
           </ion-row>
           <ion-row class=" ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-textarea [counter]="true" maxlength="70" [autoGrow]="true" label="Περιγραφή πακέτου"
-                label-placement="floating" fill="solid" helperText="Προαιρετικό"
+              <ion-textarea [counter]="true" maxlength="70" [autoGrow]="true" label="Περιγραφή πακέτου"  placeholder="Εισάγετε περιγραφή"
+                label-placement="stacked" fill="solid" helperText="Προαιρετικό"
                 [(ngModel)]="packageDescription"></ion-textarea>
             </ion-col>
           </ion-row>
@@ -41,21 +41,22 @@
         <ion-grid class="whiteBackground ion-margin rad">
           <ion-row class="mt10">
             <ion-col size="12">
-              <ion-title size="large">Υπηρεσίες</ion-title> <!-- Grid Title -->
+              <h3 class="ion-margin-start">Υπηρεσίες</h3> 
+
             </ion-col>
           </ion-row>
           <ion-row class=" ion-margin-top ">
             <ion-col size="12">
               <!-- Hidden ion-select -->
-              <ion-select *ngIf="onboarding!=true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
-                label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
+              <ion-select  placeholder="Επιλέξτε υπηρεσίες" *ngIf="onboarding!=true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
+                label="Υπηρεσίες" label-placement="stacked" fill="outline" multiple="true"
                 (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
                 <ion-select-option *ngFor="let service of services" [value]="service.id">
                   {{ service.name }}
                 </ion-select-option>
               </ion-select>
-              <ion-select *ngIf="onboarding==true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
-                label="Υπηρεσίες" label-placement="floating" fill="outline" multiple="true"
+              <ion-select  placeholder="Επιλέξτε υπηρεσίες" *ngIf="onboarding==true" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
+                label="Υπηρεσίες" label-placement="stacked" fill="outline" multiple="true"
                 (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
                 <ion-select-option *ngFor="let service of services" [value]="service.name">
                   {{ service.name }}
@@ -86,12 +87,13 @@
         <ion-grid class="whiteBackground ion-margin rad">
           <ion-row class="mt10">
             <ion-col size="12">
-              <ion-title size="large">Τιμή</ion-title> <!-- Grid Title -->
+              <h3 class="ion-margin-start">Τιμή</h3> 
+
             </ion-col>
           </ion-row>
           <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-input label="Τιμή πακέτου (€)" label-placement="floating" fill="solid" placeholder="0.00"
+              <ion-input  placeholder="Εισάγετε τιμή" label="Τιμή πακέτου (€)" label-placement="stacked" fill="solid" placeholder="0.00"
                 (ionInput)="onInput($event)" [(ngModel)]="packagePrice"></ion-input>
 
 

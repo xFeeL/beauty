@@ -27,7 +27,7 @@
                 <ion-card-title>
                   <h3><b>Εισάγετε τον κωδικό που λάβατε στο κινητό σας.</b></h3> 
                 </ion-card-title>
-                <ion-card-subtitle>
+                <ion-card-subtitle class="capsoff">
                   Αν υπάρχει το ο αριθμός κινητού θα σας αποσταλεί ο κωδικός επιβεβαίωσης.
                 </ion-card-subtitle>
               </ion-card-header>
@@ -93,7 +93,7 @@
                 </ion-row>
                 <ion-row class="ion-margin">
                   <ion-col size="12">
-                    <ion-item color="primary" button class="otp_button" (click)="toTab3()" [disabled]="OTPbuttonDisabled">
+                    <ion-item color="primary"  class="otp_button cursor" (click)="toTab3()" [disabled]="OTPbuttonDisabled">
                       <ion-spinner *ngIf="loading" color="light"></ion-spinner>
                       <ion-label *ngIf="!loading" class="ion-text-center" color="light">Επαλήθευση</ion-label> 
                     </ion-item>

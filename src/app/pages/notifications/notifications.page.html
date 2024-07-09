@@ -1,15 +1,16 @@
-<ion-header class=" ion-padding-top ion-padding-bottom"> 
+<ion-header class=" ion-padding-top ion-padding-bottom">
+
+
   <ion-toolbar>
-    <ion-buttons slot="start" class="ion-no-margin">
-      <ion-menu-button color="light"></ion-menu-button> 
-    </ion-buttons>
-    <ion-title color="light" class="ion-no-padding">
+
+    <ion-title color="light" class="ion-no-padding ion-margin-start">
       <div class="vertical-align-content">
-        <ion-icon color="light" (click)="goBack()" name="arrow-back" class="ion-padding-end ion-margin-start"></ion-icon>
+        <ion-icon color="light" (click)="goBack()" name="arrow-back"
+          class="ion-padding-end ion-margin-start"></ion-icon>
         Ειδοποιήσεις
       </div>
-    </ion-title> 
-  </ion-toolbar> 
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -18,13 +19,13 @@
       <ion-row>
         <ion-img class="no_results_item" src="../../../assets/imgs/notifications.svg"></ion-img>
       </ion-row>
-      <ion-row> 
+      <ion-row>
         <ion-note class="no_results_text">
           Εδώ μπορείτε να δείτε ενημερώσεις για τον λογαριασμός σας!
         </ion-note>
       </ion-row>
-    </ion-grid> 
-  </ion-item> 
+    </ion-grid>
+  </ion-item>
 
   <ion-grid class="ion-no-padding bgL " *ngIf="new_notifications.length!=0 || notifications.length!=0">
     <ion-row class="ion-justify-content-center">
@@ -39,20 +40,30 @@
               </h6>
             </ion-col>
           </ion-row>
-        </ion-grid> 
+        </ion-grid>
 
-        <ion-grid class="ion-margin-top ion-no-padding">
+        <ion-grid class=" ion-no-padding">
           <ion-row *ngFor="let not of new_notifications">
-            <ion-item class="itemB cursor" (click)="goToSpecificPage(not)" >
+            <ion-item class="itemB cursor" (click)="goToSpecificPage(not)">
               <ion-grid class="padBlk">
                 <ion-row>
-                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_NEW'" src="../../../assets/icon/New Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_UPDATED'" src="../../../assets/icon/Updated Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_NOSHOW'" src="../../../assets/icon/No Show.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_ACCEPTED'" src="../../../assets/icon/Accepted Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="not.type === 'appointment' && (not.status === 'APPOINTMENT_REJECTED' || not.status === 'APPOINTMENT_CANCELLED')" src="../../../assets/icon/Rejected Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='PROJECT_NEWOFFERS'" src="x"></ion-img>
-                  <ion-img class="icon ion-margin-end" *ngIf="not.type=='review'" src="../../../assets/icon/customer-review.png"></ion-img>
+                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_NEW'"
+                    src="../../../assets/icon/New Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_UPDATED'"
+                    src="../../../assets/icon/Updated Appointment.png"></ion-img>
+                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_NOSHOW'"
+                    src="../../../assets/icon/No Show.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="not.type=='appointment' && not.status=='APPOINTMENT_ACCEPTED'"
+                    src="../../../assets/icon/Accepted Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="not.type === 'appointment' && (not.status === 'APPOINTMENT_REJECTED' || not.status === 'APPOINTMENT_CANCELLED')"
+                    src="../../../assets/icon/Rejected Appointment.png"></ion-img>
+                  <ion-img class="notificationImage" *ngIf="not.type=='appointment' && not.status=='PROJECT_NEWOFFERS'"
+                    src="x"></ion-img>
+                  <ion-img class="icon ion-margin-end" *ngIf="not.type=='review'"
+                    src="../../../assets/icon/customer-review.png"></ion-img>
 
                   <ion-grid>
                     <ion-row>
@@ -64,18 +75,18 @@
                       </ion-label>
                     </ion-row>
                     <ion-row>
-                      <ion-label> 
+                      <ion-label>
                         <ion-text color="medium">{{not.datetime}}</ion-text>
-                      </ion-label> 
+                      </ion-label>
                     </ion-row>
-                  </ion-grid> 
-                </ion-row> 
+                  </ion-grid>
+                </ion-row>
               </ion-grid>
-            </ion-item> 
+            </ion-item>
           </ion-row>
-        </ion-grid> 
+        </ion-grid>
 
-        <ion-grid class="ion-margin-top ion-padding-start" *ngIf="notifications.length!=0">
+        <ion-grid class=" ion-padding-start backgroundGrid" *ngIf="notifications.length!=0">
           <ion-row>
             <ion-col size="12">
               <h6>
@@ -85,22 +96,34 @@
               </h6>
             </ion-col>
           </ion-row>
-        </ion-grid> 
+        </ion-grid>
 
-        <ion-grid class="ion-margin-top ion-no-padding ion-margin-bottom">
+        <ion-grid class=" ion-no-padding ion-margin-bottom">
           <ion-row *ngFor="let notif of notifications">
             <ion-item class="itemC cursor" (click)="goToSpecificPage(notif)">
               <ion-grid class="padBlk">
                 <ion-row>
-                  <ion-img class="notificationImage" *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_NEW'" src="../../../assets/icon/New Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_UPDATED'" src="../../../assets/icon/Updated Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_NOSHOW'" src="../../../assets/icon/No Show.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_ACCEPTED'" src="../../../assets/icon/Accepted Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="notif.type === 'appointment' && (notif.status === 'APPOINTMENT_REJECTED' || notif.status === 'APPOINTMENT_CANCELLED')" src="../../../assets/icon/Rejected Appointment.png"></ion-img>
-                  <ion-img class="notificationImage" *ngIf="notif.type=='appointment' && notif.status=='PROJECT_NEWOFFERS'" src="x"></ion-img>
-                  <ion-img class="icon ion-margin-end" *ngIf="notif.type=='review'" src="../../../assets/icon/customer-review.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_NEW'"
+                    src="../../../assets/icon/New Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_UPDATED'"
+                    src="../../../assets/icon/Updated Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_NOSHOW'"
+                    src="../../../assets/icon/No Show.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type=='appointment' && notif.status=='APPOINTMENT_ACCEPTED'"
+                    src="../../../assets/icon/Accepted Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type === 'appointment' && (notif.status === 'APPOINTMENT_REJECTED' || notif.status === 'APPOINTMENT_CANCELLED')"
+                    src="../../../assets/icon/Rejected Appointment.png"></ion-img>
+                  <ion-img class="notificationImage"
+                    *ngIf="notif.type=='appointment' && notif.status=='PROJECT_NEWOFFERS'" src="x"></ion-img>
+                  <ion-img class="icon ion-margin-end" *ngIf="notif.type=='review'"
+                    src="../../../assets/icon/customer-review.png"></ion-img>
 
-                  <ion-grid> 
+                  <ion-grid>
                     <ion-row>
                       <ion-label *ngIf="notif.type=='review'" class="ion-text-wrap">
                         Έχετε νέες κριτικές! Δείτε τις και απαντήστε στους πελάτες σας.
@@ -110,16 +133,16 @@
                       </ion-label>
                     </ion-row>
                     <ion-row>
-                      <ion-label> 
+                      <ion-label>
                         <ion-text color="medium">{{notif.datetime}}</ion-text>
-                      </ion-label> 
+                      </ion-label>
                     </ion-row>
-                  </ion-grid> 
-                </ion-row> 
+                  </ion-grid>
+                </ion-row>
               </ion-grid>
-            </ion-item> 
+            </ion-item>
           </ion-row>
-        </ion-grid> 
+        </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -128,5 +151,5 @@
     <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  
+
 </ion-content>

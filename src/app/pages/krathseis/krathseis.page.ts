@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
@@ -7,11 +7,14 @@ import { KrathshPage } from '../krathsh/krathsh.page';
 import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
 import { SearchKrathshPage } from '../search-krathsh/search-krathsh.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { fromEvent, throttleTime } from 'rxjs';
 
 @Component({
   selector: 'app-krathseis',
   templateUrl: './krathseis.page.html',
   styleUrls: ['./krathseis.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
   animations: [
     trigger('buttonAnimation', [
       state('collapsed', style({
@@ -94,43 +97,56 @@ export class KrathseisPage implements OnInit {
   mode: string = "upcoming";
   cancelReason: string = "";
   reloadAppointments: any = false;
-  constructor(private route: ActivatedRoute,  private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  isMobile=false
+  constructor(
+    private route: ActivatedRoute,  
+    private rout: Router, 
+    private userService: UserService, 
+    private navCtrl: NavController, 
+    private modalController: ModalController,
+    private cdr: ChangeDetectorRef  // add this line
+  ) {
+    this.isMobile = this.userService.isMobile();
   }
+  
   ngOnInit() {
   }
+
+  
 
   ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
     this.resetFilters();
-    this.krathseistatus = '0,0,0,0,0';
-    let status = this.userService.getNavData();
-    this.userService.setNavData("");
   
-    console.log(status);
-    if (status == "pending") {
-      this.krathseistatus = "1,0,0,0,0";
-      this.itemsKrathsh[0].selected = true;
-      this.itemsKrathsh[1].selected = false;
-      this.itemsKrathsh[2].selected = false;
-      this.itemsKrathsh[3].selected = false;
-      this.itemsKrathsh[4].selected = false;
-  
-      this.krathshChip = "selected-chip";
-      this.krathshChipIconCOlor = "primary";
-      this.allChipClass = "not-selected-chip";
-      this.krathseis=[]
-      this.getKrathseis();
-    }
-    this.disableInfiniteScroll = false;
-    this.page = 0;
-  
+    // Defer non-critical tasks
+    setTimeout(() => {
+      this.krathseistatus = '0,0,0,0,0';
+      let status = this.userService.getNavData();
+      this.userService.setNavData("");
+    
+      if (status == "pending") {
+        this.krathseistatus = "1,0,0,0,0";
+        this.itemsKrathsh[0].selected = true;
+        this.itemsKrathsh[1].selected = false;
+        this.itemsKrathsh[2].selected = false;
+        this.itemsKrathsh[3].selected = false;
+        this.itemsKrathsh[4].selected = false;
+    
+        this.krathshChip = "selected-chip";
+        this.krathshChipIconCOlor = "primary";
+        this.allChipClass = "not-selected-chip";
+        this.krathseis = [];
+        this.getKrathseis();
+      }
+      this.disableInfiniteScroll = false;
+      this.page = 0;
+    }, 0);
   }
+  
   
 
 
-  isMobile() {
-    return this.userService.isMobile();
-  }
+ 
   appendToTextArea(reason: string) {
     this.cancelReason = "";
     setTimeout(() => { this.cancelReason = reason; }, 0);
@@ -244,28 +260,25 @@ export class KrathseisPage implements OnInit {
   }
 
 
+getKrathseis() {
+  this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
+    for (let k = 0; k < data.length; k++) {
+      data[k][11] = data[k][3];
+      data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
+      data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1];
+      this.krathseis.push(data[k]);
+    }
+    this.initialized = true;
+    this.cdr.markForCheck();  // add this line
+  }, err => {
+    if (err.error.text == 'No more data') {
+      this.disableInfiniteScroll = true;
+    }
+    this.initialized = true;
+    this.cdr.markForCheck();  // add this line
+  });
+}
 
-  getKrathseis() {
-    this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
-      for (let k = 0; k < data.length; k++) {
-        data[k][11] = data[k][3]
-        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
-        data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1]
-        this.krathseis.push(data[k])
-      }
-
-
-      this.initialized = true;
-    }, err => {
-      if (err.error.text == 'No more data') {
-        this.disableInfiniteScroll = true;
-      }
-      this.initialized = true;
-
-
-    });
-
-  }
   segmentChanged(event: any) {
     switch (event.detail.value) {
       case 'upcoming':
@@ -430,15 +443,7 @@ export class KrathseisPage implements OnInit {
         return 'pending-line cursor w100 rad10 ion-margin-bottom';
     }
   }
-  getDate(datetime: string): string {
-    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('D MMM, YYYY');
-  }
-
-  getTime(datetime: string): string {
-    return moment.utc(datetime, 'Do MMM, h:mm a', 'el').format('h:mm a');
-  }
-
-
+ 
 
   checkIn(krathsh: any) {
     this.reloadAppointments = true

@@ -6,9 +6,15 @@
     --ion-background-color: var(--ion-color-primary-contrast);
 }
 
+ios ion-header{
+    padding-bottom:0px !important;
+}
+
 .pd10 {
     padding-inline: 10px;
 }
+
+
 
 
 .diflx {

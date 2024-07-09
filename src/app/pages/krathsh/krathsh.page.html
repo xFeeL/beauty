@@ -46,7 +46,7 @@
        <ion-grid class="paddSE p10 rad">
           <ion-row class="bgL rad"> <ion-col size="12" class=" rad">
               <ion-list class="bgL ion-no-padding rad">
-                <ion-item lines="none" class="rad">
+                <ion-item lines="none" class="rad" detail="false">
                   <ion-label><ion-note color="medium">Πελάτης</ion-note></ion-label>
                 </ion-item>
                 <ion-grid class="ion-no-padding">
@@ -54,7 +54,7 @@
                     <ion-col size="12" class="ion-no-padding">
                       <ion-grid class="ion-no-padding">
                         <ion-row class="bgL">
-                          <ion-item button lines="none" class="w100  paddBt bgL">
+                          <ion-item  lines="none" class="w100  paddBt bgL cursor">
                             <ion-avatar class="custAvatar" (click)="goToClient()">
                               <ion-img
                                 [src]="(profile_image === 'default' ? '../../../assets/icon/default-profile.png' : profile_image)"></ion-img>

@@ -12,7 +12,7 @@
         <ion-searchbar class="search" [(ngModel)]="searchTerm" (ionInput)="onSearch($event)" (ionClear)="onClear()"
           placeholder="Όνομα Κράτησης"></ion-searchbar> </ion-col>
     </ion-row>
-  </ion-grid> <ion-list class="ion-no-padding backgroundList">
+  </ion-grid> <ion-list class="ion-no-padding backgroundList" *ngIf="krathseis.length>0">
     <ion-grid>
       <ng-container *ngFor="let krathsh of krathseis; let i = index">
 
@@ -32,10 +32,10 @@
 
           </ion-label>
           <div class="align-right" *ngIf="krathsh[2]=='accepted'">
-            <ion-icon *ngIf="isMobile()" [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon"
+            <ion-icon *ngIf="isMobile" [color]="krathsh[7]=='true'?'success':'medium'" class="checkmark-icon"
               name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
 
-            <ion-button *ngIf="!isMobile() && isAfterOneHourAgo(krathsh)" class="rounded-btn align-right"
+            <ion-button *ngIf="!isMobile && isAfterOneHourAgo(krathsh)" class="rounded-btn align-right"
               [ngClass]="{'expanded': krathsh[7]=='checked_in'}"
               [@buttonAnimation]="krathsh[7]=='true' ? 'expanded' : 'collapsed'"
               [fill]="krathsh[7]=='true' ? 'solid' : 'outline'" size="small" [class.green-border]="krathsh[7]!='true'"

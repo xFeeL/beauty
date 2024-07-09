@@ -75,12 +75,10 @@ export class UserService {
  * @param {string} call - The call to connect from.
  */
   sseConnect(call: string) {
-    console.log("Getting called from " + call)
     if (this.eventSource == undefined) {
       this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
       this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
-      console.log(this.eventSource)
       if (this.eventSource.readyState != 1) {
         this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
@@ -110,7 +108,6 @@ export class UserService {
     return Observable.create((observer: { next: (arg0: MessageEvent<any>) => void; error: (arg0: Event) => void; }) => {
       this.eventSource.onmessage = (event: MessageEvent<any>) => {
         this._zone.run(() => {
-          console.log(event.data)
           const jsonObject = JSON.parse(event.data);
           const type = jsonObject.Type;
           if (type == "New Message") {
@@ -140,11 +137,9 @@ export class UserService {
         });
       };
       this.eventSource.onerror = (error: Event) => {
-        console.log(error)
         this._zone.run(() => {
           observer.error(error);
         });
-        console.log('SSE error:', error);
         if (this.eventSource.readyState === EventSource.CLOSED) {
           
           
@@ -205,7 +200,6 @@ export class UserService {
     if (error.status === 403 && !error.skipRefresh && (localStorage.getItem('authenticated') == "true") || onboarding == true) {
       return this.getNewJwtWithRefreshToken().pipe(
         mergeMap(() => {
-          console.log("The method is " + method)
           if (method === 'POST') {
             return this.http.post(error.url, body, { headers: this.getHeaders(), withCredentials: true });
           } else {
@@ -361,6 +355,15 @@ export class UserService {
 
   }
 
+   submitContactForm(data: { fullname: string; email: string; message: string }): Observable<any> {
+    return this.http.post(API_URL + "contact", data, {
+      headers: this.getHeaders(),
+
+    }).pipe(
+    );
+  }
+
+
   deleteService(service: any): Observable<any> {
 
     return this.http.post(beautyAuthenticated_API_URL + "delete-service?service_id=" + service, {}, { headers: this.getHeaders(), withCredentials: true }).pipe(
@@ -494,7 +497,6 @@ export class UserService {
   checkForNotifications() {
     return this.http.get<any>(Authenticated_API_URL + 'check-notifications', { withCredentials: true }).pipe(map(response => {
       if (response) {
-        console.log(response)
       }
       return response;
     }));
@@ -535,7 +537,6 @@ export class UserService {
     };
     const pushObject: PushObject = this.push.init(options);
     pushObject.on('registration').subscribe((registration: any) => {
-      console.log('Device registered', registration.registrationId)
       this.registerToken(registration.registrationId, jwt)
     });
     pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
@@ -560,7 +561,6 @@ export class UserService {
   requestOTP(contact: string): Observable<any> {
     return this.http.get<any>(API_URL + 'request-otp?contact=' + contact).pipe(map(response => {
       if (response) {
-        console.log(response)
       }
       return response;
     }));
@@ -603,7 +603,6 @@ export class UserService {
           this.pushSetup(response.token);
           window.location.href = '/tabs/home';
         } else if (response && response.statusCode === 409) {
-          console.log("LOG")
           window.location.href = '/onboarding';
           this.pushSetup(response.token);
         }
@@ -673,12 +672,10 @@ export class UserService {
       try {
         return this.http.post<any>(API_URL + 'change-password', params).pipe(map(response => {
           if (response) {
-            console.log(response)
           }
           return response;
         }));
       } catch (error) {
-        console.log('Error Status: ', error);
         this.router.navigate(['/tablinks/login']);
         return of(null);
       }
@@ -736,7 +733,6 @@ export class UserService {
       servicesCategories: servicesCategories,
       packages: packages
     };
-    console.log(body)
     return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body, true))
 
@@ -814,7 +810,6 @@ export class UserService {
   guessAddresses(input: string) {
     return this.http.get<any>(API_URL + 'guess-addresses?filter=' + input, { withCredentials: true }).pipe(map(response => {
       if (response) {
-        console.log(response)
       }
       return response;
     }));
@@ -1108,7 +1103,6 @@ export class UserService {
 
     // Preparing the body with indexedPackages
     const body = { packages: indexedPackages, services: services, serviceCategories: serviceCategories };
-    console.log(body);
 
     return this.http.post(beautyAuthenticated_API_URL + "save-services", body, {
       headers: this.getHeaders(),
@@ -1507,6 +1501,12 @@ export class UserService {
     );
   }
 
+  getServiceDescription(serviceId: string): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-service-description?serviceId=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
   getEmployeesOfExpert(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-employees-of-expert", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
@@ -1590,7 +1590,6 @@ export class UserService {
       })
     ).subscribe(
       response => {
-        console.log('Log sent successfully', response);
         this.isLogging = false; // Reset flag after successful log
       },
       error => {

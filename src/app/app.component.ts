@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
 import { register } from 'swiper/element/bundle';
@@ -16,6 +16,7 @@ import { TeamServicesPage } from './pages/team-services/team-services.page';
 import { StatsPage } from './pages/stats/stats.page';
 import { ThemeService } from '../app/services/theme.service';
 import { ImagesPage } from './pages/images/images.page';
+import { ContactPage } from './pages/contact/contact.page';
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
     body {
@@ -36,6 +37,7 @@ register();
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  
   providers: [
     StyleRenderer
   ], animations: [
@@ -63,6 +65,7 @@ export class AppComponent implements WithStyles {
   initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
+  isMobile: boolean=false;
   constructor(
     private themeService: ThemeService,
     private userService: UserService,
@@ -71,6 +74,7 @@ export class AppComponent implements WithStyles {
     private modalController: ModalController
   ) {
     this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
+    this.isMobile = this.userService.isMobile();
   }
   $priority?: number | undefined;
 
@@ -212,9 +216,6 @@ export class AppComponent implements WithStyles {
     return await modal.present();
   }
 
-  isMobile() {
-    return this.userService.isMobile()
-  }
 
 
   onMenuOpen() {
@@ -277,6 +278,16 @@ export class AppComponent implements WithStyles {
   toggleChange(event: CustomEvent): void {
     this.themeService.toggleDarkTheme(event.detail.checked);
   }
+
+  
+async goToContact() {
+  const modal = await this.modalController.create({
+    component: ContactPage,
+  });
+  return await modal.present();
+}
+
+
 }
 
 

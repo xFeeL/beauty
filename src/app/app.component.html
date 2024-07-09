@@ -16,7 +16,7 @@
               <h3 class="ion-no-margin">{{name}}</h3>
               <ion-note class="mg5">{{email}}</ion-note>
             </ion-col> </ion-row> </ion-grid>
-        <ion-list id="inbox-list" *ngIf="!isMobile()">
+        <ion-list id="inbox-list" *ngIf="!isMobile">
           <ion-list-header><ion-note>Menu</ion-note></ion-list-header>
           <ion-menu-toggle auto-hide="false">
             <ion-item class="pr10" routerDirection="root" routerLink="" lines="none" detail="true"
@@ -57,7 +57,7 @@
               <ion-img src="../assets/icon/clients.png" class="ion-margin-end menu-icon"></ion-img>
               <ion-label>Πελάτες</ion-label>
             </ion-item>
-            <ion-item *ngIf="isMobile()" class="pr10 item" routerDirection="root" routerLink="" lines="none" detail="true"
+            <ion-item *ngIf="isMobile" class="pr10 item" routerDirection="root" routerLink="" lines="none" detail="true"
             (click)="goToMessages()">
             <ion-img src="../assets/icon/messenger.png" class="ion-margin-end menu-icon"></ion-img>
             <ion-label>Μηνύματα</ion-label>
@@ -78,6 +78,9 @@
             (click)="goToSettings()">              
               <ion-img src="../assets/icon/cog.png" class="ion-margin-end menu-icon"></ion-img>
               <ion-label>Ρυθμίσεις</ion-label> </ion-item>
+              <ion-item  lines="none" detail="true" class="cursor" (click)="goToContact()">
+                <ion-img src="../assets/icon/help.png" class="ion-margin-end menu-icon"></ion-img>
+                <ion-label>Βοήθεια</ion-label> </ion-item>
           </ion-menu-toggle>
 
         </ion-list><ion-menu-toggle auto-hide="false">
@@ -86,7 +89,7 @@
             Αποσύνδεση
           </ion-button>
         </ion-menu-toggle> </ion-content> <ion-footer>
-        <ion-grid class="bgPr">
+        <!--<ion-grid class="bgPr">
           <ion-row>
             <ion-col size="12">
               <ion-text color="light">Ακολουθήστε μας</ion-text>
@@ -103,7 +106,7 @@
             </ion-col>
             
           </ion-row>
-        </ion-grid>
+        </ion-grid>-->
       </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>

@@ -1,18 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonModal, IonPopover, ModalController, NavController, NavParams, Platform } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
-import { OverlayEventDetail } from '@ionic/core/components';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
-import { Camera, CameraResultType, CameraSource, GalleryPhoto, Photo } from '@capacitor/camera';
-import { FileInfo, Filesystem } from '@capacitor/filesystem';
-import {
-  FacebookLogin,
-  FacebookLoginPlugin,
-  FacebookLoginResponse,
-} from '@capacitor-community/facebook-login';
+import { Camera, CameraResultType, CameraSource, GalleryPhoto } from '@capacitor/camera';
+import { Filesystem } from '@capacitor/filesystem';
+import { FacebookLogin, FacebookLoginPlugin, FacebookLoginResponse } from '@capacitor-community/facebook-login';
 import { ExternalService } from 'src/app/services/external.service';
+import { ImgCropperEvent } from '@alyle/ui/image-cropper';
+import { LyDialog } from '@alyle/ui/dialog';
+import { CropperDialog } from '../edit-profile/cropper-dialog';
+import { ChangeDetectorRef } from '@angular/core';
+import { OverlayEventDetail } from '@ionic/core/components';
+
 @Component({
   selector: 'app-images',
   templateUrl: './images.page.html',
@@ -20,30 +19,28 @@ import { ExternalService } from 'src/app/services/external.service';
 })
 export class ImagesPage implements OnInit {
   folder_id = "";
-  images: GalleryItem[] = new Array<GalleryItem>;
+  images: GalleryItem[] = [];
   folderName: any;
   @ViewChild('_fileInput') _fileInput: any;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
   photos: { imageLink: string, selected: boolean }[] = [];
   @ViewChild('facebookModal') facebookModal!: IonModal;
-
   @ViewChild('instagramModal') instagramModal!: IonModal;
   @ViewChild('deletePop') deletePop!: IonPopover;
-
   currentAlbumPhotos: any;
   selectedImage = { imageLink: '', selected: false };
-  currentAlbum: any; // The currently selected album
+  currentAlbum: any; 
   fbLogin!: FacebookLoginPlugin;
-
   facebookAccessToken: any;
   @ViewChild('newPhotosModal') newPhotosModal!: IonModal;
-  newPhotos = new Array<String>;
-  newImages: Array<string> = new Array<string>;
+  newPhotos = new Array<String>();
+  newImages: Array<string> = [];
   pagesToChoose: any;
   personalName: any;
   personalImage: any;
   choosePage: boolean = true;
-  pageChosen: boolean = false; facebookUserAccountId: any;
+  pageChosen: boolean = false;
+  facebookUserAccountId: any;
   albumChosen: boolean = false;
   pageName: any = "";
   instagramPhotos: any;
@@ -53,28 +50,32 @@ export class ImagesPage implements OnInit {
   loadingOn = true;
   storageInput: boolean = false;
   deleteImages = false;
-  constructor(private modalController: ModalController, private navParams: NavParams, private actRouter: ActivatedRoute, public gallery: Gallery, private userService: UserService, private navCtrol: NavController, private plt: Platform,
-    private actionSheetController: ActionSheetController, private alertController: AlertController, private externalService: ExternalService) {
-    this.setupFbLogin();
+  cropped?: string;
+  selectedImages: any[] = [];
 
+  constructor(
+    private modalController: ModalController,
+    private navParams: NavParams,
+    private gallery: Gallery,
+    private userService: UserService,
+    private navCtrol: NavController,
+    private plt: Platform,
+    private actionSheetController: ActionSheetController,
+    private alertController: AlertController,
+    private externalService: ExternalService,
+    private _dialog: LyDialog,
+    private _cd: ChangeDetectorRef
+  ) {
+    this.setupFbLogin();
   }
+
   ngOnInit() {
     FacebookLogin.initialize({ appId: '718122076068329' });
   }
 
   ionViewWillEnter() {
-    //this.folderName = this.userService.getNavData();
-    /*this.folder_id = this.navParams.get('folder_id')
-    this.userService.getFolderName(this.folder_id).subscribe(data => {
-      this.folderName = data.displayedName
-    }, err => {
-
-    })*/
-
-    
     this.getImageNames();
   }
-
 
   loadLightBox() {
     this.gallery.ref().load(this.images);
@@ -83,36 +84,23 @@ export class ImagesPage implements OnInit {
 
   async setupFbLogin() {
     this.fbLogin = FacebookLogin;
-
   }
 
   deleteFolderImages() {
-    this.deleteImages = !this.deleteImages
-    this.deletePop.dismiss()
+    this.deleteImages = !this.deleteImages;
+    this.deletePop.dismiss();
   }
 
   openAlbum(album: any) {
     this.albumChosen = true;
     this.pageChosen = false;
     this.selectedImage = { imageLink: '', selected: false };
-
-
     this.currentAlbum = album;
-    this.currentAlbumPhotos = []
+    this.currentAlbumPhotos = [];
     this.externalService.getFacebookPhotosFromAlbumId(this.facebookAccessToken, album.id).subscribe(data => {
-      
-      
-      for (let i = 0; i < data.photos.data.length; i++) {
-        const photo = { imageLink: data.photos.data[i].images[0].source, selected: false };
-
-        this.currentAlbumPhotos.push(photo)
-
-
-
-      }
-      
-
-      
+      data.photos.data.forEach((photo: { images: { source: any; }[]; }) => {
+        this.currentAlbumPhotos.push({ imageLink: photo.images[0].source, selected: false });
+      });
     });
   }
 
@@ -120,75 +108,6 @@ export class ImagesPage implements OnInit {
     this.albumChosen = false;
     this.choosePage = false;
     this.pageChosen = true;
-
-
-
-  }
-  deleteImage(index: number, item: any) {
-    // Remove the image at the specified index from the 'images' array
-    
-    
-    const url = item.data.src;
-
-    // Use a regular expression to extract the image ID from the URL
-    const imageIdMatch = url.match(/\/([a-zA-Z0-9_]+)\.png/);
-    if (!imageIdMatch) {
-      console.error("Failed to extract image ID from URL");
-      return;
-    }
-    const imageId = imageIdMatch[1];
-    
-
-    this.userService.deleteImagePortfolio(imageId).subscribe(data => {
-      // Handle successful response
-      this.images.splice(index, 1);
-
-    }, err => {
-      // Handle error
-    });
-  }
-
-
-
-  getImageNames() {
-    data2.splice(0);
-    this.userService.getExpertImages().subscribe(data => {
-      if (data != null) {
-
-
-        for (let i = 0; i < data.length; i++) {
-
-
-          data2.push({
-            src: data[i],
-            thumb: data[i]
-          })
-        }
-        this.images = data2.map(item =>
-          new ImageItem({ src: item.src, thumb: item.thumb })
-        );
-        this.loadLightBox();
-        
-
-      }
-    }, err => {
-
-    })
-  }
-
-  async confirmFacebookModal() {
-    this.loadingOn = true;
-
-    for (let i = 0; i < this.selectedImages.length; i++) {
-      const base64data = await this.imageUrlToBase64(this.selectedImages[i].imageLink);
-      
-      this.newImages.push(base64data.split(',')[1])
-    }
-    this.facebookModal.dismiss();
-    this.loadingOn = false;
-
-
-
   }
 
   async presentAlert(index: number, item: any) {
@@ -204,7 +123,7 @@ export class ImagesPage implements OnInit {
           text: 'Ναι',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.deleteImage(index, item)
+            this.deleteImage(index, item);
           },
         },
       ],
@@ -215,155 +134,111 @@ export class ImagesPage implements OnInit {
 
   async confirmInstagramModal() {
     this.loadingOn = true;
-    for (let i = 0; i < this.selectedImages.length; i++) {
-      const base64data = await this.imageUrlToBase64(this.selectedImages[i].imageLink);
-      
-      this.newImages.push(base64data.split(',')[1])
+    for (const img of this.selectedImages) {
+      const base64data = await this.imageUrlToBase64(img.imageLink);
+      this.newImages.push(base64data.split(',')[1]);
     }
     this.instagramModal.dismiss();
     this.loadingOn = false;
-
-
   }
+
   goBack() {
     this.modalController.dismiss();
-
-  }
-
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      //this.message = `Hello, ${ev.detail.data}!`;
-    }
   }
 
   confirmNewPhotosModal() {
-    this.loadingOn = true
-    this.userService.addNewPhotos(this.newImages).subscribe(data => {
-      this.getImageNames();
-      this.loadingOn = false
-
-    }, err => {
-      this.loadingOn = false
-      this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger")
-    })
-    this.newImages.splice(0)
-
-    this.newPhotosModal.dismiss('confirm');
+    this.loadingOn = true;
+    this.userService.addNewPhotos(this.newImages).subscribe(
+      () => {
+        this.getImageNames();
+        this.loadingOn = false;
+        this.newImages = [];
+        this.newPhotosModal.dismiss('confirm');
+      },
+      () => {
+        this.loadingOn = false;
+        this.userService.presentToast('Κάτι πήγε στραβά. Προσπαθήστε ξανά.', 'danger');
+      }
+    );
 
   }
 
   cancelNewPhotosModal() {
-    this.newImages.splice(0)
-
+    this.newImages.splice(0);
     this.newPhotosModal.dismiss('confirm');
-
   }
 
-
-
   removeImage(item: any) {
-    const newArr: string[] = this.newImages.filter((element) => {
-      return element != item;
-    });
-    this.newImages = newArr
+    this.newImages = this.newImages.filter(element => element != item);
   }
 
   async selectImages() {
     const images = await Camera.pickImages({
       quality: 100,
-      
     });
-
+  
     if (images && images.photos.length > 0) {
-      const photos = images.photos;
-      await this.saveImages(photos);
-      this.updateGallery();
+      for (const photo of images.photos) {
+        const base64Data = await this.readAsBase64(photo);
+        this.openCropperDialog(`data:image/${photo.format};base64,${base64Data}`);
+      }
     }
   }
-
+  
   async saveImages(photos: GalleryPhoto[]) {
-    const newImages = [];
-
     for (const photo of photos) {
-
-      if (photo.format != "jpeg" && photo.format != "png") {
-        this.userService.presentToast("Δεν υποστηρίζεται αυτή η μορφή εικόνας", "danger");
+      if (photo.format !== 'jpeg' && photo.format !== 'png') {
+        this.userService.presentToast('Δεν υποστηρίζεται αυτή η μορφή εικόνας', 'danger');
       } else {
         const base64Data = await this.readAsBase64(photo);
-        newImages.push(base64Data);
+        this.newImages.push(base64Data.split(',')[1]);
       }
     }
-
-    // Add new images to the array
-    this.newImages = [...this.newImages, ...newImages];
   }
 
-  async readAsBase64(photo: GalleryPhoto): Promise<string> {
+  async readAsBase64(photo: GalleryPhoto): Promise<any> {
     if (this.plt.is('hybrid')) {
-      if (photo.path !== undefined) { // add check for undefined
-        const file = await Filesystem.readFile({
-          path: photo.path
-        });
-        return file.data as string;
-      } else {
-        throw new Error('photo.path is undefined');
-      }
+      const file = await Filesystem.readFile({ path: photo.path! });
+      return file.data; // Filesystem.readFile returns an object with a data property that is a string
     } else {
-      const url = photo.webPath;
-      if (url !== undefined) {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        let base64Data = await this.convertBlobToBase64(blob);
-        return (base64Data as string).split(',')[1];
-      } else {
-        throw new Error('photo.webPath is undefined');
-      }
+      const response = await fetch(photo.webPath!);
+      const blob = await response.blob();
+      const base64Data = await this.convertBlobToBase64(blob);
+      return base64Data.split(',')[1];
     }
   }
-
   async imageUrlToBase64(url: string): Promise<string> {
     const response = await fetch(url);
     const blob = await response.blob();
-
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64data = reader.result?.toString() ?? '';
-        resolve(base64data);
-      };
+      reader.onloadend = () => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
   }
 
-
-  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-    const reader = new FileReader;
+  convertBlobToBase64 = (blob: Blob) => new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
     reader.onerror = reject;
-    reader.onload = () => {
-      resolve(reader.result);
-    };
+    reader.onload = () => resolve(reader.result as string);
     reader.readAsDataURL(blob);
   });
 
   updateGallery() {
-    // Force ng-gallery to re-render by changing the array reference
     this.newImages = [...this.newImages];
   }
 
-
   importFromStorage() {
-    //this._fileInput.nativeElement.click();
-    this.selectImages()
+    this._fileInput.nativeElement.click();
   }
 
   cancelFacebookModal() {
-    this.facebookModal.dismiss()
+    this.facebookModal.dismiss();
   }
 
   cancelInstagramModal() {
-    this.instagramModal.dismiss()
+    this.instagramModal.dismiss();
   }
 
   backToPages() {
@@ -373,119 +248,36 @@ export class ImagesPage implements OnInit {
   }
 
   goToPage(page: any) {
-    this.albums = []
+    this.albums = [];
     this.choosePage = false;
-    this.pageChosen = true
-    this.pageName = page.name
-    let tempToken;
-    if (this.facebookUserAccountId == page.id) {
-      
+    this.pageChosen = true;
+    this.pageName = page.name;
 
-      this.getAlbums(this.facebookAccessToken, page.id)
-
-    } else if (page.token == undefined) {
-      
-      
+    if (this.facebookUserAccountId === page.id) {
+      this.getAlbums(this.facebookAccessToken, page.id);
+    } else if (!page.token) {
       this.externalService.getPageAccessToken(this.facebookAccessToken, page.id).subscribe(data2 => {
-        page.token = data2.access_token
-        this.getAlbums(page.token, page.id)
-      })
-
+        page.token = data2.access_token;
+        this.getAlbums(page.token, page.id);
+      });
     } else {
-      
-      this.getAlbums(page.token, page.id)
-
+      this.getAlbums(page.token, page.id);
     }
-
   }
 
   getAlbums(token: string, pageId: string) {
     this.externalService.getAlbums(token, pageId).subscribe(data => {
       this.facebookModal.present();
-      for (let i = 0; i < data.data.length; i++) {
-        const album = { folder_name: data.data[i].name, imageLink: data.data[i].picture.data.url, id: data.data[i].id };
-        this.albums.push(album);
-      }
-    })
-  }
-
-
-
-
-  importFromFacebook() {
-    this.facebookOAuth()
-  }
-  async facebookOAuth(): Promise<void> {
-    this.pagesToChoose = []
-    this.choosePage = true
-    const FACEBOOK_PERMISSIONS = ['user_photos', 'pages_show_list', 'pages_read_engagement']
-    const result = await this.fbLogin.login({ permissions: FACEBOOK_PERMISSIONS });
-    if (result && result.accessToken) {
-      
-      this.facebookAccessToken = result.accessToken.token
-      this.externalService.getFacebookUserNameAndImage(this.facebookAccessToken).subscribe(data => {
-        let temp = {
-          name: data.name,
-          url: data.picture.data.url,
-          id: data.id
-        };
-        this.facebookUserAccountId = data.id
-        this.pagesToChoose.push(temp)
-      })
-      this.externalService.getFacebookPagesNameAndImage(this.facebookAccessToken).subscribe(pages => {
-        
-        
-        for (let i = 0; i < pages.data.length; i++) {
-          let temp = {
-            name: pages.data[i].name,
-            url: pages.data[i].picture.data.url,
-            id: pages.data[i].id
-
-          };
-          this.pagesToChoose.push(temp)
-        }
-        
-        this.pageChosen = false;
-        this.choosePage = true;
-        this.albumChosen = false;
-        this.selectedImages = []
-        this.facebookModal.present();
-      }, err => {
-      })
-    }
-  }
-  selectedImages: any[] = [];
-  selectImage(image: any) {
-    if (!this.selectedImages.includes(image)) {
-      // If the image is not already selected, add it to the array
-      this.selectedImages.push(image);
-    } else {
-      // If the image is already selected, remove it from the array
-      this.selectedImages = this.selectedImages.filter(selectedImage => selectedImage !== image);
-    }
-
-    image.selected = !image.selected;
+      data.data.forEach((album: { name: any; picture: { data: { url: any; }; }; id: any; }) => {
+        this.albums.push({ folder_name: album.name, imageLink: album.picture.data.url, id: album.id });
+      });
+    });
   }
 
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Επιλέξτε πηγή εικόνας',
       buttons: [
-        /*{
-          text: 'Facebook',
-          icon: 'logo-facebook',
-          handler: () => {
-            this.importFromFacebook();
-          }
-        },
-        {
-          text: 'Instagram',
-          icon: 'logo-instagram',
-          handler: () => {
-            this.loginWithInstagram();
-          }
-        },*/
-
         {
           text: 'Αποθηκευτικός Χώρος',
           icon: 'folder',
@@ -493,7 +285,6 @@ export class ImagesPage implements OnInit {
             this.importFromStorage();
           }
         },
-
         {
           text: 'Άκυρο',
           icon: 'close',
@@ -504,29 +295,40 @@ export class ImagesPage implements OnInit {
     await actionSheet.present();
   }
 
-
-
-  async presentActionSheetChoosePage() {
-    const buttons = []
-    for (let i = 0; i < this.pagesToChoose.length; i++) {
-      let temp = {
-        text: this.pagesToChoose[i].username,
-        icon: 'logo-instagram',
-        handler: () => {
-          //this.loginWithInstagram(page.id);
+  async handleFileInput(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64String = reader.result as string;
+        if (base64String) {
+          this.openCropperDialog(base64String);
+        } else {
+          console.error('Base64 string is undefined');
         }
       };
-      buttons.push(temp)
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+      };
+      reader.readAsDataURL(file);
     }
+  }
+  async presentActionSheetChoosePage() {
+    const buttons = this.pagesToChoose.map((page: { username: any; }) => ({
+      text: page.username,
+      icon: 'logo-instagram',
+      handler: () => {
+        // this.loginWithInstagram(page.id);
+      }
+    }));
+
     const actionSheet = await this.actionSheetController.create({
       header: 'Επιλέξτε Instagram λογαριασμό',
       buttons: buttons
     });
+
     await actionSheet.present();
   }
-
-
-
 
   loginWithInstagram() {
     const authWindow = window.open(this.externalService.instagramAuthUrl, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
@@ -543,44 +345,15 @@ export class ImagesPage implements OnInit {
           clearInterval(intervalId);
           const code = this.getCodeFromUrl(authWindow.location.href);
           this.userService.getInstagramTokenFromCode(code.split('#')[0]).subscribe(data => {
-            
             this.externalService.getInstagramUser(data.access_token).subscribe(data3 => {
-              
-              let temp = {
-                name: data3.username,
-                url: "",
-                id: data3.id
-
-              };
-              this.pagesToChoose = []
-              this.pagesToChoose.push(temp)
+              this.pagesToChoose = [{ name: data3.username, url: "", id: data3.id }];
               this.instagramModal.present();
-            }, err => {
-            })
+            });
             this.externalService.getInstagramPhotos(data.access_token).subscribe(images => {
-              this.instagramImages = []
-              
-              for (let i = 0; i < images.data.length; i++) {
-                if (images.data[i].media_type != 'VIDEO') {
-                  if ('children' in images.data[i]) {
-                    for (let j = 0; j < images.data[i].children.data.length; j++) {
-                      if (images.data[i].children.data[j].media_type != 'VIDEO') {
-                        const photo = { imageLink: images.data[i].children.data[j].media_url, selected: false };
-                        this.instagramImages.push(photo)
-                      }
-                    }
-                  } else {
-                    const photo = { imageLink: images.data[i].media_url, selected: false };
-                    this.instagramImages.push(photo)
-                  }
-                }
-              }
-              this.instagramModal.present()
-            }, err => {
-            })
-          }, err => {
-          })
-          
+              this.instagramImages = images.data.filter((img: { media_type: string; }) => img.media_type !== 'VIDEO').map((img: { media_url: any; }) => ({ imageLink: img.media_url, selected: false }));
+              this.instagramModal.present();
+            });
+          });
           authWindow.close();
         }
       } catch (e) {
@@ -594,9 +367,121 @@ export class ImagesPage implements OnInit {
     return params.get('code');
   }
 
+  selectImage(image: any) {
+    if (!this.selectedImages.includes(image)) {
+      this.selectedImages.push(image);
+    } else {
+      this.selectedImages = this.selectedImages.filter(selectedImage => selectedImage !== image);
+    }
+    image.selected = !image.selected;
+  }
+
+  getImageNames() {
+    this.userService.getExpertImages().subscribe(data => {
+      this.images = data.map((item: any) => new ImageItem({ src: item, thumb: item }));
+      this.loadLightBox();
+    });
+  }
+
+  deleteImage(index: number, item: any) {
+    const url = item.data.src;
+    const imageIdMatch = url.match(/\/([a-zA-Z0-9_]+)\.png/);
+    if (!imageIdMatch) {
+      console.error('Failed to extract image ID from URL');
+      return;
+    }
+    const imageId = imageIdMatch[1];
+    this.userService.deleteImagePortfolio(imageId).subscribe(() => {
+      this.images.splice(index, 1);
+    });
+  }
+
+  async takePicture() {
+    const image = await Camera.getPhoto({
+      quality: 100,
+      allowEditing: false,
+      resultType: CameraResultType.Uri,
+    });
+    this.openCropperDialog(image.webPath!);
+  }
+
+  openCropperDialog(imageURL: string) {
+    if (!imageURL) {
+      console.error('Image URL is undefined');
+      return;
+    }
+  
+    this.cropped = null!;
+    this._dialog.open(CropperDialog, {
+      data: {
+        imageURL: imageURL,
+        width: 700,
+        height: 350,
+        round: false
+      },
+      width: '320px',
+      disableClose: true
+    }).afterClosed.subscribe((result?: ImgCropperEvent) => {
+      if (result && result.dataURL) {
+        this.cropped = result.dataURL;
+        this._cd.markForCheck();
+        this.newImages.push(this.cropped.split(',')[1]);
+      } else {
+        console.error('Cropped image data URL is undefined');
+      }
+    });
+  }
+  
+  async presentActionSheetImageSource() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Επιλέξτε πηγή εικόνας',
+      buttons: [
+        {
+          text: 'Αποθηκευτικός Χώρος',
+          icon: 'folder',
+          handler: () => {
+            this.importFromStorage();
+          }
+        },
+        {
+          text: 'Κάμερα',
+          icon: 'camera',
+          handler: () => {
+            this.takePicture();
+          }
+        },
+        {
+          text: 'Άκυρο',
+          icon: 'close',
+          role: 'cancel'
+        }
+      ]
+    });
+    await actionSheet.present();
+  }
+
+    async confirmFacebookModal() {
+    this.loadingOn = true;
+
+    for (let i = 0; i < this.selectedImages.length; i++) {
+      const base64data = await this.imageUrlToBase64(this.selectedImages[i].imageLink);
+      console.log(base64data)
+      this.newImages.push(base64data.split(',')[1])
+    }
+    this.facebookModal.dismiss();
+    this.loadingOn = false;
 
 
 
+  }
+
+  
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+      //this.message = `Hello, ${ev.detail.data}!`;
+    }
+  }
 }
 
 const data2 = [
@@ -604,7 +489,4 @@ const data2 = [
     src: "",
     thumb: ""
   },
-
 ];
-
-

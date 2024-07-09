@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-no-margin">
+      <ion-button (click)="goBack()" slot="start" fill="clear">
+        <ion-icon color="light" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Επικοινωνία</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="ion-padding-vertical">
+    <div class="container">
+      <div class="content-center">
+        <div class="header-center">
+          <ion-badge color="primary" class="badge">Επικοινωνία</ion-badge>
+          <h2 class="title">Θα <span class="highlight">χαρούμε</span> να σας βοηθήσουμε!</h2>
+        </div>
+        <div>
+          <div>
+            <ion-item lines="none" class="input-item">
+              <ion-input label="Ονοματεπώνυμο" labelPlacement="floating" [(ngModel)]="formData.fullname"  class="input"></ion-input>
+            </ion-item>
+            <ion-item lines="none" class="input-item">
+              <ion-input  label="E-mail" labelPlacement="floating" [(ngModel)]="formData.email" type="email" placeholder="name@example.com" class="input"></ion-input>
+            </ion-item>
+            <ion-item lines="none" class="input-item">
+              <ion-textarea  label="Μήνυμα" labelPlacement="floating" [(ngModel)]="formData.message"  class="textarea"></ion-textarea>
+            </ion-item>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ion-content>
+
+<ion-footer>
+  <ion-button (click)="submitData()" expand="full" color="primary" class="capsoff ion-no-margin" [disabled]="!isValid()">
+    <ion-text color="light">Αποστολή</ion-text>
+  </ion-button>
+</ion-footer>

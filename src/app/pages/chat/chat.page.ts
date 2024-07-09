@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, ModalController, NavController, NavParams, Platform } from '@ionic/angular';
 import { UserService } from '../../services/user.service';
@@ -18,6 +18,8 @@ import { ClientProfilePage } from '../client-profile/client-profile.page';
   selector: 'app-chat',
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -56,8 +58,7 @@ export class ChatPage implements OnInit {
   pl45 = "ion-margin-left ion-margin-right row pl45"
   paddingEnd = "paddingEnd"
   last_message: any;
-  constructor(private modalController: ModalController, private navParams: NavParams, public lightbox: Lightbox, public gallery: Gallery, private actRouter: ActivatedRoute, private navCtrl: NavController, private userService: UserService, private route: Router, private plt: Platform) {
-
+  constructor(private modalController: ModalController, private navParams: NavParams, public lightbox: Lightbox, public gallery: Gallery, private actRouter: ActivatedRoute, private navCtrl: NavController, private userService: UserService, private route: Router, private plt: Platform, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   @ViewChild(IonContent, { static: false }) content2!: IonContent;
@@ -66,34 +67,34 @@ export class ChatPage implements OnInit {
   }
 
   ionViewWillEnter() {
-
     this.page = 0;
-
+  
     this.userId = this.navParams.get('user_id')
-
+  
     this.userService.sseConnect(window.location.toString());
-
+  
     this.userService.getUserName(this.userId).subscribe(data => {
       let temp = data[0].split('$')
       this.userName = temp[0] + " " + temp[1]
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     })
-
+  
     this.userService.getUserImage(this.userId).subscribe(data => {
       this.profile_image = data
-
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     }, err => {
       this.profile_image = err.error.text
-
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     })
-
+  
     this.userService.getMessages(this.userId, this.page).subscribe(data3 => {
       for (let i = 0; i < data3.length; i++) {
-
+  
         data3[i].time = moment(data3[i].datetime).locale("el").format('HH:mm')
         data3[i].datetime = moment(data3[i].datetime).locale("el").format('DD MMM, YYYY')
         data3[i].id = i; // Generate a unique ID for each message
         data3[i].showTime = false;
-
+  
         if (data3[i].id_sender == this.userId) {
           if (data3[i - 1] != undefined) {
             if (data3[i].id_sender == data3[i - 1].id_sender) {
@@ -103,29 +104,20 @@ export class ChatPage implements OnInit {
             }
             if (data3[i].datetime != data3[i - 1].datetime) {
               data3[i].showAvatar = true
-
             }
           } else {
             data3[i].showAvatar = true
           }
-
-
         }
         if (data3[i - 1] != undefined) {
-
-
           if (data3[i - 1].id_sender == data3[i].id_sender) {
             data3[i].addPadding = false;
           } else {
             data3[i].addPadding = true;
-
           }
-
         }
-
       }
-
-
+  
       this.messages = data3.reverse();
       let temp = this.messages.length - 1
       if (this.messages.length > 0) {
@@ -133,17 +125,16 @@ export class ChatPage implements OnInit {
           this.messages[temp].addPadding = true;
         } else {
           this.messages[temp].addPadding = false;
-
         }
       }
       this.last_message = this.messages[temp]
-
+  
       this.initialized = true;
-
+  
       this.scrollToBottomSetTimeOut(300);
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     })
-    //this.userService.getServerSentEvent("http://127.0.0.1:8080/api/expert-auth/stream").subscribe((data: any) => );
-
+  
     this.userService.messageReceived.subscribe((message: any) => {
       let message_received = new Message()
       const jsonObject = JSON.parse(message);
@@ -152,28 +143,23 @@ export class ChatPage implements OnInit {
       message_received.datetime = moment(jsonObject.Datetime).locale("el").format('DD MMM, YYYY')
       message_received.time = moment(jsonObject.Datetime).locale("el").format('HH:mm')
       message_received.showTime = false;
-
+  
       message_received._image = jsonObject.IsImage
       message_received.images = jsonObject.Images
       let temp = this.messages.length - 1
-
+  
       if (this.messages[temp].id_sender != message_received.id_sender) {
         this.messages[temp].addPadding = true;
-
       } else {
         this.messages[temp].showAvatar = false;
-
       }
       message_received.showAvatar = true;
       this.messages.push(message_received)
       this.scrollToBottomSetTimeOut(300);
-      // Add the received message to the messages array
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     });
-
-
-
-
-  };
+  }
+  
 
 
 

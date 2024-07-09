@@ -39,10 +39,6 @@ export class AddScheduleExceptionPage implements OnInit {
     this.modalController.dismiss()
   }
 
-  onFirstDateTimeChange() {
-    this.endDateTime = this.firstDateTime;
-    
-  }
 
 
 

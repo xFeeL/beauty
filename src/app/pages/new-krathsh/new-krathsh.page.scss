@@ -85,6 +85,8 @@
   
   .mxw {
     max-width: 100%;
+    background: var(--ion-color-dark-contrast) !important;
+    border-radius:10px;
   }
   
   .event-container {

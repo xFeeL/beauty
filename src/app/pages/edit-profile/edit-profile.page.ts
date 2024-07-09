@@ -287,7 +287,6 @@ export class EditProfilePage {
 
   }
 
-
   async takePicture() {
     const image = await Camera.getPhoto({
       quality: 100,
@@ -300,19 +299,23 @@ export class EditProfilePage {
 
 
 
-
   openCropperDialog(imageURL: string | undefined) {
     this.cropped = null!;
     this._dialog.open(CropperDialog, {
-      data: imageURL,
-      width: 320,
+      data: {
+        imageURL: imageURL, // imageURL from parameter
+        width: 150, // width for the cropper
+        height: 150, // height for the cropper
+        round: true // shape of the cropper
+      },
+      width: '320px', // Width of the dialog box, not the cropper itself
       disableClose: true
     }).afterClosed.subscribe((result?: ImgCropperEvent) => {
       if (result) {
         this.cropped = result.dataURL;
-        this.image = this.cropped
-        this._cd.markForCheck();
-        this.new_image = "true"
+        this.image = this.cropped;
+        this._cd.markForCheck(); // Trigger change detection if using OnPush strategy
+        this.new_image = "true"; // Setting a flag (should likely be a boolean rather than a string)
       }
     });
   }
@@ -324,7 +327,6 @@ export class EditProfilePage {
     }
     return '';
   }
-
 
 
   async presentActionSheet() {

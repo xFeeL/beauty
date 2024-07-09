@@ -5,19 +5,23 @@
         <ion-icon slot="icon-only" name="arrow-back" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="light">Λεπτομέρειες & Επιλογές</ion-title>
+    <ion-title color="light">Περισσότερα</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
-  <h2 >{{service_name}}</h2>
+  <h2 >{{serviceName}}</h2>
 
   <!-- Service Description -->
   <div class="service-description">
-    <ion-note>Ανακαλύψτε την τέλεια εμφάνιση με τις υπηρεσίες κουρέματος μας. Προσφέρουμε μια ποικιλία από στυλ και τεχνικές για να ταιριάξουμε με κάθε προτίμηση και τύπο μαλλιών. Επιλέξτε το ιδανικό κούρεμα που αναδεικνύει το στυλ και την προσωπικότητά σας.</ion-note>
+    <ion-note *ngIf="serviceDescription; else noDescription">{{serviceDescription}}</ion-note>
   </div>
-
+  
+  <ng-template #noDescription>
+    <ion-note>Δεν υπάρχει περιγραφή.</ion-note>
+  </ng-template>
+  
   <!-- Choices with Radio Buttons -->
 <ion-radio-group class="choices" [(ngModel)]="selectedVariation">
 
@@ -27,7 +31,7 @@
     <ion-item lines="none" class="no-hover">
       <ion-label>
         <h3>{{variation.name}}</h3>
-        <ion-note>Διάρκεια: {{variation.duration}} λεπτά - Τιμή: {{variation.price}}</ion-note>
+        <ion-note class="f13">Διάρκεια: {{variation.duration}} λεπτά - Τιμή: {{variation.price}}</ion-note>
       </ion-label>
       <ion-radio slot="start" [value]="variation"></ion-radio> <!-- Use a unique property here -->
     </ion-item>

@@ -62,7 +62,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 registerLocaleData(localeEl, 'el');
 
 @NgModule({
-  declarations: [AppComponent,CropperDialog],
+  declarations: [AppComponent,CropperDialog ],
   imports: [FormsModule,BrowserModule,LightgalleryModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule,BrowserAnimationsModule, BrowserAnimationsModule,
     LyButtonModule,
     LyToolbarModule,

@@ -21,18 +21,18 @@
           <ion-row class="ion-justify-content-center ">
             <ion-col size-lg="12" size-xs="12">
               <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Υπηρεσίας"
-                label-placement="floating" fill="solid" placeholder="Εισάγετε Όνομα"
+                label-placement="stacked" fill="solid" placeholder="Εισάγετε Όνομα"
                 [(ngModel)]="serviceName"></ion-input>
             </ion-col>
           </ion-row>
           <ion-row *ngIf="variations.length==0">
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
-                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="0.00"></ion-input>
+                label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
-                label="Διάρκεια (λεπτά)" label-placement="floating" fill="solid" placeholder="15"></ion-input>
+                label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -40,13 +40,13 @@
 
 
 
-              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid"
+              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="stacked" fill="solid"
                 okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
                   [value]="category.name">{{category.name}}</ion-select-option>
 
               </ion-select>
-              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="floating" fill="solid"
+              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="stacked" fill="solid"
                 okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
                 <ion-select-option *ngFor="let category of categories"
                   [value]="category">{{category}}</ion-select-option>
@@ -58,9 +58,9 @@
           </ion-row>
           <ion-row>
             <ion-col size="12">
-              <ion-textarea labelPlacement="floating" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
+              <ion-textarea labelPlacement="stacked" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
                 color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
-                labelPlacement="floating" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
+                labelPlacement="stacked" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
             </ion-col>
 
           </ion-row>
@@ -107,18 +107,18 @@
             <ion-col size-lg="12" size-xs="12">
               <ion-icon name="trash" slot="end" color="danger"></ion-icon>
               <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Τιμολόγησης"
-                label-placement="floating" fill="solid" placeholder="π.χ. κοντά μαλλιά"
+                label-placement="stacked" fill="solid" placeholder="π.χ. κοντά μαλλιά"
                 [(ngModel)]="variation.name"></ion-input>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="variation.price" (ionInput)="onInput($event)" #ionInputEl
-                label="Τιμή (€)" label-placement="floating" fill="solid" placeholder="0.00"></ion-input>
+                label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
               <ion-input color="primary" [(ngModel)]="variation.duration" (ionInput)="onDurationInput($event)"
-                label="Διάρκεια (λεπτά)" label-placement="floating" fill="solid" placeholder="15"></ion-input>
+                label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import * as moment from 'moment';
 import { ModalController, NavController } from '@ionic/angular';
 import { ChatPage } from '../chat/chat.page';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class MessagesPage implements OnInit {
   chats: any;
@@ -16,8 +18,7 @@ export class MessagesPage implements OnInit {
   temp!: string;
   content_class!: string;
 
-  constructor(private modalController: ModalController, private route: Router, private userService: UserService, private navCtrl: NavController) { }
-
+  constructor(private modalController: ModalController, private route: Router, private userService: UserService, private navCtrl: NavController, private changeDetectorRef: ChangeDetectorRef) { }
   ngOnInit() {
   }
 
@@ -46,17 +47,18 @@ export class MessagesPage implements OnInit {
   
       this.content_class = data.length === 0 ? "theContent" : "";
       this.initialized = true;
+  
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     }, err => {
       this.content_class = "theContent";
+      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     });
   
     if (this.userService.newMessage$) {
       this.userService.gotMessageNotifications().subscribe(() => {
         this.userService.newMessage$.next(false);
-
       }, () => {
         this.userService.newMessage$.next(false);
-
       });
     }
   }

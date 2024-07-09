@@ -77,8 +77,13 @@ ion-content {
   --ion-background-color: var(--ion-color-tertiary);
 }
 
+.ios ion-datetime{
+  background:var(--ion-color-dark-contrast)
+}
+
+
 ion-toolbar {
-  --background: var(--ion-color-primary-contrast)
+  --background: var(--ion-color-dark-contrast)
 }
 
 ion-item {
@@ -290,6 +295,13 @@ ion-modal::part(backdrop) {
   right: 3%;
 }
 
+.vertical-align-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  /* occupy the full space */
+}
+
 .capsoff {
   text-transform: none !important;
 }
@@ -417,4 +429,21 @@ ion-select {
 .googleImage{
   width:80px;
   height:auto;
+}
+
+ .ios ion-searchbar {
+      color: var(--ion-color-dark) !important;
+  }
+
+
+ion-radio.ios::part(container) {
+  width: 20px;
+  height: 20px;
+
+  border: 2px solid  var(--ion-color-primary);
+  border-radius: 4px;
+}
+
+.radio-checked.ios::part(container) {
+  border-color: var(--ion-color-primary);
 }

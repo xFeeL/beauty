@@ -1,12 +1,11 @@
 <ion-header>
 
   <ion-toolbar>
-    <ion-buttons slot="start" class="ion-no-margin">
-      <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
-    <ion-title color="light" class="ion-no-padding">
+
+    <ion-title color="light" class="ion-no-padding ion-margin-start">
       <div class="vertical-align-content">
         <ion-icon color="light" (click)="goBack()" name="arrow-back"
-          class="ion-padding-end ion-margin-start"></ion-icon>
+          class="ion-padding-end cursor "></ion-icon>
         Κρατήσεις
       </div>
     </ion-title>
@@ -78,28 +77,29 @@
           <ion-grid>
             <ng-container *ngFor="let krathsh of krathseis; let i = index">
 
-              <ion-chip *ngIf="mode === 'upcoming' && (i === 0 || getDate(krathsh[3]) !== getDate(krathseis[i-1][3]))"
+              <ion-chip
+                *ngIf="mode === 'upcoming' && (i === 0 || (krathsh[3] | dateFormat) !== (krathseis[i-1][3] | dateFormat))"
                 color="primary" class=" date-chip ion-margin-top">
-                <ion-label color="primary">{{ getDate(krathsh[3]) }}</ion-label>
+                <ion-label color="primary">{{ krathsh[3] | dateFormat }}</ion-label>
               </ion-chip>
+
               <ion-item [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
                 <ion-avatar class="custAvatarHed">
                   <ion-img
                     [src]="(krathsh[10] === 'default' ? '../../../assets/icon/default-profile.png' : krathsh[10])"></ion-img>
-
                 </ion-avatar>
                 <ion-label>
                   <h2 class="customFontHeader">{{krathsh[4]}}</h2>
-                  <ion-note class="customFontNote" *ngIf="mode=='upcoming'">Ώρα: {{getTime(krathsh[3])}} • Τιμή:
+                  <ion-note class="customFontNote" *ngIf="mode=='upcoming'">Ώρα: {{ krathsh[3] | dateFormat:'h:mm a' }}
+                    • Τιμή: €{{krathsh[9]}}</ion-note>
+                  <ion-note class="customFontNote" *ngIf="mode=='new'">{{ krathsh[3] | dateFormat }} • Τιμή:
                     €{{krathsh[9]}}</ion-note>
-                  <ion-note class="customFontNote" *ngIf="mode=='new'">{{krathsh[3]}} • Τιμή: €{{krathsh[9]}}</ion-note>
-
                 </ion-label>
                 <div class="align-right" *ngIf="krathsh[2]=='accepted' && isAfterOneHourAgo(krathsh)">
-                  <ion-icon *ngIf="isMobile() " [color]="krathsh[5]=='true'?'success':'medium'" class="checkmark-icon"
+                  <ion-icon *ngIf="isMobile" [color]="krathsh[5]=='true'?'success':'medium'" class="checkmark-icon"
                     name="checkbox-outline" (click)="checkIn(krathsh); $event.stopPropagation();"></ion-icon>
 
-                  <ion-button *ngIf="!isMobile()" class="rounded-btn align-right"
+                  <ion-button *ngIf="!isMobile" class="rounded-btn align-right"
                     [ngClass]="{'expanded': krathsh[5]=='checked_in'}"
                     [@buttonAnimation]="krathsh[5]=='true' ? 'expanded' : 'collapsed'"
                     [fill]="krathsh[5]=='true' ? 'solid' : 'outline'" size="small"
