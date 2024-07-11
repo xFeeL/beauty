@@ -20,13 +20,13 @@
         <div>
           <div>
             <ion-item lines="none" class="input-item">
-              <ion-input label="Ονοματεπώνυμο" labelPlacement="floating" [(ngModel)]="formData.fullname"  class="input"></ion-input>
+              <ion-input placeholder="Εισάγετε το ονοματεπώνυμο σας" label="Ονοματεπώνυμο" labelPlacement="stacked" [(ngModel)]="formData.fullname"  class="input"></ion-input>
             </ion-item>
             <ion-item lines="none" class="input-item">
               <ion-input  label="E-mail" labelPlacement="floating" [(ngModel)]="formData.email" type="email" placeholder="name@example.com" class="input"></ion-input>
             </ion-item>
             <ion-item lines="none" class="input-item">
-              <ion-textarea  label="Μήνυμα" labelPlacement="floating" [(ngModel)]="formData.message"  class="textarea"></ion-textarea>
+              <ion-textarea placeholder="Εισάγετε το μήνυμα σας"  label="Μήνυμα" labelPlacement="floating" [(ngModel)]="formData.message"  class="textarea"></ion-textarea>
             </ion-item>
            
           </div>

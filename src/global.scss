@@ -295,6 +295,10 @@ ion-modal::part(backdrop) {
   right: 3%;
 }
 
+.ios ion-toolbar{
+  --border-width: 0px !important;
+}
+
 .vertical-align-content {
   display: flex;
   align-items: center;

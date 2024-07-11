@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
 import { register } from 'swiper/element/bundle';
 import { StyleRenderer, ThemeVariables, WithStyles, lyl } from '@alyle/ui';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { EditProfilePage } from './pages/edit-profile/edit-profile.page';
 import { ClientsPage } from './pages/clients/clients.page';
 import { ReviewsPage } from './pages/reviews/reviews.page';
@@ -17,6 +17,8 @@ import { StatsPage } from './pages/stats/stats.page';
 import { ThemeService } from '../app/services/theme.service';
 import { ImagesPage } from './pages/images/images.page';
 import { ContactPage } from './pages/contact/contact.page';
+import { Location } from '@angular/common';
+
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
     body {
@@ -66,7 +68,7 @@ export class AppComponent implements WithStyles {
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
   isMobile: boolean=false;
-  constructor(
+  constructor(private location: Location,private platform:Platform,
     private themeService: ThemeService,
     private userService: UserService,
     private rout: Router, 
@@ -271,7 +273,23 @@ export class AppComponent implements WithStyles {
     this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
       this.hasNewMessages = newMessage;
     });
+
+    this.platform.ready().then(() => {
+      this.platform.backButton.subscribeWithPriority(10, async () => {
+        // Check if any modal is open
+        const modal = await this.modalController.getTop();
+        if (modal) {
+          // Dismiss the modal
+          await modal.dismiss();
+        } else {
+          // Navigate back
+          this.location.back();
+  
+        }
+      });
+    });
   }
+  
 
 
   // Listen for the toggle check/uncheck to toggle the dark theme
