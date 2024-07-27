@@ -251,9 +251,11 @@ export class ChatPage implements OnInit {
       this.scrollToBottomSetTimeOut(300);
       this.imagesToSend = []
       this.sendingMessageLoading = false
+      this.changeDetectorRef.detectChanges(); 
     }, err => {
       this.sendingMessageLoading = false
       this.userService.presentToast("Προέκυψε κάποιο σφάλμα", "danger")
+      this.changeDetectorRef.detectChanges(); 
 
     });
 
@@ -408,6 +410,7 @@ export class ChatPage implements OnInit {
 
         }
       }
+      this.changeDetectorRef.detectChanges(); 
     })
   }
 

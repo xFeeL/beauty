@@ -114,7 +114,7 @@
                       </ion-icon>
                     </ion-item>--> <ion-item [class]="mobileVariableClass">
                         <ion-label position="floating" color="medium">Κινητό</ion-label>
-                        <ion-input (ionInput)="mobileCheck()" placeholder="+30 69x xxx xxxx" [(ngModel)]="mobile"
+                        <ion-input  type="tel" (ionInput)="mobileCheck()" placeholder="+30 69x xxx xxxx" [(ngModel)]="mobile"
                           [maskito]="options" [maskitoElement]="maskPredicate"></ion-input>
                         <!-- <ion-icon name="eye-outline"></ion-icon> -->
                         <ion-icon class="ion-margin-top pt7" slot="end" [name]="mobileIconName" [color]="mobileColor">

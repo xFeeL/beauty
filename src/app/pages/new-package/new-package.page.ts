@@ -30,6 +30,33 @@ export class NewPackagePage implements OnInit {
     this.onboarding = this.navParams.get('onboarding');
     if (this.onboarding) {
       this.services = this.navParams.get('services');
+      this.services = this.services.reduce((acc: any[], service: { variations: any[]; name: any; }) => {
+        if (service.variations && service.variations.length > 0) {
+          const variationsAsServices = service.variations.map((variation: { name: any; }) => ({
+            ...service,
+            ...variation, 
+            name: `${service.name} (${variation.name})`, 
+            selected: false, 
+          }));
+          acc.push(...variationsAsServices);
+        } else {
+          acc.push({
+            ...service,
+            selected: false
+          });
+        }
+        return acc;
+      }, []);
+      this.packageToEdit = this.navParams.get('package');
+      if (this.packageToEdit.name != "") {
+        this.editMode = true
+        this.packageName = this.packageToEdit.name;
+        this.packageId = this.packageToEdit.id;
+        this.packageDescription = this.packageToEdit.description;
+        this.packagePrice = this.packageToEdit.price;
+        this.selectedServices = this.packageToEdit.services;
+        this.changeDetectorRef.detectChanges();
+      }
     } else {
       this.userService.getAllServicesAndVariations().subscribe(data => {
         // Filter services to include only those where has_variations is false
@@ -177,16 +204,22 @@ export class NewPackagePage implements OnInit {
     return false;
   }
 
-  deletePackage(){
-    this.userService.deletePackage(this.packageId).subscribe((res: any) => {
-      this.userService.presentToast("Το πακέτο διαγράφηκε με επιτυχία","success")
-      this.modalController.dismiss({
-        'edited': true
+  deletePackage() {
+    if (!this.onboarding) {
+      this.userService.deletePackage(this.packageId).subscribe((res: any) => {
+        this.userService.presentToast("Το πακέτο διαγράφηκε με επιτυχία", "success");
+        this.modalController.dismiss({
+          'edited': true
+        });
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger");
       });
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.","danger")
-
-    });
-   
+    } else {
+      this.modalController.dismiss({
+        'deletePackage': true,
+        'packageId': this.packageId
+      });
+    }
   }
+  
 }

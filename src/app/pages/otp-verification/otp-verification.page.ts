@@ -55,9 +55,9 @@ export class OtpVerificationPage implements OnInit {
     this.user.forgotPassword(this.email);
   }
 
-  toTab3() {
+  toTab3(field1: string, field2: string, field3: string, field4: string, field5: string, field6: string) {
     this.OTPbuttonDisabled = "false";
-    this.otp = this.field1 + this.field2 + this.field3 + this.field4+this.field5+this.field6;
+    this.otp = (field1 + field2 + field3 + field4 + field5 + field6).trim();
     this.buttonDisabled = false;
     this.loading=true
     const contact = this.navData.authType === "ordinary" ? this.navData.phone : this.navData.email;
@@ -78,6 +78,18 @@ export class OtpVerificationPage implements OnInit {
 
     });
   }
+
+  checkField6AndSubmit(event: any) {
+    if (event.target.value.length === 1) {
+  
+      setTimeout(() => {
+        this.toTab3(this.field1, this.field2, this.field3, this.field4, this.field5, event.target.value);
+      }, 100);
+    }
+  }
+
+
+  
   completeLogin() {
 
     if (this.navData.authType === "ordinary") {

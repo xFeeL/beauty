@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
@@ -43,8 +43,9 @@ export class WrarioPage implements OnInit {
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
   addedExceptions: boolean = false;
-  needReload: boolean=false;
-  constructor(private alertController: AlertController, private modalController: ModalController, private userService: UserService) {
+  needReload: boolean = false;
+
+  constructor(private alertController: AlertController, private modalController: ModalController, private userService: UserService, private cdr: ChangeDetectorRef) {
 
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
@@ -74,11 +75,10 @@ export class WrarioPage implements OnInit {
             originalStart: start,
             originalEnd: end,
             repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
-
           };
-
         });
         this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
+        this.cdr.markForCheck(); // Notify Angular of the changes
       },
       err => {
         console.error('Error fetching schedule exceptions', err);
@@ -117,7 +117,7 @@ export class WrarioPage implements OnInit {
           day.timeIntervals = [{ start: '09:00', end: '17:00' }];
         }
       });
-
+      this.cdr.markForCheck(); // Notify Angular of the changes
     }, err => {
       // Handle error here
     });
@@ -126,8 +126,6 @@ export class WrarioPage implements OnInit {
 
   ionViewWillEnter() {
     this.loadWrarioData()
-
-
   }
 
   handleClick() {
@@ -147,20 +145,17 @@ export class WrarioPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    
-    
+
     if (data) {
       const formattedException = this.formatException(data);
       if (this.scheduleExceptions) {
         this.scheduleExceptions.push(formattedException);
         this.daysControl.setValue(this.scheduleExceptions);
-        this.addedExceptions = true
+        this.addedExceptions = true;
+        this.cdr.markForCheck(); // Notify Angular of the changes
       } else {
         console.error("scheduleExceptions is not initialized");
       }
-
-      
-      
     }
   }
 
@@ -176,21 +171,13 @@ export class WrarioPage implements OnInit {
     };
   }
 
-
-
-
   goBack() {
-    
-    this.modalController.dismiss(this.needReload)
+    this.modalController.dismiss(this.needReload);
   }
-
-
 
   onDayToggle(day: any) {
     // Toggle the day
-    //day.open = event.detail.checked;
-    
-    day.open = !day.open
+    day.open = !day.open;
     if (day.open) {
       // If this is the first day toggled, store it
       if (!this.firstDayToggled) {
@@ -211,12 +198,10 @@ export class WrarioPage implements OnInit {
         day.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
       }
     }
+    this.cdr.markForCheck(); // Notify Angular of the changes
   }
 
-
   onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-    
-
     const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
 
     for (let previousInterval of day.timeIntervals) {
@@ -229,7 +214,6 @@ export class WrarioPage implements OnInit {
 
       if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
         this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-        
 
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
           timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
@@ -243,36 +227,31 @@ export class WrarioPage implements OnInit {
     }
 
     if (this.firstDayToggled.name == day.name) {
-      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
+    this.cdr.markForCheck(); // Notify Angular of the changes
   }
 
-
   onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-    
-
     const parsedEndTime = moment(selectedEndTime, 'HH:mm');
     const parsedStartTime = moment(timeInterval.start, 'HH:mm');
 
     if (parsedEndTime.isBefore(parsedStartTime)) {
       this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
-      
 
       // delay setting the new value until next event loop to give the UI a chance to update
       new Promise(resolve => setTimeout(resolve, 0)).then(() => {
         timeInterval.end = this.addHours(timeInterval.start, 2);
         selectedEndTime = timeInterval.end;
       });
-
     } else {
       timeInterval.end = selectedEndTime; // Only update end time if it's not before start time
     }
 
     if (this.firstDayToggled.name == day.name) {
-      
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
+    this.cdr.markForCheck(); // Notify Angular of the changes
   }
 
   addTimeInterval(day: any) {
@@ -281,6 +260,7 @@ export class WrarioPage implements OnInit {
     const defaultEnd = previousInterval ? this.addHours(previousInterval.end, 2) : '11:00';
 
     day.timeIntervals.push({ start: defaultStart, end: defaultEnd });
+    this.cdr.markForCheck(); // Notify Angular of the changes
   }
 
   addHours(time: string, hours: number): string {
@@ -298,7 +278,6 @@ export class WrarioPage implements OnInit {
         return '23:30';
       }
     } else {
-      
       return '';
     }
   }
@@ -310,15 +289,9 @@ export class WrarioPage implements OnInit {
     repeat: string
   }>): any[] {
     return exceptionsArray.map(exception => {
-      
-
       const start = exception.originalStart;
       const end = exception.originalEnd;
       const repeat = exception.repeat === "Επαναλαμβανόμενο";
-
-      
-      
-      
 
       return {
         start: start,
@@ -330,8 +303,8 @@ export class WrarioPage implements OnInit {
 
   deleteTimeInterval(day: any, index: number) {
     day.timeIntervals.splice(index, 1);
+    this.cdr.markForCheck(); // Notify Angular of the changes
   }
-
 
   formatHour(hour: number, minutes: string): string {
     return this.pad(hour) + ':' + minutes;
@@ -341,22 +314,18 @@ export class WrarioPage implements OnInit {
     return num < 10 ? '0' + num : num.toString();
   }
 
-
   saveAll(safeToSave: boolean, cancelAllFutureOverlappedAppointments: any) {
-
-
     this.userService.saveWrario(this.daysWrario, this.deformatExceptions(this.daysControl.value), safeToSave, cancelAllFutureOverlappedAppointments).subscribe(data => {
-      this.userService.presentToast("Το ωράριο αποθηκεύτηκε με επιτυχία.", "success")
-      this.modalController.dismiss(true)
-      
+      this.userService.presentToast("Το ωράριο αποθηκεύτηκε με επιτυχία.", "success");
+      this.modalController.dismiss(true);
+      this.cdr.markForCheck(); // Notify Angular of the changes
     }, err => {
       if (err.status === 406 && err.error && err.error["Overlapping appointments"]) {
         this.presentAlertWithChoices(err.error["Overlapping appointments"]);
       } else {
         this.userService.presentToast("Κάτι πήγε στραβά στην αποθήκευση των εξαιρέσεων.", "danger");
       }
-
-    })
+    });
   }
 
   async presentAlertWithChoices(overlappingDates: string) {
@@ -367,9 +336,7 @@ export class WrarioPage implements OnInit {
         {
           text: 'ακυρωση ολων',
           handler: () => {
-            
-            /*this.needRefresh=true
-            */
+            /*this.needRefresh=true*/
             this.saveAll(true, true);
           }
         },

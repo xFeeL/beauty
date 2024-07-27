@@ -114,10 +114,9 @@ export class KrathseisPage implements OnInit {
 
   
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
-    this.resetFilters();
-  
+
     // Defer non-critical tasks
     setTimeout(() => {
       this.krathseistatus = '0,0,0,0,0';
@@ -137,6 +136,8 @@ export class KrathseisPage implements OnInit {
         this.allChipClass = "not-selected-chip";
         this.krathseis = [];
         this.getKrathseis();
+      }else{
+         this.resetFilters();
       }
       this.disableInfiniteScroll = false;
       this.page = 0;
@@ -149,7 +150,8 @@ export class KrathseisPage implements OnInit {
  
   appendToTextArea(reason: string) {
     this.cancelReason = "";
-    setTimeout(() => { this.cancelReason = reason; }, 0);
+    setTimeout(() => { this.cancelReason = reason; this.cdr.markForCheck(); }, 0);
+    
   }
 
   closeRejectPopover() {
@@ -174,7 +176,7 @@ export class KrathseisPage implements OnInit {
 
     })
     this.rejectPop.dismiss();
-
+    this.cdr.markForCheck(); 
   }
 
 
@@ -384,6 +386,7 @@ getKrathseis() {
     this.getKrathseis();
 
     this.krathshPop.dismiss();
+    this.cdr.markForCheck(); 
   }
 
 
@@ -393,7 +396,7 @@ getKrathseis() {
     this.krathshPop.dismiss();
   }
 
-  resetFilters() {
+  async resetFilters() {
     this.page = 0;
     this.krathshIds = []
     this.krathseis = []
@@ -477,7 +480,7 @@ getKrathseis() {
       this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
 
 
-
+      this.cdr.markForCheck(); 
 
 
 

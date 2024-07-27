@@ -174,7 +174,7 @@ export class EditProfilePage {
       if (data.data != undefined) {
         
         this.address = data.data.address
-        this.coordinates = data.data.longitude + "," + data.data.latitude
+        this.coordinates =  data.data.latitude +  "," +data.data.longitude 
         this.needReferesh = true
       }
       // Do something with the data returned from the modal
@@ -457,7 +457,7 @@ export class EditProfilePage {
 
   saveAddress(suggestion:any){
     this.address=suggestion.address
-    this.coordinates= suggestion.longitude + "," + suggestion.latitude
+    this.coordinates= suggestion.latitude +"," + suggestion.longitude 
 
     this.needReferesh = true
   }

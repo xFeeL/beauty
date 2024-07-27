@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
@@ -23,7 +23,7 @@ export class AddServicesPage implements OnInit {
   packages: any[] = [];
   combinedList: any[] = []; // This will hold both services and packages
   
-  constructor(private userService: UserService, private modalController: ModalController, private navParams: NavParams) { }
+  constructor(private userService: UserService, private modalController: ModalController, private navParams: NavParams,private _cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
 
@@ -31,6 +31,7 @@ export class AddServicesPage implements OnInit {
   ionViewWillEnter() {
     this.resetState();
     this.loadInitialData();
+    this._cd.markForCheck(); // Add this line
   }
   
   resetState() {
@@ -42,8 +43,8 @@ export class AddServicesPage implements OnInit {
     const servicesFromNav = this.navParams.get('selectedServicesAndPackages');
     if (servicesFromNav) {
       this.selectedServicesAndPackages = JSON.parse(JSON.stringify(servicesFromNav));
-      
     }
+    this._cd.markForCheck(); // Add this line
   }
 
   onAllSegmentClicked() {
@@ -56,30 +57,29 @@ export class AddServicesPage implements OnInit {
       component: ChooseVariationPage,
       componentProps: {
         service_id: service.id,
-        service_name:service.name
+        service_name: service.name
       }
     });
-
+  
     await modal.present();
-
+  
     const { data } = await modal.onDidDismiss();
     if (data) {
-      
-      
-      service.chosenVariation=data
-      if(service.selected && service.chosenVariation!=null){
-        service.variationName==null
+      service.chosenVariation = data;
+      if (service.selected && service.chosenVariation != null) {
+        service.variationName == null;
       }
   
       service.isSelected = !service.isSelected; // Toggle the isSelected property
-     if (service.type === 'package') {
+      if (service.type === 'package') {
         this.updatePackageSelection(service);
-      }else{
+      } else {
         this.updateServiceSelection(service);
-  
       }
-    } 
+      this._cd.markForCheck(); // Add this line
+    }
   }
+  
 
   
   
@@ -89,8 +89,14 @@ export class AddServicesPage implements OnInit {
       services: this.userService.getServices("all"),
       packages: this.userService.getPackages()
     }).subscribe(
-      data => this.handleDataLoadSuccess(data),
-      err => this.handleDataLoadError(err)
+      data => {
+        this.handleDataLoadSuccess(data);
+        this._cd.markForCheck(); // Add this line
+      },
+      err => {
+        this.handleDataLoadError(err);
+        this._cd.markForCheck(); // Add this line
+      }
     );
   }
   
@@ -99,7 +105,9 @@ export class AddServicesPage implements OnInit {
     this.packages = this.transformPackages(data.packages);
     this.services = this.combineServicesAndPackages(data.services, this.packages);
     this.initialized = true;
+    this._cd.markForCheck(); // Add this line
   }
+  
   
   private transformPackages(packages: any[]): any[] {
     return packages.map(pkg => ({
@@ -121,8 +129,8 @@ export class AddServicesPage implements OnInit {
   private handleDataLoadError(err: any) {
     // Handle error here (e.g., show an error message or log it)
     console.error("Error loading data:", err);
+    this._cd.markForCheck(); // Add this line
   }
-  
   
 
 
@@ -142,8 +150,10 @@ export class AddServicesPage implements OnInit {
         }));
   
       this.updateCombinedList();
+      this._cd.markForCheck(); // Add this line
     }, err => {
       // Handle error here
+      this._cd.markForCheck(); // Add this line
     });
   }
 
@@ -165,45 +175,49 @@ export class AddServicesPage implements OnInit {
     this.getServices(category);
   }
 
- getServices(category: any): Observable<void> {
-  const completionSubject = new Subject<void>();
-
-  let categoryToSend = category === "all" ? "all" : category.id;
-  this.categoryServiceSegment = category === "all" ? "all" : category.name;
-
-  this.userService.getServices(categoryToSend).subscribe(data => {
-    this.services = data
-      .filter((service: any) => !this.selectedServicesAndPackages.some((selectedService: { id: any; }) => selectedService.id === service.id))
-      .map((service: any) => ({
-        ...service,
-        isSelected: false,
-        type: 'service' 
-      }));
-
-    this.updateCombinedList();
-    completionSubject.next();
-    completionSubject.complete();
-  }, err => {
-    completionSubject.error(err);
-  });
-
-  return completionSubject.asObservable();
-}
-
+  getServices(category: any): Observable<void> {
+    const completionSubject = new Subject<void>();
+  
+    let categoryToSend = category === "all" ? "all" : category.id;
+    this.categoryServiceSegment = category === "all" ? "all" : category.name;
+  
+    this.userService.getServices(categoryToSend).subscribe(data => {
+      this.services = data
+        .filter((service: any) => !this.selectedServicesAndPackages.some((selectedService: { id: any; }) => selectedService.id === service.id))
+        .map((service: any) => ({
+          ...service,
+          isSelected: false,
+          type: 'service' 
+        }));
+  
+      this.updateCombinedList();
+      completionSubject.next();
+      completionSubject.complete();
+      this._cd.markForCheck(); // Add this line
+    }, err => {
+      completionSubject.error(err);
+      this._cd.markForCheck(); // Add this line
+    });
+  
+    return completionSubject.asObservable();
+  }
   
 
   goBack() {
-    this.modalController.dismiss()
+    this.modalController.dismiss();
+    this._cd.markForCheck(); // Add this line
   }
 
   onSearch(event: any) {
     if (this.categoryServiceSegment != "all") {
       this.categoryServiceSegment = "all";
-      this.getServices("all").subscribe(() => {  // Assuming getServices returns an Observable
+      this.getServices("all").subscribe(() => {
         this.performSearch(event.target.value.toLowerCase());
+        this._cd.markForCheck(); // Add this line
       });
     } else {
       this.performSearch(event.target.value.toLowerCase());
+      this._cd.markForCheck(); // Add this line
     }
   }
 
@@ -301,9 +315,8 @@ export class AddServicesPage implements OnInit {
 
 
   saveServices() {
-    
-    
-    this.modalController.dismiss(this.selectedServicesAndPackages)
+    this.modalController.dismiss(this.selectedServicesAndPackages);
+    this._cd.markForCheck(); // Add this line
   }
 
 }

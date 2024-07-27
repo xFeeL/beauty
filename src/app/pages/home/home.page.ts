@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonPopover, ModalController, NavController, Platform } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
@@ -54,6 +54,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class HomePage implements OnInit {
   lineChartLabels: string[] = [];
@@ -111,14 +113,14 @@ export class HomePage implements OnInit {
       if (newAppointment) {
         // Handle the new appointment logic here
         this.userService.refreshAppointment$.next(false);  // Reset the newAppointment flag
-
-        this.getAppointmentsOfRange(this.startDate, this.endDate)
+        this.getAppointmentsOfRange(this.startDate, this.endDate);
+        this.cdr.markForCheck(); // Add this line
       }
     });
-
+  
     this.hasNewNotificationsSubscription = this.userService.newNotification$.subscribe(hasNewNotif => {
-      this.hasNewNotifications = hasNewNotif
-
+      this.hasNewNotifications = hasNewNotif;
+      this.cdr.markForCheck(); // Add this line
     });
   }
 
@@ -127,23 +129,20 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.checkScreenWidth();
-
     this.resizeListener = this.platform.resize.subscribe(() => {
       this.checkScreenWidth();
+      this.cdr.markForCheck(); // Add this line
     });
-
+  
     this.userService.invokeGoToKrathseis$.subscribe(() => {
       this.goToKrathseis();
+      this.cdr.markForCheck(); // Add this line
     });
   }
 
-
   ionViewWillEnter() {
-    /*if (this.userService.isMobile()) {
-      this.rout.navigate(['/tabs/krathseis']);
-    }*/
     this.userService.sseConnect(window.location.toString());
-
+  
     this.userService.getEmployeesOfExpert().subscribe(
       data => {
         this.employees = data;
@@ -160,7 +159,7 @@ export class HomePage implements OnInit {
         });
         this.changeAgendaDuration(data.length);
         this.ngAfterViewChecked();
-
+  
         if (!this.startDate) {
           this.startDate = new Date();
         }
@@ -168,14 +167,14 @@ export class HomePage implements OnInit {
           this.endDate = new Date();
           this.endDate.setDate(this.startDate.getDate() + this.calendarDaysLength);
         }
-
+  
         this.getAppointmentsOfRange(this.startDate, this.endDate);
         this.calendarComponent.getApi().setOption('locale', 'el');
-
+  
         this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(data2 => {
           this.addBackgroundEvents(data2);
           this.updateDateRangeText();
-
+          this.cdr.markForCheck(); // Add this line
         });
       },
       err => {
@@ -183,13 +182,11 @@ export class HomePage implements OnInit {
       }
     );
     this.userService.getWrario().subscribe(data => {
-      this.generalScheduleExceptions = data.exceptions
-
-
-    })
-
-
+      this.generalScheduleExceptions = data.exceptions;
+      this.cdr.markForCheck(); // Add this line
+    });
   }
+  
 
 
   async goToKrathseis() {
@@ -759,7 +756,7 @@ export class HomePage implements OnInit {
   changeAgendaDuration(employees_length: number) {
     if (this.calendarOptions.views && this.calendarOptions.views['resourceTimeGridWeek']) {
       if (employees_length <= 2) {
-        this.calendarDaysLength = 5
+        this.calendarDaysLength = 4
 
       } else if (employees_length <= 3) {
         this.calendarDaysLength = 3
@@ -827,11 +824,11 @@ export class HomePage implements OnInit {
       console.error('startDate or endDate is undefined');
       return;
     }
-
+  
     const formattedStartDate = this.formatDateForAPI(startDate);
     const formattedEndDate = this.formatDateForAPI(endDate);
     const calendarApi = this.calendarComponent.getApi();
-
+  
     this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
       data => {
         // Clear only appointment events
@@ -842,9 +839,10 @@ export class HomePage implements OnInit {
           }
         });
         this.events = this.transformToEventInput(data);
-
+  
         // Merge and update the calendar with all events
         this.mergeAndSetEvents();
+        this.cdr.markForCheck(); // Add this line
       },
       err => {
         // Clear only appointment events in case of error
@@ -855,9 +853,11 @@ export class HomePage implements OnInit {
           }
         });
         console.error('Error fetching appointments:', err);
+        this.cdr.markForCheck(); // Add this line
       }
     );
   }
+  
 
 
 
@@ -1008,7 +1008,7 @@ export class HomePage implements OnInit {
     const backgroundEvents: EventInput[] = [];
     let minStartTime = '24:00';
     let maxEndTime = '00:00';
-
+    console.log(workingPlans)
     const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
 
     // Get the current background event color from the Ionic CSS variable
@@ -1090,6 +1090,7 @@ export class HomePage implements OnInit {
 
     // Add general schedule exceptions
     if (this.generalScheduleExceptions) {
+      console.log(this.generalScheduleExceptions)
       this.generalScheduleExceptions.forEach((exception: any) => {
         const start = new Date(exception.start);
         const end = new Date(exception.end);
@@ -1131,19 +1132,19 @@ export class HomePage implements OnInit {
 
   mergeAndSetEvents() {
     const mergedEvents = [...this.events, ...this.backgroundEvents];
-
+  
     const calendarApi = this.calendarComponent.getApi();
     calendarApi.removeAllEvents();
     calendarApi.addEventSource(mergedEvents);
-
+  
     // Apply the updated options
     calendarApi.setOption('slotMinTime', this.calendarOptions.slotMinTime);
     calendarApi.setOption('slotMaxTime', this.calendarOptions.slotMaxTime);
     calendarApi.setOption('events', mergedEvents);
-
-    this.cdr.detectChanges();
+  
+    this.cdr.detectChanges(); // Add this line
   }
-
+  
 
   getUnavailableIntervals(availableIntervals: string[]): string[] {
     const fullDayStart = '00:00';

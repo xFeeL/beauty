@@ -1,6 +1,6 @@
 <ion-header></ion-header><ion-content class="ion-padding"> <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-col size="12" sizeXs="12" sizeSm="7" sizeMd="5.5" sizeLg="4" sizeXl="3" class="customCol">
+      <ion-col size="12" sizeXs="12" sizeSm="7" sizeMd="5.5" sizeLg="5" sizeXl="3.5" class="customCol">
         <swiper-container allow-touch-move="false" scrollbar="true" #swiperElRef slides-per-view="1"
           class="my-custom-slides">
           <swiper-slide class="ion-padding" data-hash="slide1">
@@ -213,33 +213,33 @@
                   <ion-label>{{day.name}}</ion-label>
                   <ion-toggle color="success" (click)="onDayToggle(day)"></ion-toggle>
                 </ion-item>
-                <!--<div *ngIf="day.open" class="time-selection">-->
-                <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection"> <ion-grid
-                    class="ion-no-margin w100">
+                <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection">
+                  <ion-grid class="ion-no-margin w100">
                     <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
                       <ion-col size="5">
                         <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="stacked" fill="outline"
-                          interface="popover" [(ngModel)]="timeInterval.start"
-                          (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
+                          interface="popover" [(ngModel)]="timeInterval.start" (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
                           <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
                         </ion-select>
                       </ion-col>
                       <ion-col size="5">
                         <ion-select class="smaller-font" label="Κλείνει στις" label-placement="stacked" fill="outline"
-                          interface="popover" [(ngModel)]="timeInterval.end"
-                          (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
+                          interface="popover" [(ngModel)]="timeInterval.end" (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
                           <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
                         </ion-select>
                       </ion-col>
                       <ion-col size="2">
-                        <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline"
-                          size="large" (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon> <ion-icon
-                          class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger"
-                          (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon> </ion-col>
+                        <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline" size="large"
+                          (click)="addTimeInterval(day)" *ngIf="i === 0"></ion-icon>
+                        <ion-icon class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger"
+                          (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon>
+                      </ion-col>
                     </ion-row>
-                  </ion-grid> </div>
+                  </ion-grid>
+                </div>
               </div>
             </ion-list>
+            
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"

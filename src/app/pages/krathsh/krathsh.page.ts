@@ -11,6 +11,7 @@ import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
   selector: 'app-krathsh',
   templateUrl: './krathsh.page.html',
   styleUrls: ['./krathsh.page.scss'],
+  
   animations: [
     trigger('buttonAnimation', [
       state('collapsed', style({

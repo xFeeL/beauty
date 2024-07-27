@@ -193,17 +193,22 @@ constructor(
   }
 
   deleteService() {
-    this.userService.deleteService(this.service_id).subscribe((res: any) => {
-      this.userService.presentToast("Η υπηρεσία διαγράφηκε επιτυχώς.", "success")
-      this.modalController.dismiss({
-        'edited': true
+    if (!this.onboarding) {
+      this.userService.deleteService(this.service_id).subscribe((res: any) => {
+        this.userService.presentToast("Η υπηρεσία διαγράφηκε επιτυχώς.", "success");
+        this.modalController.dismiss({
+          'edited': true
+        });
+      }, err => {
+        this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger");
       });
-    }, err => {
-      this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ ξαναπροσπαθήστε.", "danger")
-    })
-
+    } else {
+      this.modalController.dismiss({
+        'deletedServiceName': this.serviceName
+      });
+    }
   }
-
+  
 
   onDurationInput(ev: any) {
     const value = ev.target!.value;

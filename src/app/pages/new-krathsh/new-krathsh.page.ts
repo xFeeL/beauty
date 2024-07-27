@@ -24,6 +24,8 @@ import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
       ]),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class NewKrathshPage implements OnInit {
   saveButtonEnabled = false;
@@ -91,22 +93,18 @@ export class NewKrathshPage implements OnInit {
 
 
   ionViewWillEnter() {
-
-
     if (this.navParams.get("appointment_data") != undefined) {
-      this.editing = true
-      this.appointment_data = this.navParams.get("appointment_data")
-
-
-      this.appointmentId = this.appointment_data.appointmentId
-      this.theDate = this.appointment_data.date
+      this.editing = true;
+      this.appointment_data = this.navParams.get("appointment_data");
+      this.appointmentId = this.appointment_data.appointmentId;
+      this.theDate = this.appointment_data.date;
       // Map services with isSelected and indexOrder
       const mappedServices = this.appointment_data.services.map((service: any) => ({
         ...service,
         isSelected: true,
         indexOrder: service.indexOrder // assuming indexOrder is a property of service
       }));
-
+  
       // Map packages and their services, copying the package's indexOrder, packageId, and packageName to its services
       const packages = this.appointment_data.packages || [];
       const packageServices = packages.flatMap((pkg: any) => {
@@ -118,12 +116,11 @@ export class NewKrathshPage implements OnInit {
           packageName: pkg.name,
         }));
       });
-
+  
       // Combine services from both individual services and package services
       this.selectedServices = [...mappedServices, ...packageServices]
         .sort((a, b) => a.indexOrder - b.indexOrder);
-
-
+  
       // If you still need the mappedPackages for other purposes, map them separately
       const mappedPackages = packages.map((pkg: any) => ({
         ...pkg,
@@ -131,14 +128,13 @@ export class NewKrathshPage implements OnInit {
         indexOrder: pkg.indexOrder, // assuming indexOrder is a property of package
         servicesObjects: pkg.serviceObjects || [],
         type: 'package'
-
       }));
-
+  
       // Combine mapped services and packages for any other usage
       this.selectedServicesAndPackages = [...mappedServices, ...mappedPackages]
         .sort((a, b) => a.indexOrder - b.indexOrder);
       let serviceIds = this.selectedServices.map((service: { id: any; }) => service.id).join(',');
-
+  
       this.userService.getEmployeesOfServices(serviceIds).subscribe(response => {
         // Loop through each service in selectedServices
         for (let service of this.selectedServices) {
@@ -147,28 +143,26 @@ export class NewKrathshPage implements OnInit {
         }
         if (this.selectedServices && this.selectedServices.length > 0) {
           this.currentService = this.selectedServices[0];
-
-
         }
         this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
         this.allEmployeeIds = this.selectedServices.map(s => s.selectedEmployeeId).join(',');
         this.updateServiceEmployees()
-
-
         this.onMonthChange();
-
-
+        this._cd.markForCheck(); // Add this line
+  
       }, err => {
         if (err.error == "Service doesn't exist") {
-
-          this.selectedServices = []
+          this.selectedServices = [];
+          this._cd.markForCheck(); // Add this line
         }
       });
     } else {
       this.chooseServices();
+      this._cd.markForCheck(); // Add this line
     }
-
   }
+
+
   goBack() {
     this.modalController.dismiss(false)
   }
@@ -235,6 +229,8 @@ export class NewKrathshPage implements OnInit {
                         this.scrollToBottomSetTimeout(150);
 
                       }
+                      this._cd.markForCheck(); // Add this line
+
                     }, err => {
                     });
                   }
@@ -246,10 +242,14 @@ export class NewKrathshPage implements OnInit {
       };
       const observer = new MutationObserver(callback);
       observer.observe(targetNode, config);
+      this._cd.markForCheck(); // Add this line
+
     }, 0);
     if (this.editing && !this.dataChanged) {
       this.dateChanged();
     }
+    this._cd.markForCheck(); // Add this line
+
   }
 
   calculateTotalDuration(service: any): number {
@@ -259,72 +259,74 @@ export class NewKrathshPage implements OnInit {
 
 
   dateChanged() {
-    this.time_slots = [];
+  this.time_slots = [];
 
-    const temp_date = moment(this.theDate).format('YYYY-MM-DD');
-    this.updateServiceEmployees();
+  const temp_date = moment(this.theDate).format('YYYY-MM-DD');
+  this.updateServiceEmployees();
 
-    this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees, this.appointmentId).subscribe(response => {
-      if (response.length === 0) {
-        // If no time slots are available, clear the time_slots and set flags accordingly
-        this.time_slots = [];
-        this.filteredTimeSlots = [];
-        this.dateSelected = true;  // Set to true to ensure template checks work correctly
-        this.timeSelected = false;
-        this.timeSlotSelected = null;
-        this.scrollToBottomSetTimeout(150);
+  this.userService.getAvailableTimeBooking(temp_date, this.servicesEmployees, this.appointmentId).subscribe(response => {
+    if (response.length === 0) {
+      // If no time slots are available, clear the time_slots and set flags accordingly
+      this.time_slots = [];
+      this.filteredTimeSlots = [];
+      this.dateSelected = true;  // Set to true to ensure template checks work correctly
+      this.timeSelected = false;
+      this.timeSlotSelected = null;
+      this.scrollToBottomSetTimeout(150);
+      this._cd.markForCheck(); // Add this line
 
-        //this.userService.presentToast("No available time slots for the selected date.", "warning");
-        return;
-      }
+      //this.userService.presentToast("No available time slots for the selected date.", "warning");
+      return;
+    }
 
-      // Populate the time_slots array with the start of the outerTimePeriods
-      for (let i = 0; i < response.length; i++) {
-        let slot = {
-          value: response[i].outerTimePeriod.start.slice(0, 5),
-          selected: false
-        };
-        this.time_slots.push(slot);
-      }
+    // Populate the time_slots array with the start of the outerTimePeriods
+    for (let i = 0; i < response.length; i++) {
+      let slot = {
+        value: response[i].outerTimePeriod.start.slice(0, 5),
+        selected: false
+      };
+      this.time_slots.push(slot);
+    }
 
-      this.dateSelected = true;
+    this.dateSelected = true;
 
-      if (this.editing && !this.dataChanged) {
-        // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
-        let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
+    if (this.editing && !this.dataChanged) {
+      // Convert the time format from "03:30 μ.μ. - 03:53 μ.μ." to "15:30"
+      let convertedTime = this.convertTimeFormatForEdit(this.appointment_data.time.split('-')[0].trim());
 
-        // Find the slot from the time_slots array that matches the converted time
-        let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
+      // Find the slot from the time_slots array that matches the converted time
+      let foundSlot = this.time_slots.find((slot: { value: string; }) => slot.value === convertedTime);
 
-        this.saveButtonEnabled = true;
-        // If the slot is found, call slotSelected on it
-        if (foundSlot) {
-          this.slotSelected(foundSlot);
-        } else {
-          // If the slot is not found, add it to the time_slots array and select it
-          let newSlot = {
-            value: convertedTime,
-            selected: true
-          };
-          this.time_slots.push(newSlot);
-          this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
-
-          // Sort the time_slots array to maintain order
-          this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-            let [hourA, minuteA] = a.value.split(':').map(Number);
-            let [hourB, minuteB] = b.value.split(':').map(Number);
-            if (hourA !== hourB) return hourA - hourB;
-            return minuteA - minuteB;
-          });
-        }
+      this.saveButtonEnabled = true;
+      // If the slot is found, call slotSelected on it
+      if (foundSlot) {
+        this.slotSelected(foundSlot);
       } else {
-        this.scrollToBottomSetTimeout(150);
-        this.timeSelected = false;
-        this.timeSlotSelected = null;
+        // If the slot is not found, add it to the time_slots array and select it
+        let newSlot = {
+          value: convertedTime,
+          selected: true
+        };
+        this.time_slots.push(newSlot);
+        this.timeSlotSelected = newSlot; // Setting the new slot as the selected slot
+
+        // Sort the time_slots array to maintain order
+        this.time_slots.sort((a: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }, b: { value: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+          let [hourA, minuteA] = a.value.split(':').map(Number);
+          let [hourB, minuteB] = b.value.split(':').map(Number);
+          if (hourA !== hourB) return hourA - hourB;
+          return minuteA - minuteB;
+        });
       }
-      this.filteredTimeSlots = [...this.time_slots];
-    });
-  }
+    } else {
+      this.scrollToBottomSetTimeout(150);
+      this.timeSelected = false;
+      this.timeSlotSelected = null;
+    }
+    this.filteredTimeSlots = [...this.time_slots];
+    this._cd.markForCheck(); // Add this line
+  });
+}
 
 
 
@@ -360,16 +362,18 @@ export class NewKrathshPage implements OnInit {
     this.suggestionsNames = []
     if (this.searchTerm != "") {
       this.isLoading = true;
-
+  
       this.userService.searchClient(this.searchTerm).subscribe(data => {
-        this.suggestionsNames = data
+        this.suggestionsNames = data;
         this.isLoading = false;
+        this._cd.markForCheck(); // Add this line
       }, err => {
         this.isLoading = false;
-      })
+        this._cd.markForCheck(); // Add this line
+      });
     }
-
   }
+  
 
   validateInputsNewClient() {
     const nameValid = this.newClientName.trim().length > 0;
@@ -411,9 +415,10 @@ export class NewKrathshPage implements OnInit {
         this.clientModal.dismiss();
         this.isAddingNewClient = false;
         this.saveButtonEnabled = true
+        this._cd.markForCheck(); // Add this line
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
-
+        this._cd.markForCheck(); // Add this line
       })
     }
   }
@@ -602,21 +607,20 @@ export class NewKrathshPage implements OnInit {
         let matchingServiceResponse = response.find((res: { serviceId: any; }) => res.serviceId === service.id);
         service.employees = matchingServiceResponse ? matchingServiceResponse.employees : [];
       }
-
+  
       if (this.selectedServices && this.selectedServices.length > 0) {
         this.currentService = this.selectedServices[0];
         this.scrollToBottomSetTimeout(150);
       }
-
+      this._cd.markForCheck(); // Add this line
+  
     }, err => {
-
       if (err.error == "Service doesn't exist") {
         this.selectedServices = [];
+        this._cd.markForCheck(); // Add this line
       }
     });
   }
-
-
 
 
   toggleSelectService(service: any) {

@@ -176,10 +176,30 @@ export class OnboardingPage {
 
 
   deleteService(service: any) {
-    
-    this.services = this.services.filter(r => r !== service);
+    // Remove the service from the services array
+    this.services = this.services.filter(r => r.id !== service.id);
+    console.log(`Deleted service ID ${service.id}:`, service);
+  
+    // Remove the service and its variations from any packages
+    this.packages.forEach((pkg: { services: any[]; servicesWithIndex: any[]; }) => {
+      const originalServicesLength = pkg.services.length;
+      const originalServicesWithIndexLength = pkg.servicesWithIndex.length;
+  
+      // Remove service if it matches the service ID or any of its variation IDs
+      pkg.services = pkg.services.filter((s: any) => s !== service.id && !service.variations.some((variation: any) => variation.id === s));
+      pkg.servicesWithIndex = pkg.servicesWithIndex.filter((sw: any) => sw.id !== service.id && !service.variations.some((variation: any) => variation.id === sw.id));
+  
+      if (pkg.services.length !== originalServicesLength || pkg.servicesWithIndex.length !== originalServicesWithIndexLength) {
+        console.log(`Removed service ID ${service.id} or its variations from package:`, pkg);
+      } else {
+        console.log(`Service ID ${service.id} and its variations not found in package:`, pkg);
+      }
+    });
   }
-
+  
+  
+  
+  
 
   async deleteCategory(category: any) {
     // Check if there are any services associated with this category
@@ -343,34 +363,53 @@ export class OnboardingPage {
 
   firstDayTemplate: any[] = [];
   firstDayToggled: any = null;
+  toggledDaysCount: number = 0;
 
   onDayToggle(day: any) {
+    
     // Toggle the day
     day.open = !day.open;
-
+  
     if (day.open) {
-      // If this is the first day toggled, store it
+      this.toggledDaysCount++;
+  
       if (!this.firstDayToggled) {
+        // If this is the first day toggled, store it
         this.firstDayToggled = day;
-      }
-      // If another day is toggled and the template is empty, copy the first day's intervals to the template
-      else if (this.firstDayToggled.name != day.name && this.firstDayTemplate.length == 0) {
+      } else if (this.firstDayToggled.name !== day.name && this.toggledDaysCount === 2) {
+        // When there are exactly two toggled days, finalize the first day's intervals
         this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
+  
+        // Apply the template to all other days except the first day
         for (let d of this.days) {
           if (d.name !== this.firstDayToggled.name) {
             d.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
           }
         }
       }
-
-
-
+  
       // If this is not the first day toggled and the day has no intervals yet, copy the template to the day
-      if (this.firstDayToggled !== day && day.timeIntervals.length === 0) {
+      if (this.firstDayToggled.name !== day.name && day.timeIntervals.length === 0) {
         day.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
+      }
+    } else {
+      this.toggledDaysCount--;
+  
+      // If the first toggled day is being toggled off, finalize its intervals (only if not already finalized)
+      if (this.firstDayToggled && this.firstDayToggled.name === day.name && this.firstDayTemplate.length === 0) {
+        this.firstDayTemplate = JSON.parse(JSON.stringify(day.timeIntervals)); // Deep copy
+  
+        // Apply the template to all other days
+        for (let d of this.days) {
+          if (d.name !== this.firstDayToggled.name) {
+            d.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
+          }
+        }
       }
     }
   }
+  
+  
 
 
 
@@ -468,7 +507,7 @@ export class OnboardingPage {
       if (data.data != undefined) {
         this.addressEntered = true;
         this.address = data.data.address
-        this.coordinates=data.data.longitude+","+data.data.latitude
+        this.coordinates=data.data.latitude+","+data.data.longitude
 
       }
       // Do something with the data returned from the modal
@@ -545,6 +584,7 @@ export class OnboardingPage {
 
     const { data } = await modal.onDidDismiss();
     if (data) {
+      console.log(data)
       const processedPerson = {
         name: data.personName,
         surname: data.personSurName,
@@ -570,7 +610,6 @@ export class OnboardingPage {
     }
   }
 
-
   async editService(service: any) {
     // Transform the people array to contain only names and selected attributes
     const transformedPeople = this.people.map((person: any) => ({
@@ -578,12 +617,11 @@ export class OnboardingPage {
       surname: person.surname,
       selected: person.selected
     }));
-    
-    
+  
     const modal = await this.modalController.create({
       component: NewServicePage,
       componentProps: {
-        serviceId:service.id,
+        serviceId: service.id,
         people: transformedPeople,
         serviceName: service.name,
         servicePrice: service.price,
@@ -592,27 +630,44 @@ export class OnboardingPage {
         serviceDescription: service.description,
         categories: this.serviceCategories,
         serviceCategory: service.selectedCategory,
-        variations:service.variations,
+        variations: service.variations,
         editing: true,
         services: this.services,
-        onboarding:true
+        onboarding: true
       }
     });
-
+  
     await modal.present();
-
+  
     const { data } = await modal.onDidDismiss();
-
+  
     if (data?.deletedServiceName) {
       // Handle deletion of service
-      const serviceIndex = this.services.findIndex((s) => s.name === data.deletedServiceName);
+      const serviceIndex = this.services.findIndex((s) => s.id === service.id);
       if (serviceIndex !== -1) {
+        const deletedService = this.services[serviceIndex];
         this.services.splice(serviceIndex, 1);
-        
+        console.log(`Deleted service:`, deletedService);
+  
+        // Remove the deleted service and its variations from any packages
+        this.packages.forEach((pkg: { services: any[]; servicesWithIndex: any[]; }) => {
+          const originalServicesLength = pkg.services.length;
+          const originalServicesWithIndexLength = pkg.servicesWithIndex.length;
+  
+          // Remove service if it matches the service ID or any of its variation IDs
+          pkg.services = pkg.services.filter((s: any) => s !== deletedService.id && !deletedService.variations.some((variation: any) => variation.id === s));
+          pkg.servicesWithIndex = pkg.servicesWithIndex.filter((sw: any) => sw.id !== deletedService.id && !deletedService.variations.some((variation: any) => variation.id === sw.id));
+  
+          if (pkg.services.length !== originalServicesLength || pkg.servicesWithIndex.length !== originalServicesWithIndexLength) {
+            console.log(`Removed service ID ${deletedService.id} or its variations from package:`, pkg);
+          } else {
+            console.log(`Service ID ${deletedService.id} and its variations not found in package:`, pkg);
+          }
+        });
       }
     } else if (data) {
       const processedService = {
-        id:data.id,
+        id: data.id,
         name: data.name,
         price: data.price,
         duration: data.duration,
@@ -620,22 +675,18 @@ export class OnboardingPage {
         people: data.people,
         selectedCategory: data.selectedCategory,
         variations: data.variations,
-
       };
-
+  
       // Find and update the service in the services array
-      const serviceIndex = this.services.findIndex((s) => s.name === service.name);
+      const serviceIndex = this.services.findIndex((s) => s.id === service.id);
       if (serviceIndex !== -1) {
         this.services[serviceIndex] = processedService;
+        console.log(`Updated service ID ${processedService.id}:`, processedService);
       }
     }
-
-    
-    
   }
-
-
-
+  
+  
  
 
   async newCategory() {
@@ -926,6 +977,8 @@ export class OnboardingPage {
 
 
   async newPackage() {
+    console.log(this.services)
+
     const modal = await this.modalController.create({
       component: NewPackagePage,
       componentProps: { services: this.services,
@@ -949,6 +1002,7 @@ export class OnboardingPage {
   }
 
   async editPackage(packageToEdit: any) {
+    console.log(this.services)
     const modal = await this.modalController.create({
       component: NewPackagePage,
       componentProps: {
@@ -1014,7 +1068,7 @@ export class OnboardingPage {
 
   saveAddress(suggestion:any){
     this.address=suggestion.address
-    this.coordinates= suggestion.longitude + "," + suggestion.latitude
+    this.coordinates= suggestion.latitude+","+ suggestion.longitude 
 
   }
 

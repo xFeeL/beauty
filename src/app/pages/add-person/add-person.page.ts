@@ -86,7 +86,12 @@ export class AddPersonPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.defaultImage = this.navParams.get('defaultImage');;
+    if(this.navParams.get('defaultImage')==undefined){
+      this.defaultImage=true
+    }else{
+      this.defaultImage = this.navParams.get('defaultImage');;
+
+    }
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
     this.customSchedule = this.navParams.get('toggled');

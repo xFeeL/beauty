@@ -27,11 +27,11 @@
           </ion-row>
           <ion-row *ngIf="variations.length==0">
             <ion-col size-lg="6" size-xs="6">
-              <ion-input color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
+              <ion-input inputmode="numeric" color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
                 label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
+              <ion-input inputmode="numeric" color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
                 label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
             </ion-col>
           </ion-row>
@@ -113,11 +113,11 @@
           </ion-row>
           <ion-row>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input color="primary" [(ngModel)]="variation.price" (ionInput)="onInput($event)" #ionInputEl
+              <ion-input inputmode="numeric" color="primary" [(ngModel)]="variation.price" (ionInput)="onInput($event)" #ionInputEl
                 label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input color="primary" [(ngModel)]="variation.duration" (ionInput)="onDurationInput($event)"
+              <ion-input inputmode="numeric" color="primary" [(ngModel)]="variation.duration" (ionInput)="onDurationInput($event)"
                 label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
             </ion-col>
           </ion-row>
