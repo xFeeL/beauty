@@ -5,19 +5,17 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="light" *ngIf="isEditing==false">Νέο Άτομο</ion-title>
-    <ion-title color="light" *ngIf="isEditing==true">Επεξεργασία Ατόμου</ion-title>
-
+    <ion-title color="light" *ngIf="!isEditing">Νέο Άτομο</ion-title>
+    <ion-title color="light" *ngIf="isEditing">Επεξεργασία Ατόμου</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="background">
   <ion-grid class="ion-margin-top">
     <ion-row class="ion-justify-content-center ion-margin">
-      <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
+      <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/png, image/jpg, image/jpeg" hidden>
       <ion-avatar>
-        <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' :image)"></ion-img>
-
+        <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' : image)"></ion-img>
       </ion-avatar>
     </ion-row>
     <ion-row class="ion-justify-content-center ion-margin ">
@@ -25,44 +23,43 @@
     </ion-row>
     <ion-row class="ion-justify-content-center">
       <ion-col size="6" size-lg="5">
-
-        <ion-item lines="none">
-
-          <ion-input  placeholder="Εισάγετε όνομα" class="whiteback" label="Όνομα" label-placement="stacked"  [(ngModel)]="personName"
-            (ionInput)="validateInput()"></ion-input> 
-      </ion-item>
-    </ion-col>
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Όνομα</mat-label>
+          <input matInput placeholder="Εισάγετε όνομα" [(ngModel)]="personName" (input)="validateInput()" required>
+          <mat-hint *ngIf="showErrors && !personName?.trim()" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
+        </mat-form-field>
+      </ion-col>
       <ion-col size="6" size-lg="5">
-
-        <ion-item lines="none">
-
-          <ion-input placeholder="Εισάγετε επίθετο" class="whiteback" label="Επίθετο" label-placement="stacked" 
-            [(ngModel)]="personSurName" (ionInput)="validateInput()"></ion-input>
-      </ion-item>
-    </ion-col>
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Επίθετο</mat-label>
+          <input matInput placeholder="Εισάγετε επίθετο" [(ngModel)]="personSurName" (input)="validateInput()" required>
+          <mat-hint *ngIf="showErrors && !personSurName?.trim()" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
+        </mat-form-field>
+      </ion-col>
     </ion-row>
-    <ion-row *ngIf="onboarding==false">
-      <ion-grid> <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+    <ion-row *ngIf="!onboarding">
+      <ion-grid>
+        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
           <ion-col size-xl="10" class="ion-justify-content-center ion-no-padding">
             <div class="flex-container">
-              <mat-form-field appearance="fill" (click)="handleClick()" class="form-field ">
+              <mat-form-field appearance="fill" (click)="handleClick()" class="form-field">
                 <mat-label>Εξαιρέσεις ωραρίου ατόμου</mat-label>
                 <mat-select #mySelect [formControl]="daysControl" multiple>
                   <div class="special-action" (click)="openDateTimePicker()">
                     <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
                   </div>
-                  <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception"
-                    class="ion-margin-bottom">
-                    {{ exception.formatted }} ({{exception.repeat}}) <!-- Adjust as per your data structure -->
+                  <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception" class="ion-margin-bottom">
+                    {{ exception.formatted }} ({{ exception.repeat }})
                   </mat-option>
                 </mat-select>
-              </mat-form-field> <mat-icon class="ion-margin-bottom blue-icon" #tooltip="matTooltip"
-                (click)="tooltip.toggle()" matTooltipPosition="above"
-                matTooltip="Με τις εξαιρέσεις ωραρίου μπορείτε να ορίσετε ημέρες και ώρες που το μέλος της ομάδας σας δεν εργάζεται.">help_outline</mat-icon>
-            </div> <ion-modal #dateTimePop size="auto" side="top" alignment="top">
-              <ng-template> </ng-template>
+              </mat-form-field>
+              <mat-icon class="ion-margin-bottom blue-icon" #tooltip="matTooltip" (click)="tooltip.toggle()" matTooltipPosition="above" matTooltip="Με τις εξαιρέσεις ωραρίου μπορείτε να ορίσετε ημέρες και ώρες που το μέλος της ομάδας σας δεν εργάζεται.">help_outline</mat-icon>
+            </div>
+            <ion-modal #dateTimePop size="auto" side="top" alignment="top">
+              <ng-template></ng-template>
             </ion-modal>
-          </ion-col> </ion-row>
+          </ion-col>
+        </ion-row>
       </ion-grid>
     </ion-row>
     <ion-row class="ion-justify-content-center">
@@ -70,8 +67,8 @@
         <div class="toggle-note-container">
           <ion-toggle class="ion-padding-top" [enableOnOffLabels]="true" [(ngModel)]="customSchedule"></ion-toggle>
           <div class="notes ion-padding-top">
-            <ion-note  color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
-            <ion-note  color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>
+            <ion-note color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
+            <ion-note color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>
           </div>
         </div>
         <ion-list class="scrollable-list ion-margin-top ion-no-padding rad" *ngIf="customSchedule">
@@ -80,29 +77,23 @@
               <ion-label>{{day.name}}</ion-label>
               <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
             </ion-item>
-            <!--<div *ngIf="day.open" class="time-selection">-->
             <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection">
               <ion-grid class="ion-margin-start  w100">
                 <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
                   <ion-col size="5">
-                    <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="stacked" 
-                      interface="popover" [(ngModel)]="timeInterval.start"
-                      (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
+                    <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="stacked" interface="popover" [(ngModel)]="timeInterval.start" (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
                       <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
                     </ion-select>
                   </ion-col>
                   <ion-col size="5">
-                    <ion-select class="smaller-font" label="Κλείνει στις" label-placement="stacked" 
-                      interface="popover" [(ngModel)]="timeInterval.end"
-                      (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
+                    <ion-select class="smaller-font" label="Κλείνει στις" label-placement="stacked" interface="popover" [(ngModel)]="timeInterval.end" (ionChange)="onEndTimeChange(timeInterval.end, timeInterval, day)">
                       <ion-select-option *ngFor="let hour of hours" [value]="hour">{{hour}}</ion-select-option>
                     </ion-select>
                   </ion-col>
                   <ion-col size="2">
-                    <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline"
-                      size="large" (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon> <ion-icon
-                      class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger"
-                      (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon> </ion-col>
+                    <ion-icon color="primary" class="ion-padding-top scheduleIcon" name="add-circle-outline" size="large" (click)="addTimeInterval(day)" *ngIf="i == 0"></ion-icon>
+                    <ion-icon class="ion-padding-top scheduleIcon" name="trash-outline" size="large" color="danger" (click)="deleteTimeInterval(day, i)" *ngIf="i > 0"></ion-icon>
+                  </ion-col>
                 </ion-row>
               </ion-grid>
             </div>
@@ -110,8 +101,8 @@
         </ion-list>
       </ion-col>
     </ion-row>
-  </ion-grid></ion-content>
+  </ion-grid>
+</ion-content>
 <ion-footer>
-  <ion-button [disabled]="disabledSaveButton()" color="primary" class="ion-no-margin capsoff" expand="block"
-    (click)="confirm()"><ion-text color="light"> Αποθήκευση ατόμου</ion-text></ion-button>
+  <ion-button color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()"><ion-text color="light"> Αποθήκευση ατόμου</ion-text></ion-button>
 </ion-footer>

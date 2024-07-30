@@ -5,6 +5,7 @@ swiper-container {
     --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
     --swiper-scrollbar-drag-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.5);
     scrollbar-width: thin;
+    max-height:85vh
   }
   
   swiper-slide {
@@ -16,6 +17,8 @@ swiper-container {
     justify-content: center;
     width: 100%;
     height: 100%;
+    max-height: 85vh;
+
     font-size: 18px;
     text-align: center;
     box-sizing: border-box;
@@ -32,6 +35,27 @@ swiper-container {
     max-height: 100%;
   }
   
+  .scrollable-container-services {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+
+  .scrollable-container-people {
+    max-height: 70vh;
+    overflow-y: auto;
+    width:70%;
+  }
+
+  @media screen and (max-width: 500px) {
+      .scrollable-container-people {
+        max-height: 70vh;
+        overflow-y: auto;
+        width:95%
+      }
+    
+  }
+  
+
   ion-slides {
     height: 100%;
   }
@@ -58,7 +82,7 @@ swiper-container {
     /* Change this value to the desired border radius */
     border: 2px solid var(--ion-color-primary);
     /* Change this color to the desired stroke color */
-    height: 95vh;
+    height: 85vh;
   }
   
   ion-slides {
@@ -209,9 +233,13 @@ swiper-container {
   }
   @media screen and (min-width: 500px) {
     .w80 {
-      width: 85%;
+      width: 100%;
     }
     
+  }
+
+  .customBackgroundList{
+    background: var(--ion-color-dark-contrast);
   }
 
   .person-row {
@@ -318,7 +346,7 @@ ion-toolbar {
 
 
 .f15{
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .mt3{
@@ -328,7 +356,7 @@ ion-toolbar {
 
 @media screen and (max-width: 500px) {
   .w100{
-    width:90%
+    width:100%
   }
   
 }
@@ -399,3 +427,4 @@ ion-toolbar {
 
   
 }
+

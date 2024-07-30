@@ -7,66 +7,93 @@
     </ion-buttons>
     <ion-title color="light" text-wrap *ngIf="service_id==null">Νέα Υπηρεσία</ion-title>
     <ion-title color="light" text-wrap *ngIf="service_id!=null">Αλλαγή Υπηρεσίας</ion-title>
-
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content class="background">
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-
-      <ion-col size-lg="8">
+      <ion-col size-lg="10">
         <ion-grid class="customGrid">
-          <ion-row class="ion-justify-content-center ">
+          <ion-row class="ion-justify-content-center">
             <ion-col size-lg="12" size-xs="12">
-              <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Υπηρεσίας"
-                label-placement="stacked" fill="solid" placeholder="Εισάγετε Όνομα"
-                [(ngModel)]="serviceName"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Όνομα Υπηρεσίας</mat-label>
+                <input matInput maxlength="50" placeholder="Εισάγετε Όνομα" [(ngModel)]="serviceName" required>
+                <mat-hint *ngIf="showErrors && isFieldInvalid(serviceName)" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
+              </mat-form-field>
             </ion-col>
           </ion-row>
           <ion-row *ngIf="variations.length==0">
             <ion-col size-lg="6" size-xs="6">
-              <ion-input inputmode="numeric" color="primary" [(ngModel)]="servicePrice" (ionInput)="onInput($event)" #ionInputEl
-                label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Τιμή (€)</mat-label>
+                <input matInput inputmode="numeric" [(ngModel)]="servicePrice" (input)="onInput($event)" required>
+                <mat-hint *ngIf="showErrors && isFieldInvalid(servicePrice)" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
+              </mat-form-field>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input inputmode="numeric" color="primary" [(ngModel)]="serviceDuration" (ionInput)="onDurationInput($event)"
-                label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Διάρκεια (λεπτά)</mat-label>
+                <input matInput inputmode="numeric" [(ngModel)]="serviceDuration" (input)="onDurationInput($event)" required>
+                <mat-hint *ngIf="showErrors && isFieldInvalid(serviceDuration)" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
+              </mat-form-field>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col size="12">
+              <div class="form-field-container" *ngIf="!onboarding">
+                <mat-form-field appearance="fill" class="form-field">
+                  <mat-label class="f15">Επιλογή Κατηγορίας</mat-label>
+                  <mat-select [(value)]="serviceCategory" required>
+                    <mat-option class="ion-no-padding" (click)="addCategory()">
+                      <div class="special-action">
+                        <mat-icon>add</mat-icon> Προσθήκη Κατηγορίας
+                      </div>
+                    </mat-option>
+                    <mat-option *ngFor="let category of categories" [value]="category.name">
+                      {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="showErrors && isFieldInvalid(serviceCategory)" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
 
+                </mat-form-field>
+                <div class="info-icon-container">
+                  <mat-icon class="info-icon" #tooltip="matTooltip" (click)="tooltip.toggle()" matTooltipPosition="above" matTooltip="Μια κατηγορία υπηρεσιών ομαδοποιεί παρόμοιες υπηρεσίες, όπως π.χ. 'Κουρέματα' ή 'Νύχια'.">info_outline</mat-icon>
+                </div>
+              </div>
+              <div class="form-field-container" *ngIf="onboarding">
+                <mat-form-field appearance="fill" class="form-field">
+                  <mat-label class="f15">Επιλογή Κατηγορίας</mat-label>
+                  <mat-select [(value)]="serviceCategory" required>
+                    <mat-option class="ion-no-padding" (click)="addCategory()">
+                      <div class="special-action">
+                        <mat-icon>add</mat-icon> Προσθήκη Κατηγορίας
+                      </div>
+                    </mat-option>
+                    <mat-option *ngFor="let category of categories" [value]="category">
+                      {{ category }}
+                    </mat-option>
+                    
+                  </mat-select>
+                  <mat-hint *ngIf="showErrors && isFieldInvalid(serviceCategory)" class="error-message">Υποχρεωτικό πεδίο</mat-hint>
 
-
-              <ion-select *ngIf="onboarding!=true" label="Επιλογή Κατηγορίας" label-placement="stacked" fill="solid"
-                okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
-                <ion-select-option *ngFor="let category of categories"
-                  [value]="category.name">{{category.name}}</ion-select-option>
-
-              </ion-select>
-              <ion-select *ngIf="onboarding==true" label="Επιλογή Κατηγορίας" label-placement="stacked" fill="solid"
-                okText="Επιβεβαιωση" cancelText="Ακυρο" [(ngModel)]="serviceCategory">
-                <ion-select-option *ngFor="let category of categories"
-                  [value]="category">{{category}}</ion-select-option>
-
-              </ion-select>
-
+                </mat-form-field>
+                <div class="info-icon-container">
+                  <mat-icon class="info-icon" #tooltip="matTooltip" (click)="tooltip.toggle()" matTooltipPosition="above" matTooltip="Μια κατηγορία υπηρεσιών ομαδοποιεί παρόμοιες υπηρεσίες, όπως π.χ. 'Κουρέματα' ή 'Νύχια'.">info_outline</mat-icon>
+                </div>
+              </div>
             </ion-col>
-
           </ion-row>
           <ion-row>
             <ion-col size="12">
-              <ion-textarea labelPlacement="stacked" [(ngModel)]="serviceDescription" helperText="Προαιρετικό"
-                color="primary" [counter]="true" maxlength="70" fill="solid" label="Περιγραφή Υπηρεσίας"
-                labelPlacement="stacked" placeholder="Εισάγετε Περιγραφή"></ion-textarea>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Περιγραφή Υπηρεσίας</mat-label>
+                <textarea matInput maxlength="70" placeholder="Εισάγετε Περιγραφή" [(ngModel)]="serviceDescription"></textarea>
+                <mat-hint>Προαιρετικό</mat-hint>
+              </mat-form-field>
             </ion-col>
-
           </ion-row>
-
-          <!-- ... (existing content) ... -->
-
           <ion-row class="ion-justify-content-center ion-margin-top">
             <ion-col size="12">
               <ion-item-divider color="light" class="whiteBack">
@@ -74,29 +101,21 @@
                   Ποιοι προσφέρουν την υπηρεσία;
                 </ion-label>
               </ion-item-divider>
-
               <ion-item lines="full">
                 <ion-label>Επιλογή όλων</ion-label>
                 <ion-checkbox slot="start" [(ngModel)]="selectAll" (ionChange)="selectAllPeople()"></ion-checkbox>
               </ion-item>
-
               <ion-list class="ion-no-padding">
                 <ion-item lines="full" *ngFor="let person of people">
                   <ion-label>{{person.surname}}&nbsp;{{person.name}}</ion-label>
-                  <ion-checkbox slot="start" [(ngModel)]="person.selected"
-                    (ionChange)="checkIfAllSelected()"></ion-checkbox>
+                  <ion-checkbox slot="start" [(ngModel)]="person.selected" (ionChange)="checkIfAllSelected()"></ion-checkbox>
                 </ion-item>
-
               </ion-list>
             </ion-col>
           </ion-row>
-
-
         </ion-grid>
       </ion-col>
     </ion-row>
-
-
   </ion-grid>
 
   <ion-grid *ngFor="let variation of variations; let i = index">
@@ -106,19 +125,24 @@
           <ion-row class="ion-justify-content-center">
             <ion-col size-lg="12" size-xs="12">
               <ion-icon name="trash" slot="end" color="danger"></ion-icon>
-              <ion-input color="primary" [counter]="true" maxlength="50" label="Όνομα Τιμολόγησης"
-                label-placement="stacked" fill="solid" placeholder="π.χ. κοντά μαλλιά"
-                [(ngModel)]="variation.name"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Όνομα Τιμολόγησης</mat-label>
+                <input matInput maxlength="50" placeholder="π.χ. κοντά μαλλιά" [(ngModel)]="variation.name">
+              </mat-form-field>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input inputmode="numeric" color="primary" [(ngModel)]="variation.price" (ionInput)="onInput($event)" #ionInputEl
-                label="Τιμή (€)" label-placement="stacked" fill="solid" placeholder="0.00"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Τιμή (€)</mat-label>
+                <input matInput inputmode="numeric" [(ngModel)]="variation.price" (input)="onInput($event)" placeholder="0.00">
+              </mat-form-field>
             </ion-col>
             <ion-col size-lg="6" size-xs="6">
-              <ion-input inputmode="numeric" color="primary" [(ngModel)]="variation.duration" (ionInput)="onDurationInput($event)"
-                label="Διάρκεια (λεπτά)" label-placement="stacked" fill="solid" placeholder="15"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Διάρκεια (λεπτά)</mat-label>
+                <input matInput inputmode="numeric" [(ngModel)]="variation.duration" (input)="onDurationInput($event)" placeholder="15">
+              </mat-form-field>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -126,7 +150,6 @@
       <ion-col size="1" class="icon-container">
         <ion-icon name="trash-outline" color="danger" class="f20 cursor" (click)="deleteVariation(i)"></ion-icon>
       </ion-col>
-
     </ion-row>
   </ion-grid>
 
@@ -142,21 +165,19 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-
 </ion-content>
+
 <ion-footer>
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col size="6" (click)="deleteService()" class="ion-no-padding" *ngIf="service_id!=null">
         <ion-button size="full" color="danger" class="capsoff ion-no-margin">
-           <ion-text color="light">Διαγραφή</ion-text> 
+          <ion-text color="light">Διαγραφή</ion-text>
         </ion-button>
       </ion-col>
       <ion-col [size]="service_id!=null?'6':'12'" class="ion-no-padding">
-        <ion-button [disabled]="isSaveDisabled()" size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
-          <ion-text color="light">Αποθήκευση</ion-text> 
-
+        <ion-button size="full" color="primary" (click)="saveService()" class="capsoff ion-no-margin">
+          <ion-text color="light">Αποθήκευση</ion-text>
         </ion-button>
       </ion-col>
     </ion-row>

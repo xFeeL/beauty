@@ -35,5 +35,16 @@ ion-checkbox::part(container) {
     margin-top: 10px !important;
   }
 
+  .f15{
+    font-size:15px;
+  }
 
-
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .form-field{
+    width:100%;
+  }

@@ -78,7 +78,7 @@
                 x="10.273" y="88.366" transform="matrix(0.970533, 0, 0, 1, 18.971533, 0)">
                 Κάντε κλικ στο πλαίσιο για να επιλέξετε εικόνα</text>
             </svg> </ion-col>
-            <input #_fileInput type="file" accept="image/*" hidden (change)="handleFileInput($event)">
+            <input #_fileInput type="file" accept="image/png, image/jpg, image/jpeg" hidden (change)="handleFileInput($event)">
 
             <ion-col size="12"
             class="ion-margin-top ion-padding-start" *ngIf="newImages.length!=0">

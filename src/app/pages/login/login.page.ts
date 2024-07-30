@@ -21,18 +21,19 @@ export class LoginPage implements OnInit {
   isDismiss = false;
   passwordType = 'password';
   passwordIcon = 'eye-outline';
-  iconName :string | undefined;
-  iconColor:string | undefined;
-  variableClass:string | undefined;
-  variableDisabled:string | undefined;
-  disabledButton="true";
-  regex_email_test:any;
+  iconName: string | undefined;
+  iconColor: string | undefined;
+  variableClass: string | undefined;
+  variableDisabled: string | undefined;
+  disabledButton = "true";
+  regex_email_test: any;
   phoneMask: MaskitoOptions = {
-    mask: ['+', '3','0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
+    mask: ['+', '3', '0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
   };
   readonly options: MaskitoOptions = this.phoneMask;
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  
+  authenticated: boolean=false;
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -40,6 +41,16 @@ export class LoginPage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController
   ) { }
+  ;
+  ionViewWillEnter() {
+    if (localStorage.getItem('authenticated') == 'true') {
+      this.authenticated=true
+    }else{
+      this.authenticated=false
+
+    }
+
+  }
 
   ngOnInit() {
     //Disable sidemenu on login page.
@@ -52,7 +63,7 @@ export class LoginPage implements OnInit {
       grantOfflineAccess: true,
     });
 
-     FacebookLogin.initialize({ appId: '3238436183073244' });
+    FacebookLogin.initialize({ appId: '3238436183073244' });
   }
 
   login() {
@@ -66,7 +77,7 @@ export class LoginPage implements OnInit {
       this.handleLoginError(err);
     });
   }
-  
+
   handleLoginError(err: any) {
     if (err.error == "Mobile") {
       this.userService.requestOTP(this.user.phone).subscribe(data => {
@@ -80,7 +91,7 @@ export class LoginPage implements OnInit {
       this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
     }
   }
-  
+
   googleOAuth() {
     GoogleAuth.signIn().then(user => {
       this.userService.loginOAuth(user.authentication.idToken, "google").subscribe(data => {
@@ -91,7 +102,7 @@ export class LoginPage implements OnInit {
       });
     });
   }
-  
+
   handleOAuthError(err: any, user: any) {
     if (err.error == "Mobile") {
       this.userService.requestOTP(user.email).subscribe(data => {
@@ -105,51 +116,51 @@ export class LoginPage implements OnInit {
       this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
     }
   }
-  
+
   onAppChange(event: any) {
     const selectedValue = event.detail.value;
-  
+
     if (selectedValue !== 'beauty') {
-      const baseUrl = 'https://'+selectedValue+'.fyx.gr';
+      const baseUrl = 'https://' + selectedValue + '.fyx.gr';
       window.location.href = baseUrl;
-      }
+    }
   }
 
 
 
-  redirectPage(user:User) {
+  redirectPage(user: User) {
     if (!user) {
       return;
     }
- 
-      //Main page of user will be home.
-      this.router.navigate(['/tabs/home']);
-    
+
+    //Main page of user will be home.
+    this.router.navigate(['/tabs/home']);
+
   }
 
   hideShowPassword() {
     this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
     this.passwordIcon = this.passwordIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
-}
-
-goToRegister() {
-    this.router.navigate(['/sign-up']);
-}
-
-goToForgetPasswordPage(){
-  this.router.navigate(['/forget-password']);
-}
-
-
-
-passwordChange(){
-  if(this.user.password.length>0 && this.user.phone.length>0){
-    this.disabledButton="false";
-  }else{
-    this.disabledButton="true";
-
   }
-}
+
+  goToRegister() {
+    this.router.navigate(['/sign-up']);
+  }
+
+  goToForgetPasswordPage() {
+    this.router.navigate(['/forget-password']);
+  }
+
+
+
+  passwordChange() {
+    if (this.user.password.length > 0 && this.user.phone.length > 0) {
+      this.disabledButton = "false";
+    } else {
+      this.disabledButton = "true";
+
+    }
+  }
   /*
   constructor( private rout : Router) { }
 
@@ -168,14 +179,14 @@ passwordChange(){
   }*/
 
   goBack() {
-    this.router.navigate(['/tabs/home']);  
-    }
+    this.router.navigate(['/tabs/home']);
+  }
 
 
 
 
 
-   
+
 
   async facebookOAuth(): Promise<void> {
     const FACEBOOK_PERMISSIONS = ['public_profile', 'email'];
@@ -183,9 +194,9 @@ passwordChange(){
     const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
     if (result && result.accessToken) {
       let user = { token: result.accessToken.token, userId: result.accessToken.userId }
-      this.userService.loginOAuth(result.accessToken.token,"facebook").subscribe(data=>{
+      this.userService.loginOAuth(result.accessToken.token, "facebook").subscribe(data => {
         window.location.href = '/tabs/home';
-        localStorage.setItem('authenticated',"true");
+        localStorage.setItem('authenticated', "true");
 
       })
     }
@@ -193,5 +204,5 @@ passwordChange(){
 
 
 
-  
+
 }

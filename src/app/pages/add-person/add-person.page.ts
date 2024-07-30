@@ -54,7 +54,7 @@ export class AddPersonPage implements OnInit {
   businessSchedule: any;
   personSchedule: any;
   person: any;
-
+  showErrors = false; 
   selectedImage = { imageLink: '', selected: false };
   currentAlbumPhotos: any;
   photos: { imageLink: string, selected: boolean }[] = [];
@@ -86,10 +86,14 @@ export class AddPersonPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    console.log(this.navParams.get('defaultImage'))
     if(this.navParams.get('defaultImage')==undefined){
+      console.log('mpika')
+
       this.defaultImage=true
     }else{
       this.defaultImage = this.navParams.get('defaultImage');;
+      console.log('mpika2')
 
     }
     this.businessSchedule = this.navParams.get('data');
@@ -184,8 +188,10 @@ export class AddPersonPage implements OnInit {
 
 
   async confirm() {
-    if (!this.personName || this.personName.trim() === '') {
-      this.userService.presentToast('Το όνομα του ατόμου δεν μπορεί να είναι κενό.', "danger");
+    this.showErrors = true; // Set the flag to true when trying to save
+
+    if (!this.personName || !this.personName.trim() || !this.personSurName || !this.personSurName.trim()) {
+      this.userService.presentToast('Τα πεδία όνομα και επίθετο είναι υποχρεωτικά.', "danger");
       return;
     }
 
@@ -211,6 +217,10 @@ export class AddPersonPage implements OnInit {
         name: this.personName,
         surname: this.personSurName,
         image: (() => {
+          if (this.defaultImage) {
+            // Return 'default' if defaultImage is true
+            return 'default';
+          }
           const parts = this.image?.split(",");
           if (parts && parts.length === 2) {
             // If the image URL is properly split into two parts, return the second part
@@ -222,22 +232,21 @@ export class AddPersonPage implements OnInit {
           // If none of the above conditions are met, return 'default'
           return 'default';
         })(),
-        
         exceptions: deformattedSelectedExceptions,
         schedule: this.customSchedule
           ? this.scheduleToReturn
-            .filter((day: { open: any; }) => day.open)
-            .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({
-              day: name,
-              intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`)
-            }))
+              .filter((day: { open: any; }) => day.open)
+              .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({
+                day: name,
+                intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`)
+              }))
           : this.businessSchedule.map((day: { name: any; timeIntervals: any[]; }) => {
-            const mappedDay = day.name;
-            return {
-              day: mappedDay,
-              intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
-            };
-          }),
+              const mappedDay = day.name;
+              return {
+                day: mappedDay,
+                intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
+              };
+            }),
       };
       
       
@@ -690,7 +699,6 @@ export class AddPersonPage implements OnInit {
     return !this.personName?.trim() || !this.personSurName?.trim();
   }
 
-
   validateInput() {
     if (this.personName) {
       this.personName = this.personName.replace(/\s+/g, '');
@@ -699,7 +707,6 @@ export class AddPersonPage implements OnInit {
       this.personSurName = this.personSurName.replace(/\s+/g, '');
     }
   }
-
 
 
 }

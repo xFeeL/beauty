@@ -749,6 +749,12 @@ export class UserService {
     );
   }
 
+  checkOnBoardingStatus(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "check-onboarding-status", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
 
   getAccountId(): Observable<any> {
     return this.http.get(Authenticated_API_URL + "get-account-id", { headers: this.getHeaders(), withCredentials: true }).pipe(

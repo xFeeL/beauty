@@ -54,7 +54,13 @@ export class TabsPage {
   }
 
  openMenu() {
+  if(localStorage.getItem("authenticated")=='true'){
     this.menu.open();
+
+  }else{
+    this.rout.navigate(['login']);
+
+  }
   }
 
 }

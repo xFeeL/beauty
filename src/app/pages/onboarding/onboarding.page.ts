@@ -696,7 +696,7 @@ export class OnboardingPage {
         {
           name: 'categoryName',
           type: 'text',
-          placeholder: 'Όνομα Κατηγορίας'
+          placeholder: 'Όνομα Κατηγορίας (π.χ. Μαλλιά)'
         }
       ],
       buttons: [

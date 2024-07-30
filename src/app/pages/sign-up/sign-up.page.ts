@@ -96,15 +96,21 @@ export class SignUpPage implements OnInit {
   }
   
   handleOAuthError(err: any) {
-    if (err.error.text == "Email exists") {
+    if (err.error === "Email exists" || err.error?.text === "Email exists") {
       this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger");
-    } else if (err.error.text == "Phone exists") {
+    } else if (err.error === "Phone exists" || err.error?.text === "Phone exists") {
       this.userService.presentToast("Αυτός ο αριθμός τηλεφώνου χρησιμοποείται ήδη.", "danger");
-    } else if (err.error.text == "OK") {
-      this.userService.setNavData({ phone: this.user.phone, token: this.token, authType: "google", email: this.user.email });
+    } else if (err.error === "OK" || err.error?.text === "OK") {
+      this.userService.setNavData({
+        phone: this.user.phone,
+        token: this.token,
+        authType: "google",
+        email: this.user.email
+      });
       this.rout.navigate(['otp-verification']);
     }
   }
+  
 
   emailCheck() {
 

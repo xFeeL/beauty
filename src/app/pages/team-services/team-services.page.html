@@ -185,7 +185,6 @@
     </ion-fab>
 
     <mat-menu #menu="matMenu" xPosition="before" yPosition="above">
-      <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>
       <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου</button>
       <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσίας</button>
     </mat-menu>

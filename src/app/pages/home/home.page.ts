@@ -134,6 +134,11 @@ export class HomePage implements OnInit {
       this.cdr.markForCheck(); // Add this line
     });
   
+    this.userService.checkOnBoardingStatus().subscribe(data=>{
+
+    },err=>{
+      this.rout.navigate(['/onboarding']);
+    })
     this.userService.invokeGoToKrathseis$.subscribe(() => {
       this.goToKrathseis();
       this.cdr.markForCheck(); // Add this line

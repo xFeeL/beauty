@@ -23,7 +23,7 @@
               <ion-chip class="chipPr shadow" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-chip>
             </ion-col>
             <ion-col size="4" class="ion-text-center">
-              <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*"
+              <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/png, image/jpg, image/jpeg"
                 hidden> </ion-col>
           </ion-row>
           <ion-row class="ion-margin">

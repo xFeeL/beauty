@@ -7,17 +7,13 @@
     </ion-buttons>
     <ion-title color="light" *ngIf="!editMode">Νέο Πακέτο</ion-title>
     <ion-title color="light" *ngIf="editMode">Αλλαγή Πακέτου</ion-title>
-
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="background">
-
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-col size-xl="8">
-
-
+      <ion-col size-xl="10">
         <ion-grid class="whiteBackground ion-margin rad">
           <ion-row class="mt10">
             <ion-col size="12">
@@ -26,53 +22,53 @@
           </ion-row>
           <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-input [counter]="true" maxlength="50" label="Όνομα πακέτου" label-placement="stacked"  placeholder="Εισάγετε όνομα" fill="solid"
-                [(ngModel)]="packageName"></ion-input>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Όνομα πακέτου</mat-label>
+                <input matInput maxlength="50" placeholder="Εισάγετε όνομα" [(ngModel)]="packageName" required>
+                <mat-hint *ngIf="showErrors && isFieldInvalid(packageName)" class="error-message">Το πεδίο είναι υποχρεωτικό</mat-hint>
+              </mat-form-field>
             </ion-col>
           </ion-row>
-          <ion-row class=" ion-margin-top ion-margin-start ion-margin-end">
+          <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-textarea [counter]="true" maxlength="70" [autoGrow]="true" label="Περιγραφή πακέτου"  placeholder="Εισάγετε περιγραφή"
-                label-placement="stacked" fill="solid" helperText="Προαιρετικό"
-                [(ngModel)]="packageDescription"></ion-textarea>
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Περιγραφή πακέτου</mat-label>
+                <textarea matInput maxlength="70" placeholder="Εισάγετε περιγραφή" [(ngModel)]="packageDescription"></textarea>
+                <mat-hint>Προαιρετικό</mat-hint>
+              </mat-form-field>
             </ion-col>
           </ion-row>
         </ion-grid>
+
         <ion-grid class="whiteBackground ion-margin rad">
           <ion-row class="mt10">
             <ion-col size="12">
               <h3 class="ion-margin-start">Υπηρεσίες</h3> 
-
             </ion-col>
           </ion-row>
-          <ion-row class=" ion-margin-top ">
+          <ion-row class="ion-margin-top">
             <ion-col size="12">
               <!-- Hidden ion-select -->
-              <ion-select  placeholder="Επιλέξτε υπηρεσίες" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;"
-                label="Υπηρεσίες" label-placement="stacked" fill="outline" multiple="true"
-                (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
+              <ion-select placeholder="Επιλέξτε υπηρεσίες" okText="Επιλογη" cancelText="Ακυρο" #serviceSelect style="position: absolute; left: -9999px;" label="Υπηρεσίες" label-placement="stacked" fill="outline" multiple="true" (ionChange)="updateSelectedServices($event)" [(ngModel)]="selectedServices">
                 <ion-select-option *ngFor="let service of services" [value]="service.id">
                   {{ service.name }}
                 </ion-select-option>
               </ion-select>
-           
-
 
               <ion-list class="ion-no-padding ml6">
                 <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
                   <ion-item *ngFor="let selectedService of selectedServices">
                     <ion-label>{{ getSelectedServiceName(selectedService) }}</ion-label>
-
                     <ion-reorder slot="end"></ion-reorder>
                   </ion-item>
                 </ion-reorder-group>
               </ion-list>
-              
 
-              <ion-item class="ml12" (click)="openServiceSelect()" class="cursor mr10" lines="none">
+              <ion-item class="ml12 cursor mr10" (click)="openServiceSelect()" lines="none">
                 <ion-icon aria-hidden="true" name="add-circle" color="primary" slot="start" class="mr10"></ion-icon>
-                <ion-label> Επιλογή υπηρεσιών</ion-label>
+                <ion-label>Επιλογή υπηρεσιών</ion-label>
               </ion-item>
+              <mat-hint *ngIf="showErrors && selectedServices.length === 0" class="error-message">Επιλέξτε τουλάχιστον μία υπηρεσία</mat-hint>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -81,41 +77,39 @@
           <ion-row class="mt10">
             <ion-col size="12">
               <h3 class="ion-margin-start">Τιμή</h3> 
-
             </ion-col>
           </ion-row>
           <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
             <ion-col size="12">
-              <ion-input  inputmode="numeric" placeholder="Εισάγετε τιμή" label="Τιμή πακέτου (€)" label-placement="stacked" fill="solid" placeholder="0.00"
-                (ionInput)="onInput($event)" [(ngModel)]="packagePrice"></ion-input>
-
-
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label class="f15">Τιμή πακέτου (€)</mat-label>
+                <input matInput inputmode="numeric" placeholder="0.00" (input)="onInput($event)" [(ngModel)]="packagePrice" required>
+                <mat-hint *ngIf="showErrors && isFieldInvalid(packagePrice)" class="error-message">Το πεδίο είναι υποχρεωτικό</mat-hint>
+              </mat-form-field>
             </ion-col>
           </ion-row>
-
         </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer>
-  <ion-grid class="ion-no-padding" *ngIf="editMode==true">
-    <ion-row>
-      <ion-col size="6" class="ion-no-padding" >
-        <ion-button color="danger" class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="deletePackage()">
-          
-          <ion-text color="light">Διαγραφή</ion-text> 
 
+<ion-footer>
+  <ion-grid class="ion-no-padding" *ngIf="editMode">
+    <ion-row>
+      <ion-col size="6" class="ion-no-padding">
+        <ion-button color="danger" class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="deletePackage()">
+          <ion-text color="light">Διαγραφή</ion-text> 
         </ion-button>
       </ion-col>
       <ion-col size="6" class="ion-no-padding">
-        <ion-button [disabled]="!canSavePackage()" class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="savePackage()">       
+        <ion-button class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="savePackage()">
           <ion-text color="light">Αποθήκευση</ion-text> 
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-button  *ngIf="editMode==false" [disabled]="!canSavePackage()" class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="savePackage()">       
+  <ion-button *ngIf="!editMode" class="ion-no-margin ion-no-padding capsoff" expand="full" (click)="savePackage()">       
     <ion-text color="light">Αποθήκευση</ion-text> 
   </ion-button>
 </ion-footer>

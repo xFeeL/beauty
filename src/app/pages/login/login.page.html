@@ -1,6 +1,6 @@
 <ion-content>   <ion-grid class="ion-no-padding">
   <ion-row class="bgL">
-    <ion-button size="medium" (click)="goBack()"  fill="clear" class="back">
+    <ion-button *ngIf="authenticated"size="medium" (click)="goBack()"  fill="clear" class="back">
       <ion-icon name="arrow-back" color="light"></ion-icon>
   </ion-button> 
     <ion-col size="12"  class="head2 ion-text-center ion-padding-top pad">

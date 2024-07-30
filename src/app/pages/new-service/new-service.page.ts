@@ -18,7 +18,7 @@ export class NewServicePage implements OnInit {
   serviceDuration: any;
   serviceDescription: any = "";
   servicePrice!: number;
-
+  showErrors = false; 
   people: any = new Array<any>;
 
   @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
@@ -97,7 +97,9 @@ constructor(
   }
 
   async saveService() {
-    if (this.servicePrice === undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0) {
+    this.showErrors = true;
+
+    if (this.servicePrice === undefined || this.serviceName.trim() === '' || this.serviceDuration <= 0 || this.serviceCategory?.trim() === '') {
       this.userService.presentToast('Παρακαλώ συμπληρώστε όλα τα πεδία.', "danger");
       return;
     }
@@ -342,6 +344,92 @@ constructor(
   
     await alert.present();
   }
+
+  async addCategory() {
+    const handlerOnboarding = async (data: { categoryName: any; }) => {
+      if (this.categoryExists(data.categoryName)) {
+        // Present a toast to the user
+        this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
+        return false;
+      } else {
+        this.categories.push(data.categoryName);
+        this.serviceCategory = data.categoryName;
+        return true;
+      }
+    };
+  
+    const handlerNotOnboarding = async (data: { categoryName: any; }) => {
+      if (this.categoryExists(data.categoryName)) {
+        // Present a toast to the user
+        this.userService.presentToast("Αυτή η κατηγορία υπάρχει ήδη.", "danger");
+        return false;
+      } else {
+        const newCategory = {
+          id: null,
+          name: data.categoryName,
+          expertId: null
+        };
+        this.userService.saveServiceCategory(newCategory).subscribe(response => {
+          this.userService.getServiceCategories().subscribe(data => {
+            this.categories=[]
+            this.categories = data;
+       
+      
+      
+          }, err => {
+            // Handle error here (e.g., show an error message or log it)
+          });
+          this.userService.presentToast("Η κατηγορία προστέθηκε επιτυχώς.", "success");
+          this.serviceCategory = data.categoryName;
+
+        }, err => {
+          this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
+        });
+        return true;
+      }
+    };
+  
+    const alert = await this.alertController.create({
+      header: 'Νέα Κατηγορία Υπηρεσιών',
+      inputs: [
+        {
+          name: 'categoryName',
+          type: 'text',
+          placeholder: 'Όνομα Κατηγορίας (π.χ. Μαλλιά ή Νύχια)'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Ακυρο',
+          role: 'cancel'
+        },
+        {
+          text: 'Προσθηκη',
+          handler: this.onboarding ? handlerOnboarding : handlerNotOnboarding
+        }
+      ]
+    });
+  
+    await alert.present();
+  }
+  
+
+  categoryExists(categoryName: string): boolean {
+    return this.categories.includes(categoryName);
+  }
+
+
+  markFieldsAsTouched() {
+    this.isFieldInvalid(this.serviceName);
+    this.isFieldInvalid(this.servicePrice);
+    this.isFieldInvalid(this.serviceDuration);
+    this.isFieldInvalid(this.serviceCategory);
+  }
+  
+  isFieldInvalid(field: any): boolean {
+    return field == undefined || field == null || field.toString().trim() === '';
+  }
+  
 
 }
 

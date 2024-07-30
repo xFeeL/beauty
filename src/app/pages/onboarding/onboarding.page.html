@@ -94,8 +94,8 @@
             </div>
             <ion-button fill="outline" class="ion-margin-top" (click)="presentActionSheet()">Αλλαγή
               Φωτογραφίας</ion-button>
-            <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/*" hidden>
-            <div class="navigator ion-padding">
+              <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/png, image/jpg, image/jpeg" hidden>
+              <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button>
               <ion-button color="primary" class="beginButton" no-caps (click)="nextSlide($event)"><ion-icon
@@ -256,6 +256,7 @@
               </ion-note>
             </div> <!-- Add New person Button -->
             <ion-button fill="outline" (click)="managePerson()" class="ion-margin-top">Προσθήκη Ατόμου</ion-button>
+            <div class="scrollable-container-people">
             <ion-grid class="w80 w100 grid-container custRow ion-padding-top ion-padding-bottom"
               *ngFor="let person of people">
 
@@ -309,6 +310,7 @@
                 </ion-col>
               </ion-row>
             </ion-grid>
+            </div>
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!(people.length>0)"
@@ -325,28 +327,31 @@
             </div>
             <!-- Trigger for the menu -->
             <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top"
-              *ngIf="serviceCategories.length!=0">Προσθήκη</ion-button>
-            <div class="content-box cursor ion-margin-top" (click)="newCategory()" *ngIf="serviceCategories.length==0">
+              *ngIf="services.length!=0">Προσθήκη</ion-button>
+           <div class="content-box cursor ion-margin-top" (click)="addService()" *ngIf="services.length==0">
               <ion-grid>
                 <ion-row class="ion-text-center ion-justify-content-center mb8">
                   <ion-icon name="add-circle-outline" color="primary" class="s25"></ion-icon>
 
                 </ion-row>
                 <ion-row class="ion-text-center ion-justify-content-center ">
-                  <ion-label color="primary" class="ion-text-center">Νέα κατηγορία</ion-label>
+                  <ion-label color="primary" class="ion-text-center">Νέα υπηρεσία</ion-label>
 
                 </ion-row>
               </ion-grid>
             </div>
             <!-- Menu definition -->
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="newCategory()">Κατηγορίας</button>
-              <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου</button>
-              <button [disabled]="serviceCategories.length==0" mat-menu-item (click)="addService()">Υπηρεσίας</button>
+              <!--<button mat-menu-item (click)="newCategory()">Κατηγορίας</button>-->
+              <button  mat-menu-item (click)="addService()">Μεμονωμένης υπηρεσίας</button>
+
+              <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου υπηρεσιών</button>
             </mat-menu>
             <ion-grid class="w100 w80 custRow " *ngIf="serviceCategories.length!=0">
               <ion-row>
                 <ion-col size="12">
+                  <div class="scrollable-container-services">
+
                   <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom">
                     <ion-row *ngIf="packages.length > 0">
                       <ion-col>
@@ -400,7 +405,7 @@
                       </ion-col>
                     </ion-row>
                     <ion-row>
-                      <ion-list lines="inset" class="ion-no-padding servicesList">
+                      <ion-list lines="inset" class="ion-no-padding servicesList customBackgroundList">
                         <ng-container *ngIf="getServicesForCategory(category).length > 0; else noServices">
                           <ion-item class="cursor" *ngFor="let service of getServicesForCategory(category)"
                             (click)="editService(service)">
@@ -428,14 +433,24 @@
                           </ion-item>
                         </ng-container>
                         <ng-template #noServices>
-                          <ion-item>
-                            <ion-note text-wrap>Δεν υπάρχουν ακόμα υπηρεσίες στην κατηγορία.</ion-note>
-                          </ion-item>
+                         
+                          <div class="content-box cursor ion-margin-top ion-margin-start" (click)="addService()" >
+                            <ion-grid>
+                              <ion-row class="ion-text-center ion-justify-content-center mb8">
+                                <ion-icon name="add-circle-outline" color="primary" class="s25"></ion-icon>
+              
+                              </ion-row>
+                              <ion-row class="ion-text-center ion-justify-content-center ">
+                                <ion-label color="primary" class="ion-text-center">Προσθήκη υπηρεσίας</ion-label>
+              
+                              </ion-row>
+                            </ion-grid>
+                          </div>
                         </ng-template>
                       </ion-list>
                     </ion-row>
                   </ion-grid>
-
+                </div>
 
 
 
