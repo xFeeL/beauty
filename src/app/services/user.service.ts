@@ -7,15 +7,19 @@ import { User } from '../models/user';
 import { Router } from '@angular/router';
 import { Message } from '../models/message';
 import { expertData } from '../models/expertData';
+import OneSignal from 'onesignal-cordova-plugin';
+import { LoginPage } from '../pages/login/login.page';
+import { Capacitor } from '@capacitor/core';
+import { s } from '@fullcalendar/core/internal-common';
 
 
-//let API_URL = "https://api.fyx.gr/common/";
-//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
-//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
+//let API_URL = "https://api-uat.fyx.gr/common/";
+//let Authenticated_API_URL = "https://api-uat.fyx.gr/common-auth/"
+//let beautyAuthenticated_API_URL = "https://api-uat.fyx.gr/beauty-auth/"
 
-let API_URL = "https://api.fyx.gr/common/";
-let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
-let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
+let API_URL = "https://api-uat.fyx.gr/common/";
+let Authenticated_API_URL = "https://api-uat.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api-uat.fyx.gr/beauty-auth/"
 
 
 @Injectable({
@@ -76,11 +80,11 @@ export class UserService {
  */
   sseConnect(call: string) {
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
-      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api-uat.fyx.gr/common-auth/stream?application=beauty")
+      this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -119,7 +123,7 @@ export class UserService {
             this.newNotification$.next(true);
 
             this.presentToast("Έχετε μία νέα κράτηση!", "success")
-          } 
+          }
           else if (type == "Cancelled Appointment") {
             this.refreshAppointment$.next(true);
             this.newNotification$.next(true);
@@ -130,9 +134,9 @@ export class UserService {
             this.newNotification$.next(true);
 
             this.presentToast("Μία κράτηση άλλαξε.", "warning")
-          } 
-          
-         
+          }
+
+
           observer.next(event);
         });
       };
@@ -141,11 +145,11 @@ export class UserService {
           observer.error(error);
         });
         if (this.eventSource.readyState === EventSource.CLOSED) {
-          
-          
+
+
           setTimeout(() => {
-            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
-            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api-uat.fyx.gr/common-auth/stream?application=beauty")
+            this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -222,7 +226,7 @@ export class UserService {
       this._isAuthenticated.next(false);
       return throwError(error);
     } else {
-      
+
       console.error('API Error:', error);
       return throwError(error);
     }
@@ -355,7 +359,7 @@ export class UserService {
 
   }
 
-   submitContactForm(data: { fullname: string; email: string; message: string }): Observable<any> {
+  submitContactForm(data: { fullname: string; email: string; message: string }): Observable<any> {
     return this.http.post(API_URL + "contact", data, {
       headers: this.getHeaders(),
 
@@ -502,6 +506,31 @@ export class UserService {
     }));
   }
 
+  registerDeviceToken(deviceToken: string, device_type: string): Observable<any> {
+    const body = {
+      deviceToken: deviceToken,
+      deviceType: device_type,
+    };
+
+    return this.http.post(Authenticated_API_URL + "register-device-token", body, {
+      headers: this.getHeaders(),
+      withCredentials: true,
+    }).pipe(
+      catchError(error => this.handleError(error, 'POST', body, true))
+    );
+  }
+
+  deleteDeviceToken(deviceToken: string): Observable<any> {
+    const params = { deviceToken };
+    return this.http.delete(Authenticated_API_URL + 'device-tokens/delete', { params, withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error deleting device token:', error);
+          throw error;
+        })
+      );
+  }
+
   /**
    * Logs in with OAuth.
    * @param token The OAuth token.
@@ -509,38 +538,44 @@ export class UserService {
    * @returns An Observable that resolves with the server response.
    */
   loginOAuth(token: string, oauth: string): Observable<any> {
-    return this.http.post<any>(API_URL + 'login-oauth?oauth=' + oauth, token, { withCredentials: true }).pipe(map(response => {
-      if (response) {
-        localStorage.setItem('authenticated', 'true');
-        this._isAuthenticated.next(true);
-        this.pushSetup(response.token)
-        window.location.href = '/tabs/home'
-      }
-      return response;
-    }));
+    return this.http.post<any>(API_URL + 'login-oauth?oauth=' + oauth, token, { withCredentials: true }).pipe(
+      tap(response => {
+        if (response) {
+          localStorage.setItem('authenticated', 'true');
+          this._isAuthenticated.next(true);
+
+          // Initialize push notifications
+
+          window.location.href = '/tabs/home';
+        }
+      }),
+      map(response => {
+        return response;
+      })
+    );
   }
 
   /**
  * Sets up push notifications.
  * @param {string} jwt - The JWT token.
  */
-  pushSetup(jwt: string) {
-    const options: PushOptions = {
-      android: {
-        senderID: '540023271547'
-      },
-      ios: {
-        alert: 'true',
-        badge: true,
-        sound: 'false'
-      }
-    };
-    const pushObject: PushObject = this.push.init(options);
-    pushObject.on('registration').subscribe((registration: any) => {
-      this.registerToken(registration.registrationId, jwt)
-    });
-    pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
-  }
+  /* pushSetup(jwt: string) {
+     const options: PushOptions = {
+       android: {
+         senderID: '540023271547'
+       },
+       ios: {
+         alert: 'true',
+         badge: true,
+         sound: 'false'
+       }
+     };
+     const pushObject: PushObject = this.push.init(options);
+     pushObject.on('registration').subscribe((registration: any) => {
+       this.registerToken(registration.registrationId, jwt)
+     });
+     pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
+   }*/
 
   /**
    * Registers the token.
@@ -549,7 +584,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api-uat.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -580,8 +615,8 @@ export class UserService {
  * @returns {Observable<any>} - The Observable that emits the login response.
  */
   login(user: User): Observable<any> {
-    let phone = btoa(user.phone)
-    let password = btoa(user.password)
+    const phone = btoa(user.phone);
+    const password = btoa(user.password);
     const darkMode = localStorage.getItem('darkMode');
 
     // Clear all items in localStorage
@@ -591,20 +626,24 @@ export class UserService {
     if (darkMode !== null) {
       localStorage.setItem('darkMode', darkMode);
     }
-    //this.pushSetup();
-    const params = new HttpParams().append('phone', phone).append('password', password);
 
+    const params = new HttpParams().append('phone', phone).append('password', password);
+    console.log("SENDING THE LOGIN")
     return this.http.post<any>(API_URL + 'login', params, { withCredentials: true }).pipe(
       tap(response => {
+        console.log(response)
         if (response && response.statusCode === 200) {
-          
-          localStorage.setItem('authenticated', "true");
+          localStorage.setItem('authenticated', 'true');
           this._isAuthenticated.next(true);
-          this.pushSetup(response.token);
+
+          // Initialize push notifications
+          console.log('Initializing push notifications');
+
           window.location.href = '/tabs/home';
         } else if (response && response.statusCode === 409) {
           window.location.href = '/onboarding';
-          this.pushSetup(response.token);
+
+          // Initialize push notifications
         }
       }),
       map(response => {
@@ -806,6 +845,8 @@ export class UserService {
       catchError(error => this.handleError(error, 'POST', ""))
     );
   }
+
+
 
 
   /**
@@ -1335,9 +1376,9 @@ export class UserService {
       params: params,
       withCredentials: true
     })
-    .pipe(
-      catchError(error => this.handleError(error, 'POST', body))
-    );
+      .pipe(
+        catchError(error => this.handleError(error, 'POST', body))
+      );
   }
 
 
@@ -1535,7 +1576,7 @@ export class UserService {
   getNewJwtWithRefreshToken(): Observable<any> {
     if (!this.refreshTokenInProgress) {
       this.refreshTokenInProgress = true;
-  
+
       return this.http.post<any>(API_URL + 'refresh-token', {}, {
         headers: this.getHeaders(),
         withCredentials: true
@@ -1543,21 +1584,21 @@ export class UserService {
         tap((newToken) => {
           this.refreshTokenInProgress = false;
           this.refreshTokenSubject.next(newToken); // Emit the new token
-  
+
           // Retry all the queued requests
           this.requestsQueue.forEach(subscriber => subscriber(newToken));
           this.requestsQueue = [];
         }),
         catchError(err => {
           this.refreshTokenInProgress = false;
-          
+
           // If error is 403, set authenticated to false in local storage
           if (err.status === 403) {
             localStorage.setItem('authenticated', 'false');
             this._isAuthenticated.next(false);
             window.location.reload();
           }
-  
+
           this.refreshTokenSubject.next(err);
           return throwError(err);
         })
@@ -1577,10 +1618,10 @@ export class UserService {
 
     this.isLogging = true; // Set flag to true to indicate logging in progress
 
-    const logEntry = { 
-      message, 
-      severity, 
-      requestBody: requestBody ? JSON.stringify(requestBody) : null 
+    const logEntry = {
+      message,
+      severity,
+      requestBody: requestBody ? JSON.stringify(requestBody) : null
     };
 
     this.http.post(API_URL + "log", logEntry).pipe(
@@ -1604,6 +1645,80 @@ export class UserService {
       }
     );
   }
- 
+
+
+  setupPushNotifications() {
+    console.log("Setting up push notifications...");
+
+    document.addEventListener('deviceready', onDeviceReady, false);
+
+    function onDeviceReady() {
+      console.log("Device is ready. Initializing OneSignal...");
+
+      initializeOneSignal();
+    }
+
+    function initializeOneSignal() {
+      // Check if running on a native platform (Capacitor)
+      if (!Capacitor.isNativePlatform()) {
+        console.log("Not running on a native platform, skipping OneSignal initialization.");
+        return;
+      }
+
+      if (typeof OneSignal !== 'undefined') {
+        console.log("Initializing OneSignal...");
+
+        // Request permissions for push notifications
+        OneSignal.Notifications.requestPermission(true).then((permissionStatus) => {
+          console.log("Notification permission status:", permissionStatus);
+        }).catch((error) => {
+          console.error("Error requesting notification permissions:", error);
+        });
+
+
+        // Check for existing subscription ID and store it
+        OneSignal.User.getOnesignalId().then((subscriptionId) => {
+          console.log(subscriptionId)
+          if (subscriptionId) {
+            console.log(`Current subscription ID: ${subscriptionId}`);
+            localStorage.setItem('oneSignalSubscriptionId', subscriptionId);
+          } else {
+            console.warn("No subscription ID found.");
+          }
+        }).catch((error) => {
+          console.error("Error getting subscription ID:", error);
+        });
+      }
+    }
+
+  }
+
+
+  userLogin(userId: string) {
+    console.log(`User logged in with ID: ${userId}`);
+
+    // Check if running on a Capacitor platform
+    if (Capacitor.isNativePlatform()) {
+      console.log("Running on Capacitor platform.");
+
+      if (typeof OneSignal !== 'undefined' && OneSignal.User) {
+        try {
+          OneSignal.login(userId);
+          console.log(`OneSignal login successful for user ID: ${userId}`);
+        } catch (error) {
+          console.error("OneSignal login failed:", error);
+        }
+      } else {
+        console.error("OneSignal plugin is not available.");
+      }
+    } else {
+      console.log("Not running on a Capacitor platform.");
+    }
+  }
+
+
+
+
+
 
 }

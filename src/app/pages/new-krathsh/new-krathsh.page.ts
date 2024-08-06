@@ -728,6 +728,8 @@ export class NewKrathshPage implements OnInit {
       } else {
         this.userService.presentToast("Δεν βρέθηκαν διαθέσιμες ημέρες εντός 6 μηνών.", "danger");
       }
+      this._cd.markForCheck(); // Add this line
+
     } catch (error) {
       console.error('Error fetching available time slots', error);
       this.userService.presentToast("Προέκυψε σφάλμα κατά την εύρεση διαθέσιμων ημερών.", "danger");

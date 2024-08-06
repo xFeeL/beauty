@@ -96,12 +96,16 @@ export class OtpVerificationPage implements OnInit {
       this.login_user.phone = this.navData.phone;
       this.login_user.password = this.navData.password;
       this.userService.login(this.login_user).subscribe(data => {
+        this.userService.userLogin(data.expertId);
+
         this.rout.navigate(['/tabs/home']);
       }, err => {
         this.handleLoginError(err);
       });
     } else {
       this.userService.loginOAuth(this.navData.token, this.navData.authType).subscribe(data => {
+        this.userService.userLogin(data.expertId);
+
         this.rout.navigate(['/tabs/home']);
       }, err => {
         this.handleOAuthError(err);

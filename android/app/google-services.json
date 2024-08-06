@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1079825245656",
+    "project_id": "find-your-expert-407809",
+    "storage_bucket": "find-your-expert-407809.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079825245656:android:412f8769e61c827527bead",
+        "android_client_info": {
+          "package_name": "com.fyx.beauty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079825245656-fig4fndpfrlg2jnqgu2us73evid5r66d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fyx.beauty",
+            "certificate_hash": "245d67faf211831a6b0e60821a7d90c501573d60"
+          }
+        },
+        {
+          "client_id": "1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCPG63trhsirjTLJnjszpnTgcPki3i2m8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

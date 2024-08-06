@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router'
 import { UserService } from '../../services/user.service';
 
-import { MenuController, LoadingController, ToastController } from '@ionic/angular';
+import { MenuController, LoadingController, ToastController, Platform } from '@ionic/angular';
 import { User } from '../../models/user';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import {
@@ -27,6 +27,7 @@ export class LoginPage implements OnInit {
   variableDisabled: string | undefined;
   disabledButton = "true";
   regex_email_test: any;
+  googlLoginSpinner=false
   phoneMask: MaskitoOptions = {
     mask: ['+', '3', '0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
   };
@@ -39,7 +40,8 @@ export class LoginPage implements OnInit {
     private router: Router,
     private menu: MenuController,
     private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private platform:Platform,
   ) { }
   ;
   ionViewWillEnter() {
@@ -58,9 +60,11 @@ export class LoginPage implements OnInit {
     //If user is exist, redirect it to home page.
     //this.redirectPage(this.userService.currentUserValue);
     GoogleAuth.initialize({
+      
       clientId: '1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com',
       scopes: [],
       grantOfflineAccess: true,
+      
     });
 
     FacebookLogin.initialize({ appId: '3238436183073244' });
@@ -70,6 +74,9 @@ export class LoginPage implements OnInit {
     this.userService.login(this.user).subscribe(data => {
       this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
       setTimeout(() => {
+
+        this.userService.userLogin(data.expertId);
+
         window.location.href = '/tabs/home';
         localStorage.setItem('authenticated', "true");
       }, 1000);
@@ -86,6 +93,7 @@ export class LoginPage implements OnInit {
         this.router.navigate(['/otp-verification']);
       });
     } else if (err.error == "Onboarding") {
+
       this.router.navigate(['/onboarding']);
     } else {
       this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
@@ -93,8 +101,12 @@ export class LoginPage implements OnInit {
   }
 
   googleOAuth() {
+    this.googlLoginSpinner=true
     GoogleAuth.signIn().then(user => {
       this.userService.loginOAuth(user.authentication.idToken, "google").subscribe(data => {
+        this.googlLoginSpinner=false
+        this.userService.userLogin(data.expertId);
+
         window.location.href = '/tabs/home';
         localStorage.setItem('authenticated', "true");
       }, err => {

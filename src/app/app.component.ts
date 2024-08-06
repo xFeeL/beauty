@@ -18,6 +18,10 @@ import { ThemeService } from '../app/services/theme.service';
 import { ImagesPage } from './pages/images/images.page';
 import { ContactPage } from './pages/contact/contact.page';
 import { Location } from '@angular/common';
+import OneSignal from 'onesignal-cordova-plugin';
+import { UpdateService } from './services/update.service';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
@@ -39,7 +43,7 @@ register();
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  
+
   providers: [
     StyleRenderer
   ], animations: [
@@ -67,16 +71,19 @@ export class AppComponent implements WithStyles {
   initialized: boolean = false;
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
-  isMobile: boolean=false;
-  constructor(private location: Location,private platform:Platform,
+  isMobile: boolean = false;
+  constructor(private updateService:UpdateService, private location: Location, private platform: Platform,
     private themeService: ThemeService,
     private userService: UserService,
-    private rout: Router, 
-    readonly sRenderer: StyleRenderer, 
+    private rout: Router,
+    readonly sRenderer: StyleRenderer,
     private modalController: ModalController
   ) {
     this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
     this.isMobile = this.userService.isMobile();
+    this.initializeApp();
+
+
   }
   $priority?: number | undefined;
 
@@ -116,7 +123,7 @@ export class AppComponent implements WithStyles {
 
   copyToClipboard(url: string) {
     navigator.clipboard.writeText(url).then(() => {
-      
+
       // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
     }).catch(err => {
       console.error('Could not copy text: ', err);
@@ -183,8 +190,8 @@ export class AppComponent implements WithStyles {
       backdropDismiss: false
     });
     modal.onDidDismiss().then((result) => {
-      
-      
+
+
       if (result.data === true) {
         window.location.reload(); // To reload the entire window
         // Or you can implement any other logic to refresh the component/view as needed.
@@ -254,22 +261,23 @@ export class AppComponent implements WithStyles {
 
 
   ngOnInit() {
+    this.userService.setupPushNotifications()
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
       if (localStorage.getItem('authenticated') == 'true') {
         this.onMenuOpen();
         this.userService.getAccountId().subscribe(data => {
           this.urlToCopy = "https://www.fyx.gr/book/" + data.id;
-        }, err => {});
+        }, err => { });
       }
     });
-  
+
     this.themeService.themeDark$.subscribe(isDark => {
       this.themeToggle = isDark;
     });
-  
+
     this.themeService.initializeTheme();
-  
+
     this.newMessageSubscription = this.userService.newMessage$.subscribe((newMessage) => {
       this.hasNewMessages = newMessage;
     });
@@ -284,12 +292,12 @@ export class AppComponent implements WithStyles {
         } else {
           // Navigate back
           this.location.back();
-  
+
         }
       });
     });
   }
-  
+
 
 
   // Listen for the toggle check/uncheck to toggle the dark theme
@@ -297,16 +305,52 @@ export class AppComponent implements WithStyles {
     this.themeService.toggleDarkTheme(event.detail.checked);
   }
 
-  
-async goToContact() {
-  const modal = await this.modalController.create({
-    component: ContactPage,
-  });
-  return await modal.present();
+
+  async goToContact() {
+    const modal = await this.modalController.create({
+      component: ContactPage,
+    });
+    return await modal.present();
+  }
+
+
+  async initializeApp() {
+    await this.platform.ready();
+
+    // Initialize the update service to fetch the current app version
+    await this.updateService.initialize();
+
+    // Check for updates only if the app is running as a native app
+    if (this.isNativePlatform()) {
+      this.checkForUpdates();
+
+      // Subscribe to resume event
+      this.platform.resume.subscribe(() => {
+        this.checkForUpdates();
+      });
+
+      // Capacitor App State Change Listener
+      App.addListener('appStateChange', (state) => {
+        if (state.isActive) {
+          this.checkForUpdates();
+        }
+      });
+    }
+  }
+
+  checkForUpdates() {
+    this.updateService.checkForUpdates().then(() => {
+      console.log('Update process completed');
+    });
+  }
+
+  // Helper method to determine if the app is running as a native app
+  isNativePlatform(): boolean {
+    return Capacitor.isNativePlatform();
+  }
 }
 
 
-}
 
 
 
