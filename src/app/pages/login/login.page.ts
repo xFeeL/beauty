@@ -28,6 +28,8 @@ export class LoginPage implements OnInit {
   disabledButton = "true";
   regex_email_test: any;
   googlLoginSpinner=false
+  isInAppBrowser: boolean = false;
+
   phoneMask: MaskitoOptions = {
     mask: ['+', '3', '0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
   };
@@ -70,6 +72,23 @@ export class LoginPage implements OnInit {
     FacebookLogin.initialize({ appId: '3238436183073244' });
   }
 
+  ngAfterViewInit() {
+    this.checkIfInAppBrowser();
+
+  }
+
+ checkIfInAppBrowser() {
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+  // Improved regular expression (removed duplicate 'Instagram')
+  if (/FBAN|FBAV|Instagram|Twitter|LinkedIn|TikTok|Snapchat|Pinterest|Messenger|WhatsApp|Line|WeChat/i.test(userAgent)) {
+    this.isInAppBrowser = true;
+  } else {
+    this.isInAppBrowser = false;
+  }
+}
+
+
   login() {
     this.userService.login(this.user).subscribe(data => {
       this.userService.presentToast("Η σύνδεση ήταν επιτυχής.", "success");
@@ -101,6 +120,8 @@ export class LoginPage implements OnInit {
   }
 
   googleOAuth() {
+    if (!this.isInAppBrowser) {
+
     this.googlLoginSpinner=true
     GoogleAuth.signIn().then(user => {
       this.userService.loginOAuth(user.authentication.idToken, "google").subscribe(data => {
@@ -113,6 +134,10 @@ export class LoginPage implements OnInit {
         this.handleOAuthError(err, user);
       });
     });
+  }else{
+    this.userService.presentToast('Αυτή η λειτουργία είναι διαθέσιμη μόνο σε συμβατά προγράμματα περιήγησης.', 'warning');
+
+  }
   }
 
   handleOAuthError(err: any, user: any) {

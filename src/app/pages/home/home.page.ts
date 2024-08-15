@@ -32,6 +32,7 @@ import { formatDate } from '@angular/common';
 import elLocale from '@fullcalendar/core/locales/el';
 import { Subscription } from 'rxjs';
 import { ThemeService } from 'src/app/services/theme.service';
+import { TeamServicesPromptPage } from '../team-services-prompt/team-services-prompt.page';
 
 export interface PeriodicElement {
   avatar: string;
@@ -274,20 +275,37 @@ export class HomePage implements OnInit {
 
 
   async newKrathsh() {
+    if(this.employees.length==0){
+      this.promptTeamServices()
+    }else{
+      const modal = await this.modalController.create({
+        component: NewKrathshPage,
+        backdropDismiss: false
+      });
+      modal.onDidDismiss().then((dataReturned) => {
+        if (dataReturned.data == true) {
+          // Your logic here, 'dataReturned' is the data returned from modal
+  
+          this.getAppointmentsOfRange(this.startDate, this.endDate);
+  
+  
+        }
+      });
+  
+      return await modal.present();
+    }
+ 
+  }
+
+  async promptTeamServices() {
     const modal = await this.modalController.create({
-      component: NewKrathshPage,
-      backdropDismiss: false
+      component: TeamServicesPromptPage,
+     
     });
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data == true) {
-        // Your logic here, 'dataReturned' is the data returned from modal
+    modal.onWillDismiss().then((dataReturned) => {
+  
 
-        this.getAppointmentsOfRange(this.startDate, this.endDate);
-
-
-      }
     });
-
     return await modal.present();
   }
 

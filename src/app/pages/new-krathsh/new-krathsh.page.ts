@@ -7,6 +7,7 @@ import { trigger, state, style, animate, transition, AnimationEvent } from '@ang
 import { AddServicesPage } from '../add-services/add-services.page';
 import { lastValueFrom } from 'rxjs';
 import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
+import { TeamServicesPromptPage } from '../team-services-prompt/team-services-prompt.page';
 
 @Component({
   selector: 'app-new-krathsh',
@@ -735,6 +736,8 @@ export class NewKrathshPage implements OnInit {
       this.userService.presentToast("Προέκυψε σφάλμα κατά την εύρεση διαθέσιμων ημερών.", "danger");
     }
   }
+
+
 
 }
 interface ServiceEmployee {

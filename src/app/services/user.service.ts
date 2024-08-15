@@ -480,7 +480,6 @@ export class UserService {
 
 
 
-
   getServiceVariations(serviceId: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-service-variations?service_id=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
@@ -499,37 +498,20 @@ export class UserService {
    * @returns An Observable that resolves with the server response.
    */
   checkForNotifications() {
-    return this.http.get<any>(Authenticated_API_URL + 'check-notifications', { withCredentials: true }).pipe(map(response => {
+    return this.http.get<any>(beautyAuthenticated_API_URL + 'check-notifications', { withCredentials: true }).pipe(map(response => {
       if (response) {
       }
       return response;
     }));
   }
 
-  registerDeviceToken(deviceToken: string, device_type: string): Observable<any> {
-    const body = {
-      deviceToken: deviceToken,
-      deviceType: device_type,
-    };
-
-    return this.http.post(Authenticated_API_URL + "register-device-token", body, {
-      headers: this.getHeaders(),
-      withCredentials: true,
-    }).pipe(
-      catchError(error => this.handleError(error, 'POST', body, true))
+  checkExpertSetup(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "check-expert-setup", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
 
-  deleteDeviceToken(deviceToken: string): Observable<any> {
-    const params = { deviceToken };
-    return this.http.delete(Authenticated_API_URL + 'device-tokens/delete', { params, withCredentials: true })
-      .pipe(
-        catchError(error => {
-          console.error('Error deleting device token:', error);
-          throw error;
-        })
-      );
-  }
+
 
   /**
    * Logs in with OAuth.
@@ -1547,6 +1529,14 @@ export class UserService {
       catchError(error => this.handleError(error))
     );
   }
+
+  checkForUpdates(currentVersion: string): Observable<any> {
+    return this.http.get(API_URL + "check-version?version="+currentVersion, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+
 
   getServiceDescription(serviceId: string): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-service-description?serviceId=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(

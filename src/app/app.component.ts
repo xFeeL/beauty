@@ -22,6 +22,8 @@ import OneSignal from 'onesignal-cordova-plugin';
 import { UpdateService } from './services/update.service';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { TeamServicesPromptPage } from './pages/team-services-prompt/team-services-prompt.page';
 
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
@@ -72,6 +74,7 @@ export class AppComponent implements WithStyles {
   readonly classes = this.sRenderer.renderSheet(STYLES, true);
   urlToCopy: string = "";
   isMobile: boolean = false;
+  setupNotFinished: boolean=false;
   constructor(private updateService:UpdateService, private location: Location, private platform: Platform,
     private themeService: ThemeService,
     private userService: UserService,
@@ -79,9 +82,7 @@ export class AppComponent implements WithStyles {
     readonly sRenderer: StyleRenderer,
     private modalController: ModalController
   ) {
-    this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
-    this.isMobile = this.userService.isMobile();
-    this.initializeApp();
+  
 
 
   }
@@ -106,6 +107,9 @@ export class AppComponent implements WithStyles {
   fadeState: string = 'in';
 
   toggleIcon() {
+    if(this.setupNotFinished=true){
+      this.promptTeamServices();
+    }else{
     this.copyToClipboard(this.urlToCopy);
     this.fadeState = 'out';
     setTimeout(() => {
@@ -118,16 +122,32 @@ export class AppComponent implements WithStyles {
     }, 3000)
 
     this.userService.presentToast("Ο σύνδεσμος κρατήσεων αντιγράφηκε στο πρόχειρο!", "success")
+  }
 
   }
 
   copyToClipboard(url: string) {
-    navigator.clipboard.writeText(url).then(() => {
+  
+      navigator.clipboard.writeText(url).then(() => {
 
-      // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
-    }).catch(err => {
-      console.error('Could not copy text: ', err);
+        // Here, you can also update the tooltip text and change the icon to indicate that the URL has been copied.
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    
+  
+  }
+
+  async promptTeamServices() {
+    const modal = await this.modalController.create({
+      component: TeamServicesPromptPage,
+     
     });
+    modal.onWillDismiss().then((dataReturned) => {
+  
+
+    });
+    return await modal.present();
   }
 
 
@@ -246,6 +266,13 @@ export class AppComponent implements WithStyles {
 
     })
 
+    this.userService.checkExpertSetup().subscribe(data=>{
+      this.setupNotFinished=false
+
+    },err=>{
+      this.setupNotFinished=true
+    })
+
 
   }
 
@@ -261,6 +288,10 @@ export class AppComponent implements WithStyles {
 
 
   ngOnInit() {
+    this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
+    this.isMobile = this.userService.isMobile();
+    console.log("APP INIT")
+    this.initializeApp();
     this.userService.setupPushNotifications()
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
@@ -315,41 +346,73 @@ export class AppComponent implements WithStyles {
 
 
   async initializeApp() {
+    console.log('Initializing app...');
     await this.platform.ready();
-
+    console.log('Platform ready.');
+  
     // Initialize the update service to fetch the current app version
     await this.updateService.initialize();
-
+    console.log('UpdateService initialized.');
+  
     // Check for updates only if the app is running as a native app
     if (this.isNativePlatform()) {
+      console.log('Running on a native platform. Checking for updates...');
       this.checkForUpdates();
-
-      // Subscribe to resume event
-      this.platform.resume.subscribe(() => {
-        this.checkForUpdates();
-      });
-
-      // Capacitor App State Change Listener
-      App.addListener('appStateChange', (state) => {
-        if (state.isActive) {
+  
+      // Ensure resume event is subscribed only once
+      if (!this.isSubscribedToResume) {
+        this.platform.resume.subscribe(() => {
+          console.log('App resumed. Checking for updates...');
           this.checkForUpdates();
-        }
-      });
+        });
+        this.isSubscribedToResume = true;
+      }
+  
+      // Capacitor App State Change Listener
+      if (!this.isSubscribedToAppStateChange) {
+        App.addListener('appStateChange', (state) => {
+          if (state.isActive) {
+            console.log('App state changed to active. Checking for updates...');
+            this.checkForUpdates();
+          }
+        });
+        this.isSubscribedToAppStateChange = true;
+      }
+      CapacitorUpdater.notifyAppReady();
     }
   }
-
+  
   checkForUpdates() {
+    // Prevent multiple update checks
+    if (this.isCheckingForUpdates) {
+      console.log('Update check already in progress. Skipping...');
+      return;
+    }
+  
+    this.isCheckingForUpdates = true;
+    console.log("Checking for updates...");
     this.updateService.checkForUpdates().then(() => {
       console.log('Update process completed');
+      this.isCheckingForUpdates = false;
+    }).catch(err => {
+      console.error('Error during update check:', err);
+      this.isCheckingForUpdates = false;
     });
   }
-
+  
   // Helper method to determine if the app is running as a native app
   isNativePlatform(): boolean {
-    return Capacitor.isNativePlatform();
+    const isNative = Capacitor.isNativePlatform();
+    console.log(`Is native platform: ${isNative}`);
+    return isNative;
   }
+  
+  // Additional properties to track subscriptions and state
+  private isSubscribedToResume = false;
+  private isSubscribedToAppStateChange = false;
+  private isCheckingForUpdates = false;
+  
 }
-
 
 
 

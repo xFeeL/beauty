@@ -38,6 +38,8 @@ export class SignUpPage implements OnInit {
   orgNameColor!: string;
   orgNameVariableClass!: string;
   orgName: string = "";
+  isInAppBrowser: boolean = false;
+
   phoneMask: MaskitoOptions = {
     mask: ['+', '3', '0', ' ', '6', '9', /\d/, ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/],
   };
@@ -52,9 +54,27 @@ export class SignUpPage implements OnInit {
       scopes: [],
       grantOfflineAccess: true,
     });
-    FacebookLogin.initialize({ appId: '3238436183073244' });
+    //FacebookLogin.initialize({ appId: '3238436183073244' });
 
   }
+
+
+  ngAfterViewInit() {
+    this.checkIfInAppBrowser();
+
+  }
+
+  checkIfInAppBrowser() {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+    // Improved regular expression (removed duplicate 'Instagram')
+    if (/FBAN|FBAV|Instagram|Twitter|LinkedIn|TikTok|Snapchat|Pinterest|Messenger|WhatsApp|Line|WeChat/i.test(userAgent)) {
+      this.isInAppBrowser = true;
+    } else {
+      this.isInAppBrowser = false;
+    }
+  }
+
 
   login() {
     this.rout.navigate(['login']);
@@ -94,7 +114,7 @@ export class SignUpPage implements OnInit {
       });
     }
   }
-  
+
   handleOAuthError(err: any) {
     if (err.error === "Email exists" || err.error?.text === "Email exists") {
       this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger");
@@ -110,7 +130,7 @@ export class SignUpPage implements OnInit {
       this.rout.navigate(['otp-verification']);
     }
   }
-  
+
 
   emailCheck() {
 
@@ -177,15 +197,16 @@ export class SignUpPage implements OnInit {
 
 
   async googleOAuth() {
-    const user = await GoogleAuth.signIn();
-    this.disabledEmail = true
-
-    this.email_input = user.email;
-    this.token = user.authentication.idToken;
-    this.google = true
-    this.emailCheck()
-  
-
+    if (!this.isInAppBrowser) {
+      const user = await GoogleAuth.signIn();
+      this.disabledEmail = true
+      this.email_input = user.email;
+      this.token = user.authentication.idToken;
+      this.google = true
+      this.emailCheck()
+    } else {
+      this.userService.presentToast('Αυτή η λειτουργία είναι διαθέσιμη μόνο σε συμβατά προγράμματα περιήγησης.', 'warning');
+    }
   }
 
   async facebookOAuth(): Promise<void> {

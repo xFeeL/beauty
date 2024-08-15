@@ -77,6 +77,8 @@ async deleteEmployee(employee: any) {
                           successData => {
                             this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
                             this.goToTeam();
+                            this.reloadAppointments=true
+
                           },
                           errorData => {
                             this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -91,6 +93,8 @@ async deleteEmployee(employee: any) {
                           successData => {
                             this.userService.presentToast("Το άτομο διαγράφηκε επιτυχώς.", "success");
                             this.goToTeam();
+                            this.reloadAppointments=true
+
                           },
                           errorData => {
                             this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -151,7 +155,7 @@ async deleteEmployee(employee: any) {
       this.goToTeam()
       this.reloadAppointments=true
       if(data.new_image=="true"){
-        window.location.reload();
+        //window.location.reload();
 
       }
 

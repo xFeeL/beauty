@@ -240,21 +240,27 @@
               </div>
             </ion-list>
             
-            <div class="navigator ion-padding">
+            <!--<div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
                 color="primary" class="beginButton" no-caps (click)="nextSlide($event)">
                 <ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon>
               </ion-button>
+            </div>-->
+            <div class="navigator ion-padding">
+              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
+                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
+                [disabled]="!isOpenDayExists()" color="primary" class="beginButton" no-caps
+                (click)="saveData()"><ion-text color="light">Τέλος</ion-text> </ion-button>
             </div>
           </swiper-slide>
-          <swiper-slide class="ion-padding" data-hash="slide7">
+          <!--<swiper-slide class="ion-padding" data-hash="slide7">
             <div class="slider-text">
               <h3>Ομάδα Εξυπηρέτησης</h3>
               <ion-note>
                 Παρακαλώ εισάγετε τα άτομα που εξυπηρετούν στην επιχείρησης σας.
               </ion-note>
-            </div> <!-- Add New person Button -->
+            </div>
             <ion-button fill="outline" (click)="managePerson()" class="ion-margin-top">Προσθήκη Ατόμου</ion-button>
             <div class="scrollable-container-people">
             <ion-grid class="w80 w100 grid-container custRow ion-padding-top ion-padding-bottom"
@@ -325,7 +331,6 @@
                 Παρακαλώ εισάγετε τις υπηρεσίες της επιχείρησης σας.
               </ion-note>
             </div>
-            <!-- Trigger for the menu -->
             <ion-button [matMenuTriggerFor]="menu" fill="outline" class="ion-margin-top"
               *ngIf="services.length!=0">Προσθήκη</ion-button>
            <div class="content-box cursor ion-margin-top" (click)="addService()" *ngIf="services.length==0">
@@ -340,9 +345,7 @@
                 </ion-row>
               </ion-grid>
             </div>
-            <!-- Menu definition -->
             <mat-menu #menu="matMenu">
-              <!--<button mat-menu-item (click)="newCategory()">Κατηγορίας</button>-->
               <button  mat-menu-item (click)="addService()">Μεμονωμένης υπηρεσίας</button>
 
               <button [disabled]="services.length==0" mat-menu-item (click)="newPackage()">Πακέτου υπηρεσιών</button>
@@ -355,7 +358,7 @@
                   <ion-grid class="ion-no-padding ion-margin-top ion-margin-bottom">
                     <ion-row *ngIf="packages.length > 0">
                       <ion-col>
-                        <h4 class="ml13" style="text-align: left">Πακέτα</h4> <!-- Display category name -->
+                        <h4 class="ml13" style="text-align: left">Πακέτα</h4> 
                       </ion-col>
 
                     </ion-row>
@@ -388,7 +391,7 @@
                     *ngFor="let category of serviceCategories">
                     <ion-row>
                       <ion-col>
-                        <h4 class="ml13" style="text-align: left">{{ category }}</h4> <!-- Display category name -->
+                        <h4 class="ml13" style="text-align: left">{{ category }}</h4> 
                       </ion-col>
                       <ion-col class="ion-text-right">
                         <mat-icon class="ion-margin-top" [matMenuTriggerFor]="menu">more_vert</mat-icon>
@@ -466,7 +469,7 @@
                 [disabled]="isEndButtonDisabled()" color="primary" class="beginButton" no-caps
                 (click)="saveData()"><ion-text color="light">Τέλος</ion-text> </ion-button>
             </div>
-          </swiper-slide>
+          </swiper-slide>-->
         </swiper-container>
         <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
           <ng-template>
@@ -511,10 +514,9 @@
                     <div slot="content">
                       <ion-list class="ion-no-padding">
                         <ion-item *ngFor="let item of omorfia_categories">
-                          <!--<a href="/experts?category={{item.name}}">--> <ion-text
+                           <ion-text
                             color="primary">{{item.title}}</ion-text>
                           <ion-checkbox [(ngModel)]="item.selected" slot="end" value="{{item.title}}"></ion-checkbox>
-                          <!--</a>-->
                         </ion-item>
                       </ion-list>
                     </div>

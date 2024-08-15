@@ -171,6 +171,10 @@ const routes: Routes = [
     path: 'contact',
     loadChildren: () => import('./pages/contact/contact.module').then( m => m.ContactPageModule)
   },
+  {
+    path: 'team-services-prompt',
+    loadChildren: () => import('./pages/team-services-prompt/team-services-prompt.module').then( m => m.TeamServicesPromptPageModule)
+  },
  
   
   

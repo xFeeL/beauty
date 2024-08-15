@@ -79,7 +79,7 @@ export class EditProfilePage {
 
     if (localStorage.getItem('address') != null) {
       this.address = localStorage.getItem('address');
-      this.autocompleteInput=this.address
+      this.autocompleteInput = this.address
       this.updatedAddress = true
     }
     this.userService.getExpertImage().subscribe(data => {
@@ -103,7 +103,7 @@ export class EditProfilePage {
       }
       if (!this.updatedAddress) {
         this.address = data.address
-        this.autocompleteInput=this.address
+        this.autocompleteInput = this.address
 
         this.coordinates = data.coordinates
       }
@@ -172,9 +172,9 @@ export class EditProfilePage {
     });
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
-        
+
         this.address = data.data.address
-        this.coordinates =  data.data.latitude +  "," +data.data.longitude 
+        this.coordinates = data.data.latitude + "," + data.data.longitude
         this.needReferesh = true
       }
       // Do something with the data returned from the modal
@@ -183,7 +183,7 @@ export class EditProfilePage {
   }
 
   businessNameTest() {
-    let result = /^[a-zA-Zα-ωΑ-ΩίϊΐόάέύϋΰήώΊΪΌΆΈΎΫΉΏ0-9\s-]+$/.test(this.name);
+    let result = /^[a-zA-Zα-ωΑ-ΩίϊΐόάέύϋΰήώΊΪΌΆΈΎΫΉΏ0-9\s-'’]+$/.test(this.name);
     if (result) {
       this.resultBusinessNameCheck = true;
       this.businessNameIconName = "checkmark-outline"
@@ -230,9 +230,9 @@ export class EditProfilePage {
     const instagramValid = this.instagramLink == "" || (this.instagramLink != "" && this.linkValid(this.instagramLink));
     const tiktokValid = this.tiktokLink == "" || (this.tiktokLink != "" && this.linkValid(this.tiktokLink));
 
-    
-    
-    
+
+
+
 
     let saveButtonEnabled = basicChecks && facebookValid && instagramValid && tiktokValid;
     return !saveButtonEnabled;  // Return true to disable the save button if conditions are not met
@@ -428,9 +428,9 @@ export class EditProfilePage {
   autocompleteInput: string = '';
   loadingOn: boolean = false;
   queryWait: boolean = false;
-  suggestions:any=[]
+  suggestions: any = []
   searchAddress() {
-    
+
     if (this.autocompleteInput.length < 1) {
       this.suggestions = [];
       this.loadingOn = false;
@@ -445,7 +445,7 @@ export class EditProfilePage {
         this.queryWait = false;
         this.userService.guessAddresses(this.autocompleteInput).subscribe(data => {
           this.suggestions = data;
-          
+
           this.loadingOn = false;
         }, err => {
           console.error(err);
@@ -455,9 +455,9 @@ export class EditProfilePage {
     }
   }
 
-  saveAddress(suggestion:any){
-    this.address=suggestion.address
-    this.coordinates= suggestion.latitude +"," + suggestion.longitude 
+  saveAddress(suggestion: any) {
+    this.address = suggestion.address
+    this.coordinates = suggestion.latitude + "," + suggestion.longitude
 
     this.needReferesh = true
   }

@@ -21,7 +21,7 @@ allprojects {
 ext {
     compileSdkVersion = 34
     minSdkVersion = 22
-    targetSdkVersion = 33
+    targetSdkVersion = 34
     androidxAppCompatVersion = '1.4.0'
     androidxCoordinatorLayoutVersion = '1.1.0'
     coreSplashScreenVersion = '1.0.0'

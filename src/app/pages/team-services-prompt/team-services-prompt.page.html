@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Ομάδα & Υπηρεσίες</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <div class="modal-content">
+    <img src="../../../assets/imgs/team-services-prompt.jpg" alt="Setup Services" class="modal-image">
+    <h2>Εισαγωγή ομάδας & υπηρεσιών</h2>
+    <p class="ion-padding-bottom ion-padding-start ion-padding-end">Για να ξεκινήσετε να έχετε κρατήσεις προσθέστε την ομάδα και τις υπηρεσίες σας.</p>
+    <ion-button class="capsoff" expand="full" color="primary" (click)="goToTeamServices()">Ναι, ας ξεκινήσουμε</ion-button>
+    <ion-button class="capsoff" expand="full" color="medium" (click)="goBack()">Αργότερα</ion-button>
+  </div>
+</ion-content>

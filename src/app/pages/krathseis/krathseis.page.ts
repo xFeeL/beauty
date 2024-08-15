@@ -8,6 +8,7 @@ import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
 import { SearchKrathshPage } from '../search-krathsh/search-krathsh.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { fromEvent, throttleTime } from 'rxjs';
+import { TeamServicesPromptPage } from '../team-services-prompt/team-services-prompt.page';
 
 @Component({
   selector: 'app-krathseis',
@@ -98,6 +99,7 @@ export class KrathseisPage implements OnInit {
   cancelReason: string = "";
   reloadAppointments: any = false;
   isMobile=false
+  setupNotFinished: boolean=false;
   constructor(
     private route: ActivatedRoute,  
     private rout: Router, 
@@ -142,6 +144,25 @@ export class KrathseisPage implements OnInit {
       this.disableInfiniteScroll = false;
       this.page = 0;
     }, 0);
+
+    this.userService.checkExpertSetup().subscribe(data=>{
+      this.setupNotFinished=false
+
+    },err=>{
+      this.setupNotFinished=true
+    })
+  }
+
+  async promptTeamServices() {
+    const modal = await this.modalController.create({
+      component: TeamServicesPromptPage,
+     
+    });
+    modal.onWillDismiss().then((dataReturned) => {
+  
+
+    });
+    return await modal.present();
   }
   
   
@@ -223,23 +244,28 @@ export class KrathseisPage implements OnInit {
   }
 
   async newKrathsh() {
-    const modal = await this.modalController.create({
-      component: NewKrathshPage,
-      backdropDismiss: false
+    if(this.setupNotFinished){
+      this.promptTeamServices()
+    }else{
+      const modal = await this.modalController.create({
+        component: NewKrathshPage,
+        backdropDismiss: false
+  
+      });
+      modal.onDidDismiss().then((dataReturned) => {
+        if (dataReturned !== null) {
+          this.reloadAppointments = true
+  
+          // Your logic here, 'dataReturned' is the data returned from modal
+          this.page = 0;
+          this.krathseis = []
+          this.getKrathseis();
+        }
+      });
+  
+      return await modal.present(); 
+    }
 
-    });
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned !== null) {
-        this.reloadAppointments = true
-
-        // Your logic here, 'dataReturned' is the data returned from modal
-        this.page = 0;
-        this.krathseis = []
-        this.getKrathseis();
-      }
-    });
-
-    return await modal.present();
   }
 
   async searchKrathsh() {
@@ -402,6 +428,8 @@ getKrathseis() {
     this.krathseis = []
     this.allChipClass = "selected-chip";
     this.krathshChip = "not-selected-chip"
+    this.krathshChipIconCOlor = "light";
+
     this.krathseistatus = "0,0,0,0,0"
     for (let i = 0; i < this.itemsKrathsh.length; i++) {
       this.itemsKrathsh[i].selected = false;

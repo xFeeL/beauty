@@ -21,6 +21,25 @@
     
   }
 
+  .no_results_item {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .no_results_text {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 50px;
+    width: 95%;
+    padding-bottom: 20px;
+  }
+  
+
   .custRow {
     background-color: var(--ion-color-primary-contrast);
     border-radius: 15px;

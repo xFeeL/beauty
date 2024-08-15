@@ -48,9 +48,9 @@
       </ion-list>
        <ion-grid>
         <ion-row class="ion-text-center ion-justify-content-center">
-          <ion-col  size="10" class="ion-text-center">
-            <ion-item   color="light" lines="none" class="ion-margin-end ion-margin-start oauth_buttons cursor" (click)="googleOAuth()">
-              <ion-img *ngIf="!googlLoginSpinner" class="center googleImage" src="/assets/imgs/google.svg"></ion-img>             
+          <ion-col  size="10" class="ion-text-center" (click)="googleOAuth()">
+            <ion-item   [disabled]="isInAppBrowser" color="light" lines="none" class="ion-margin-end ion-margin-start oauth_buttons cursor" >
+              <ion-img *ngIf="!googlLoginSpinner" class="center googleImage" src="/assets/imgs/google.svg" ></ion-img>             
             <ion-spinner color="primary" *ngIf="googlLoginSpinner"></ion-spinner>
             </ion-item>
           </ion-col>
