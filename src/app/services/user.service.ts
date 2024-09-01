@@ -11,15 +11,16 @@ import OneSignal from 'onesignal-cordova-plugin';
 import { LoginPage } from '../pages/login/login.page';
 import { Capacitor } from '@capacitor/core';
 import { s } from '@fullcalendar/core/internal-common';
+import { Platform } from '@ionic/angular';
 
 
-//let API_URL = "https://api-uat.fyx.gr/common/";
-//let Authenticated_API_URL = "https://api-uat.fyx.gr/common-auth/"
-//let beautyAuthenticated_API_URL = "https://api-uat.fyx.gr/beauty-auth/"
+//let API_URL = "https://api.fyx.gr/common/";
+//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
-let API_URL = "https://api-uat.fyx.gr/common/";
-let Authenticated_API_URL = "https://api-uat.fyx.gr/common-auth/"
-let beautyAuthenticated_API_URL = "https://api-uat.fyx.gr/beauty-auth/"
+let API_URL = "https://api.fyx.gr/common/";
+let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
 
 @Injectable({
@@ -70,7 +71,7 @@ export class UserService {
   isAuthenticated$ = this._isAuthenticated.asObservable();
 
 
-  constructor(private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) {
+  constructor(private platform:Platform,private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) {
     this.handleError = this.handleError.bind(this);
   }
 
@@ -79,14 +80,16 @@ export class UserService {
  * @param {string} call - The call to connect from.
  */
   sseConnect(call: string) {
+    if (!this.platform.is('cordova') && !this.platform.is('capacitor')) {
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("https://api-uat.fyx.gr/common-auth/stream?application=beauty")
-      this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
+  }
   }
 
   /**
@@ -148,8 +151,8 @@ export class UserService {
 
 
           setTimeout(() => {
-            this.eventSource = this.getEventSource("https://api-uat.fyx.gr/common-auth/stream?application=beauty")
-            this.getServerSentEvent("https://api-uat.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -498,7 +501,7 @@ export class UserService {
    * @returns An Observable that resolves with the server response.
    */
   checkForNotifications() {
-    return this.http.get<any>(beautyAuthenticated_API_URL + 'check-notifications', { withCredentials: true }).pipe(map(response => {
+    return this.http.get<any>(Authenticated_API_URL + 'check-notifications', { withCredentials: true }).pipe(map(response => {
       if (response) {
       }
       return response;
@@ -566,7 +569,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("https://api-uat.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -1235,12 +1238,14 @@ export class UserService {
   saveAppointmentsSettings(
     slotInterval: string,
     needAccept: boolean,
-    isVisible: boolean
+    isVisible: boolean,
+    historyVisibility:string
   ): Observable<any> {
     const body = {
       time_interval: slotInterval.toString(),
       reservations_auto_accept: needAccept ? "true" : "false",
-      is_visible_for_reservations: isVisible ? "true" : "false"
+      is_visible_for_reservations: isVisible ? "true" : "false",
+      history_visibility:historyVisibility
     };
     return this.http.post(
       beautyAuthenticated_API_URL + "save-appointment-settings",
@@ -1640,47 +1645,144 @@ export class UserService {
   setupPushNotifications() {
     console.log("Setting up push notifications...");
 
-    document.addEventListener('deviceready', onDeviceReady, false);
+    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+  }
 
-    function onDeviceReady() {
-      console.log("Device is ready. Initializing OneSignal...");
+  onDeviceReady = () => {
+    console.log("Device is ready. Initializing OneSignal...");
 
-      initializeOneSignal();
+    this.initializeOneSignal();
+  }
+
+  initializeOneSignal() {
+    // Check if running on a native platform (Capacitor)
+    if (!Capacitor.isNativePlatform()) {
+      console.log("Not running on a native platform, skipping OneSignal initialization.");
+      return;
     }
 
-    function initializeOneSignal() {
-      // Check if running on a native platform (Capacitor)
-      if (!Capacitor.isNativePlatform()) {
-        console.log("Not running on a native platform, skipping OneSignal initialization.");
-        return;
+    if (typeof OneSignal !== 'undefined') {
+      console.log("Initializing OneSignal...");
+      OneSignal.initialize("dd10fc16-8bdc-4b16-8a66-5fe450385acc");
+      // Request permissions for push notifications
+      OneSignal.Notifications.requestPermission(true).then((permissionStatus) => {
+        console.log("Notification permission status:", permissionStatus);
+      }).catch((error) => {
+        console.error("Error requesting notification permissions:", error);
+      });
+
+      // Check for existing subscription ID and store it
+      OneSignal.User.getOnesignalId().then((subscriptionId) => {
+        console.log(subscriptionId);
+        if (subscriptionId) {
+          console.log(`Current subscription ID: ${subscriptionId}`);
+          localStorage.setItem('oneSignalSubscriptionId', subscriptionId);
+        } else {
+          console.warn("No subscription ID found.");
+        }
+      }).catch((error) => {
+        console.error("Error getting subscription ID:", error);
+      })  
+
+
+    OneSignal.Notifications.addEventListener("click", async (e:any) => {
+      console.log("THE EVENT")
+      console.log(e)
+      let clickData = await e.notification;
+      console.log("Notification Clicked : " + clickData);
+    
+      const notification = e.notification;
+      const payload = notification.payload;
+
+      // Check for specific message conditions
+      if (payload.title === "Your Message Title") {
+        // Handle the message
+        console.log("Received message: " + payload.body);
+        // Perform actions based on the message content
+      } else if (payload.title === "Another Message Title") {
+        // Handle the message
+        console.log("Received another message: " + payload.body);
+        // Perform actions based on the message content
+      } else {
+        // Handle other messages
+        console.log("Received a message: " + payload.body);
+        // Perform default actions or ignore
       }
+    });
 
-      if (typeof OneSignal !== 'undefined') {
-        console.log("Initializing OneSignal...");
+    OneSignal.Notifications._setPropertyAndObserver()
 
-        // Request permissions for push notifications
-        OneSignal.Notifications.requestPermission(true).then((permissionStatus) => {
-          console.log("Notification permission status:", permissionStatus);
-        }).catch((error) => {
-          console.error("Error requesting notification permissions:", error);
-        });
-
-
-        // Check for existing subscription ID and store it
-        OneSignal.User.getOnesignalId().then((subscriptionId) => {
-          console.log(subscriptionId)
-          if (subscriptionId) {
-            console.log(`Current subscription ID: ${subscriptionId}`);
-            localStorage.setItem('oneSignalSubscriptionId', subscriptionId);
-          } else {
-            console.warn("No subscription ID found.");
-          }
-        }).catch((error) => {
-          console.error("Error getting subscription ID:", error);
-        });
+    OneSignal.Notifications.addEventListener("foregroundWillDisplay", async (e:any) => {
+      console.log("THE EVENT2")
+      console.log(e)
+      let clickData = await e.notification;
+      console.log("Notification Clicked : " + clickData);
+    
+      const notification = e.notification;
+      const payload = notification.additionalData;
+      console.log(payload)
+      // Check for specific message conditions
+      if (payload.type === "message") {
+        // Handle the message
+        console.log("Received message: " + payload.body);
+        this.messageReceived.next(true);
+        this.newMessage$.next(true);
+        // Perform actions based on the message content
+      } else if (payload.title === "Another Message Title") {
+        // Handle the message
+        console.log("Received another message: " + payload.body);
+        // Perform actions based on the message content
+      } else {
+        // Handle other messages
+        console.log("Received a message: " + payload.body);
+        // Perform default actions or ignore
       }
+    });
+  }
+}
+    
+  
+
+
+
+  handleNotification(data: any) {
+    const type = data.Type;
+    if (type === "New Message") {
+      this.messageReceived.next(data);
+      this.newMessage$.next(true);
+
+    } else if (type === "New Appointment") {
+      this.refreshAppointment$.next(true);
+      this.newNotification$.next(true);
+      this.presentToast("Έχετε μία νέα κράτηση!", "success");
+
+    } else if (type === "Cancelled Appointment") {
+      this.refreshAppointment$.next(true);
+      this.newNotification$.next(true);
+      this.presentToast("Μία κράτηση ακυρώθηκε.", "warning");
+
+    } else if (type === "Updated Appointment") {
+      this.refreshAppointment$.next(true);
+      this.newNotification$.next(true);
+      this.presentToast("Μία κράτηση άλλαξε.", "warning");
     }
+  }
 
+
+  getMessageReceivedObservable(): Observable<any> {
+    return this.messageReceived.asObservable();
+  }
+
+  getNewMessageObservable(): Observable<boolean> {
+    return this.newMessage$.asObservable();
+  }
+
+  getRefreshAppointmentObservable(): Observable<boolean> {
+    return this.refreshAppointment$.asObservable();
+  }
+
+  getNewNotificationObservable(): Observable<boolean> {
+    return this.newNotification$.asObservable();
   }
 
 

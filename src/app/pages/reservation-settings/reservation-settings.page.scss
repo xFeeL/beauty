@@ -65,3 +65,7 @@ mat-hint.mat-mdc-form-field-hint.pl5 {
 .blue-icon {
   color: var(--ion-color-primary);
 }
+
+ion-select{
+  text-wrap:wrap !important;
+}

@@ -141,6 +141,8 @@ export class LoginPage implements OnInit {
   }
 
   handleOAuthError(err: any, user: any) {
+    this.googlLoginSpinner=false
+
     if (err.error == "Mobile") {
       this.userService.requestOTP(user.email).subscribe(data => {
         this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");

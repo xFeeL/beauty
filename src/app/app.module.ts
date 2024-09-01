@@ -60,7 +60,6 @@ import { registerLocaleData } from '@angular/common';
 import localeEl from '@angular/common/locales/el';
 import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 
-
 registerLocaleData(localeEl, 'el');
 
 @NgModule({
@@ -86,6 +85,7 @@ registerLocaleData(localeEl, 'el');
     MatListModule,
     FormsModule,
     ReactiveFormsModule,
+
     MatFormFieldModule,
     MatTooltipModule,
     MatDatepickerModule,

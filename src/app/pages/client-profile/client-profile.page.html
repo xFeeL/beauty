@@ -38,7 +38,7 @@
               userData.email }}</ion-note>
           </div>
         </ion-item>
-        <ion-grid>
+        <ion-grid *ngIf="!historyNotAvailable">
           <ion-row class="ion-justify-content-center">
             <ion-col size="12" class="ion-justify-content-center custom-col">
               <ion-item lines="none" class="ion-justify-content-center custom-item custom-item-revenue">
@@ -94,7 +94,21 @@
             </ion-item>
           -->
 
-            <ion-item class=" cursor w100" *ngFor="let krathsh of krathseis; let i = index"
+          
+          <ion-item class="ion-padding transparent" lines="none" *ngIf="historyNotAvailable">
+            <ion-grid>
+              <ion-row>
+                <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+              </ion-row>
+              <ion-row> <ion-note class="no_results_header">
+                  Το ιστορικό σας είναι απενεργοποιημένο. Για να το ενεργοποιήσετε ξανά μεταβείτε στις ρυθμίσεις κρατήσεων.
+                </ion-note>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+          <span *ngIf="!historyNotAvailable">
+
+            <ion-item   class=" cursor w100" *ngFor="let krathsh of krathseis; let i = index"
               (click)="goToKrathsh(krathsh[0])">
               <div [class]="getColorForStatus(krathsh[2])"></div>
 
@@ -108,6 +122,8 @@
 
               </div>
             </ion-item>
+          </span>
+
             <ion-infinite-scroll threshold="0" (ionInfinite)="loadData($event)" [disabled]="disableInfiniteScroll">
               <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Φόρτωση περισσότερων...">
               </ion-infinite-scroll-content>

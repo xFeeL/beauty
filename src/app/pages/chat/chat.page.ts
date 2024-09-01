@@ -12,6 +12,7 @@ import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ClientProfilePage } from '../client-profile/client-profile.page';
+import { Capacitor } from '@capacitor/core';
 
 
 @Component({
@@ -87,55 +88,10 @@ export class ChatPage implements OnInit {
       this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     })
   
-    this.userService.getMessages(this.userId, this.page).subscribe(data3 => {
-      for (let i = 0; i < data3.length; i++) {
-  
-        data3[i].time = moment(data3[i].datetime).locale("el").format('HH:mm')
-        data3[i].datetime = moment(data3[i].datetime).locale("el").format('DD MMM, YYYY')
-        data3[i].id = i; // Generate a unique ID for each message
-        data3[i].showTime = false;
-  
-        if (data3[i].id_sender == this.userId) {
-          if (data3[i - 1] != undefined) {
-            if (data3[i].id_sender == data3[i - 1].id_sender) {
-              data3[i].showAvatar = false
-            } else {
-              data3[i].showAvatar = true
-            }
-            if (data3[i].datetime != data3[i - 1].datetime) {
-              data3[i].showAvatar = true
-            }
-          } else {
-            data3[i].showAvatar = true
-          }
-        }
-        if (data3[i - 1] != undefined) {
-          if (data3[i - 1].id_sender == data3[i].id_sender) {
-            data3[i].addPadding = false;
-          } else {
-            data3[i].addPadding = true;
-          }
-        }
-      }
-  
-      this.messages = data3.reverse();
-      let temp = this.messages.length - 1
-      if (this.messages.length > 0) {
-        if (this.messages[temp].id_sender == this.userId) {
-          this.messages[temp].addPadding = true;
-        } else {
-          this.messages[temp].addPadding = false;
-        }
-      }
-      this.last_message = this.messages[temp]
-  
-      this.initialized = true;
-  
-      this.scrollToBottomSetTimeOut(300);
-      this.changeDetectorRef.detectChanges(); // Trigger change detection manually
-    })
+   this.getMessages()
   
     this.userService.messageReceived.subscribe((message: any) => {
+      if (!Capacitor.isNativePlatform()) {
       let message_received = new Message()
       const jsonObject = JSON.parse(message);
       message_received.id_sender = jsonObject.SenderId;
@@ -157,12 +113,70 @@ export class ChatPage implements OnInit {
       this.messages.push(message_received)
       this.scrollToBottomSetTimeOut(300);
       this.changeDetectorRef.detectChanges(); // Trigger change detection manually
+    }else{
+      console.log("MPIKA EKEI POU EPREPE")
+      this.page=0
+      this.messages=[]
+      this.getMessages()
+
+    }
     });
+    
+    
+   
   }
   
 
 
+getMessages(){
+  this.userService.getMessages(this.userId, this.page).subscribe(data3 => {
+    for (let i = 0; i < data3.length; i++) {
 
+      data3[i].time = moment(data3[i].datetime).locale("el").format('HH:mm')
+      data3[i].datetime = moment(data3[i].datetime).locale("el").format('DD MMM, YYYY')
+      data3[i].id = i; // Generate a unique ID for each message
+      data3[i].showTime = false;
+
+      if (data3[i].id_sender == this.userId) {
+        if (data3[i - 1] != undefined) {
+          if (data3[i].id_sender == data3[i - 1].id_sender) {
+            data3[i].showAvatar = false
+          } else {
+            data3[i].showAvatar = true
+          }
+          if (data3[i].datetime != data3[i - 1].datetime) {
+            data3[i].showAvatar = true
+          }
+        } else {
+          data3[i].showAvatar = true
+        }
+      }
+      if (data3[i - 1] != undefined) {
+        if (data3[i - 1].id_sender == data3[i].id_sender) {
+          data3[i].addPadding = false;
+        } else {
+          data3[i].addPadding = true;
+        }
+      }
+    }
+
+    this.messages = data3.reverse();
+    let temp = this.messages.length - 1
+    if (this.messages.length > 0) {
+      if (this.messages[temp].id_sender == this.userId) {
+        this.messages[temp].addPadding = true;
+      } else {
+        this.messages[temp].addPadding = false;
+      }
+    }
+    this.last_message = this.messages[temp]
+
+    this.initialized = true;
+
+    this.scrollToBottomSetTimeOut(300);
+    this.changeDetectorRef.detectChanges(); // Trigger change detection manually
+  })
+}
 
   goBack() {
     this.modalController.dismiss()

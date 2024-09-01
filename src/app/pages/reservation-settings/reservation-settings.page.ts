@@ -19,7 +19,7 @@ export class ReservationSettingsPage implements OnInit {
 
 
  
-
+historyVisibility="VISIBLE"
 maxReservationMinutes: number = 60;
 slotInterval: string = "15";
 
@@ -41,6 +41,7 @@ loadKrathseisSettings() {
 
     // Assuming isVisible from server is a string "true" or "false", convert it to boolean
     this.isVisible = data.isVisible === "true";
+    this.historyVisibility=data.historyVisibility
 
   }, err => {
     console.error("Error fetching Krathseis settings:", err);
@@ -48,7 +49,7 @@ loadKrathseisSettings() {
 }
 
 saveKrathseisSettings() {
-  this.userService.saveAppointmentsSettings(this.slotInterval, this.needAccept, this.isVisible).subscribe(data => {
+  this.userService.saveAppointmentsSettings(this.slotInterval, this.needAccept, this.isVisible,this.historyVisibility).subscribe(data => {
     this.userService.presentToast("Οι ρυθμίσεις για τις κρατήσεις αποθηκεύτηκαν με επιτυχία.", "success")
   }, err => {
     this.userService.presentToast("Κάτι πήγε στραβά.", "danger")

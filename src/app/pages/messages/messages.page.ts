@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { ModalController, NavController } from '@ionic/angular';
 import { ChatPage } from '../chat/chat.page';
 import { ChangeDetectorRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.page.html',
@@ -17,12 +18,14 @@ export class MessagesPage implements OnInit {
   initialized: boolean = false;
   temp!: string;
   content_class!: string;
+  private newMessageSubscription: Subscription = new Subscription;
 
   constructor(private modalController: ModalController, private route: Router, private userService: UserService, private navCtrl: NavController, private changeDetectorRef: ChangeDetectorRef) { }
   ngOnInit() {
   }
 
   ionViewWillEnter() {
+    
     this.userService.sseConnect(window.location.toString());
   
     this.chats = [];
@@ -61,6 +64,7 @@ export class MessagesPage implements OnInit {
         this.userService.newMessage$.next(false);
       });
     }
+  
   }
   
 

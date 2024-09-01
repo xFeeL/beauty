@@ -9,8 +9,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="blueBackground">
-  <ion-grid class="whiteBackground marginborder">
+<ion-content  class="blueBackground ion-margin-top">
+  <ion-item class="ion-padding transparent" lines="none" *ngIf="historyNotAvailable">
+    <ion-grid>
+      <ion-row>
+        <ion-img class="no_results_item" src="../../../assets/imgs/NoResults.svg"> </ion-img>
+      </ion-row>
+      <ion-row> <ion-note class="no_results_header">
+          Το ιστορικό σας είναι απενεργοποιημένο. Για να το ενεργοποιήσετε ξανά μεταβείτε στις ρυθμίσεις κρατήσεων.
+        </ion-note>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  <ion-grid class="whiteBackground marginborder " *ngIf="!historyNotAvailable">
 
     <div class="content-container  ion-margin-top">
       <h3 class="left-text mt0 ion-text-center"><ion-text color="primary"><b>Στατιστικά </b></ion-text>
@@ -54,7 +65,7 @@
 
 
   </ion-grid>
-  <ion-grid class="whiteBackground marginborder">
+  <ion-grid class="whiteBackground marginborder" *ngIf="!historyNotAvailable">
 
 
     <div class="content-container ion-margin-start ion-margin-top ">

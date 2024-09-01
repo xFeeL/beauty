@@ -20,7 +20,7 @@ export class UpdateService {
   ) {}
 
   async initialize() {
-    this.currentVersion = '1.0.13';
+    this.currentVersion = '1.0.18';
   }
 
   async checkForUpdates() {

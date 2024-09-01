@@ -1,49 +1,74 @@
-<ion-header [translucent]="true"> <ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-button color="light" (click)="goBack()" slot="start">
-      <ion-icon name="arrow-back" color="light"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-  <ion-title color="light">Ρυθμίσεις Κρατήσεων</ion-title>
-</ion-toolbar>
+<ion-header [translucent]="true"> 
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Ρυθμίσεις Κρατήσεων</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="background">
+<ion-content class="background">
   <ion-grid class="ion-margin custom-grid max-height">
- 
-    <ion-row class="ion-justify-content-center ion-margin-top">
-      <ion-col size-xl="7" size="12">
-        <ion-list class="ion-no-padding"> <ion-label>
-            <ion-select label="Time slots" fill="outline" [(ngModel)]="slotInterval">
+
+
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col  class="ion-justify-content-center">
+        <ion-list class="ion-no-padding">
+          <ion-item lines="none">
+            <ion-label>Time slots</ion-label>
+            <ion-select [(ngModel)]="slotInterval" placeholder="Επιλογή διάρκειας">
               <ion-select-option value="15">Ανά 15 λεπτά</ion-select-option>
               <ion-select-option value="30">Ανά 30 λεπτά</ion-select-option>
               <ion-select-option value="45">Ανά 45 λεπτά</ion-select-option>
               <ion-select-option value="60">Ανά 60 λεπτά</ion-select-option>
             </ion-select>
-          </ion-label>
-        </ion-list> </ion-col> </ion-row>
-        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-          <ion-col size-xl="8" class="ion-justify-content-center">
-            <ion-item lines="none">
-              <ion-toggle [(ngModel)]="needAccept" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
-                <ion-text text-wrap style="white-space: normal !important;">Αυτόματη αποδοχή κρατήσεων</ion-text>
-              </ion-toggle>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-          <ion-col size-xl="8" class="ion-justify-content-center">
-            <ion-item lines="none">
-              <ion-toggle [(ngModel)]="isVisible" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
-                <ion-text text-wrap style="white-space: normal !important; ">Ενεργοποίηση online κρατήσεων</ion-text>
-              </ion-toggle>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-        
-   
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col  class="ion-justify-content-center">
+        <ion-item lines="none">
+          <ion-toggle [(ngModel)]="needAccept" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
+            <ion-text text-wrap style="white-space: normal !important;">Αυτόματη αποδοχή κρατήσεων</ion-text>
+          </ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col  class="ion-justify-content-center">
+        <ion-item lines="none">
+          <ion-toggle [(ngModel)]="isVisible" #toggleElement [enableOnOffLabels]="true" labelPlacement="start">
+            <ion-text text-wrap style="white-space: normal !important;">Ενεργοποίηση online κρατήσεων</ion-text>
+          </ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col  class="ion-justify-content-center">
+        <ion-list class="ion-no-padding">
+          <ion-item lines="none">
+            <ion-label>Ρυθμίσεις Ιστορικού</ion-label>
+            <ion-select [(ngModel)]="historyVisibility" placeholder="Επιλογή κατάστασης">
+              <ion-select-option value="VISIBLE">Ορατό</ion-select-option>
+              <ion-select-option value="HIDE_TEMPORARILY">Απόκρυψη προσωρινά</ion-select-option>
+              <ion-select-option value="HIDE_PERMANENTLY">Απόκρυψη μόνιμα</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
   </ion-grid> 
 </ion-content>
-<ion-footer (click)="saveKrathseisSettings()"> <ion-button expand="full" color="primary" class="ion-no-margin">
-  <ion-label class="ion-text-center capsoff" color="light">Αποθήκευση</ion-label>
-</ion-button></ion-footer>
+
+<ion-footer (click)="saveKrathseisSettings()"> 
+  <ion-button expand="full" color="primary" class="ion-no-margin">
+    <ion-label class="ion-text-center capsoff" color="light">Αποθήκευση</ion-label>
+  </ion-button>
+</ion-footer>

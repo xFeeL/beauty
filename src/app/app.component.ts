@@ -24,6 +24,7 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { TeamServicesPromptPage } from './pages/team-services-prompt/team-services-prompt.page';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
@@ -107,7 +108,7 @@ export class AppComponent implements WithStyles {
   fadeState: string = 'in';
 
   toggleIcon() {
-    if(this.setupNotFinished=true){
+    if(this.setupNotFinished==true){
       this.promptTeamServices();
     }else{
     this.copyToClipboard(this.urlToCopy);
@@ -248,13 +249,14 @@ export class AppComponent implements WithStyles {
 
 
   onMenuOpen() {
-
+console.log("YES")
     this.image = "error"
     this.name = "error"
     this.email = "error"
 
     this.userService.getExpertData().subscribe(data => {
       this.name = data.name;
+      console.log("YES2")
 
       this.email = data.email;
       this.image = data.image;
@@ -288,14 +290,25 @@ export class AppComponent implements WithStyles {
 
 
   ngOnInit() {
+    //StatusBar.setBackgroundColor({ color: '#ffffff' }); 
+    StatusBar.show();
     this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
     this.isMobile = this.userService.isMobile();
     console.log("APP INIT")
     this.initializeApp();
-    this.userService.setupPushNotifications()
+    if (Capacitor.isNativePlatform()) {
+      this.userService.setupPushNotifications();
+      console.log("Setting up push notifications on mobile native app.");
+  }
+    console.log("APP INI4")
+
     this.authSubscription = this.userService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
+      console.log("APP INIT2")
+
       if (localStorage.getItem('authenticated') == 'true') {
+        console.log("APP INIT3")
+
         this.onMenuOpen();
         this.userService.getAccountId().subscribe(data => {
           this.urlToCopy = "https://www.fyx.gr/book/" + data.id;

@@ -31,6 +31,7 @@ export class ClientProfilePage implements OnInit {
   disableInfiniteScroll: boolean = false;
   needReload: boolean = false;
   numberOfReservations = 0
+  historyNotAvailable: boolean=false;
   constructor(public alertController: AlertController, private modalController: ModalController, private actRouter: ActivatedRoute, private userService: UserService, private route: Router, private navParams: NavParams) { }
 
   ngOnInit() {
@@ -97,6 +98,9 @@ export class ClientProfilePage implements OnInit {
         this.krathseis.push(data[k]);
       }
     }, err => {
+      if(err.error=="HISTORY_NOT_VISIBLE" || err.error.text=="HISTORY_NOT_VISIBLE"){
+        this.historyNotAvailable=true
+      }
       // Handle the error here
     });
   }
