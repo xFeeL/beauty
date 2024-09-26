@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChil
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import * as moment from 'moment';
-import { IonCheckbox, IonModal, IonPopover, ModalController, NavController, NavParams } from '@ionic/angular';
+import { AlertController, IonCheckbox, IonModal, IonPopover, ModalController, NavController, NavParams } from '@ionic/angular';
 import { KrathshPage } from '../krathsh/krathsh.page';
 import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
 import { SearchKrathshPage } from '../search-krathsh/search-krathsh.page';
@@ -49,6 +49,7 @@ export class KrathseisPage implements OnInit {
   infinite: any;
   krathseis: Array<any> = new Array<any>;
   @ViewChild(IonModal) modal!: IonModal;
+  selectedAppointments: Array<any> = []; // Stores the selected appointments
 
   selectedItems: any;
   message!: string;
@@ -98,23 +99,23 @@ export class KrathseisPage implements OnInit {
   mode: string = "upcoming";
   cancelReason: string = "";
   reloadAppointments: any = false;
-  isMobile=false
-  setupNotFinished: boolean=false;
+  isMobile = false
+  setupNotFinished: boolean = false;
   constructor(
-    private route: ActivatedRoute,  
-    private rout: Router, 
-    private userService: UserService, 
-    private navCtrl: NavController, 
+    private route: ActivatedRoute,
+    private rout: Router,
+    private userService: UserService,
+    private alertController: AlertController,
     private modalController: ModalController,
     private cdr: ChangeDetectorRef  // add this line
   ) {
     this.isMobile = this.userService.isMobile();
   }
-  
+
   ngOnInit() {
   }
 
-  
+
 
   async ionViewWillEnter() {
     this.userService.sseConnect(window.location.toString());
@@ -124,7 +125,7 @@ export class KrathseisPage implements OnInit {
       this.krathseistatus = '0,0,0,0,0';
       let status = this.userService.getNavData();
       this.userService.setNavData("");
-    
+
       if (status == "pending") {
         this.krathseistatus = "1,0,0,0,0";
         this.itemsKrathsh[0].selected = true;
@@ -132,47 +133,47 @@ export class KrathseisPage implements OnInit {
         this.itemsKrathsh[2].selected = false;
         this.itemsKrathsh[3].selected = false;
         this.itemsKrathsh[4].selected = false;
-    
+
         this.krathshChip = "selected-chip";
         this.krathshChipIconCOlor = "primary";
         this.allChipClass = "not-selected-chip";
         this.krathseis = [];
         this.getKrathseis();
-      }else{
-         this.resetFilters();
+      } else {
+        this.resetFilters();
       }
       this.disableInfiniteScroll = false;
       this.page = 0;
     }, 0);
 
-    this.userService.checkExpertSetup().subscribe(data=>{
-      this.setupNotFinished=false
+    this.userService.checkExpertSetup().subscribe(data => {
+      this.setupNotFinished = false
 
-    },err=>{
-      this.setupNotFinished=true
+    }, err => {
+      this.setupNotFinished = true
     })
   }
 
   async promptTeamServices() {
     const modal = await this.modalController.create({
       component: TeamServicesPromptPage,
-     
+
     });
     modal.onWillDismiss().then((dataReturned) => {
-  
+
 
     });
     return await modal.present();
   }
-  
-  
 
 
- 
+
+
+
   appendToTextArea(reason: string) {
     this.cancelReason = "";
     setTimeout(() => { this.cancelReason = reason; this.cdr.markForCheck(); }, 0);
-    
+
   }
 
   closeRejectPopover() {
@@ -197,7 +198,7 @@ export class KrathseisPage implements OnInit {
 
     })
     this.rejectPop.dismiss();
-    this.cdr.markForCheck(); 
+    this.cdr.markForCheck();
   }
 
 
@@ -244,26 +245,26 @@ export class KrathseisPage implements OnInit {
   }
 
   async newKrathsh() {
-    if(this.setupNotFinished){
+    if (this.setupNotFinished) {
       this.promptTeamServices()
-    }else{
+    } else {
       const modal = await this.modalController.create({
         component: NewKrathshPage,
         backdropDismiss: false
-  
+
       });
       modal.onDidDismiss().then((dataReturned) => {
         if (dataReturned !== null) {
           this.reloadAppointments = true
-  
+
           // Your logic here, 'dataReturned' is the data returned from modal
           this.page = 0;
           this.krathseis = []
           this.getKrathseis();
         }
       });
-  
-      return await modal.present(); 
+
+      return await modal.present();
     }
 
   }
@@ -288,24 +289,26 @@ export class KrathseisPage implements OnInit {
   }
 
 
-getKrathseis() {
-  this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
-    for (let k = 0; k < data.length; k++) {
-      data[k][11] = data[k][3];
-      data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
-      data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1];
-      this.krathseis.push(data[k]);
-    }
-    this.initialized = true;
-    this.cdr.markForCheck();  // add this line
-  }, err => {
-    if (err.error.text == 'No more data') {
-      this.disableInfiniteScroll = true;
-    }
-    this.initialized = true;
-    this.cdr.markForCheck();  // add this line
-  });
-}
+  getKrathseis() {
+    this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
+      for (let k = 0; k < data.length; k++) {
+        data[k][11] = data[k][3];
+        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
+        data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1];
+        data[k].selected = false; // Initialize selected property
+        this.krathseis.push(data[k]);
+      }
+      this.initialized = true;
+      this.cdr.markForCheck();
+    }, err => {
+      if (err.error.text == 'No more data') {
+        this.disableInfiniteScroll = true;
+      }
+      this.initialized = true;
+      this.cdr.markForCheck();
+    });
+  }
+
 
   segmentChanged(event: any) {
     switch (event.detail.value) {
@@ -412,7 +415,7 @@ getKrathseis() {
     this.getKrathseis();
 
     this.krathshPop.dismiss();
-    this.cdr.markForCheck(); 
+    this.cdr.markForCheck();
   }
 
 
@@ -474,7 +477,7 @@ getKrathseis() {
         return 'pending-line cursor w100 rad10 ion-margin-bottom';
     }
   }
- 
+
 
   checkIn(krathsh: any) {
     this.reloadAppointments = true
@@ -508,7 +511,7 @@ getKrathseis() {
       this.userService.presentToast("Η κράτηση έγινε αποδεκτή!", "success")
 
 
-      this.cdr.markForCheck(); 
+      this.cdr.markForCheck();
 
 
 
@@ -519,10 +522,86 @@ getKrathseis() {
 
   }
 
+  onItemClicked(krathsh: any) {
+    if (this.deleteMode) {
+      // Toggle selection
+      krathsh.selected = !krathsh.selected;
+      this.toggleSelectAppointment(krathsh);
+    } else {
+      this.goToKrathsh(krathsh[0]);
+    }
+  }
+  
 
 
+async presentAlertConfirm(header: string, message: string, confirmHandler: () => void) {
+  const alert = await this.alertController.create({
+    header: header,
+    message: message,
+    buttons: [
+      {
+        text: 'Ακύρωση',
+        role: 'cancel',
+        cssClass: 'secondary',
+      }, {
+        text: 'Διαγραφή',
+        handler: confirmHandler,
+      }
+    ]
+  });
 
+  await alert.present();
+}
 
+deleteMode: boolean = false;
+
+toggleDeleteMode() {
+  this.deleteMode = !this.deleteMode;
+  if (!this.deleteMode) {
+    this.selectedAppointments = [];
+    this.krathseis.forEach(krathsh => krathsh.selected = false);
+  }
+  this.cdr.markForCheck(); // Update the view
+}
+
+toggleSelectAppointment(appointment: any) {
+  if (appointment.selected) {
+    this.selectedAppointments.push(appointment);
+  } else {
+    this.selectedAppointments = this.selectedAppointments.filter(a => a !== appointment);
+  }
+  this.cdr.markForCheck();
+}
+
+confirmDeleteSelectedAppointments() {
+  this.presentAlertConfirm(
+    'Επιβεβαίωση Διαγραφής',
+    'Είστε βέβαιοι ότι θέλετε να διαγράψετε τις επιλεγμένες κρατήσεις;',
+    () => {
+      this.deleteSelectedAppointments();
+    }
+  );
+}
+
+deleteSelectedAppointments() {
+  if (this.selectedAppointments.length === 0) return;
+
+  const appointmentIds = this.selectedAppointments.map(a => a[0]);
+
+  this.userService.deleteAppointments(appointmentIds).subscribe(
+    () => {
+      this.krathseis = this.krathseis.filter(a => !appointmentIds.includes(a[0]));
+      this.selectedAppointments = [];
+      this.deleteMode = false;
+      this.userService.presentToast('Οι επιλεγμένες κρατήσεις διαγράφηκαν!', 'success');
+      this.cdr.markForCheck();
+    },
+    (error) => {
+      this.userService.presentToast('Σφάλμα κατά τη διαγραφή. Προσπαθήστε ξανά.', 'danger');
+      console.error('Delete appointments error:', error);
+    }
+  );
+}
 
 
 }

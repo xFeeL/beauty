@@ -68,7 +68,7 @@
 	<true/>
 	<key>WKAppBoundDomains</key>
 	<array>
-		<string>api.fyx.gr</string>
+		<string>api-uat.fyx.gr</string>
 	</array>
 </dict>
 </plist>

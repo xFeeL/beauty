@@ -47,6 +47,7 @@ export class LoginPage implements OnInit {
   ) { }
   ;
   ionViewWillEnter() {
+
     if (localStorage.getItem('authenticated') == 'true') {
       this.authenticated=true
     }else{

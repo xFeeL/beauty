@@ -468,3 +468,44 @@ ion-content::part(scroll) {
 }
 
 
+.close-ico{
+  color:#595959  !important;
+  font-size:22px !important; 
+  display:none !important; //tbr?
+
+}
+
+.toast-title-content{
+  color:#595959  !important;
+
+}
+
+.text-wrapper{
+  color:#484848;
+}
+
+.ap-icon-warning{
+  color:orange !important
+}
+
+.ed-btn-danger{
+  font-size:16px; //tbr
+}
+
+
+ion-button ion-icon[name="arrow-back"] { //tbr
+  font-size: 33px; 
+}
+
+.large-input-item {
+  --min-height: 70px !important; //tbr
+  --height: 70px !important; //tbr
+
+}
+
+.native-input{
+  height: 70px !important; //tbr
+
+}
+
+

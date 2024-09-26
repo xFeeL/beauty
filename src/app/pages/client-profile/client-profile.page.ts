@@ -98,9 +98,7 @@ export class ClientProfilePage implements OnInit {
         this.krathseis.push(data[k]);
       }
     }, err => {
-      if(err.error=="HISTORY_NOT_VISIBLE" || err.error.text=="HISTORY_NOT_VISIBLE"){
-        this.historyNotAvailable=true
-      }
+    
       // Handle the error here
     });
   }
@@ -121,7 +119,9 @@ export class ClientProfilePage implements OnInit {
     this.userService.getUserData(this.userId).subscribe(data => {
       this.userData = data;
       this.name = this.userData.name.split('$')
-      
+      if(this.userData.revenue=="NOT_VISIBLE"){
+        this.historyNotAvailable=true
+      }
       this.initialized = true;
     }, err => {
 

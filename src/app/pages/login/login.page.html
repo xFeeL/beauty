@@ -38,8 +38,8 @@
         </ion-card-title>
       </ion-card-header>
       <ion-list class="ion-no-padding" class="list-width center">
-        <ion-item lines="none">
-          <ion-select aria-label="application" interface="action-sheet" value="beauty" cancelText="Ακύρωση" (ionChange)="onAppChange($event)">
+        <ion-item lines="none" class="select-text">
+          <ion-select class="pad10 h70" aria-label="application" interface="action-sheet" value="beauty" cancelText="Ακύρωση" (ionChange)="onAppChange($event)">
             <ion-select-option value="projects">Οικιακές & Τοπικές υπηρεσίες</ion-select-option>
             <ion-select-option value="beauty">Υπηρεσίες Ομορφιάς</ion-select-option>
             <ion-select-option value="tables">Εστίαση & Ψυχαγωγία</ion-select-option>
@@ -64,7 +64,7 @@
           </div>
               </ion-row>          <ion-row class="ion-margin">
           <ion-list class="w100 bgL">
-            <ion-item [class]="variableClass">
+            <ion-item  [class]="variableClass">
               <ion-label position="floating" color="medium" >Κινητό</ion-label> 
               <ion-input
               type="tel" 
@@ -72,24 +72,36 @@
               [(ngModel)]="user.phone"
               [maskito]="options"
               [maskitoElement]="maskPredicate"
+              class="large-input-item" 
             ></ion-input>   
               <ion-icon class="ion-margin-top pt7" slot="end" [name]="iconName" [color]="iconColor" ></ion-icon>
             </ion-item>
-            <ion-item>
+            <ion-item >
               <ion-label position="floating" color="medium">Κωδικός</ion-label> 
               <ion-input (ionChange)="passwordChange()" (ionInput)="passwordChange()" [type]="passwordType" [(ngModel)]="user.password"></ion-input>
-              <ion-icon class="ion-margin-top pt7"  slot="end" color="primary" (click)='hideShowPassword()' [name]="passwordIcon"></ion-icon>
-            </ion-item>
+              <ion-icon
+              class="large-input-item"
+              class="ion-margin-top pt7 cursor"
+              slot="end"
+              color="primary"
+              (click)="hideShowPassword()"
+              [name]="passwordIcon"
+              style="font-size: 32px; width:48px;height:48px;"><!--//tbr--> 
+            </ion-icon>
+                        </ion-item>
             <ion-row class="ion-justify-content-end">
               <ion-button fill="clear" (click)="goToForgetPasswordPage()">
-               <ion-text color="primary" class="forgot">Έχω ξεχάσει τον κωδικό μου</ion-text>
+               <ion-text   color="dark"
+                class="forgot">Έχω ξεχάσει τον κωδικό μου</ion-text>
+                <!-- //tbr color="primary"-->
               </ion-button>
             </ion-row> 
           </ion-list>
         </ion-row> 
         <ion-row class="ion-margin">
           <ion-col size="12">
-            <ion-item color="primary"  class="login_button cursor" (click)="login()" [disabled]="disabledButton">
+            <ion-item color="primary"  class="login_button cursor" (click)="login()" >
+            <!-- //tbr [disabled]="disabledButton">-->
               <ion-label class="ion-text-center" color="light">Σύνδεση</ion-label>              </ion-item>
           </ion-col>
         </ion-row> 
@@ -99,8 +111,10 @@
     </ion-row>
     <ion-row>
       <ion-col size="12" class="ion-text-center">
-        <ion-button fill="clear" (click)="goToRegister()">
-          <ion-note class="signup" color="medium" autocapitalize="false">Δεν έχεις λογαριασμό; </ion-note><ion-text class="signup"><strong>&nbsp;Κάνε Εγγραφή</strong></ion-text>
+        <ion-button fill="clear" (click)="goToRegister()">               
+ <!-- //tbr color="medium"-->
+          <ion-note class="signup pad10" color="dark" autocapitalize="false">Δεν έχεις λογαριασμό; </ion-note><ion-text class="signup" 
+          color="dark"><strong>Κάνε Εγγραφή</strong></ion-text> <!-- //tbr delete to color apo to text 2 PRAGMAT EDW CARE-->
         </ion-button>
       </ion-col>
     </ion-row>

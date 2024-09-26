@@ -86,6 +86,7 @@ export class SignUpPage implements OnInit {
   }
 
   next() {
+   
     if (!this.google && !this.facebook) {
       this.userService.setNavData({ phone: this.mobile, email: this.email_input });
       this.rout.navigate(['new-password']);

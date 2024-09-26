@@ -99,7 +99,7 @@
                   </ion-row> <ion-row class="ion-margin">
                     <ion-list class="w100 bgL">
 
-                      <ion-item [class]="emailVariableClass">
+                      <ion-item class="large-input-item" [class]="emailVariableClass">
                         <ion-label position="floating" color="medium">E-mail</ion-label>
                         <ion-input [disabled]="disabledEmail" [(ngModel)]="email_input" placeholder="example@gmail.com"
                           (ionChange)="emailCheck()" (ionInput)="emailCheck()"></ion-input>
@@ -113,7 +113,7 @@
                        <ion-icon name="eye-outline"></ion-icon> 
                       <ion-icon class="ion-margin-top pt7" slot="end" [name]="orgNameIconName" [color]="orgNameColor">
                       </ion-icon>
-                    </ion-item>--> <ion-item [class]="mobileVariableClass">
+                    </ion-item>--> <ion-item  class="large-input-item" [class]="mobileVariableClass">
                         <ion-label position="floating" color="medium">Κινητό</ion-label>
                         <ion-input  type="tel" (ionInput)="mobileCheck()" placeholder="+30 69x xxx xxxx" [(ngModel)]="mobile"
                           [maskito]="options" [maskitoElement]="maskPredicate"></ion-input>
@@ -125,7 +125,7 @@
                   <ion-row class="ion-margin">
                     <ion-col size="12">
                       <ion-item color="primary" class="signup_button cursor"  (click)="next()"
-                        [disabled]="variableDisabled">
+                      [disabled]="variableDisabled">
                         <ion-label class="ion-text-center"  color="light">Επόμενο</ion-label> </ion-item>
                     </ion-col>
                   </ion-row>
@@ -135,9 +135,9 @@
           </ion-row>
           <ion-row>
             <ion-col size="12" class="ion-text-center">
-              <ion-button fill="clear" (click)="login()">
-                <ion-note class="login" color="medium">Έχεις λογαριασμό; </ion-note><ion-text
-                  class="login"><strong>&nbsp;Σύνδεση</strong></ion-text> </ion-button>
+              <ion-button class="padd10" fill="clear" (click)="login()">
+                <ion-note class="login" color="dark">Έχεις λογαριασμό; </ion-note><ion-text color="dark"
+                  class="login"><strong>&nbsp;Σύνδεση</strong></ion-text> </ion-button> <!-- //tbr 2 PRAGMATA KAI EDW ENA DELETE TO color dark apo text kai color medium gia to note-->
             </ion-col>
           </ion-row>
         </ion-grid>

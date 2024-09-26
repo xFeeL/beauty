@@ -12,6 +12,8 @@
     left: 5px;
     top: 5px;
     font-size: 15px;
+    padding:10px;
+
 }
 
 .bgL {
@@ -68,6 +70,9 @@ ion-card{
 .padd1 {
     padding: 1%;
 }
+.padd10 {
+    padding: 10px;
+}
 
 .logoSvg {
     position: absolute;
@@ -96,7 +101,9 @@ ion-card{
 
 .login {
     text-transform: none;
-    font-size: 12px;
+    font-size: 18px; //tbr 12px
+    padding:16px; //tbr
+
 }
 
 .signup_button {

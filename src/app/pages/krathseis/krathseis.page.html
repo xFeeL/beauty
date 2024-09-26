@@ -4,11 +4,21 @@
 
     <ion-title color="light" class="ion-no-padding ion-margin-start">
       <div class="vertical-align-content">
-        <ion-icon color="light" (click)="goBack()" name="arrow-back"
-          class="ion-padding-end cursor "></ion-icon>
+        <ion-icon color="light" (click)="goBack()" name="arrow-back" class="ion-padding-end cursor "></ion-icon>
         Κρατήσεις
       </div>
     </ion-title>
+    <ion-buttons slot="end" class="ion-margin-end">
+      <mat-icon class="white-icon" [matMenuTriggerFor]="menu" aria-label="More options" style="cursor: pointer;">
+        more_vert
+      </mat-icon>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="toggleDeleteMode()">
+          {{ deleteMode ? 'Απενεργοποίηση Διαγραφής' : 'Επιλογή για διαγραφή' }}
+        </button>
+        <!-- You can add more menu items here if needed -->
+      </mat-menu>
+    </ion-buttons>
   </ion-toolbar>
   <div class="scrolling-wrapper backgroundChips">
     <ion-chip [class]="allChipClass" (click)="resetFilters()">
@@ -83,7 +93,15 @@
                 <ion-label color="primary">{{ krathsh[3] | dateFormat }}</ion-label>
               </ion-chip>
 
-              <ion-item [class]="getColorForStatus(krathsh[2])" (click)="goToKrathsh(krathsh[0])">
+              <ion-item [class]="getColorForStatus(krathsh[2])" (click)="onItemClicked(krathsh)">
+                <ion-checkbox class="ion-margin-end"
+                *ngIf="deleteMode"
+                slot="start"
+                [(ngModel)]="krathsh.selected"
+                (ionChange)="toggleSelectAppointment(krathsh)"
+                (click)="$event.stopPropagation()"
+              ></ion-checkbox>
+              
                 <ion-avatar class="custAvatarHed">
                   <ion-img
                     [src]="(krathsh[10] === 'default' ? '../../../assets/icon/default-profile.png' : krathsh[10])"></ion-img>
@@ -158,4 +176,12 @@
       <ion-icon name="add-circle" color="light" class="f30"></ion-icon>
       <ion-label color="light">Νέα</ion-label>
     </ion-chip>
-  </ion-fab></ion-content><ion-footer></ion-footer>
+  </ion-fab></ion-content>
+<ion-footer>
+
+  <ion-button class="ion-no-margin" *ngIf="deleteMode && selectedAppointments.length > 0" color="danger" fill="solid"
+    expand="full" (click)="confirmDeleteSelectedAppointments()">
+    Διαγραφή επιλεγμένων
+  </ion-button>
+
+</ion-footer>
