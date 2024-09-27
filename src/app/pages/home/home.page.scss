@@ -230,9 +230,7 @@ ion-popover {
   align-items: center;  /* Ensures buttons in the toolbar are also aligned vertically */
 }
 
-ion-icon{
-  font-size:25px; //tbr
-}
+
 
 ::ng-deep .time-div{
   padding-right: 0px;
@@ -260,7 +258,7 @@ ion-icon{
   font-weight: bold;
   padding: 0;
   line-height: 2.25em;
-  font-size: 1.5em !important ;//tbr 1em without important
+  font-size: 1em;
   margin: -25px;
   margin-top: -21px;
   text-transform: capitalize;

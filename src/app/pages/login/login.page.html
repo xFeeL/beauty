@@ -86,22 +86,22 @@
               color="primary"
               (click)="hideShowPassword()"
               [name]="passwordIcon"
-              style="font-size: 32px; width:48px;height:48px;"><!--//tbr--> 
+             >
             </ion-icon>
                         </ion-item>
             <ion-row class="ion-justify-content-end">
               <ion-button fill="clear" (click)="goToForgetPasswordPage()">
-               <ion-text   color="dark"
+               <ion-text   color="primary"
                 class="forgot">Έχω ξεχάσει τον κωδικό μου</ion-text>
-                <!-- //tbr color="primary"-->
+            
               </ion-button>
             </ion-row> 
           </ion-list>
         </ion-row> 
         <ion-row class="ion-margin">
           <ion-col size="12">
-            <ion-item color="primary"  class="login_button cursor" (click)="login()" >
-            <!-- //tbr [disabled]="disabledButton">-->
+            <ion-item color="primary"  class="login_button cursor" (click)="login()" 
+          [disabled]="disabledButton">
               <ion-label class="ion-text-center" color="light">Σύνδεση</ion-label>              </ion-item>
           </ion-col>
         </ion-row> 
@@ -111,10 +111,10 @@
     </ion-row>
     <ion-row>
       <ion-col size="12" class="ion-text-center">
-        <ion-button fill="clear" (click)="goToRegister()">               
- <!-- //tbr color="medium"-->
-          <ion-note class="signup pad10" color="dark" autocapitalize="false">Δεν έχεις λογαριασμό; </ion-note><ion-text class="signup" 
-          color="dark"><strong>Κάνε Εγγραφή</strong></ion-text> <!-- //tbr delete to color apo to text 2 PRAGMAT EDW CARE-->
+        <ion-button fill="clear" (click)="goToRegister()" >               
+
+          <ion-note class="signup pad10" color="medium" autocapitalize="false">Δεν έχεις λογαριασμό; </ion-note><ion-text class="signup" 
+        ><strong>Κάνε Εγγραφή</strong></ion-text> 
         </ion-button>
       </ion-col>
     </ion-row>

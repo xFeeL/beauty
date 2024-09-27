@@ -194,7 +194,7 @@ export class UserService {
       animationIn: AppearanceAnimation.BOUNCE_IN,
       animationOut: DisappearanceAnimation.BOUNCE_OUT,
       toastPosition: ToastPositionEnum.TOP_RIGHT,
-      disableIcon: true, //tbr
+    
     });
     newToastNotification.openToastNotification$();
   }
