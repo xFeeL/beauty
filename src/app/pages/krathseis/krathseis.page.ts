@@ -77,7 +77,6 @@ export class KrathseisPage implements OnInit {
 
   ];
 
-
   allChipClass: string = "selected-chip";
   krathshChip: string = "not-selected-chip"
   krathseistatus = "0,0,0,0,0"
@@ -523,7 +522,7 @@ export class KrathseisPage implements OnInit {
   }
 
   onItemClicked(krathsh: any) {
-    if (this.deleteMode) {
+    if (this.hideMode) {
       // Toggle selection
       krathsh.selected = !krathsh.selected;
       this.toggleSelectAppointment(krathsh);
@@ -544,7 +543,7 @@ async presentAlertConfirm(header: string, message: string, confirmHandler: () =>
         role: 'cancel',
         cssClass: 'secondary',
       }, {
-        text: 'Διαγραφή',
+        text: 'Αποκρυψη',
         handler: confirmHandler,
       }
     ]
@@ -553,11 +552,11 @@ async presentAlertConfirm(header: string, message: string, confirmHandler: () =>
   await alert.present();
 }
 
-deleteMode: boolean = false;
+hideMode: boolean = false;
 
-toggleDeleteMode() {
-  this.deleteMode = !this.deleteMode;
-  if (!this.deleteMode) {
+toggleHideMode() {
+  this.hideMode = !this.hideMode;
+  if (!this.hideMode) {
     this.selectedAppointments = [];
     this.krathseis.forEach(krathsh => krathsh.selected = false);
   }
@@ -573,35 +572,72 @@ toggleSelectAppointment(appointment: any) {
   this.cdr.markForCheck();
 }
 
-confirmDeleteSelectedAppointments() {
+confirmHideSelectedAppointments() {
   this.presentAlertConfirm(
-    'Επιβεβαίωση Διαγραφής',
-    'Είστε βέβαιοι ότι θέλετε να διαγράψετε τις επιλεγμένες κρατήσεις;',
+    'Επιβεβαίωση Μόνιμης Απόκρυψης',
+    'Είστε βέβαιοι ότι θέλετε να αποκρύψετε οριστικά τις επιλεγμένες κρατήσεις;',
     () => {
-      this.deleteSelectedAppointments();
+      this.hideSelectedAppointments();
     }
   );
 }
 
-deleteSelectedAppointments() {
+
+
+async hideSelectedAppointments() {
+  console.log(this.selectedAppointments);
   if (this.selectedAppointments.length === 0) return;
 
+  const pendingOrAcceptedAppointments = this.selectedAppointments.filter(a => a[2] === 'pending' || a[2] === 'accepted');
+
+  if (pendingOrAcceptedAppointments.length > 0) {
+    const alertMessage = 'Μερικές από τις επιλεγμένες κρατήσεις είναι σε κατάσταση "Αναμονής" ή "Αποδεκτές". Αυτές θα αποκρυφτούν μόνιμα μόλις ολοκληρωθούν.';
+    
+    const alert = await this.alertController.create({
+      header: 'Προσοχή',
+      message: alertMessage,
+      buttons: [
+        {
+          text: 'Ακύρωση',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Hide operation canceled');
+            return; // Exit the function if cancel is clicked
+          }
+        },
+        {
+          text: 'Συνέχεια',
+          handler: () => {
+            this.proceedWithHidingAppointments();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  } else {
+    this.proceedWithHidingAppointments();
+  }
+}
+
+proceedWithHidingAppointments() {
   const appointmentIds = this.selectedAppointments.map(a => a[0]);
 
-  this.userService.deleteAppointments(appointmentIds).subscribe(
+  this.userService.hideAppointments(appointmentIds).subscribe(
     () => {
       this.krathseis = this.krathseis.filter(a => !appointmentIds.includes(a[0]));
       this.selectedAppointments = [];
-      this.deleteMode = false;
-      this.userService.presentToast('Οι επιλεγμένες κρατήσεις διαγράφηκαν!', 'success');
+      this.hideMode = false;
+      this.userService.presentToast('Έγινε μόνιμη απόκρυψη των επιλεγμένων κρατήσεων!', 'success');
       this.cdr.markForCheck();
     },
     (error) => {
-      this.userService.presentToast('Σφάλμα κατά τη διαγραφή. Προσπαθήστε ξανά.', 'danger');
-      console.error('Delete appointments error:', error);
+      this.userService.presentToast('Σφάλμα κατά την απόκρυψη. Προσπαθήστε ξανά.', 'danger');
+      console.error('Hide appointments error:', error);
     }
   );
 }
 
-
 }
+

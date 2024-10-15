@@ -10,7 +10,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./reservation-settings.page.scss'],
 })
 export class ReservationSettingsPage implements OnInit {
-
+  initialHistoryVisibility!: string;
   constructor(private modalController: ModalController, private userService: UserService) {
   }
   ngOnInit() {
@@ -42,27 +42,34 @@ loadKrathseisSettings() {
     // Assuming isVisible from server is a string "true" or "false", convert it to boolean
     this.isVisible = data.isVisible === "true";
     this.historyVisibility=data.historyVisibility
-
+    this.initialHistoryVisibility = this.historyVisibility;
   }, err => {
     console.error("Error fetching Krathseis settings:", err);
   });
 }
 
 saveKrathseisSettings() {
-  this.userService.saveAppointmentsSettings(this.slotInterval, this.needAccept, this.isVisible,this.historyVisibility).subscribe(data => {
-    this.userService.presentToast("Οι ρυθμίσεις για τις κρατήσεις αποθηκεύτηκαν με επιτυχία.", "success")
-  }, err => {
-    this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
+  this.userService.saveAppointmentsSettings(this.slotInterval, this.needAccept, this.isVisible, this.historyVisibility).subscribe(data => {
+    this.userService.presentToast("Οι ρυθμίσεις για τις κρατήσεις αποθηκεύτηκαν με επιτυχία.", "success");
 
+  
+  }, err => {
+    this.userService.presentToast("Κάτι πήγε στραβά.", "danger");
   });
 }
-
 goBack() {
-  this.modalController.dismiss()
+  if (this.historyVisibilityChanged()) {
+    this.modalController.dismiss(true)
+  }else{
+    this.modalController.dismiss(false)
+
+  }
 }
 
 
-
+historyVisibilityChanged(): boolean {
+  return this.historyVisibility !== this.initialHistoryVisibility;
+}
 
 
 }

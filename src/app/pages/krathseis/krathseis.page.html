@@ -8,20 +8,20 @@
         Κρατήσεις
       </div>
     </ion-title>
-    <ion-buttons slot="end" class="ion-margin-end">
+    <ion-buttons slot="end" class="ion-margin-end" *ngIf="mode=='new'">
       <mat-icon class="white-icon" [matMenuTriggerFor]="menu" aria-label="More options" style="cursor: pointer;">
         more_vert
       </mat-icon>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="toggleDeleteMode()">
-          {{ deleteMode ? 'Απενεργοποίηση Διαγραφής' : 'Επιλογή για διαγραφή' }}
+        <button mat-menu-item (click)="toggleHideMode()">
+          {{ hideMode ? 'Απενεργοποίηση Απόκρυψης' : 'Μόνιμη απόκρυψη' }}
         </button>
         <!-- You can add more menu items here if needed -->
       </mat-menu>
     </ion-buttons>
   </ion-toolbar>
   <div class="scrolling-wrapper backgroundChips">
-    <ion-chip [class]="allChipClass" (click)="resetFilters()">
+    <ion-chip [class]="allChipClass" (click)="resetFilters()" >
       Όλες
     </ion-chip> <ion-chip id="krathsh-trigger" (click)="openKrathshPopover()" [class]="krathshChip">
       <ion-label>Κατάσταση</ion-label>
@@ -95,7 +95,7 @@
 
               <ion-item [class]="getColorForStatus(krathsh[2])" (click)="onItemClicked(krathsh)">
                 <ion-checkbox class="ion-margin-end"
-                *ngIf="deleteMode"
+                *ngIf="hideMode"
                 slot="start"
                 [(ngModel)]="krathsh.selected"
                 (ionChange)="toggleSelectAppointment(krathsh)"
@@ -179,9 +179,9 @@
   </ion-fab></ion-content>
 <ion-footer>
 
-  <ion-button class="ion-no-margin" *ngIf="deleteMode && selectedAppointments.length > 0" color="danger" fill="solid"
-    expand="full" (click)="confirmDeleteSelectedAppointments()">
-    Διαγραφή επιλεγμένων
+  <ion-button class="ion-no-margin" *ngIf="hideMode && selectedAppointments.length > 0" color="danger" fill="solid"
+    expand="full" (click)="confirmHideSelectedAppointments()">
+    Μόνιμη απόκρυψη επιλεγμένων
   </ion-button>
 
 </ion-footer>

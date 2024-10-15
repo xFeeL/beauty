@@ -23,7 +23,7 @@ const config: CapacitorConfig = {
     }
   },
   "server": {
-    "hostname": "api-uat.fyx.gr"
+    "hostname": "api.fyx.gr"
   },
   "ios": {
     "limitsNavigationsToAppBoundDomains": true
