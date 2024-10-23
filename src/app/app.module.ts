@@ -59,15 +59,17 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { registerLocaleData } from '@angular/common';
 import localeEl from '@angular/common/locales/el';
 import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
-
+import { NgxStripeModule } from 'ngx-stripe';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { provideNgxMask } from 'ngx-mask';
 registerLocaleData(localeEl, 'el');
-
 @NgModule({
   declarations: [AppComponent,CropperDialog ],
   imports: [FormsModule,BrowserModule,LightgalleryModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule,BrowserAnimationsModule, BrowserAnimationsModule,
     LyButtonModule,
     LyToolbarModule,
     FullCalendarModule,
+    MatBottomSheetModule,
     LyImageCropperModule,
     LyDialogModule,
     LyIconModule,
@@ -85,7 +87,7 @@ registerLocaleData(localeEl, 'el');
     MatListModule,
     FormsModule,
     ReactiveFormsModule,
-
+    NgxStripeModule.forRoot('pk_test_51QAWK4EQw15tXsM9QQsDAmfeW5iDTLvtVKLISVxs7ZCXQBkV3TCLA8eRtQuJEYMBnkzCNNGDjmqiG5ySsGD45QzC00pgbxIOq4'),
     MatFormFieldModule,
     MatTooltipModule,
     MatDatepickerModule,
@@ -103,6 +105,7 @@ registerLocaleData(localeEl, 'el');
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Push,
     [ LyTheme2 ],
     [ StyleRenderer ],
+    provideNgxMask(), // Provide NgxMask globally if needed
     // Theme that will be applied to this module
     { provide: LY_THEME_NAME, useValue: 'minima-light' },
     { provide: LY_THEME, useClass: MinimaLight, multi: true }, // name: `minima-light`

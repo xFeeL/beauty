@@ -12,6 +12,43 @@
 
 <ion-content class="ion-padding">
 
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <!-- SMS Section -->
+      <ion-col size="12" size-md="6" class="ion-no-padding ion-padding-top">
+        <ion-card class="ion-no-margin">
+          <ion-card-header class="noBorder pb0">
+            <ion-item lines="none" detail="false">
+              <ion-avatar slot="start">
+                <ion-img src="../../../assets/icon/sms-notification.png"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>SMS</h2>
+              </ion-label>
+            </ion-item>
+          </ion-card-header>
+  
+          <ion-card-content>
+            <div class="count-display">
+              <h1 class="count-number">22</h1>
+              <p class="count-unit">Απομένουν</p>
+            </div>
+  
+            <ion-button expand="block" color="primary" class="capsoff" (click)="buySms()">
+              Πρόσθεσε SMS
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+  
+     
+    </ion-row>
+  </ion-grid>
+  
+  
+  
+  
+  
   <div #reminders class="ion-padding-bottom ">
     <h4 class="ion-padding-bottom">Υπενθυμίσεις</h4>
     <div *ngIf="!hasReminderOfReservation()" class="content-box" (click)="editNotification('REMINDER_OF_RESERVATION')">

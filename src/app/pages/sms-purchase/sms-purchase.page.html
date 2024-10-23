@@ -1,0 +1,110 @@
+<!-- sms-purchase.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Ανανέωση</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Step 1: Select Option -->
+  <div *ngIf="currentStep === 1">
+    <h2>Επιλέξτε τον τρόπο ανανέωσης υπολοίπου SMS</h2>
+    <p>Ενεργοποιήστε τις αυτόματες ανανέωσεις υπολοίπου για να βεβαιωθείτε ότι τα SMS θα συνεχίσουν να αποστέλλονται ή κάντε μια μεμονωμένη αγορά.</p>
+
+    <div class="options-container">
+      <div 
+        class="option-box ion-margin-top" 
+        [ngClass]="{'selected': selectedOption === 'automatic'}" 
+        (click)="selectOption('automatic')">
+        <ion-badge color="primary" class="badge">ΠΡΟΤΕΙΝΕΤΑΙ</ion-badge>
+        <ion-icon name="sync-outline" class="icon"></ion-icon>
+        <h3>Αυτόματη ανανέωση</h3>
+        <p>Ρυθμίστε επαναλλαμβανόμενες πληρωμές έτσι ώστε τα SMS να αποστέλλονται χωρίς διακοπή.</p>
+      </div>
+
+      <div 
+        class="option-box ion-margin-bottom" 
+        [ngClass]="{'selected': selectedOption === 'one-time'}" 
+        (click)="selectOption('one-time')">
+        <ion-icon name="card-outline" class="icon"></ion-icon>
+        <h3>Μεμονωμένη αγορά</h3>
+        <p>Πληρώστε τώρα για να καλύψετε τις άμεσες απαιτήσεις σας.</p>
+      </div>
+    </div>
+
+    <ion-button 
+      expand="block" 
+      color="primary" 
+      (click)="nextStep()" 
+      [disabled]="!selectedOption" 
+      class="capsoff">
+      Συνέχεια
+    </ion-button>
+  </div>
+
+  <!-- Step 2: Automatic Renewal or One-Time Purchase Details -->
+  <div *ngIf="currentStep === 2">
+    <h2 *ngIf="selectedOption === 'automatic'">Αυτόματη ανανέωση</h2>
+    <h2 *ngIf="selectedOption === 'one-time'">Μεμονωμένη αγορά</h2>
+    
+    <p *ngIf="selectedOption === 'automatic'">Επιλέξτε τη μέθοδο πληρωμής και επιβεβαιώστε τις ρυθμίσεις αυτόματης ανανέωσης υπολοίπου SMS.</p>
+    <p *ngIf="selectedOption === 'one-time'">Εισάγετε τον αριθμό των SMS που θέλετε να αγοράσετε.</p>
+
+    <div class="ion-margin">
+      <ion-input 
+        class="ion-margin-bottom"
+        helperText="1 SMS = 0,08 € + 24% Φ.Π.Α. Συνολική χρέωση: {{ smsAmount * 0.08 * 1.24 | currency:'EUR' }}"
+        [(ngModel)]="smsAmount" 
+        type="tel" 
+        label="Αγορά SMS" 
+        label-placement="floating" 
+        fill="outline" 
+        placeholder="200">
+      </ion-input>
+
+      <!-- Show the threshold input only if 'automatic' is selected -->
+      <ion-input 
+        *ngIf="selectedOption === 'automatic'"
+        [(ngModel)]="threshold" 
+        type="tel" 
+        label="Όταν το υπόλοιπο πέσει σε" 
+        label-placement="floating" 
+        fill="outline" 
+        placeholder="10">
+      </ion-input>
+    </div>
+
+    <ion-card>
+      <ion-card-header>Σύνοψη</ion-card-header>
+      <ion-card-content>
+        <p><strong>SMS προς {{ selectedOption === 'automatic' ? 'Ανανέωση' : 'Αγορά' }}:</strong> {{ smsAmount }}</p>
+        <!-- Show the threshold summary only if 'automatic' is selected -->
+        <p *ngIf="selectedOption === 'automatic'"><strong>Όριο Ανανέωσης:</strong> {{ threshold }}</p>
+        <p><strong>Χρέωση:</strong> {{ smsAmount * 0.08 * 1.24 | currency:'EUR' }} (0,08€ ανά SMS + 24% Φ.Π.Α.)</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Show Stripe Card Element only for automatic renewal -->
+    <div *ngIf="selectedOption === 'automatic'" class="ion-margin">
+      <h3>Στοιχεία Πληρωμής</h3>
+      <div id="card-element"><!-- Stripe.js injects the Card Element here --></div>
+      <div id="card-errors" role="alert" class="error-message"></div>
+    </div>
+
+    <!-- Button text changes based on the selected option -->
+    <ion-button 
+      expand="block" 
+      color="primary" 
+      (click)="selectedOption === 'automatic' ? activateAutoRenewal() : processOneTimePurchase()" 
+      [disabled]="!isValidSettings() || isProcessing" 
+      class="capsoff">
+      {{ selectedOption === 'automatic' ? 'Ενεργοποίηση' : 'Αγορά' }}
+    </ion-button>
+  </div>
+
+</ion-content>

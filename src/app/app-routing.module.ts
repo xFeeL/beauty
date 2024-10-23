@@ -175,6 +175,12 @@ const routes: Routes = [
     path: 'team-services-prompt',
     loadChildren: () => import('./pages/team-services-prompt/team-services-prompt.module').then( m => m.TeamServicesPromptPageModule)
   },
+  {
+    path: 'sms-purchase',
+    loadChildren: () => import('./pages/sms-purchase/sms-purchase.module').then( m => m.SmsPurchasePageModule)
+  },
+ 
+
  
   
   

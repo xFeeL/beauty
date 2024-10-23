@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { EditAutomaticNotificationPage } from '../edit-automatic-notification/edit-automatic-notification.page';
 import { UserService } from 'src/app/services/user.service';
+import { SmsPurchasePage } from '../sms-purchase/sms-purchase.page';
 
 type SettingKey = 'NEW_RESERVATION' | 'UPDATE' | 'CANCELLATION' | 'NOSHOW' | 'REMINDER_TO_RESERVE';
 
@@ -67,6 +68,21 @@ export class AutomatedNotificationsPage implements OnInit {
       await modal.present();
       const { data } = await modal.onDidDismiss();
       this.getNotificationSettings(); // Consider adding error handling or feedback mechanism
+    } catch (error) {
+      console.error('Failed to edit notification settings:', error);
+      // Consider feedback to the user or additional error handling
+    }
+  }
+
+  async buySms() {
+
+    try {
+      const modal = await this.modalController.create({
+        component: SmsPurchasePage,
+       
+      });
+
+      await modal.present();
     } catch (error) {
       console.error('Failed to edit notification settings:', error);
       // Consider feedback to the user or additional error handling

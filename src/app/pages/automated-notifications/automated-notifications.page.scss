@@ -36,3 +36,53 @@
 .large-icon {
   font-size: 48px; /* Adjust the size accordingly */
 }
+
+.count-display {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.count-number {
+  font-size: 4em;
+  font-weight: bold;
+  color: var(--ion-color-primary); /* Adjust to match your app's theme */
+  margin: 0;
+}
+
+.count-unit {
+  font-size: 1.2em;
+  color: #6b6b6b;
+  margin: 5px 0 0 0;
+}
+
+ion-card {
+  --ion-card-background: var(--ion-color-dark-contrast);; /* Light background for contrast */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-header {
+  background-color: var(--ion-color-dark-contrast);
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+.pb0{
+  padding-bottom:0px
+}
+.noBorder{
+  border:0px;
+}
+
+ion-item {
+  --min-height: 80px;
+}
+
+ion-avatar {
+  width: 60px;
+  height: 60px;
+}
+
+ion-button.capsoff {
+  text-transform: none;
+  margin-top: 15px;
+}

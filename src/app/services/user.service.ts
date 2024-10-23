@@ -14,13 +14,13 @@ import { s } from '@fullcalendar/core/internal-common';
 import { Platform } from '@ionic/angular';
 
 
-//let API_URL = "https://api.fyx.gr/common/";
-//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
-//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
+//let API_URL = "http://localhost:8080/common/";
+//let Authenticated_API_URL = "http://localhost:8080/common-auth/"
+//let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
 
-let API_URL = "https://api.fyx.gr/common/";
-let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
-let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
+let API_URL = "http://localhost:8080/common/";
+let Authenticated_API_URL = "http://localhost:8080/common-auth/"
+let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
 
 
 @Injectable({
@@ -82,11 +82,11 @@ export class UserService {
   sseConnect(call: string) {
     if (!this.platform.is('cordova') && !this.platform.is('capacitor')) {
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
-      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
+      this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -151,8 +151,8 @@ export class UserService {
 
 
           setTimeout(() => {
-            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
-            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
+            this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -306,6 +306,109 @@ export class UserService {
 
     return this.http.get(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
+    );
+  }
+
+  createPaymentIntent(name: string, email: string, currency: string, amount: number): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}create-payment-intent`;
+
+    const body = {
+      name: name,
+      email: email,
+      currency: currency,
+      amount: amount,
+    };
+
+    return this.http.post(apiUrl, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  createSetupSession(smsAmount: number, threshold: number): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}create-setup-session`;
+    const body = {
+      smsAmount, 
+      threshold  
+    };
+    return this.http.post(apiUrl, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  
+
+  createCheckoutSession(price: number, successUrl: string, cancelUrl: string): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}create-checkout-session`;
+
+    const payload = {
+      name: "User Name", // Replace with actual user name
+      email: "user@example.com", // Replace with actual user email
+      currency: "eur",
+      amount: price,
+      successUrl: successUrl,
+      cancelUrl: cancelUrl
+    };
+    return this.http.post(apiUrl, payload, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  // New method to create Setup Intent
+  createSetupIntent(): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}create-setup-intent`;
+
+    const payload = {}; // Add any necessary data here
+
+    return this.http.post(apiUrl, payload, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  // New method to setup auto-rebuy with payment method and settings
+  setupAutoRebuy(data: any): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}setup-auto-rebuy`;
+
+    const payload = {
+      paymentMethodId: data.paymentMethodId,
+      smsAmount: data.smsAmount,
+      threshold: data.threshold
+    };
+
+    return this.http.post(apiUrl, payload, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  // Existing method to verify payment (if needed)
+  verifyPayment(sessionId: string): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}verify-payment`;
+
+    const payload = { sessionId };
+
+    return this.http.post(apiUrl, payload, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+  
+
+  chargeSavedPayment(paymentMethodId: string, amount: number): Observable<any> {
+    const apiUrl = `${beautyAuthenticated_API_URL}charge-saved-payment`;
+
+    const body = {
+      paymentMethodId: paymentMethodId,
+      amount: amount,
+    };
+
+    return this.http.post(apiUrl, body, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  getSavedCards(): Observable<any[]> {
+    const apiUrl = `${beautyAuthenticated_API_URL}get-saved-cards`;
+
+    return this.http.get<any[]>(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
     );
   }
 
@@ -579,7 +682,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("http://localhost:8080/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 

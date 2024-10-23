@@ -488,6 +488,9 @@ ion-content::part(scroll) {
   color:orange !important
 }
 
+.mat-mdc-card-content{
+  background: var(--ion-color-dark-contrast);
+}
 
 
 
