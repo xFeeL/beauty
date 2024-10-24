@@ -309,6 +309,14 @@ export class UserService {
     );
   }
 
+  getRemainingSMS(): Observable<any> {
+    let apiUrl = `${Authenticated_API_URL}get-remaining-notification-sms`;
+
+    return this.http.get(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
   createPaymentIntent(name: string, email: string, currency: string, amount: number): Observable<any> {
     const apiUrl = `${Authenticated_API_URL}create-payment-intent`;
 

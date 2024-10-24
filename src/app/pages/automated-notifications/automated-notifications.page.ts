@@ -15,6 +15,7 @@ type SettingKey = 'NEW_RESERVATION' | 'UPDATE' | 'CANCELLATION' | 'NOSHOW' | 'RE
 export class AutomatedNotificationsPage implements OnInit {
   notification_settings: any = [];
   remindersSettings: any[] = [];
+  remainingSMS=0;
   constructor(private modalController: ModalController, private userService: UserService) { }
   // Inside your AutomatedNotificationsPage class
 
@@ -48,10 +49,22 @@ export class AutomatedNotificationsPage implements OnInit {
 
   ionViewWillEnter() {
     this.getNotificationSettings();
+    this.getRemainingSMS();
   }
 
   goBack() {
     this.modalController.dismiss()
+  }
+
+  getRemainingSMS() {
+
+    this.userService.getRemainingSMS().subscribe(data => {
+      this.remainingSMS = data.remainingSMS;
+      
+    
+    }, err => {
+      console.error(err);
+    });
   }
   
   async newNotification() {

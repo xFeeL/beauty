@@ -31,14 +31,12 @@
               <ion-img src="../../../assets/icon/sms-notification.png" class="s25 mr10"></ion-img>
               <ion-label>SMS</ion-label>
             </div>
-            <ion-toggle [(ngModel)]="smsToggle" disabled></ion-toggle>
+            <ion-toggle [(ngModel)]="smsToggle"></ion-toggle>
           </div>
           <ion-note class="ion-padding">
             Στέλνει την ειδοποίηση στον πελάτη σας αυτόματα μέσω SMS.
           </ion-note>
-          <ion-note class="ion-padding" color="warning">
-            Η λειτουργία ειδοποίησης μέσω SMS θα είναι σύντομα διαθέσιμη.
-          </ion-note>
+          
         </div>
 
         <ion-select *ngIf="type=='REMINDER_OF_RESERVATION'" [(ngModel)]="timeBefore" label="Χρόνος αποστολής υπενθύμισης" label-placement="floating" fill="outline" okText="ΕΠΙΛΟΓΗ"

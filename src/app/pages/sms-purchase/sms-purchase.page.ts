@@ -155,15 +155,37 @@ export class SmsPurchasePage implements OnInit {
 
   // Adjust the existing validation to account for both cases
   isValidSettings(): boolean {
+    console.log('Selected option:', this.selectedOption);
+    
     if (this.selectedOption === 'automatic') {
-      return this.isValidAutoRenewalSettings();
+      const isValid = this.isValidAutoRenewalSettings();
+      console.log('Auto-renewal settings validation result:', isValid);
+      return isValid;
     }
-    return this.isValidOneTimePurchaseSettings();
+    
+    const isValidOneTime = this.isValidOneTimePurchaseSettings();
+    console.log('One-time purchase settings validation result:', isValidOneTime);
+    return isValidOneTime;
   }
+  
 
   isValidAutoRenewalSettings(): boolean {
-    return this.smsAmount > 0 && this.threshold > 0 && this.threshold < this.smsAmount;
+    // Ensure the inputs are treated as numbers
+    const smsAmountNum = Number(this.smsAmount);
+    const thresholdNum = Number(this.threshold);
+  
+    console.log('Validating auto-renewal settings...');
+    console.log('SMS Amount:', smsAmountNum);
+    console.log('Threshold:', thresholdNum);
+  
+    // Validate auto-renewal settings
+    const isValid = smsAmountNum > 0 && thresholdNum > 0 && thresholdNum < smsAmountNum;
+    console.log('Auto-renewal settings are valid:', isValid);
+  
+    return isValid;
   }
+  
+  
 
   async presentAlert(message: string) {
     const alert = await this.alertController.create({
