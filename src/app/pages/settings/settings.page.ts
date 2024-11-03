@@ -17,6 +17,7 @@ import { ReservationSettingsPage } from '../reservation-settings/reservation-set
 import { SocialMediaPage } from '../social-media/social-media.page';
 import { WrarioPage } from '../wrario/wrario.page';
 import { ThemeService } from 'src/app/services/theme.service';
+import { ChargesPage } from '../charges/charges.page';
 
 @Component({
   selector: 'app-settings',
@@ -87,6 +88,12 @@ export class SettingsPage implements OnInit {
       name: 'Αυτοματοποιημένες ειδοποιήσεις',
       icon: '../../../assets/icon/sms.png',
       page:'automated-notifications'
+
+    },
+    {
+      name: 'Χρεώσεις Λογαριασμού',
+      icon: '../../../assets/icon/receipt.png',
+      page:'charges'
 
     },
     {
@@ -168,6 +175,11 @@ export class SettingsPage implements OnInit {
       modal = await this.modalController.create({
         component: WrarioPage,
       });
+    } else if (item.page == "charges") {
+      modal = await this.modalController.create({
+        component: ChargesPage,
+      });
+    
     } else if (item.page == "change-password") {
       modal = await this.modalController.create({
         component: ChangePasswordPage,

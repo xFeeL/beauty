@@ -107,7 +107,7 @@ export class HomePage implements OnInit {
   hasNewNotifications: boolean = false;
   fullCalendarWidth: string = "auto";
 
-  constructor(private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  constructor(private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
@@ -147,6 +147,13 @@ export class HomePage implements OnInit {
   }
 
   ionViewWillEnter() {
+    const currentUrl = this.router.url;
+
+    if (currentUrl === '/successful-payment') {
+      this.userService.presentToast("Η πληρωμή ήταν επιτυχής!", "success");
+    } else if (currentUrl === '/failed-payment') {
+      this.userService.presentToast("Η πληρωμή απέτυχε. Παρακαλώ προσπαθήστε ξανά.", "danger");
+    }
     this.userService.sseConnect(window.location.toString());
   
     this.userService.getEmployeesOfExpert().subscribe(

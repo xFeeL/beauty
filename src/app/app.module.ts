@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -62,6 +62,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NgxStripeModule } from 'ngx-stripe';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { provideNgxMask } from 'ngx-mask';
+import { ServiceWorkerModule } from '@angular/service-worker';
 registerLocaleData(localeEl, 'el');
 @NgModule({
   declarations: [AppComponent,CropperDialog ],
@@ -99,7 +100,12 @@ registerLocaleData(localeEl, 'el');
     NgxAwesomePopupModule.forRoot(), // Essential, mandatory main module.
     DialogConfigModule.forRoot(), // Needed for instantiating dynamic components.
     ConfirmBoxConfigModule.forRoot(), // Needed for instantiating confirm boxes.
-    ToastNotificationConfigModule.forRoot() // Needed for instantiating toast notifications.
+    ToastNotificationConfigModule.forRoot(), ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+}) // Needed for instantiating toast notifications.
   ],
     
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Push,

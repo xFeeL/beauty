@@ -86,3 +86,48 @@ ion-button.capsoff {
   text-transform: none;
   margin-top: 15px;
 }
+
+.align-badge {
+  margin-left: 8px; /* Adjust distance from SMS label */
+  font-size: 0.8em;
+  text-align: center;
+  white-space: normal; /* Allows text to wrap */
+  line-height: 1.2;
+}
+
+.card-wider {
+  width: 100%;
+  max-width: 400px;
+}
+
+.count-display {
+  text-align: center;
+}
+
+.button-row {
+  margin: 0;
+  padding: 0;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.capsoff {
+  text-transform: none !important; /* Ensure no caps on text */
+}
+
+ion-button {
+  width: 100%;
+  border-radius: 0; /* Align buttons perfectly side-by-side */
+}
+
+@media (min-width: 768px) {
+  .card-wider {
+    max-width: 500px;
+  }
+}

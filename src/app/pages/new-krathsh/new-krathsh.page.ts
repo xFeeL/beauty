@@ -37,6 +37,8 @@ export class NewKrathshPage implements OnInit {
   newClientName: string = '';
   newClientSurname: string = '';
   newClientPhone: string = '';
+  newClientEmail: string="";
+
   isLoading: boolean = false;
   selectedClient!: any;
   selectedClientPhone!: any;
@@ -379,10 +381,19 @@ export class NewKrathshPage implements OnInit {
   validateInputsNewClient() {
     const nameValid = this.newClientName.trim().length > 0;
     const surnameValid = this.newClientSurname.trim().length > 0;
-    const phoneValid = this.validatePhone(this.newClientPhone);
+    const phoneValid = !this.newClientPhone || this.validatePhone(this.newClientPhone); // phone is optional but must be valid if filled
+    const emailValid = !this.newClientEmail || this.validateEmail(this.newClientEmail); // email is optional but must be valid if filled
 
-    this.isInputValid = nameValid && surnameValid && phoneValid;
-  }
+    this.isInputValid = nameValid && surnameValid && phoneValid && emailValid;
+}
+
+// Helper function to validate email format
+validateEmail(email:any) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+
 
   validatePhone(phone: string): boolean {
     const phonePattern = /^\+30\s69\d{1}\s\d{3}\s\d{4}$/;
@@ -409,7 +420,7 @@ export class NewKrathshPage implements OnInit {
       // Handle new client creation here
       this.selectedClient = `${this.newClientName} ${this.newClientSurname}`;
       this.selectedClientPhone = this.newClientPhone;
-      this.userService.newManualClient(this.newClientName, this.newClientSurname, this.selectedClientPhone).subscribe(data => {
+      this.userService.newManualClient(this.newClientName, this.newClientSurname, this.selectedClientPhone,this.newClientEmail).subscribe(data => {
         this.selectedClientId = data.clientId
         this.selectedClientImage = data.profileImage
         this.userService.presentToast("Ο νέος πελάτης καταχωρήθηκε!", "success")

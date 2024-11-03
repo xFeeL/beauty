@@ -15,8 +15,9 @@
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <!-- SMS Section -->
-      <ion-col size="12" size-md="6" class="ion-no-padding ion-padding-top">
-        <ion-card class="ion-no-margin">
+      <ion-col size="12" size-md="7" class="ion-no-padding ion-padding-top">
+        <ion-card class="ion-no-margin card-wider">
+          
           <ion-card-header class="noBorder pb0">
             <ion-item lines="none" detail="false">
               <ion-avatar slot="start">
@@ -25,25 +26,45 @@
               <ion-label>
                 <h2>SMS</h2>
               </ion-label>
+  
+              <!-- Badge aligned next to SMS label and icon -->
+              <ion-badge color="secondary" slot="end" class="align-badge" *ngIf="autoRenewal">
+                Ανανεώνεται<br>Αυτόματα
+              </ion-badge>
+              <ion-badge color="warning" slot="end" class="align-badge" *ngIf="!autoRenewal">
+                Μη Αυτόματη<br>Ανανέωση
+              </ion-badge>
             </ion-item>
           </ion-card-header>
   
-          <ion-card-content>
+          <ion-card-content class="ion-no-padding">
             <div class="count-display">
               <h1 class="count-number">{{remainingSMS}}</h1>
               <p class="count-unit">Απομένουν</p>
             </div>
   
-            <ion-button expand="block" color="primary" class="capsoff" (click)="buySms()">
-              Πρόσθεσε SMS
-            </ion-button>
+            <!-- Button layout based on autoRenewal status -->
+            <ion-row class="no-padding no-margin ion-justify-content-center button-row">
+              <!-- Display both buttons when autoRenewal is true -->
+              <ion-col size="6" class="no-padding no-margin" *ngIf="autoRenewal">
+                <ion-button expand="block" color="medium" (click)="editSms()" class="no-padding no-margin capsoff">
+                  Ρυθμίσεις
+                </ion-button>
+              </ion-col>
+              <ion-col [size]="autoRenewal ? '6' : '12'" class="no-padding no-margin">
+                <ion-button expand="block" color="primary" (click)="buySms()" class="no-padding no-margin capsoff">
+                  Προσθήκη
+                </ion-button>
+              </ion-col>
+            </ion-row>
           </ion-card-content>
         </ion-card>
       </ion-col>
-  
-     
     </ion-row>
   </ion-grid>
+  
+  
+  
   
   
   

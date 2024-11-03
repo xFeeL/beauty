@@ -7,12 +7,13 @@
     <ion-title color="light">Προφίλ Πελάτη</ion-title>
     <ion-buttons slot="end">
       <ion-button class="ion-margin-end" (click)="goToChat()" slot="start" fill="clear"
-        *ngIf="userData.email!='manual_clients'">
+        *ngIf="userData.isManualClient==false">
         <ion-icon color="light" name="chatbox"></ion-icon>
       </ion-button>
+      
       <!-- Material Menu Trigger -->
       <ion-icon class="ion-margin-end f20" color="light" [matMenuTriggerFor]="menu" name="ellipsis-vertical"
-        *ngIf="userData.email=='manual_clients'"></ion-icon>
+        *ngIf="userData.isManualClient==true"></ion-icon>
     </ion-buttons>
   </ion-toolbar> <!-- Material Menu Content -->
   <mat-menu #menu="matMenu">
@@ -34,8 +35,12 @@
             <h4 class="p5 ion-no-margin">
               <b>{{name[0]}} {{name[1]}}</b>
             </h4>
-            <ion-note class="p5">{{userData.phone}} | {{userData.email === 'manual_clients' ? 'Δεν υπάρχει e-mail' :
+           
+            <ion-note class="p5">{{userData.phone}} | {{userData.email === null ? 'Δεν υπάρχει e-mail' :
               userData.email }}</ion-note>
+              <ion-badge color="warning" *ngIf="userData.isManualClient" class="manual-client-indicator">
+                Προστέθηκε από εσάς
+              </ion-badge>
           </div>
         </ion-item>
         <ion-grid *ngIf="!historyNotAvailable">
@@ -73,7 +78,7 @@
         </ion-grid>
 
 
-        <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.email!='manual_clients'" class="custom-segment ">
+        <ion-segment mode="ios" [(ngModel)]="type" *ngIf="userData.isManualClient==false" class="custom-segment ">
           <ion-segment-button value="projects">
             <ion-label>Κρατήσεις <ion-note color="dark"></ion-note></ion-label>
           </ion-segment-button>

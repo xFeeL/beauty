@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { UserService } from 'src/app/services/user.service';
 import { KrathshPage } from '../krathsh/krathsh.page';
 import { ChatPage } from '../chat/chat.page';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-client-profile',
@@ -33,7 +34,7 @@ export class ClientProfilePage implements OnInit {
   numberOfReservations = 0
   historyNotAvailable: boolean=false;
   constructor(public alertController: AlertController, private modalController: ModalController, private actRouter: ActivatedRoute, private userService: UserService, private route: Router, private navParams: NavParams) { }
-
+  @ViewChild(MatMenuTrigger) manualClientMenu!: MatMenuTrigger;
   ngOnInit() {
 
   }
@@ -58,7 +59,10 @@ export class ClientProfilePage implements OnInit {
 
   }
 
-
+  openManualClientMenu() {
+    this.manualClientMenu.openMenu();
+  }
+  
   getReviewsByUserId() {
     this.userService.getExpertReviewsData().subscribe(data => {
 
@@ -115,17 +119,21 @@ export class ClientProfilePage implements OnInit {
 
 
 
+
   getUserData() {
     this.userService.getUserData(this.userId).subscribe(data => {
       this.userData = data;
-      this.name = this.userData.name.split('$')
-      if(this.userData.revenue=="NOT_VISIBLE"){
-        this.historyNotAvailable=true
+      
+      if (this.userData.name) {
+        this.name = this.userData.name.split('$')
+      }
+      if (this.userData.revenue === "NOT_VISIBLE") {
+        this.historyNotAvailable = true;
       }
       this.initialized = true;
     }, err => {
-
-    })
+      // Handle error
+    });
   }
 
   numSequence(n: any): Array<any> {
@@ -291,64 +299,116 @@ export class ClientProfilePage implements OnInit {
   }
 
 
-  async editClient() {
-    const alert = await this.alertController.create({
-      header: 'Επεξεργασία Πελάτη',
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'Όνομα Πελάτη',
-          // Assuming 'client' is your data object
-          value: this.name[0] + " " + this.name[1] // or wherever you store the client's current name
-        },
-        {
-          name: 'phone',
-          type: 'tel',
-          placeholder: 'Τηλέφωνο Πελάτη',
-          value: this.userData.phone // or wherever you store the client's current phone number
+  // client-profile.page.ts
+
+async editClient() {
+  const alert = await this.alertController.create({
+    header: 'Επεξεργασία Πελάτη',
+    inputs: [
+      {
+        name: 'name',
+        type: 'text',
+        placeholder: 'Όνομα Πελάτη',
+        value: this.name[0] + " " + (this.name[1] || "") // Handle cases where name[1] might be undefined
+      },
+      {
+        name: 'phone',
+        type: 'tel',
+        placeholder: 'Τηλέφωνο Πελάτη',
+        value: this.userData.phone || '' // Allow empty value
+      },
+      {
+        name: 'email',
+        type: 'email',
+        placeholder: 'Email Πελάτη',
+        value: this.userData.email || '' // Allow empty value
+      }
+    ],
+    buttons: [
+      {
+        text: 'Ακυρο',
+        role: 'cancel',
+        cssClass: 'secondary',
+        handler: () => {
+          // Optional: Any action on cancel
         }
-      ],
-      buttons: [
-        {
-          text: 'Ακυρο',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            
+      }, {
+        text: 'Αποθηκευση',
+        handler: (data) => {
+          // Trim inputs
+          const name = data.name ? data.name.trim() : '';
+          const phone = data.phone ? data.phone.trim().replace(/\s+/g, '') : '';
+          const email = data.email ? data.email.trim() : '';
+
+          // Validate name (required)
+          if (!name) {
+            this.userService.presentToast("Το όνομα είναι υποχρεωτικό.", "danger");
+            return false; // Prevent the alert from dismissing
           }
-        }, {
-          text: 'Αποθηκευση',
-          handler: (data) => {
-            // Update the client data
-            this.userService.editManualClient(this.userId, data.name, data.phone).subscribe(res => {
-              this.name[0] = data.name.split(" ")[0];
-              this.name[1] = data.name.split(" ")[1];
 
-              this.userData.phone = data.phone;
-              this.userService.presentToast("Οι αλλαγές αποθηκεύτηκαν με επιτυχία.", "success")
-              this.needReload = true
-            }, err => {
-              
-              if (err.error == "phone") {
-                this.userService.presentToast("Ο αριθμός τηλεφώνου πρέπει να έχει τη μορφή 6999999999 ή +306999999999.", "danger")
-              } else if (err.error == "name") {
-                this.userService.presentToast("Το όνομα δεν μπορεί να περιέχει ειδικούς χαρακτήρες.", "danger")
+          // Validate email format if provided
+          if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+              this.userService.presentToast("Παρακαλώ εισάγετε ένα έγκυρο email.", "danger");
+              return false; // Prevent the alert from dismissing
+            }
+          }
 
+          // Validate phone format if provided
+          if (phone) {
+            const phoneRegex = /^(?:\+30|0)\d{9,10}$/; // Example regex for Greek phone numbers
+            if (!phoneRegex.test(phone)) {
+              this.userService.presentToast("Ο αριθμός τηλεφώνου πρέπει να έχει τη μορφή +306999999999.", "danger");
+              return false; // Prevent the alert from dismissing
+            }
+          }
+
+          // Update the client data
+          this.userService.editManualClient(this.userId, name, phone, email).subscribe(
+            res => {
+              // Update name parts
+              const nameParts = name.split(" ");
+              this.name[0] = nameParts[0] || '';
+              this.name[1] = nameParts[1] || '';
+
+              // Update phone and email in userData
+              if (phone) {
+                this.userData.phone = phone;
               }
-            })
+              if (email) {
+                this.userData.email = email;
+              }
 
+              this.userService.presentToast("Οι αλλαγές αποθηκεύτηκαν με επιτυχία.", "success");
+              this.needReload = true;
+            },
+            err => {
+              if (err.error === "phone") {
+                this.userService.presentToast("Ο αριθμός τηλεφώνου πρέπει να έχει τη μορφή 6999999999 ή +306999999999.", "danger");
+              } else if (err.error === "name") {
+                this.userService.presentToast("Το όνομα δεν μπορεί να περιέχει ειδικούς χαρακτήρες.", "danger");
+              } else if (err.error === "email") {
+                this.userService.presentToast("Παρακαλώ εισάγετε ένα έγκυρο email.", "danger");
+              } else if (err.error === "server_error") {
+                this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger");
+              } else {
+                this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger");
+              }
+            }
+          );
 
-            // If needed, you can then save this data to your backend or database here
-
-            // 
-          }
+          // Return true to allow the alert to dismiss after initiating the update
+          return true;
         }
-      ]
-    });
+      }
+    ]
+  });
 
-    await alert.present();
-  }
+  await alert.present();
+}
+
+  
 }
 
 

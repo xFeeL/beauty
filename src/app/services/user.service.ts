@@ -11,16 +11,17 @@ import OneSignal from 'onesignal-cordova-plugin';
 import { LoginPage } from '../pages/login/login.page';
 import { Capacitor } from '@capacitor/core';
 import { s } from '@fullcalendar/core/internal-common';
-import { Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
+import { KrathshPage } from '../pages/krathsh/krathsh.page';
 
 
-//let API_URL = "http://localhost:8080/common/";
-//let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-//let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+//let API_URL = "https://api.fyx.gr/common/";
+//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
-let API_URL = "http://localhost:8080/common/";
-let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+let API_URL = "https://api.fyx.gr/common/";
+let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
 
 @Injectable({
@@ -71,7 +72,7 @@ export class UserService {
   isAuthenticated$ = this._isAuthenticated.asObservable();
 
 
-  constructor(private platform:Platform,private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) {
+  constructor(private modalController:ModalController,private platform:Platform,private _zone: NgZone, private http: HttpClient, private push: Push, private router: Router) {
     this.handleError = this.handleError.bind(this);
   }
 
@@ -82,11 +83,11 @@ export class UserService {
   sseConnect(call: string) {
     if (!this.platform.is('cordova') && !this.platform.is('capacitor')) {
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-      this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -151,8 +152,8 @@ export class UserService {
 
 
           setTimeout(() => {
-            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-            this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -262,6 +263,17 @@ export class UserService {
      */
   getPendingAppointmentsNumber(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "find-pending-appointments-number", { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  checkPlaystoreVersion(currentVersion: string): Observable<any> {
+    const params = new HttpParams().set('version', currentVersion);
+    return this.http.get(API_URL + "check-playstore-version", {
+      headers: this.getHeaders(),
+      params: params,
+      withCredentials: true,
+    }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -416,6 +428,18 @@ export class UserService {
     const apiUrl = `${beautyAuthenticated_API_URL}get-saved-cards`;
 
     return this.http.get<any[]>(apiUrl, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+  getPayments(page: number): Observable<any> {
+    const apiUrl = `${Authenticated_API_URL}get-payments`;
+
+    // Set up query parameters for pagination
+    let params = new HttpParams()
+      .set('page', page.toString())
+
+    return this.http.get<any>(apiUrl, { headers: this.getHeaders(), params: params, withCredentials: true }).pipe(
       catchError((error) => this.handleError(error))
     );
   }
@@ -690,7 +714,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("http://localhost:8080/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -1421,8 +1445,8 @@ export class UserService {
    * @param phone The phone number of the new client
    * @returns An observable that emits the response data from the API
    */
-  newManualClient(name: string, surname: string, phone: string): Observable<any> {
-    const body = { name: name, surname: surname, phone: phone };
+  newManualClient(name: string, surname: string, phone: string, email: string): Observable<any> {
+    const body = { name: name, surname: surname, phone: phone,email:email };
     return this.http.post(Authenticated_API_URL + "new-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
@@ -1435,17 +1459,68 @@ export class UserService {
    * @param phone The new phone number of the client.
    * @returns An Observable that resolves with the server response.
    */
-  editManualClient(client_id: string, name: string, phone: string): Observable<any> {
+  editManualClient(client_id: string, name: string, phone: string,email: string): Observable<any> {
     // Body for the post request based on your endpoint's expected data structure
     const body = {
       "client_id": client_id,
       "name": name,
-      "phone": phone
+      "phone": phone,
+      "email": email
+
     };
     return this.http.post(Authenticated_API_URL + "edit-manual-client", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body))
     );
   }
+
+  getAutoRenewalSettings(): Observable<any> {
+    return this.http.get(Authenticated_API_URL + "get-auto-renewal-settings", {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+
+
+  disableAutoRenewal(): Observable<any> {
+    // Body for the post request based on your endpoint's expected data structure
+    const body: any = {
+    
+    };
+
+    
+    return this.http.post(Authenticated_API_URL + "disable-auto-renewal", body, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+  
+
+  
+  
+  
+
+  updateAutoRenewalSettings(autoRenewalEnabled: boolean, smsAmount: number, threshold: number): Observable<any> {
+    // Body for the post request based on your endpoint's expected data structure
+    const body: any = {
+      "autoRenewalEnabled": autoRenewalEnabled,
+      "smsAmount": smsAmount,
+      "threshold": threshold
+    };
+
+    
+    return this.http.post(Authenticated_API_URL + "update-auto-renewal-settings", body, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+  
 
 
   getAvailableTimeBooking(date: string, servicesEmployeesMap: { [key: string]: string }, appointmentId?: string | null): Observable<any> {
@@ -1806,28 +1881,44 @@ export class UserService {
       })  
 
 
-    OneSignal.Notifications.addEventListener("click", async (e:any) => {
-      console.log("THE EVENT")
-      console.log(e)
-      let clickData = await e.notification;
-      console.log("Notification Clicked : " + clickData);
-    
-      const notification = e.notification;
-      const payload = notification.payload;
+    OneSignal.Notifications.addEventListener("click", async (jsonData:any) => {
+      console.log("Notification opened:", jsonData);
+      const notification = jsonData.notification;
+      const data = notification.additionalData;
 
-      // Check for specific message conditions
-      if (payload.title === "Your Message Title") {
-        // Handle the message
-        console.log("Received message: " + payload.body);
-        // Perform actions based on the message content
-      } else if (payload.title === "Another Message Title") {
-        // Handle the message
-        console.log("Received another message: " + payload.body);
-        // Perform actions based on the message content
+      if (data) {
+        const notificationType = data.type;
+
+        switch (notificationType) {
+          case 'appointment':
+            const appointmentId = data.appointment_id;
+            if (appointmentId) {
+              // Navigate to KrathshPage
+              this.goToKrathsh(appointmentId)
+            } else {
+              console.warn("No appointment_id found in notification data.");
+            }
+            break;
+
+          case 'message':
+            const conversationId = data.conversation_id;
+            if (conversationId) {
+              // Navigate to MessagesPage
+             
+            } else {
+              console.warn("No conversation_id found in notification data.");
+            }
+            break;
+
+          // Add more cases as needed
+
+          default:
+            console.warn("Unknown notification type:", notificationType);
+            // Optionally navigate to a default page
+            break;
+        }
       } else {
-        // Handle other messages
-        console.log("Received a message: " + payload.body);
-        // Perform default actions or ignore
+        console.warn("No additional data found in notification.");
       }
     });
 
@@ -1862,7 +1953,17 @@ export class UserService {
   }
 }
     
-  
+async goToKrathsh(item: any) {
+  console.log("Opening modal with "+item)
+  const modal = await this.modalController.create({
+    component: KrathshPage,
+    componentProps: {
+      'appointment_id': item
+    }
+  });
+ 
+  return await modal.present();
+}
 
 
 

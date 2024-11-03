@@ -238,21 +238,32 @@
         <ng-container *ngIf="isAddingNewClient">
           <ion-grid>
             <ion-row class="ion-margin-top ion-margin-bottom">
-              <ion-col size="6">
-                <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
-                  label-placement="stacked" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
-              </ion-col>
-              <ion-col size="6">
-                <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
-                  label-placement="stacked" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
-              </ion-col>
+                <ion-col size="12" size-lg="6">
+                    <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
+                        label-placement="stacked" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
+                </ion-col>
+                <ion-col size="12" size-lg="6">
+                    <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
+                        label-placement="stacked" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
+                </ion-col>
             </ion-row>
+        
             <ion-row class="ion-margin-top ion-margin-bottom">
-              <ion-input type="tel" label="Τηλέφωνο" label-placement="stacked" fill="solid" placeholder="+30 69x xxx xxxx"
-                [(ngModel)]="newClientPhone" [maskito]="options" [maskitoElement]="maskPredicate"
-                (keyup)="validateInputsNewClient()"></ion-input>
+                <ion-col>
+                    <ion-input type="tel" label="Τηλέφωνο (Προαιρετικό)" label-placement="stacked" fill="solid"
+                        placeholder="+30 69x xxx xxxx" [(ngModel)]="newClientPhone" [maskito]="options"
+                        [maskitoElement]="maskPredicate" (keyup)="validateInputsNewClient()"></ion-input>
+                </ion-col>
             </ion-row>
-          </ion-grid>
+        
+            <ion-row class="ion-margin-top ion-margin-bottom">
+                <ion-col>
+                    <ion-input type="email" label="Email (Προαιρετικό)" label-placement="stacked" fill="solid"
+                        placeholder="Εισάγετε email" [(ngModel)]="newClientEmail" (keyup)="validateInputsNewClient()"></ion-input>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        
         </ng-container>
       </ion-content>
       <ion-footer *ngIf="isAddingNewClient">

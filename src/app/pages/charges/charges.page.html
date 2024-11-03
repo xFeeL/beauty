@@ -1,0 +1,54 @@
+<!-- src/app/pages/charges/charges.page.html -->
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light" class="custom-title-wrap">Χρεώσεις</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-md="10">
+        <ion-card class="ion-no-margin card-wider">
+          
+       
+  
+          <ion-card-content class="ion-no-padding">
+            <ion-list>
+              <ion-item *ngFor="let payment of payments" lines="full">
+                <ion-label>
+                  <!-- Removed Payment ID Display -->
+                  <p>Ποσό: {{formatAmount(payment.amountPaid, payment.currency)}}</p>
+                  <p>Ημερομηνία: {{formatDate(payment.createdAt)}}</p>
+                </ion-label>
+                <ion-button class="f16" fill="clear" slot="end" [href]="payment.invoiceUrl" target="_blank">
+                  <ion-icon name="document-text-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-item *ngIf="payments.length === 0" lines="none">
+                <ion-label class="ion-text-center">
+                  Δεν βρέθηκαν χρεώσεις.
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            <!-- Infinite Scroll -->
+            <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMorePayments($event)" *ngIf="payments.length < totalPayments">
+              <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="Φόρτωση περισσότερων χρεώσεων...">
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

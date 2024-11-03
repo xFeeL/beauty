@@ -44,12 +44,12 @@
                       </div>
                       <ion-card-header class="centered-header">
                         <ion-card-subtitle color="dark" class="capsoff">{{item.name}}</ion-card-subtitle>
-                        <ion-note color="medium" text-wrap>{{ item.email === 'manual_clients' ? 'Δεν υπάρχει e-mail' : item.email
+                        <ion-note color="medium" text-wrap>{{ item.email === null ? 'Δεν υπάρχει e-mail' : item.email
                           }}</ion-note>
                       </ion-card-header>
                       <div class="icon-container">
                         <ion-button fill="clear" (click)="goToChat(item); $event.stopPropagation()"
-                          *ngIf="item.email!='manual_clients'">
+                          *ngIf="item.email!=null">
                           <ion-icon name="chatbox-outline" slot="icon-only" size="small"></ion-icon>
                         </ion-button>
                         <ion-button fill="clear" href="tel:{{item.phone}}" (click)="$event.stopPropagation()">

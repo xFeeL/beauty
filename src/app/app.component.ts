@@ -20,11 +20,12 @@ import { ContactPage } from './pages/contact/contact.page';
 import { Location } from '@angular/common';
 import OneSignal from 'onesignal-cordova-plugin';
 import { UpdateService } from './services/update.service';
-import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { TeamServicesPromptPage } from './pages/team-services-prompt/team-services-prompt.page';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import {  NgZone } from '@angular/core';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
@@ -81,11 +82,11 @@ export class AppComponent implements WithStyles {
     private userService: UserService,
     private rout: Router,
     readonly sRenderer: StyleRenderer,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private zone: NgZone
   ) {
   
-
-
+    this.initializeApp();
   }
   $priority?: number | undefined;
 
@@ -291,6 +292,18 @@ console.log("YES")
 
   ngOnInit() {
     //StatusBar.setBackgroundColor({ color: '#ffffff' }); 
+    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+      this.zone.run(() => {
+          // Example url: https://beerswift.app/tabs/tab2
+          // slug = /tabs/tab2
+          const slug = event.url.split(".gr").pop();
+          if (slug) {
+              this.rout.navigateByUrl(slug);
+          }
+          // If no match, do nothing - let regular routing
+          // logic take over
+      });
+  });
     StatusBar.show();
     this.isAuthenticated = localStorage.getItem('authenticated') === 'true';
     this.isMobile = this.userService.isMobile();
@@ -359,6 +372,7 @@ console.log("YES")
 
 
   async initializeApp() {
+    
     console.log('Initializing app...');
     await this.platform.ready();
     console.log('Platform ready.');
@@ -392,6 +406,28 @@ console.log("YES")
         this.isSubscribedToAppStateChange = true;
       }
       CapacitorUpdater.notifyAppReady();
+    }
+
+    this.platform.ready().then(() => {
+      App.addListener('appUrlOpen', (data: any) => {
+        this.handleDeepLink(data.url);
+      });
+    });
+  }
+
+  handleDeepLink(url: string) {
+    const parsedUrl = new URL(url);
+    const path = parsedUrl.pathname;
+    const searchParams = parsedUrl.searchParams;
+
+    if (path === '/successful-payment') {
+      const sessionId = searchParams.get('session_id');
+      this.rout.navigate(['/successful-payment'], { queryParams: { session_id: sessionId } });
+    } else if (path === '/failed-payment') {
+      this.rout.navigate(['/failed-payment']);
+    } else {
+      // Handle other paths or navigate to home
+      this.rout.navigate(['/']);
     }
   }
   

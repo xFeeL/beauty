@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { EditAutomaticNotificationPage } from '../edit-automatic-notification/edit-automatic-notification.page';
 import { UserService } from 'src/app/services/user.service';
 import { SmsPurchasePage } from '../sms-purchase/sms-purchase.page';
+import { EditAutoRenewalPage } from '../edit-auto-renewal/edit-auto-renewal.page';
 
 type SettingKey = 'NEW_RESERVATION' | 'UPDATE' | 'CANCELLATION' | 'NOSHOW' | 'REMINDER_TO_RESERVE';
 
@@ -16,6 +17,7 @@ export class AutomatedNotificationsPage implements OnInit {
   notification_settings: any = [];
   remindersSettings: any[] = [];
   remainingSMS=0;
+  autoRenewal=false
   constructor(private modalController: ModalController, private userService: UserService) { }
   // Inside your AutomatedNotificationsPage class
 
@@ -60,7 +62,7 @@ export class AutomatedNotificationsPage implements OnInit {
 
     this.userService.getRemainingSMS().subscribe(data => {
       this.remainingSMS = data.remainingSMS;
-      
+      this.autoRenewal=data.autoRenewalEnabled
     
     }, err => {
       console.error(err);
@@ -88,7 +90,8 @@ export class AutomatedNotificationsPage implements OnInit {
   }
 
   async buySms() {
-
+    this.userService.presentToast("Η υπηρεσία δυνατότητας αποστολής SMS θα ενεργοποιηθεί σύντομα. Μείνετε συντονισμένοι!","warning")
+    return;
     try {
       const modal = await this.modalController.create({
         component: SmsPurchasePage,
@@ -222,5 +225,26 @@ export class AutomatedNotificationsPage implements OnInit {
   isSettingActivated(setting: string): boolean {
     return this.notification_settings.some((s: { notificationType: string; channel: string; }) => s.notificationType === setting && s.channel !== 'NONE');
   }
+
+  async editSms() {
+    try {
+      const modal = await this.modalController.create({
+        component: EditAutoRenewalPage,
+      });
+  
+      await modal.present();
+  
+      const { data } = await modal.onDidDismiss();
+  
+      if (data?.success) {
+        this.getRemainingSMS();
+        this.userService.presentToast('Οι ρυθμίσεις ανανέωσης ενημερώθηκαν επιτυχώς.', 'success');
+      } 
+    } catch (error) {
+    }
+  }
+  
+
+ 
 
 }

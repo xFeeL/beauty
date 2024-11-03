@@ -179,6 +179,23 @@ const routes: Routes = [
     path: 'sms-purchase',
     loadChildren: () => import('./pages/sms-purchase/sms-purchase.module').then( m => m.SmsPurchasePageModule)
   },
+  {
+    path: 'successful-payment',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'failed-payment',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },  {
+    path: 'edit-auto-renewal',
+    loadChildren: () => import('./pages/edit-auto-renewal/edit-auto-renewal.module').then( m => m.EditAutoRenewalPageModule)
+  },
+  {
+    path: 'charges',
+    loadChildren: () => import('./pages/charges/charges.module').then( m => m.ChargesPageModule)
+  },
+
+ 
  
 
  
