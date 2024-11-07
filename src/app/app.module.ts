@@ -63,6 +63,7 @@ import { NgxStripeModule } from 'ngx-stripe';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { provideNgxMask } from 'ngx-mask';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 registerLocaleData(localeEl, 'el');
 @NgModule({
   declarations: [AppComponent,CropperDialog ],
@@ -87,6 +88,10 @@ registerLocaleData(localeEl, 'el');
     MatCheckboxModule,
     MatListModule,
     FormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
     ReactiveFormsModule,
     NgxStripeModule.forRoot('pk_test_51QAWK4EQw15tXsM9QQsDAmfeW5iDTLvtVKLISVxs7ZCXQBkV3TCLA8eRtQuJEYMBnkzCNNGDjmqiG5ySsGD45QzC00pgbxIOq4'),
     MatFormFieldModule,
@@ -100,12 +105,7 @@ registerLocaleData(localeEl, 'el');
     NgxAwesomePopupModule.forRoot(), // Essential, mandatory main module.
     DialogConfigModule.forRoot(), // Needed for instantiating dynamic components.
     ConfirmBoxConfigModule.forRoot(), // Needed for instantiating confirm boxes.
-    ToastNotificationConfigModule.forRoot(), ServiceWorkerModule.register('ngsw-worker.js', {
-  enabled: !isDevMode(),
-  // Register the ServiceWorker as soon as the application is stable
-  // or after 30 seconds (whichever comes first).
-  registrationStrategy: 'registerWhenStable:30000'
-}) // Needed for instantiating toast notifications.
+    ToastNotificationConfigModule.forRoot(),
   ],
     
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Push,

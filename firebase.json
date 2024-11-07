@@ -4,6 +4,7 @@
     "public": "www",
     "ignore": [
       "firebase.json",
+      "**/.*",
       "**/node_modules/**"
     ],
     "rewrites": [
@@ -12,11 +13,83 @@
         "destination": "/.well-known/:splat"
       },
       {
+        "source": "/ngsw.json",
+        "destination": "/ngsw.json"
+      },
+      {
+        "source": "/ngsw-worker.js",
+        "destination": "/ngsw-worker.js"
+      },
+      {
+        "source": "/OneSignalSDKUpdaterWorker.js",
+        "destination": "/OneSignal/OneSignalSDKUpdaterWorker.js"
+      },
+      {
+        "source": "/OneSignalSDKWorker.js",
+        "destination": "/OneSignal/OneSignalSDKWorker.js"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
     ],
     "headers": [
+      {
+        "source": "/build/app/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/OneSignalSDKWorker.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      },
+      {
+        "source": "/OneSignalSDKUpdaterWorker.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      },
+      {
+        "source": "/ngsw-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; connect-src 'self' blob: https://api.fyx.gr https://api-uat.fyx.gr https://oauth2.googleapis.com https://www.googleapis.com https://js.stripe.com https://js.stripe.com/v3 https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://fonts.gstatic.com https://storage.googleapis.com https://mikvah.report-uri.com https://onesignal.com https://cdn.onesignal.com https://img.onesignal.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://apis.google.com https://static.cloudflareinsights.com https://js.stripe.com https://js.stripe.com/v3 https://onesignal.com https://cdn.onesignal.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://onesignal.com; worker-src 'self' https://js.stripe.com https://js.stripe.com/v3 https://cdn.jsdelivr.net https://apis.google.com https://static.cloudflareinsights.com https://fonts.gstatic.com https://storage.googleapis.com https://mikvah.report-uri.com https://onesignal.com https://cdn.onesignal.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://storage.googleapis.com https://img.onesignal.com; frame-src 'self' https://accounts.google.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; block-all-mixed-content; upgrade-insecure-requests; report-uri https://mikvah.report-uri.com/r/d/csp/reportOnly?ngsw-bypass=true;"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          }
+        ]
+      },
       {
         "source": "/.well-known/assetlinks.json",
         "headers": [
@@ -27,11 +100,20 @@
         ]
       },
       {
+        "source": "/manifest.webmanifest",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/manifest+json"
+          }
+        ]
+      },
+      {
         "source": "**",
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://apis.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://storage.googleapis.com; connect-src 'self' blob: https://api.fyx.gr https://oauth2.googleapis.com https://www.googleapis.com; frame-src 'self' https://accounts.google.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; block-all-mixed-content; upgrade-insecure-requests;"
+            "value": "default-src 'self'; connect-src 'self' blob: https://api.fyx.gr https://api-uat.fyx.gr https://oauth2.googleapis.com https://www.googleapis.com https://js.stripe.com https://js.stripe.com/v3 https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://fonts.gstatic.com https://storage.googleapis.com https://mikvah.report-uri.com https://onesignal.com https://cdn.onesignal.com https://img.onesignal.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://apis.google.com https://static.cloudflareinsights.com https://js.stripe.com https://js.stripe.com/v3 https://onesignal.com https://cdn.onesignal.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://onesignal.com; worker-src 'self' https://js.stripe.com https://js.stripe.com/v3 https://cdn.jsdelivr.net https://apis.google.com https://static.cloudflareinsights.com https://fonts.gstatic.com https://storage.googleapis.com https://mikvah.report-uri.com https://onesignal.com https://cdn.onesignal.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://storage.googleapis.com https://img.onesignal.com; frame-src 'self' https://accounts.google.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; block-all-mixed-content; upgrade-insecure-requests; report-uri https://mikvah.report-uri.com/r/d/csp/reportOnly?ngsw-bypass=true;"
           },
           {
             "key": "X-Frame-Options",

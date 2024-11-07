@@ -29,6 +29,21 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "src",
+                "output": "./"
+              },
+              {
+                "glob": "combined-sw.js",
+                "input": "src",
+                "output": "./"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/OneSignal",
+                "output": "OneSignal"  
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
@@ -111,6 +126,16 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "src",
+                "output": "./"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/OneSignal",
+                "output": "OneSignal"  
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],

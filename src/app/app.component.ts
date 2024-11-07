@@ -9,7 +9,7 @@ import { ClientsPage } from './pages/clients/clients.page';
 import { ReviewsPage } from './pages/reviews/reviews.page';
 import { SettingsPage } from './pages/settings/settings.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
-import { Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { MessagesPage } from './pages/messages/messages.page';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TeamServicesPage } from './pages/team-services/team-services.page';
@@ -26,6 +26,7 @@ import { TeamServicesPromptPage } from './pages/team-services-prompt/team-servic
 import { StatusBar, Style } from '@capacitor/status-bar';
 import {  NgZone } from '@angular/core';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
+import { SwUpdate } from '@angular/service-worker';
 
 const STYLES = (theme: ThemeVariables) => ({
   $global: lyl`{
@@ -77,7 +78,7 @@ export class AppComponent implements WithStyles {
   urlToCopy: string = "";
   isMobile: boolean = false;
   setupNotFinished: boolean=false;
-  constructor(private updateService:UpdateService, private location: Location, private platform: Platform,
+  constructor(private swUpdate: SwUpdate,private updateService:UpdateService, private location: Location, private platform: Platform,
     private themeService: ThemeService,
     private userService: UserService,
     private rout: Router,
@@ -292,10 +293,28 @@ console.log("YES")
 
   ngOnInit() {
     //StatusBar.setBackgroundColor({ color: '#ffffff' }); 
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe(() => {
+        // Activate the update and reload the page
+        this.swUpdate.activateUpdate().then(() => {
+          console.log('Update activated. Reloading page...');
+          document.location.reload();
+        });
+      });
+      this.swUpdate.unrecoverable.subscribe(event => {
+        console.error('An unrecoverable error occurred:', event.reason);
+        alert('An error occurred that requires a reload of the application.');
+        document.location.reload();
+      });
+      
+
+    interval(600000).subscribe(() => {
+      this.checkForUpdatesSW();
+    });
+  }
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       this.zone.run(() => {
-          // Example url: https://beerswift.app/tabs/tab2
-          // slug = /tabs/tab2
+         
           const slug = event.url.split(".gr").pop();
           if (slug) {
               this.rout.navigateByUrl(slug);
@@ -312,6 +331,8 @@ console.log("YES")
     if (Capacitor.isNativePlatform()) {
       this.userService.setupPushNotifications();
       console.log("Setting up push notifications on mobile native app.");
+  }else{
+    console.log("Not capcitor native platform")
   }
     console.log("APP INI4")
 
@@ -353,8 +374,32 @@ console.log("YES")
         }
       });
     });
+
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe((event) => {
+        // Automatically reload the app when an update is available
+        console.log('Update available, activating update...');
+        this.swUpdate.activateUpdate().then(() => {
+          console.log('Update activated. Reloading...');
+          window.location.reload(); // Automatically reload the app to apply the update
+        });
+      });
+    }
   }
 
+  checkForUpdatesSW() {
+    // Check for updates when this method is called
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.checkForUpdate()
+        .then(() => {
+          console.log('Checked for update');
+        })
+        .catch((err) => {
+          console.error('Error checking for update', err);
+        });
+    }
+  }
+  
 
 
   // Listen for the toggle check/uncheck to toggle the dark theme
@@ -391,6 +436,8 @@ console.log("YES")
         this.platform.resume.subscribe(() => {
           console.log('App resumed. Checking for updates...');
           this.checkForUpdates();
+          this.checkForUpdatesSW();
+
         });
         this.isSubscribedToResume = true;
       }
@@ -414,6 +461,9 @@ console.log("YES")
       });
     });
   }
+
+
+
 
   handleDeepLink(url: string) {
     const parsedUrl = new URL(url);

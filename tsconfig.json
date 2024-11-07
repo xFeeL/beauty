@@ -1,33 +1,39 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "target": "es2020",                        // Compatible modern target
+    "module": "es2020",
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
+    "strict": true,                            // Enables strict mode
+    "forceConsistentCasingInFileNames": true,  // Enforces file name consistency
+    "noImplicitOverride": true,                // Helps with overriding methods safely
     "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,                 // Requires explicit return statements
+    "noFallthroughCasesInSwitch": true,        // Prevents unintentional fall-through in switch statements
+    "experimentalDecorators": true,            // Required for Angular decorators
+    "useDefineForClassFields": false,
+
+    /* Module resolution */
+    "moduleResolution": "node",
+    "importHelpers": true,                     // Reduces bundle size by using helper functions
+    "resolveJsonModule": true,                 // Allows JSON imports
+
+    /* Advanced options */
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2022",
-    "module": "es2020",
-    "lib": [
-      "es2018", 
-      "dom"
-    ],
-    "useDefineForClassFields": false
+
+    /* Type checking */
+    "typeRoots": ["./node_modules/@types", "./src"], // Includes custom types from src/
+    
+    /* Libraries */
+    "lib": ["es2020", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictInjectionParameters": true,         // Ensures dependencies are injected properly
+    "strictInputAccessModifiers": true,        // Requires explicitly setting input access
+    "strictTemplates": true                    // Enforces strict mode in templates
   }
 }
