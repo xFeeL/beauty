@@ -219,3 +219,33 @@ ion-menu ion-content {
     // box-shadow: 0 4px 8px rgba(0, 0, 0, 1); /* Adding a subtle shadow for depth */      }      .settings-icon{
     color: var(--ion-color-primary);
   }
+
+  .onesignal-custom-prompt {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .onesignal-custom-prompt .title {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .onesignal-custom-prompt .body {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .onesignal-custom-prompt .button {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  

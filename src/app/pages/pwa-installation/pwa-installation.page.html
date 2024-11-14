@@ -1,0 +1,49 @@
+<ion-header [translucent]="true"> 
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()" slot="start">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Εγκατάσταση iOS Εφαρμογής</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  
+  <ol>
+    <li>
+      <h3>
+        Ανοίξτε τον browser 
+        <span class="safari-container">
+          <b>Safari</b> 
+          <img src="../../../assets/imgs/safari-icon.png" alt="Εικονίδιο Safari" class="safari-icon">
+        </span> 
+        και επισκεφθείτε την ιστοσελίδα μας.
+      </h3>
+      <div class="link-container">
+        <a href="https://beauty.fyx.gr/" target="_blank" rel="noopener noreferrer">https://beauty.fyx.gr/</a>
+        <ion-button fill="clear" (click)="copyLink()" class="copy-button" aria-label="Αντιγραφή συνδέσμου">
+          <ion-icon name="copy-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </li>
+    
+    <li>
+      <h3>Πατήστε το κουμπί "Κοινή Χρήση" στο πάνω ή στο κάτω μέρος της οθόνης.</h3>
+     <img src="../../../assets/imgs/share-ios.png">
+    </li>
+    
+    <li>
+      <h3>Επιλέξτε "Προσθήκη στην Οθόνη Αφετηρίας".</h3>
+      <img src="../../../assets/imgs/add-to-home-pwa.jpeg">
+    </li>
+    
+    <li>
+      <h3>Πατήστε "Προσθήκη" για να επιβεβαιώσετε.</h3>
+      <img src="../../../assets/imgs/add-pwa.jpeg">
+    </li>
+  </ol>
+  
+ 
+</ion-content>

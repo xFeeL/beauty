@@ -22,6 +22,8 @@ export class ClientsPage implements OnInit {
   }
 
   ionViewWillEnter() {
+   
+
     this.disableInfiniteScroll = false;
     this.page = 0;
     this.clients.splice(0);
@@ -33,6 +35,7 @@ export class ClientsPage implements OnInit {
     this.userService.sseConnect(window.location.toString());
 
   }
+
 
   loadData(event: any) {
     this.page = this.page + 1;

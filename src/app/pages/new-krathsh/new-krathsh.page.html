@@ -66,7 +66,7 @@
 
         <ion-grid class="transparent" *ngIf="selectedServices.length>0" [@moveToBottom]="'*'">
           <ion-row>
-            <ion-accordion-group [value]="currentService" class="ion-padding custom-accordion transparent">
+            <ion-accordion-group [value]="currentService" class="custom-accordion transparent">
               <ion-accordion *ngFor="let service of selectedServices" [value]="service" class="custom-accordion-item">
                 <ion-item slot="header" class="custom-accordion-header">
                   <ion-label *ngIf="service.chosenVariation==null"><ion-label

@@ -8,7 +8,6 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/index.html",
           "/*.css",
           "/*.js"
         ]
@@ -30,8 +29,10 @@
   "dataGroups": [],
   "navigationUrls": [
     "/**",
-    "!/api/**",
+    "!/**/.*",
+    "!/**/*.{css,js,json}",
     "!/assets/**",
+    "!/api/**",
     "!/OneSignalSDKWorker.js",
     "!/OneSignalSDKUpdaterWorker.js"
   ]

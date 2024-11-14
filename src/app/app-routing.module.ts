@@ -194,6 +194,14 @@ const routes: Routes = [
     path: 'charges',
     loadChildren: () => import('./pages/charges/charges.module').then( m => m.ChargesPageModule)
   },
+  {
+    path: 'pwa-installation',
+    loadChildren: () => import('./pages/pwa-installation/pwa-installation.module').then( m => m.PwaInstallationPageModule)
+  },
+  {
+    path: 'notification-prompt',
+    loadChildren: () => import('./pages/notification-prompt/notification-prompt.module').then( m => m.NotificationPromptPageModule)
+  },
 
  
  

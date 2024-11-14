@@ -1,0 +1,82 @@
+.notification-content {
+  --background: var(--ion-color-primary);; /* Dark purple for background */
+  color: #FFFFFF;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.full-height-grid {
+  height: 100vh; /* Full viewport height for centering */
+}
+
+.full-height-row {
+  flex: 1;
+  align-items: center; /* Center items vertically in the row */
+  justify-content: center; /* Center items horizontally */
+}
+
+.icon-container {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.notification-icon {
+  font-size: 48px;
+  color: #FFFFFF;
+}
+
+.notification-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-top: 15px;
+  color: #FFFFFF;
+}
+
+.notification-description {
+  font-size: 16px;
+  color: #d9d9f3; /* Light lavender for softer contrast */
+  max-width: 280px;
+  margin: 0 auto 20px auto; /* Center align with automatic left and right margins */
+  line-height: 1.6;
+  text-align: center; /* Center-align text */
+}
+
+.button-row {
+  position: absolute;
+  bottom: 10%; /* Position buttons closer to the bottom */
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.turn-on-button {
+  --background: #FFFFFF; /* High-contrast white */
+  --color: var(--ion-color-primary);; /* Matches the main purple */
+  width: 100%; /* Full width for balance */
+  padding: 14px 0;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  /* Removed text-transform: uppercase; to disable all-caps */
+}
+
+.no-thanks-button {
+  background: transparent;
+  color: #d9d9f3;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.no-thanks-button:hover {
+  color: #FFFFFF; /* White for visibility on hover */
+}

@@ -62,6 +62,7 @@
     "ngx-mask": "^18.0.0",
     "ngx-stripe": "^16.4.0",
     "onesignal-cordova-plugin": "^5.2.3",
+    "onesignal-ngx": "^2.0.1",
     "rxjs": "~7.5.0",
     "swiper": "^9.3.2",
     "zone.js": "~0.13.0"

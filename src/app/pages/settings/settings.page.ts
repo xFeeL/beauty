@@ -18,6 +18,7 @@ import { SocialMediaPage } from '../social-media/social-media.page';
 import { WrarioPage } from '../wrario/wrario.page';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ChargesPage } from '../charges/charges.page';
+import { EditProfilePage } from '../edit-profile/edit-profile.page';
 
 @Component({
   selector: 'app-settings',
@@ -59,23 +60,23 @@ export class SettingsPage implements OnInit {
   hidePageDescription: boolean = false;
   facebookPageAccessToken: any = "";
   facebookPageId: any;
-  needRefresh: boolean=false;
+  needRefresh: boolean = false;
   settings = [
     {
       name: 'Ωράριο',
       icon: '../../../assets/icon/opening-hours.png',
-      page:'schedule'
+      page: 'schedule'
     },
     {
       name: 'Ομάδα & Υπηρεσίες',
       icon: '../../../assets/icon/work-team.png',
-      page:'team-services'
+      page: 'team-services'
 
     },
     {
-      name: 'Κρατήσεις',
+      name: 'Ρυθμίσεις Κρατήσεων',
       icon: '../../../assets/icon/time-management.png',
-      page:'reservations'
+      page: 'reservations'
 
     },
     /*{
@@ -87,19 +88,25 @@ export class SettingsPage implements OnInit {
     {
       name: 'Αυτοματοποιημένες ειδοποιήσεις',
       icon: '../../../assets/icon/sms.png',
-      page:'automated-notifications'
+      page: 'automated-notifications'
+
+    },
+    {
+      name: 'Βιτρίνα',
+      icon: '../../../assets/icon/resume.png',
+      page: 'edit-profile'
 
     },
     {
       name: 'Χρεώσεις Λογαριασμού',
       icon: '../../../assets/icon/receipt.png',
-      page:'charges'
+      page: 'charges'
 
     },
     {
       name: 'Αλλαγή Κωδικού',
       icon: '../../../assets/icon/padlock.png',
-      page:'change-password'
+      page: 'change-password'
 
     },
 
@@ -110,7 +117,7 @@ export class SettingsPage implements OnInit {
 
     }*/
   ];
-  constructor(private themeService:ThemeService,private alertController:AlertController,private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
+  constructor(private themeService: ThemeService, private alertController: AlertController, private modalController: ModalController, private userService: UserService, private externalService: ExternalService) {
 
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
@@ -143,7 +150,7 @@ export class SettingsPage implements OnInit {
   }
 
   goBack() {
-    
+
     this.modalController.dismiss(this.needRefresh)
   }
 
@@ -151,7 +158,7 @@ export class SettingsPage implements OnInit {
   toggleChange(): void {
     this.themeService.toggleDarkTheme(this.themeToggle);
   }
-  
+
 
   async goToSetting(item: any) {
     let modal = null;
@@ -179,20 +186,26 @@ export class SettingsPage implements OnInit {
       modal = await this.modalController.create({
         component: ChargesPage,
       });
-    
+
     } else if (item.page == "change-password") {
       modal = await this.modalController.create({
         component: ChangePasswordPage,
       });
+
+    } else if (item.page == "edit-profile") {
+      modal = await this.modalController.create({
+        component: EditProfilePage,
+      });
+
     } else if (item.page == "dark-mode") {
       this.themeToggle = !this.themeToggle;
       this.toggleChange();
     }
-  
+
     if (modal !== null) {
       modal.onDidDismiss().then((result) => {
-        
-        
+
+
         if (result.data || result.data.needRefresh) {
           this.needRefresh = true;
         }
@@ -200,8 +213,8 @@ export class SettingsPage implements OnInit {
       await modal.present();
     }
   }
-  
- 
+
+
 
   formatHour(hour: number, minutes: string): string {
     return this.pad(hour) + ':' + minutes;
@@ -213,6 +226,6 @@ export class SettingsPage implements OnInit {
 
 
 
-  
+
 
 }

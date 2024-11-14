@@ -22,29 +22,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Beauty Fyx">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/pwa/apple-touch-icon.png">
 
-  <!-- OneSignal SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      if (Notification.permission === 'denied') {
-        console.warn('Notification permissions are blocked. Enable them in the browser settings.');
-        return;
-      }
-  
-      await OneSignal.init({
-        appId: "dd10fc16-8bdc-4b16-8a66-5fe450385acc",
-        allowLocalhostAsSecureOrigin: true, 
-        serviceWorkerParam: {
-          scope: '/OneSignal/'
-        },
-        serviceWorkerPath: '/OneSignal/OneSignalSDKWorker.js',
-        serviceWorkerUpdaterPath: '/OneSignal/OneSignalSDKUpdaterWorker.js'
-      });
-    });
-  </script>
+  <!-- Apple Touch Icons (Multiple Sizes for iOS) -->
+<link rel="apple-touch-icon" sizes="120x120" href="/assets/icon/120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icon/152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/assets/icon/167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/180.png">
+  <link rel="apple-touch-icon" href="/assets/icon/180.png">
 
   <!-- Stripe and Other Scripts -->
   <script src="https://js.stripe.com/v3/"></script>

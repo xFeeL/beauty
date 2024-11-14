@@ -20,7 +20,7 @@
             <ion-col size="12" class="ion-text-center">
               <h3 class="ion-no-margin"> {{name}}</h3>
               <ion-note class="mg5">{{email}}</ion-note><br>
-              <ion-chip class="chipPr shadow" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-chip>
+              <ion-chip class="chipPr shadow" (click)="presentActionSheetImages()">Φωτογραφίες Βιτρίνας</ion-chip>
             </ion-col>
             <ion-col size="4" class="ion-text-center">
               <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/png, image/jpg, image/jpeg"
@@ -34,15 +34,10 @@
                 <ion-icon [class]="businessNameVariableClass " slot="end" [name]="businessNameIconName"
                   [color]="businessNameColor"></ion-icon>
               </ion-item>
-              <!-- <ion-item class="ion-margin validBorderItem" (click)="chooseAddress()">
-                <ion-label position="floating">Διεύθυνση</ion-label>
-                <ion-input disabled="false" [value]="address"></ion-input>
-                <ion-icon class="ion-margin-top pt7" slot="end" name="checkmark-outline" color="success"></ion-icon>
-              </ion-item>-->
+             
               <ion-item lines="none">
                 <mat-form-field appearance="fill" style="width: 100%;">
                   <mat-label>Διεύθυνση καταστήματος</mat-label>
-                  <!--<mat-icon matPrefix class="location-search-icon">location_on</mat-icon>-->
                   <input type="text" matInput [(ngModel)]="autocompleteInput" (ngModelChange)="searchAddress()"
                     [matAutocomplete]="auto" style="width: calc(100% - 48px);" />
                   <div matSuffix *ngIf="loadingOn" style="margin-right: 10px;">
@@ -105,11 +100,6 @@
                 <ion-text color="danger" *ngIf="tiktokForm.errors?.['pattern'] && tiktokForm.touched && tiktokLink">
                   Το link πρέπει να περιέχει το "https://"
                 </ion-text>
-              </ion-item>
-
-              <ion-item class="ion-margin ">
-                <ion-label position="floating">E-mail</ion-label>
-                <ion-input disabled="true" [value]="email"></ion-input>
               </ion-item>
               <ion-item class="ion-margin ">
                 <ion-label position="floating">Προσωπικό Κινητό</ion-label>

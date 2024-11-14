@@ -33,6 +33,7 @@ import elLocale from '@fullcalendar/core/locales/el';
 import { Subscription } from 'rxjs';
 import { ThemeService } from 'src/app/services/theme.service';
 import { TeamServicesPromptPage } from '../team-services-prompt/team-services-prompt.page';
+import { NotificationPromptPage } from '../notification-prompt/notification-prompt.page';
 
 export interface PeriodicElement {
   avatar: string;
@@ -107,7 +108,7 @@ export class HomePage implements OnInit {
   hasNewNotifications: boolean = false;
   fullCalendarWidth: string = "auto";
 
-  constructor(private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  constructor( private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     setInterval(() => this.checkAndRun(), 1000);
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
@@ -118,26 +119,35 @@ export class HomePage implements OnInit {
         this.cdr.markForCheck(); // Add this line
       }
     });
-  
+
     this.hasNewNotificationsSubscription = this.userService.newNotification$.subscribe(hasNewNotif => {
       this.hasNewNotifications = hasNewNotif;
       this.cdr.markForCheck(); // Add this line
     });
   }
 
+  notificationPromptPWA() {
 
 
+    const isIos = this.platform.is('ios');
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIos && isPWA) {
+      this.goToNotificationPrompt()
+    }
+  }
 
   ngOnInit(): void {
+    this.notificationPromptPWA()
     this.checkScreenWidth();
     this.resizeListener = this.platform.resize.subscribe(() => {
       this.checkScreenWidth();
       this.cdr.markForCheck(); // Add this line
     });
-  
-    this.userService.checkOnBoardingStatus().subscribe(data=>{
 
-    },err=>{
+    this.userService.checkOnBoardingStatus().subscribe(data => {
+
+    }, err => {
       this.rout.navigate(['/onboarding']);
     })
     this.userService.invokeGoToKrathseis$.subscribe(() => {
@@ -155,7 +165,7 @@ export class HomePage implements OnInit {
       this.userService.presentToast("Η πληρωμή απέτυχε. Παρακαλώ προσπαθήστε ξανά.", "danger");
     }
     this.userService.sseConnect(window.location.toString());
-  
+
     this.userService.getEmployeesOfExpert().subscribe(
       data => {
         this.employees = data;
@@ -172,7 +182,7 @@ export class HomePage implements OnInit {
         });
         this.changeAgendaDuration(data.length);
         this.ngAfterViewChecked();
-  
+
         if (!this.startDate) {
           this.startDate = new Date();
         }
@@ -180,10 +190,10 @@ export class HomePage implements OnInit {
           this.endDate = new Date();
           this.endDate.setDate(this.startDate.getDate() + this.calendarDaysLength);
         }
-  
+
         this.getAppointmentsOfRange(this.startDate, this.endDate);
         this.calendarComponent.getApi().setOption('locale', 'el');
-  
+
         this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(data2 => {
           this.addBackgroundEvents(data2);
           this.updateDateRangeText();
@@ -199,7 +209,7 @@ export class HomePage implements OnInit {
       this.cdr.markForCheck(); // Add this line
     });
   }
-  
+
 
 
   async goToKrathseis() {
@@ -252,6 +262,19 @@ export class HomePage implements OnInit {
 
   }
 
+ async goToNotificationPrompt() {
+  const hasAcceptedNotifications = localStorage.getItem('pushNotificationsAccepted');
+  if(!hasAcceptedNotifications){
+    const modal = await this.modalController.create({
+      component: NotificationPromptPage,
+    });
+    return await modal.present();
+  
+  }
+     
+
+  }
+
 
 
   async goToNotifications() {
@@ -282,9 +305,9 @@ export class HomePage implements OnInit {
 
 
   async newKrathsh() {
-    if(this.employees.length==0){
+    if (this.employees.length == 0) {
       this.promptTeamServices()
-    }else{
+    } else {
       const modal = await this.modalController.create({
         component: NewKrathshPage,
         backdropDismiss: false
@@ -292,25 +315,25 @@ export class HomePage implements OnInit {
       modal.onDidDismiss().then((dataReturned) => {
         if (dataReturned.data == true) {
           // Your logic here, 'dataReturned' is the data returned from modal
-  
+
           this.getAppointmentsOfRange(this.startDate, this.endDate);
-  
-  
+
+
         }
       });
-  
+
       return await modal.present();
     }
- 
+
   }
 
   async promptTeamServices() {
     const modal = await this.modalController.create({
       component: TeamServicesPromptPage,
-     
+
     });
     modal.onWillDismiss().then((dataReturned) => {
-  
+
 
     });
     return await modal.present();
@@ -854,11 +877,11 @@ export class HomePage implements OnInit {
       console.error('startDate or endDate is undefined');
       return;
     }
-  
+
     const formattedStartDate = this.formatDateForAPI(startDate);
     const formattedEndDate = this.formatDateForAPI(endDate);
     const calendarApi = this.calendarComponent.getApi();
-  
+
     this.userService.getAppointmentsRange(formattedStartDate, formattedEndDate).subscribe(
       data => {
         // Clear only appointment events
@@ -869,7 +892,7 @@ export class HomePage implements OnInit {
           }
         });
         this.events = this.transformToEventInput(data);
-  
+
         // Merge and update the calendar with all events
         this.mergeAndSetEvents();
         this.cdr.markForCheck(); // Add this line
@@ -887,7 +910,7 @@ export class HomePage implements OnInit {
       }
     );
   }
-  
+
 
 
 
@@ -916,27 +939,27 @@ export class HomePage implements OnInit {
   updateDateRangeText(start?: Date, end?: Date) {
     const calendarApi = this.calendarComponent.getApi();
     const view = calendarApi.view;
-  
+
     const startDate = start || view.activeStart;
     const endDate = end ? new Date(end) : new Date(startDate);
-  
+
     endDate.setDate(endDate.getDate() + this.calendarDaysLength);
-  
+
     // Subtract one day from the endDate
     const adjustedEndDate = new Date(endDate);
     adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
-  
+
     const startDay = formatDate(startDate, 'dd', 'el');
     const endDay = formatDate(adjustedEndDate, 'dd', 'el');
     const monthYear = formatDate(adjustedEndDate, 'MMMM yyyy', 'el');
-  
+
     if (startDay === endDay && formatDate(startDate, 'MMMM yyyy', 'el') === monthYear) {
       this.dateRangeText = `${startDay} ${monthYear}`;
     } else {
       this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
     }
   }
-  
+
   transformToEventInput(data: any[]): EventInput[] {
     return data.map(appointment => {
       const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
@@ -1162,19 +1185,19 @@ export class HomePage implements OnInit {
 
   mergeAndSetEvents() {
     const mergedEvents = [...this.events, ...this.backgroundEvents];
-  
+
     const calendarApi = this.calendarComponent.getApi();
     calendarApi.removeAllEvents();
     calendarApi.addEventSource(mergedEvents);
-  
+
     // Apply the updated options
     calendarApi.setOption('slotMinTime', this.calendarOptions.slotMinTime);
     calendarApi.setOption('slotMaxTime', this.calendarOptions.slotMaxTime);
     calendarApi.setOption('events', mergedEvents);
-  
+
     this.cdr.detectChanges(); // Add this line
   }
-  
+
 
   getUnavailableIntervals(availableIntervals: string[]): string[] {
     const fullDayStart = '00:00';
@@ -1201,7 +1224,6 @@ export class HomePage implements OnInit {
     const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
     return days.indexOf(day);
   }
-
 
 
 

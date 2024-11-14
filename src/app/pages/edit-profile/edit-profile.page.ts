@@ -13,6 +13,7 @@ import { LyDialog } from '@alyle/ui/dialog';
 import { FacebookImagesPage } from '../facebook-images/facebook-images.page';
 import { InstagramImagesPage } from '../instagram-images/instagram-images.page';
 import { NgModel } from '@angular/forms';
+import { ImagesPage } from '../images/images.page';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.page.html',
@@ -350,14 +351,14 @@ export class EditProfilePage {
 
         {
           text: 'Αποθηκευτικός Χώρος',
-          icon: 'folder',
+          icon: 'folder-outline',
           handler: () => {
             this.importFromStorage();
           }
         },
         {
           text: 'Κάμερα',
-          icon: 'camera',
+          icon: 'camera-outline',
           handler: () => {
             this.importFromCamera();
           }
@@ -461,6 +462,55 @@ export class EditProfilePage {
 
     this.needReferesh = true
   }
+
+  // In the `presentActionSheet` method, modify it to include options for changing profile or shop photos
+
+async presentActionSheetImages() {
+  const actionSheet = await this.actionSheetController.create({
+    header: 'Επιλογές',
+    buttons: [
+      {
+        text: 'Φωτογραφία Προφίλ',
+        icon: 'person-circle-outline',
+        handler: () => {
+          this.changeProfilePhoto();
+        }
+      },
+      {
+        text: 'Φωτογραφίες Εξωφύλλου',
+        icon: 'storefront-outline',
+        handler: () => {
+          this.changeShopPhotos();
+        }
+      },
+      {
+        text: 'Άκυρο',
+        icon: 'close',
+        role: 'cancel'
+      }
+    ]
+  });
+  await actionSheet.present();
+}
+
+// Implement the methods for changing profile and shop photos
+
+changeProfilePhoto() {
+  this.presentActionSheet(); // or any specific function to handle profile photo
+}
+
+changeShopPhotos() {
+  this.goToImages(); // or any specific function to handle shop photos
+}
+
+async goToImages() {
+  const modal = await this.modalController.create({
+    component: ImagesPage,
+  });
+  return await modal.present();
+}
+
+
 
 
 }

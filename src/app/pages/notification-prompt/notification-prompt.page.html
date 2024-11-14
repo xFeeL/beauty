@@ -1,0 +1,32 @@
+<ion-content class="notification-content">
+  <ion-grid class="full-height-grid">
+    <ion-row class="ion-justify-content-center ion-align-items-center full-height-row">
+      <ion-col size="12" class="ion-text-center">
+        
+        <!-- Notification Icon -->
+        <div class="icon-container">
+          <ion-icon name="notifications-outline" class="notification-icon"></ion-icon>
+        </div>
+
+        <!-- Title -->
+        <h2 class="notification-title">Ενεργοποίηση Ειδοποιήσεων</h2>
+
+        <!-- Description -->
+        <p class="notification-description">
+          Θέλετε να λαμβάνετε ειδοποιήσεις για νέες κρατήσεις και άλλα χρήσιμα συμβάντα που σας αφορούν;
+        </p>
+
+      </ion-col>
+    </ion-row>
+    
+    <!-- Buttons placed in a separate row to position them closer to the bottom -->
+    <ion-row class="ion-justify-content-center button-row">
+      <ion-col size="10" class="ion-text-center">
+        <div class="button-container">
+          <ion-button expand="block" class="turn-on-button" (click)="turnOnNotifications()">Ενεργοποίηση</ion-button>
+          <button class="no-thanks-button" (click)="dismiss()">Όχι, ευχαριστώ</button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

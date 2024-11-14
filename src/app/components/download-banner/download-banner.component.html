@@ -1,0 +1,5 @@
+<div class="banner" [ngClass]="tabsPresent ? 'with-tabs' : 'no-tabs'" *ngIf="showBanner">
+  <p>Θέλεις live ειδοποιήσεις; </p>
+  <button class="download-btn" (click)="downloadApp()">Κατέβασε την εφαρμογή</button>
+  <button class="dismiss-btn" (click)="dismissBanner()">Απόκρυψη</button>
+</div>

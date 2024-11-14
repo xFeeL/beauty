@@ -64,9 +64,10 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { provideNgxMask } from 'ngx-mask';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { DownloadBannerComponent } from './components/download-banner/download-banner.component';
 registerLocaleData(localeEl, 'el');
 @NgModule({
-  declarations: [AppComponent,CropperDialog ],
+  declarations: [AppComponent,CropperDialog,DownloadBannerComponent ],
   imports: [FormsModule,BrowserModule,LightgalleryModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule,BrowserAnimationsModule, BrowserAnimationsModule,
     LyButtonModule,
     LyToolbarModule,

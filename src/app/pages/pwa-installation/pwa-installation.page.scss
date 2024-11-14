@@ -1,0 +1,135 @@
+ion-content {
+    text-align: center;
+  
+    p {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #666;
+    }
+  
+    ol {
+      text-align: left;
+      padding: 0 20px;
+      margin-bottom: 20px;
+  
+      li {
+        margin-bottom: 30px;
+  
+        h3 {
+          font-size: 18px;
+          margin-bottom: 10px;
+          color: #333;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+  
+        .safari-container {
+          display: inline-flex;
+          align-items: center;
+          margin-left: 5px; /* Προσθέτει λίγο κενό μεταξύ του κειμένου και του εικονιδίου */
+        }
+  
+        .safari-icon {
+          width: 20px; /* Ρυθμίστε το μέγεθος ώστε να ταιριάζει με το κείμενο */
+          height: 20px;
+          margin-left: 5px;
+        }
+  
+        .link-container {
+          display: flex;
+          align-items: center;
+          margin: 10px 0;
+  
+          a {
+            font-size: 16px;
+            color: #3880ff;
+            text-decoration: none;
+            margin-right: 10px;
+            word-break: break-all;
+          }
+  
+          .copy-button {
+            --size: 30px;
+            --padding-start: 5px;
+            --padding-end: 5px;
+          }
+        }
+  
+        .instruction-icon {
+          font-size: 40px;
+          color: #3880ff;
+          margin-right: 15px;
+          flex-shrink: 0;
+        }
+  
+        p {
+          font-size: 14px;
+          color: #555;
+          margin-top: 5px;
+        }
+      }
+    }
+  
+    .additional-tips {
+      text-align: left;
+      padding: 0 20px;
+  
+      h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+  
+      ul {
+        list-style-type: disc;
+        padding-left: 20px;
+  
+        li {
+          margin-bottom: 10px;
+          font-size: 14px;
+          color: #555;
+        }
+      }
+    }
+  
+    /* Προσθήκη Hover Εφέ στο Κουμπί Αντιγραφής */
+    .copy-button:hover {
+      background-color: rgba(56, 128, 255, 0.1); /* Ελαφρύ μπλε hover */
+      border-radius: 50%;
+    }
+  }
+  
+  /* Responsive Στυλ για Μικρές Οθόνες */
+  @media (max-width: 600px) {
+    ol {
+      li {
+        h3 {
+          font-size: 16px;
+        }
+  
+        .safari-container {
+          flex-direction: row;
+        }
+  
+        .safari-icon {
+          width: 18px;
+          height: 18px;
+        }
+  
+        .instruction-icon {
+          font-size: 30px;
+          margin-right: 10px;
+        }
+  
+        p {
+          font-size: 13px;
+        }
+  
+        .copy-button {
+          --size: 24px;
+        }
+      }
+    }
+  }
+  
