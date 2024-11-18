@@ -129,10 +129,10 @@ export class HomePage implements OnInit {
   notificationPromptPWA() {
 
 
-    const isIos = this.platform.is('ios');
+    const isIos =this.platform.is('ios');
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
-    if (isIos && isPWA) {
+    if (  isPWA) {
       this.goToNotificationPrompt()
     }
   }

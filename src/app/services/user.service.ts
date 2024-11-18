@@ -1891,7 +1891,7 @@ export class UserService {
 
         switch (notificationType) {
           case 'appointment':
-            const appointmentId = data.appointment_id;
+            const appointmentId = data.id;
             if (appointmentId) {
               // Navigate to KrathshPage
               this.goToKrathsh(appointmentId)

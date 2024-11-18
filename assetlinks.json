@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.fyx.beauty",
+            "sha256_cert_fingerprints": [
+                "CB:73:BA:9F:A1:1C:EF:6B:36:B6:BA:6B:6A:E6:30:3D:86:5D:09:0B:F0:7A:D2:76:02:DD:58:30:03:E0:83:FC"
+            ]
+        }
+    }
+]

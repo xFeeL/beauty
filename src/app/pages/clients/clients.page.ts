@@ -18,6 +18,7 @@ export class ClientsPage implements OnInit {
   constructor(private route: Router, private userService: UserService, private modalController: ModalController) { }
   searchTerm = '';
   page = 0;
+  
   ngOnInit() {
   }
 

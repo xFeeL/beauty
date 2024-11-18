@@ -43,10 +43,18 @@
               {
                 "glob": "**/*",
                 "input": "src/OneSignal",
-                "output": "OneSignal"  
+                "output": "OneSignal"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/.well-known",
+                "output": ".well-known"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss"
+            ],
             "scripts": [],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
@@ -71,7 +79,11 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "namedChunks": false
             },
             "development": {
               "buildOptimizer": false,
@@ -135,10 +147,19 @@
               {
                 "glob": "**/*",
                 "input": "src/OneSignal",
-                "output": "OneSignal"  
+                "output": "OneSignal"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/.well-known",
+                "output": ".well-known"
               }
+              
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss"
+            ],
             "scripts": []
           },
           "configurations": {

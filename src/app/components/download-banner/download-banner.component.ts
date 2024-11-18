@@ -29,20 +29,33 @@ export class DownloadBannerComponent implements OnInit {
     const isStandalonePWA = window.matchMedia('(display-mode: standalone)').matches;
     const lastDismissedTimestamp = localStorage.getItem('bannerDismissedTimestamp');
     const showCounter = parseInt(localStorage.getItem('bannerShowCounter') || '0', 10);
-
+  
+    // Detect if running in a native mobile app
+    const isNative = this.platform.is('hybrid'); // For Ionic/Capacitor apps
+    // Alternatively, use Capacitor directly:
+    // import { Capacitor } from '@capacitor/core';
+    // const isNative = Capacitor.isNativePlatform();
+  
     console.log("Platform is iOS:", isIos);
     console.log("Platform is Android:", isAndroid);
     console.log("Running as standalone PWA:", isStandalonePWA);
+    console.log("Running as native app:", isNative);
     console.log("Banner last dismissed timestamp:", lastDismissedTimestamp);
     console.log("Banner show counter:", showCounter);
-
+  
     // Check if a week has passed since the banner was last dismissed
     const oneWeekPassed = lastDismissedTimestamp
       ? Date.now() - parseInt(lastDismissedTimestamp, 10) > this.WEEK_IN_MS
       : true;
-
-    // Show the banner only if the counter is less than the maximum, on a mobile browser, not dismissed within a week, and not in standalone mode
-    if (!isStandalonePWA && oneWeekPassed && (isIos || isAndroid) && showCounter < this.MAX_SHOW_COUNT) {
+  
+    // Show the banner only if not in native app and other conditions are met
+    if (
+      !isNative &&
+      !isStandalonePWA &&
+      oneWeekPassed &&
+      (isIos || isAndroid) &&
+      showCounter < this.MAX_SHOW_COUNT
+    ) {
       console.log("Conditions met to show banner.");
       this.showBanner = true;
     } else {
@@ -50,6 +63,7 @@ export class DownloadBannerComponent implements OnInit {
       this.showBanner = false;
     }
   }
+  
 
   async downloadApp() {
     const isIos = this.platform.is('ios');

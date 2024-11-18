@@ -38,7 +38,6 @@ export class NotificationPromptPage implements OnInit {
       this.dismiss(); // Dismiss modal only after the prompt is accepted
       this.userService.getExpertId().subscribe(data => {
         this.oneSignal.login(data.id);
-        const hasAcceptedNotifications = localStorage.getItem('pushNotificationsAccepted');
         localStorage.setItem('pushNotificationsAccepted', 'true');
       }, err => {
         this.userService.presentToast("Κάτι πήγε στραβά.", "danger");

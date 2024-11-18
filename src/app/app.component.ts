@@ -128,12 +128,13 @@ export class AppComponent implements WithStyles {
     }
 
   }
+
   initializeOneSignalForPWA() {
     const isIos = this.platform.is('ios');
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
     // Only initialize OneSignal if running as PWA on iOS
-    if (isIos&& isPWA) {
+    if ( isPWA) {
       this.oneSignal.init({
         appId: 'dd10fc16-8bdc-4b16-8a66-5fe450385acc',
         allowLocalhostAsSecureOrigin: true,
@@ -144,23 +145,32 @@ export class AppComponent implements WithStyles {
         serviceWorkerUpdaterPath: '/OneSignal/OneSignalSDKUpdaterWorker.js',
         promptOptions: {
           slidedown: {
-            enabled: false,
+            enabled: true,
             autoPrompt: false, // Ensures prompt does not auto-display
-           
+
           },
-         }
+        }
       }).then(() => {
-        this.oneSignal.Notifications.addEventListener("click", async (jsonData:any) => {
+        const hasAcceptedNotifications = localStorage.getItem('pushNotificationsAccepted');
+        if (hasAcceptedNotifications == "true") {
+          this.userService.getExpertId().subscribe(data => {
+            this.oneSignal.login(data.id);
+          }, err => {
+            this.userService.presentToast("Κάτι πήγε στραβά.", "danger");
+          });
+        }
+
+        this.oneSignal.Notifications.addEventListener("click", async (jsonData: any) => {
           console.log("Notification opened:", jsonData);
           const notification = jsonData.notification;
           const data = notification.additionalData;
-    
+
           if (data) {
             const notificationType = data.type;
-    
+
             switch (notificationType) {
               case 'appointment':
-                const appointmentId = data.appointment_id;
+                const appointmentId = data.id;
                 if (appointmentId) {
                   // Navigate to KrathshPage
                   this.userService.goToKrathsh(appointmentId)
@@ -168,19 +178,19 @@ export class AppComponent implements WithStyles {
                   console.warn("No appointment_id found in notification data.");
                 }
                 break;
-    
+
               case 'message':
                 const conversationId = data.conversation_id;
                 if (conversationId) {
                   // Navigate to MessagesPage
-                 
+
                 } else {
                   console.warn("No conversation_id found in notification data.");
                 }
                 break;
-    
+
               // Add more cases as needed
-    
+
               default:
                 console.warn("Unknown notification type:", notificationType);
                 // Optionally navigate to a default page
@@ -190,14 +200,14 @@ export class AppComponent implements WithStyles {
             console.warn("No additional data found in notification.");
           }
         });
-    
-    
-        this.oneSignal.Notifications.addEventListener("foregroundWillDisplay", async (e:any) => {
+
+
+        this.oneSignal.Notifications.addEventListener("foregroundWillDisplay", async (e: any) => {
           console.log("THE EVENT2")
           console.log(e)
           let clickData = await e.notification;
           console.log("Notification Clicked : " + clickData);
-        
+
           const notification = e.notification;
           const payload = notification.additionalData;
           console.log(payload)
@@ -221,10 +231,11 @@ export class AppComponent implements WithStyles {
       }).catch((error) => {
         console.error('OneSignal initialization failed:', error);
       });
-      
+
     } else {
     }
   }
+
   copyToClipboard(url: string) {
 
     navigator.clipboard.writeText(url).then(() => {
@@ -444,7 +455,6 @@ export class AppComponent implements WithStyles {
     console.log("APP INIT")
     this.initializeApp();
     if (Capacitor.isNativePlatform()) {
-      alert("Initializing")
       this.userService.setupPushNotifications();
       console.log("Setting up push notifications on mobile native app.");
     } else {
@@ -535,7 +545,6 @@ export class AppComponent implements WithStyles {
 
   async initializeApp() {
 
-    console.log('Initializing app...');
     await this.platform.ready();
     console.log('Platform ready.');
 
