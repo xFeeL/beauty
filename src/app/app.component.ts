@@ -134,7 +134,7 @@ export class AppComponent implements WithStyles {
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
     // Only initialize OneSignal if running as PWA on iOS
-    if ( isPWA) {
+    if (isPWA) {
       this.oneSignal.init({
         appId: 'dd10fc16-8bdc-4b16-8a66-5fe450385acc',
         allowLocalhostAsSecureOrigin: true,
@@ -145,7 +145,7 @@ export class AppComponent implements WithStyles {
         serviceWorkerUpdaterPath: '/OneSignal/OneSignalSDKUpdaterWorker.js',
         promptOptions: {
           slidedown: {
-            enabled: true,
+            enabled: false,
             autoPrompt: false, // Ensures prompt does not auto-display
 
           },
@@ -404,7 +404,7 @@ export class AppComponent implements WithStyles {
       .subscribe((event: any) => {
         this.tabsPresent = event.url.includes('tabs');
       });
-    this.initializeOneSignalForPWA()
+    //this.initializeOneSignalForPWA()
     if (this.swUpdate.isEnabled) {
       // Subscribe to version updates
       console.log("SW is Enabled")

@@ -132,7 +132,7 @@ export class HomePage implements OnInit {
     const isIos =this.platform.is('ios');
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
-    if (  isPWA) {
+    if ( isIos && isPWA) {
       this.goToNotificationPrompt()
     }
   }

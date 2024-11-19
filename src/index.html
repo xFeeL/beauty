@@ -33,6 +33,20 @@
   <!-- Stripe and Other Scripts -->
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-element-bundle.min.js"></script>
+
+
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "dd10fc16-8bdc-4b16-8a66-5fe450385acc",
+      });
+    });
+  </script>
+  
+  
+
 </head>
 
 <body>
