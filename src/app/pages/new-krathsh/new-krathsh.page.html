@@ -28,7 +28,8 @@
                   <ion-label class="custom-text-wrap">
                     <h2 *ngIf="service.chosenVariation==null && service.parentName==null">{{ service.name }}</h2>
                     <h2 *ngIf="service.chosenVariation==null && service.parentName!=null">{{service.parentName}}
-                      <ion-note>({{ service.name}})</ion-note></h2>
+                      <ion-note>({{ service.name}})</ion-note>
+                    </h2>
 
                     <h2 *ngIf="service.chosenVariation!=null">{{ service.name }} <ion-note>({{
                         service.chosenVariation.name }})</ion-note></h2>
@@ -78,7 +79,8 @@
                 </ion-item>
                 <div slot="content" class="horizontal-scroll backgroundColor">
 
-                  <div class="person-item ion-margin-start ion-margin-top ion-margin-bottom" *ngIf="service.employees?.length>1">
+                  <div class="person-item ion-margin-start ion-margin-top ion-margin-bottom"
+                    *ngIf="service.employees?.length>1">
                     <div class="person-avatar" (click)="selectEmployee(service, 'anyone')">
                       <!-- Ensure the [class.selected] binding is on the <ion-avatar> tag for "anyone" -->
                       <ion-avatar class="avatar-border" [class.selected]="service.selectedEmployeeId === 'anyone'">
@@ -120,8 +122,8 @@
         <h4 *ngIf="canSelectDate" [@moveToBottom]="'*'"><ion-text color="primary"><b>Διαλέξτε</b></ion-text><br>
           <ion-text color="dark"><b>Ημέρα</b></ion-text>
         </h4>
-        <ion-datetime  locale="el-GR" *ngIf="canSelectDate" #datetime displayFormat="DD/MM/YYYY" [dayValues]="dayValues" class="mxw"
-          presentation="date" [min]="minDate" max="2099-10-31" [(ngModel)]="theDate"
+        <ion-datetime locale="el-GR" *ngIf="canSelectDate" #datetime displayFormat="DD/MM/YYYY" [dayValues]="dayValues"
+          class="mxw" presentation="date" [min]="minDate" max="2099-10-31" [(ngModel)]="theDate"
           (ionChange)="dateChanged()"></ion-datetime>
 
         <h4 *ngIf="dateSelected" [@moveToBottom]="'*'"><ion-text color="primary"><b>Επιλογή</b></ion-text><br>
@@ -227,8 +229,17 @@
                 <ion-img
                   [src]="(suggestion.image === 'default' ? '../../../assets/icon/default-profile.png' : suggestion.image)"></ion-img>
               </ion-avatar>
-              <ion-label>{{suggestion.name}} <ion-note>({{suggestion.phone}})</ion-note></ion-label>
+              <ion-label>
+                <div class="client-info">
+                  <div class="client-name">{{suggestion.name}}</div>
+                  <div *ngIf="suggestion.phone" class="client-phone"><ion-note>({{suggestion.phone}})</ion-note></div>
+                </div>
+                <ion-badge color="warning" *ngIf="suggestion.isManualClient" class="manual-client-indicator">
+                  Προστέθηκε από εσάς
+                </ion-badge>
+              </ion-label>
             </ion-item>
+
           </ion-list>
           <ion-button expand="full" color="primary" (click)="addNewClient()" class="capsoff">
             <ion-icon color="light" slot="start" name="add-circle"></ion-icon>
@@ -238,32 +249,33 @@
         <ng-container *ngIf="isAddingNewClient">
           <ion-grid>
             <ion-row class="ion-margin-top ion-margin-bottom">
-                <ion-col size="12" size-lg="6">
-                    <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
-                        label-placement="stacked" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
-                </ion-col>
-                <ion-col size="12" size-lg="6">
-                    <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
-                        label-placement="stacked" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
-                </ion-col>
+              <ion-col size="12" size-lg="6">
+                <ion-input [(ngModel)]="newClientName" (keyup)="validateInputsNewClient()" label="Όνομα"
+                  label-placement="stacked" fill="solid" placeholder="Εισάγετε όνομα"></ion-input>
+              </ion-col>
+              <ion-col size="12" size-lg="6">
+                <ion-input [(ngModel)]="newClientSurname" (keyup)="validateInputsNewClient()" label="Επίθετο"
+                  label-placement="stacked" fill="solid" placeholder="Εισάγετε επίθετο"></ion-input>
+              </ion-col>
             </ion-row>
-        
+
             <ion-row class="ion-margin-top ion-margin-bottom">
-                <ion-col>
-                    <ion-input type="tel" label="Τηλέφωνο (Προαιρετικό)" label-placement="stacked" fill="solid"
-                        placeholder="+30 69x xxx xxxx" [(ngModel)]="newClientPhone" [maskito]="options"
-                        [maskitoElement]="maskPredicate" (keyup)="validateInputsNewClient()"></ion-input>
-                </ion-col>
+              <ion-col>
+                <ion-input type="tel" label="Τηλέφωνο (Προαιρετικό)" label-placement="stacked" fill="solid"
+                  placeholder="+30 69x xxx xxxx" [(ngModel)]="newClientPhone" [maskito]="options"
+                  [maskitoElement]="maskPredicate" (keyup)="validateInputsNewClient()"></ion-input>
+              </ion-col>
             </ion-row>
-        
+
             <ion-row class="ion-margin-top ion-margin-bottom">
-                <ion-col>
-                    <ion-input type="email" label="Email (Προαιρετικό)" label-placement="stacked" fill="solid"
-                        placeholder="Εισάγετε email" [(ngModel)]="newClientEmail" (keyup)="validateInputsNewClient()"></ion-input>
-                </ion-col>
+              <ion-col>
+                <ion-input type="email" label="Email (Προαιρετικό)" label-placement="stacked" fill="solid"
+                  placeholder="Εισάγετε email" [(ngModel)]="newClientEmail"
+                  (keyup)="validateInputsNewClient()"></ion-input>
+              </ion-col>
             </ion-row>
-        </ion-grid>
-        
+          </ion-grid>
+
         </ng-container>
       </ion-content>
       <ion-footer *ngIf="isAddingNewClient">

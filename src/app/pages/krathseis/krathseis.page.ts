@@ -16,7 +16,7 @@ import { TeamServicesPromptPage } from '../team-services-prompt/team-services-pr
   styleUrls: ['./krathseis.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 
-  animations: [
+ /* animations: [
     trigger('buttonAnimation', [
       state('collapsed', style({
         width: '80px',  // replace with the initial width of the button
@@ -38,7 +38,7 @@ import { TeamServicesPromptPage } from '../team-services-prompt/team-services-pr
       transition('void => *', animate('300ms ease-out')),
       transition('* => void', animate('300ms ease-in'))
     ]),
-  ]
+  ]*/
 })
 export class KrathseisPage implements OnInit {
   token: any;
@@ -286,7 +286,10 @@ export class KrathseisPage implements OnInit {
     this.counter = 0;
     event.target.complete();
   }
-
+  trackByFn(index: number, item: any): any {
+    return item[0]; // Assuming item[0] is a unique identifier
+  }
+  
 
   getKrathseis() {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {

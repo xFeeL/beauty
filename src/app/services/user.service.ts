@@ -1739,12 +1739,6 @@ export class UserService {
 
 
 
-  getServiceDescription(serviceId: string): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-service-description?serviceId=" + serviceId, { headers: this.getHeaders(), withCredentials: true }).pipe(
-      catchError(error => this.handleError(error))
-    );
-  }
-
   getEmployeesOfExpert(): Observable<any> {
     return this.http.get(beautyAuthenticated_API_URL + "get-employees-of-expert", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))

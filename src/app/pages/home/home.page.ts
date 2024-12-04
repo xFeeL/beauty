@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonPopover, ModalController, NavController, Platform } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
@@ -30,7 +30,7 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import { PopoverController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
 import elLocale from '@fullcalendar/core/locales/el';
-import { Subscription } from 'rxjs';
+import { interval, Subject, Subscription, takeUntil } from 'rxjs';
 import { ThemeService } from 'src/app/services/theme.service';
 import { TeamServicesPromptPage } from '../team-services-prompt/team-services-prompt.page';
 import { NotificationPromptPage } from '../notification-prompt/notification-prompt.page';
@@ -60,6 +60,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 })
 export class HomePage implements OnInit {
+  private mouseMoveListener!: () => void;
+  private destroy$ = new Subject<void>();
+
+  
   lineChartLabels: string[] = [];
   isListView = false;
   public lineChartType: ChartType = 'line';
@@ -107,10 +111,15 @@ export class HomePage implements OnInit {
   private hasNewNotificationsSubscription: Subscription;
   hasNewNotifications: boolean = false;
   fullCalendarWidth: string = "auto";
-
-  constructor( private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+  private timerSubscription: Subscription;
+  
+  constructor(     private renderer: Renderer2,private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
-    setInterval(() => this.checkAndRun(), 1000);
+    this.timerSubscription = interval(60000) // 60,000 ms = 1 minute
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(() => {
+      this.checkAndRun();
+    });
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
       if (newAppointment) {
         // Handle the new appointment logic here
@@ -138,6 +147,9 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => {
+      this.handleMouseEnter(event);
+    });
     this.notificationPromptPWA()
     this.checkScreenWidth();
     this.resizeListener = this.platform.resize.subscribe(() => {
@@ -236,6 +248,12 @@ export class HomePage implements OnInit {
 
 
   ngOnDestroy() {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
+
     // Cleanup the event listener when the component is destroyed
     if (this.resizeListener) {
       this.resizeListener();
@@ -384,6 +402,7 @@ export class HomePage implements OnInit {
     },
     events: [],  // Initialize with an empty array
     eventLongPressDelay: 1000,
+    
     resources: [],
     headerToolbar: false,
     weekends: true,
@@ -392,7 +411,7 @@ export class HomePage implements OnInit {
     height: 'auto',
     stickyHeaderDates: true,
     locale: elLocale,  // Use the imported locale here
-    slotDuration: '00:15:00',
+    slotDuration: '00:10:00',
     slotLabelInterval: { minutes: 30 },
     slotLabelFormat: { hour: 'numeric', minute: '2-digit' },
     slotMinTime: '00:00',  // Will be dynamically updated
@@ -405,23 +424,80 @@ export class HomePage implements OnInit {
     dayHeaderContent: this.dayHeaderContent.bind(this),
     resourceLabelContent: this.getResourceLabelContent.bind(this),
     eventContent: this.eventContent.bind(this),
+    //eventResize: this.handleEventResize.bind(this),
   };
 
 
   eventContent(arg: any) {
-    let timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
-
-    // Check if the event status is pending
-    if (arg.event.extendedProps.status === 'pending') {
-      // Add a striped background
-      timeAndTitle = `<div class="event-hover" style="color: black; font-size:12px; font-weight:600;border-left:3.5px solid ${arg?.borderColor}; height:100%; padding:5px; position:relative; z-index:-1; background-image: linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1) 75%, transparent 75%, transparent); background-size: 20px 20px;">${arg.event.title}<br><p class="event-hover" style="margin-top: 5px;font-size:1em; font-weight:400">${arg.timeText}</p></div>`;
-    }
-
-    document.body.addEventListener('mousemove', (event) => {
-      this.handleMouseEnter(event, arg.event);
-    });
+    const yphresiaName = arg.event.extendedProps.yphresiaName || '';
+  
+    let timeAndTitle = `
+      <div class="event-container" style="position: relative; padding: 5px; border-left: 3.5px solid ${arg.borderColor}; height: 100%; color: black;">
+        <div class="event-title" style="font-size: 12px; font-weight: 600;">${arg.event.title}</div>
+        <div class="event-service" style="font-size: 11px; font-weight: 400;">${yphresiaName}</div>
+        <div class="event-time" style="font-size: 11px; font-weight: 400;">${arg.timeText}</div>
+        <!--
+        <div class="resize-handle" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 4px; background: gray; border-radius: 2px; cursor: ns-resize;">
+        </div>
+        -->
+      </div>
+    `;
+    
     return { html: timeAndTitle };
   }
+  
+
+  handleEventResize(info: any) {
+    const event = info.event;
+  
+    // Get the employeeAppointmentId from the extendedProps
+    const employeeAppointmentId = event.extendedProps.employeeAppointmentId;
+  
+    // Get the new start and end times
+    const newStart = event.start.toISOString();
+    const newEnd = event.end.toISOString();
+  
+    // Confirm with the user
+    this.alertController.create({
+      header: 'Επιβεβαίωση',
+      message: 'Είστε σίγουρος ότι θέλετε να αλλάξετε το χρονικό διάστημα αυτής της υπηρεσίας;',
+      buttons: [
+        {
+          text: 'Όχι',
+          role: 'cancel',
+          handler: () => {
+            // Revert changes
+            info.revert();
+          }
+        },
+        {
+          text: 'Ναι',
+          handler: () => {
+            // Save changes to backend
+           /* this.userService.updateEmployeeAppointment(
+              employeeAppointmentId,
+              newStart,
+              newEnd
+            ).subscribe(
+              response => {
+                this.getAppointmentsOfRange(this.startDate, this.endDate);
+                this.userService.presentToast("Η υπηρεσία ενημερώθηκε επιτυχώς!", "success");
+              },
+              error => {
+                this.userService.presentToast("Σφάλμα κατά την ενημέρωση της υπηρεσίας.", "danger");
+                this.getAppointmentsOfRange(this.startDate, this.endDate);
+              }
+            );*/
+          }
+        }
+      ]
+    }).then(alert => {
+      alert.present();
+    });
+  }
+  
+  
+  
 
   dayHeaderContent(arg: any) {
     const date = arg.date;
@@ -450,7 +526,7 @@ export class HomePage implements OnInit {
 
 
 
-  handleMouseEnter(event: MouseEvent, calendarEvent: any) {
+  handleMouseEnter(event: MouseEvent) {
 
     const target = event.target as HTMLElement;
     if (this.calendarContainer.nativeElement.contains(event.target)) {
@@ -808,17 +884,19 @@ export class HomePage implements OnInit {
 
   changeAgendaDuration(employees_length: number) {
     if (this.calendarOptions.views && this.calendarOptions.views['resourceTimeGridWeek']) {
-      if (employees_length <= 2) {
-        this.calendarDaysLength = 4
+      /*if (employees_length <= 2) {
+        this.calendarDaysLength = 1
 
       } else if (employees_length <= 3) {
-        this.calendarDaysLength = 3
+        this.calendarDaysLength = 1
 
       } else {
-        this.calendarDaysLength = 2
+        this.calendarDaysLength = 1
 
 
-      }
+      }*/
+        this.calendarDaysLength = 1
+
       if (this.isMobile) {
         this.calendarDaysLength = 1
         if (employees_length <= 2) {
@@ -960,6 +1038,7 @@ export class HomePage implements OnInit {
     }
   }
 
+
   transformToEventInput(data: any[]): EventInput[] {
     return data.map(appointment => {
       const resource = this.calendarComponent.getApi().getResourceById(appointment.resourceId);
@@ -976,13 +1055,16 @@ export class HomePage implements OnInit {
         borderColor: borderColor,  // Use resource border color
         resourceIds: [appointment.resourceId],  // Ensure this is an array
         extendedProps: {
-          employeeAppointmentId: appointment.employeeAppointmentId, // Add employeeAppointmentId as an extra property,
+          appointmentId: appointment.appointmentId, // Keep for reference
+          employeeAppointmentId: appointment.employeeAppointmentId,
           yphresiaId: appointment.yphresiaId,
-          status: appointment.status // Include the status in the extendedProps
+          yphresiaName: appointment.yphresiaName, // Add yphresiaName here
+          status: appointment.status
         }
       };
     });
   }
+  
 
 
 

@@ -79,8 +79,8 @@
             </ion-col>
 
             <div #calendarContainer class="calendar-container" >
-              <full-calendar class="full-calendar ion-margin-start" #calendar [options]="calendarOptions"
-                [events]="eventsPromise | async"></full-calendar>
+              <full-calendar class="full-calendar ion-margin-start" #calendar [options]="calendarOptions" 
+                [events]="eventsPromise | async"></full-calendar> <!--(eventResize)="handleEventResize($event)"-->
             </div>
           </ion-row>
 

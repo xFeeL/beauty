@@ -85,8 +85,7 @@
             </ion-row>
           </ion-grid> </ion-item> <ion-list class="ion-no-padding backgroundGrid">
           <ion-grid>
-            <ng-container *ngFor="let krathsh of krathseis; let i = index">
-
+            <ng-container *ngFor="let krathsh of krathseis; let i = index; trackBy: trackByFn">
               <ion-chip
                 *ngIf="mode === 'upcoming' && (i === 0 || (krathsh[3] | dateFormat) !== (krathseis[i-1][3] | dateFormat))"
                 color="primary" class=" date-chip ion-margin-top">
@@ -119,12 +118,12 @@
 
                   <ion-button *ngIf="!isMobile" class="rounded-btn align-right"
                     [ngClass]="{'expanded': krathsh[5]=='checked_in'}"
-                    [@buttonAnimation]="krathsh[5]=='true' ? 'expanded' : 'collapsed'"
+                    
                     [fill]="krathsh[5]=='true' ? 'solid' : 'outline'" size="small"
                     [class.green-border]="krathsh[5]!='true'" [color]="krathsh[5]=='true'?'success':'medium'"
                     (click)="checkIn(krathsh); $event.stopPropagation();"
                     style="text-transform: none; border-radius: 100px !important;">
-                    <ion-icon *ngIf="krathsh[5]=='true'" [@checkmarkAnimation] name="checkmark-outline"
+                    <ion-icon *ngIf="krathsh[5]=='true'"  name="checkmark-outline"
                       style="padding-right: 10px;"></ion-icon>
                     Έφτασε
                   </ion-button>

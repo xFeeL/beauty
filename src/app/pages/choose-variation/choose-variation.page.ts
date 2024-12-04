@@ -27,11 +27,7 @@ export class ChooseVariationPage implements OnInit {
       },err=>{
 
       })
-      this.userService.getServiceDescription(this.serviceId).subscribe(data=>{
-        this.serviceDescription=data.description
-      },err=>{
-
-      })
+  
   }
 
 

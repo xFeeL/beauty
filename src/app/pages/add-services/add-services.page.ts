@@ -315,6 +315,7 @@ export class AddServicesPage implements OnInit {
 
 
   saveServices() {
+    console.log(this.selectedServicesAndPackages)
     this.modalController.dismiss(this.selectedServicesAndPackages);
     this._cd.markForCheck(); // Add this line
   }

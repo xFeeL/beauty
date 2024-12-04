@@ -13,7 +13,7 @@ import { TeamServicesPromptPage } from '../team-services-prompt/team-services-pr
   selector: 'app-new-krathsh',
   templateUrl: './new-krathsh.page.html',
   styleUrls: ['./new-krathsh.page.scss'],
-  animations: [
+ /* animations: [
     trigger('moveToBottom', [
       state('void', style({ transform: 'translateY(-50px)', opacity: 0 })),
       state('*', style({ transform: 'translateY(0)', opacity: 1 })),
@@ -24,7 +24,7 @@ import { TeamServicesPromptPage } from '../team-services-prompt/team-services-pr
         animate('300ms ease-in')
       ]),
     ]),
-  ],
+  ],*/
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
@@ -428,12 +428,34 @@ validateEmail(email:any) {
         this.isAddingNewClient = false;
         this.saveButtonEnabled = true
         this._cd.markForCheck(); // Add this line
-      }, err => {
-        this.userService.presentToast("Κάτι πήγε στραβά.", "danger")
-        this._cd.markForCheck(); // Add this line
-      })
-    }
+      },err => {
+        // Extract the error code from the back-end response
+        const errorMessage = err.error.error;
+    
+        // Handle specific error messages
+        switch (errorMessage) {
+            case 'invalid_name':
+                this.userService.presentToast("Το όνομα δεν είναι έγκυρο.", "danger");
+                break;
+            case 'invalid_surname':
+                this.userService.presentToast("Το επώνυμο δεν είναι έγκυρο.", "danger");
+                break;
+            case 'invalid_phone':
+                this.userService.presentToast("Ο αριθμός τηλεφώνου δεν είναι έγκυρος.", "danger");
+                break;
+            case 'invalid_email':
+                this.userService.presentToast("Η διεύθυνση email δεν είναι έγκυρη.", "danger");
+                break;
+          
+            default:
+                this.userService.presentToast("Κάτι πήγε στραβά.", "danger");
+        }
+        this._cd.markForCheck();
+    });
+    
   }
+ 
+}
 
   selectClient(suggestion: any) {
     this.selectedClient = suggestion.name;
