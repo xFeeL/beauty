@@ -20,8 +20,8 @@ export class AddScheduleExceptionPage implements OnInit {
     this.firstDateTime = currentDate.toISOString(); // Set the initial value to the current date and time
     this.endDateTime = this.firstDateTime
     const currentYear = currentDate.getFullYear();
-    this.maxDate = `${currentYear}-12-31T23:59`;
-    this.minDate = `${currentYear}-01-01T00:00`;
+    this.maxDate = `2099-12-31T23:59`;
+    this.minDate = `2010-01-01T00:00`;
   }
 
 
