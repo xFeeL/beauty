@@ -327,7 +327,7 @@ async deleteEmployee(employee: any) {
       // Handle error here
     });
 
-    this.userService.getWrario().subscribe(data => {
+    /*this.userService.getWrarioGeneralExceptions().subscribe(data => {
       const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
       const dayNames = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή'];
 
@@ -344,7 +344,7 @@ async deleteEmployee(employee: any) {
       });
 
     }, err => {
-    });
+    });*/
 
   }
 

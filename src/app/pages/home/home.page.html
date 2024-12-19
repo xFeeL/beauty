@@ -61,7 +61,7 @@
                 </div>
                 <ion-popover trigger="open-popover1" class="custom-datetime" cssClass="width-80 custom-popover">
                   <ng-template>
-                    <ion-datetime locale="el-GR" presentation="date" [(ngModel)]="dateExample" class="custom-datetime"
+                    <ion-datetime max="2050-12-31" locale="el-GR" presentation="date" [(ngModel)]="dateExample" class="custom-datetime"
                       (ionChange)="onDateSelected($event)" size="cover"></ion-datetime>
                   </ng-template>
                 </ion-popover>

@@ -1,8 +1,9 @@
-<ion-header>
+<!-- src/app/pages/add-person/add-person.page.html -->
+<ion-header [translucent]="true" class="ion-margin-bottom">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="light" (click)="goBack()" slot="start" fill="clear">
-        <ion-icon name="arrow-back"></ion-icon>
+      <ion-button color="light" (click)="goBack()" fill="clear">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title color="light" *ngIf="!isEditing">Νέο Άτομο</ion-title>
@@ -11,16 +12,19 @@
 </ion-header>
 
 <ion-content class="background">
-  <ion-grid class="ion-margin-top">
+  <ion-grid>
+    <!-- Avatar and Photo Upload -->
     <ion-row class="ion-justify-content-center ion-margin">
       <input #_fileInput type="file" (change)="openCropperDialog(getFileUrl(_fileInput))" accept="image/png, image/jpg, image/jpeg" hidden>
       <ion-avatar>
         <ion-img [src]="(image === 'default' ? '../../../assets/icon/default-profile.png' : image)"></ion-img>
       </ion-avatar>
     </ion-row>
-    <ion-row class="ion-justify-content-center ion-margin ">
+    <ion-row class="ion-justify-content-center ion-margin">
       <ion-button fill="outline" class="capsOff" (click)="presentActionSheet()">Αλλαγή Φωτογραφίας</ion-button>
     </ion-row>
+
+    <!-- Person Details -->
     <ion-row class="ion-justify-content-center">
       <ion-col size="6" size-lg="5">
         <mat-form-field appearance="fill" class="form-field">
@@ -37,48 +41,33 @@
         </mat-form-field>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="!onboarding">
-      <ion-grid>
-        <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
-          <ion-col size-xl="10" class="ion-justify-content-center ion-no-padding">
-            <div class="flex-container">
-              <mat-form-field appearance="fill" (click)="handleClick()" class="form-field">
-                <mat-label>Εξαιρέσεις ωραρίου ατόμου</mat-label>
-                <mat-select #mySelect [formControl]="daysControl" multiple>
-                  <div class="special-action" (click)="openDateTimePicker()">
-                    <mat-icon>add</mat-icon> Προσθήκη ημερομηνίας / ώρας
-                  </div>
-                  <mat-option *ngFor="let exception of scheduleExceptions" [value]="exception" class="ion-margin-bottom">
-                    {{ exception.formatted }} ({{ exception.repeat }})
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-icon class="ion-margin-bottom blue-icon" #tooltip="matTooltip" (click)="tooltip.toggle()" matTooltipPosition="above" matTooltip="Με τις εξαιρέσεις ωραρίου μπορείτε να ορίσετε ημέρες και ώρες που το μέλος της ομάδας σας δεν εργάζεται.">help_outline</mat-icon>
-            </div>
-            <ion-modal #dateTimePop size="auto" side="top" alignment="top">
-              <ng-template></ng-template>
-            </ion-modal>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-row>
+
+    <!-- Segmented Control for Schedule and Exceptions -->
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" size-lg="10">
-        <div class="toggle-note-container">
-          <ion-toggle class="ion-padding-top" [enableOnOffLabels]="true" [(ngModel)]="customSchedule"></ion-toggle>
-          <div class="notes ion-padding-top">
-            <ion-note color="medium" *ngIf="!customSchedule">Ίδιο ωράριο με την επιχείρηση</ion-note>
-            <ion-note color="medium" *ngIf="customSchedule">Διαφορετικό ωράριο από την επιχείρηση</ion-note>
-          </div>
-        </div>
-        <ion-list class="scrollable-list ion-margin-top ion-no-padding rad" *ngIf="customSchedule">
+        <ion-segment [(ngModel)]="selectedSegment" color="primary" mode="ios">
+          <ion-segment-button value="schedule">
+            <ion-label>Ωράριο</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="exceptions">
+            <ion-label>Εξαιρέσεις/Άδειες</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+
+    <!-- Schedule Segment -->
+    <ion-row *ngIf="selectedSegment === 'schedule'" class="ion-justify-content-center ion-margin-top">
+      <ion-col size="12" size-lg="10">
+        <!-- Existing Schedule UI -->
+        <ion-list class="scrollable-list ion-no-padding rad">
           <div *ngFor="let day of days">
             <ion-item lines="none">
               <ion-label>{{day.name}}</ion-label>
               <ion-toggle color="success" [checked]="day.open" (ionChange)="onDayToggle(day)"></ion-toggle>
             </ion-item>
             <div [@openClose]="day.open ? 'open' : 'closed'" class="time-selection">
-              <ion-grid class="ion-margin-start  w100">
+              <ion-grid class="ion-margin-start w100">
                 <ion-row *ngFor="let timeInterval of day.timeIntervals; let i = index">
                   <ion-col size="5">
                     <ion-select class="smaller-font" label="Ανοίγει στις" label-placement="stacked" interface="popover" [(ngModel)]="timeInterval.start" (ionChange)="onStartTimeChange(timeInterval.start, timeInterval, day)">
@@ -101,8 +90,43 @@
         </ion-list>
       </ion-col>
     </ion-row>
+
+    <!-- Exceptions/Leaves Segment -->
+    <ion-row *ngIf="selectedSegment === 'exceptions'" class="ion-justify-content-center ion-margin-top">
+      <ion-col size="12" size-lg="10">
+        <ion-card class="rad ion-no-margin">
+          <ion-card-content>
+            <ion-button color="primary" class="ion-margin capsoff" (click)="openAddExceptionModal()">
+              <ion-icon color="light" slot="start" name="add-circle-outline"></ion-icon>
+              <ion-text color="light">Προσθήκη Εξαίρεσης/Άδειας</ion-text>
+            </ion-button>
+            <!-- Exceptions List -->
+            <ion-list lines="full" class="ion-no-padding">
+              <ion-item class="cursor" *ngFor="let exception of scheduleExceptions; let i = index" (click)="editException(exception, i)">
+                <ion-icon slot="start" name="alert-circle-outline" [color]="exception.status === 'Μη Διαθέσιμο' ? 'danger' : 'success'"></ion-icon>
+                <ion-label>
+                  <h2>{{ exception.formatted }}</h2>
+                  <p>Κατάσταση: {{ exception.status }}</p>
+                  <p>Επανάληψη: {{ exception.repeat }}</p>
+                </ion-label>
+                <ion-button
+                  fill="clear"
+                  color="danger"
+                  slot="end"
+                  (click)="deleteException(i)"> 
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>
+
 <ion-footer>
-  <ion-button color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()"><ion-text color="light"> Αποθήκευση ατόμου</ion-text></ion-button>
+  <ion-button color="primary" class="ion-no-margin capsoff" expand="block" (click)="confirm()" [disabled]="disabledSaveButton()">
+    <ion-text color="light"> Αποθήκευση ατόμου</ion-text>
+  </ion-button>
 </ion-footer>

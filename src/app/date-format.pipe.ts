@@ -7,7 +7,7 @@ import * as moment from 'moment';
 export class DateFormatPipe implements PipeTransform {
 
   transform(value: string, format: string = 'D MMM, YYYY'): string {
-    return moment.utc(value, 'Do MMM, h:mm a', 'el').format(format);
+    return moment.utc(value, 'Do MMM YYYY, h:mm a', 'el').format(format);
   }
 
 }

@@ -1,0 +1,73 @@
+<!-- src/app/pages/closures/closures.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="goBack()">
+        <ion-icon name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Περίοδοι κλειστής επιχείρησης</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <ion-grid>
+    <!-- Descriptive Section -->
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col size-xl="12">
+        <ion-card>
+          <ion-card-header>
+            <div class="ion-flex ion-align-items-center ion-justify-content-center">
+              <ion-title size="small" class="ion-no-padding"><ion-icon name="information-circle-outline" color="primary" class="info-icon"></ion-icon>
+                Διαχείριση Εξαιρέσεων</ion-title>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <p>
+              Διαχειριστείτε τις περιόδους κατά τις οποίες η επιχείρηση σας είναι κλειστή. Προσθέστε, δείτε και αφαιρέστε εξαιρέσεις από το κανονικό ωράριο λειτουργίας.
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Exceptions List -->
+    <ion-row class="ion-justify-content-center ion-text-center ion-margin-top">
+      <ion-col size-xl="12" class="ion-justify-content-center">
+        <ion-button color="primary" class="ion-margin capsoff" (click)="openAddExceptionModal()">
+          <ion-icon color="light" slot="start" name="add-circle-outline"></ion-icon>
+          <ion-text color="light">Προσθήκη Εξαίρεσης</ion-text>
+        </ion-button>
+        <ion-list lines="full" class="ion-no-padding">
+          <ion-item class="cursor" *ngFor="let exception of scheduleExceptions; let i = index" (click)="editException(exception, i)">
+            <ion-icon slot="start" name="alert-circle-outline" [color]="exception.status === 'Κλειστό' ? 'danger' : 'success'"></ion-icon>
+            <ion-label>
+              <h2>{{ exception.formatted }}</h2>
+              <p>Κατάσταση: {{ exception.status }}</p>
+              <p>Επανάληψη: {{ exception.repeat }}</p>
+            </ion-label>
+          
+            <ion-button
+              fill="clear"
+              color="danger"
+              slot="end"
+              (click)="confirmDeletion(i, $event)"> 
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+          
+          
+         
+          
+          
+          
+          
+        </ion-list>
+
+        <!-- Add Exception Button -->
+     
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+

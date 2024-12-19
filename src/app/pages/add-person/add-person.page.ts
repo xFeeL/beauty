@@ -1,3 +1,4 @@
+// src/app/pages/add-person/add-person.page.ts
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, ModalController, NavParams } from '@ionic/angular';
@@ -47,10 +48,9 @@ export class AddPersonPage implements OnInit {
     { name: 'Σάββατο', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] },
     { name: 'Κυριακή', open: false, timeIntervals: [{ start: '09:00', end: '17:00' }] }
   ];
-  personName = ""
-  personSurName = ""
+  personName = "";
+  personSurName = "";
 
-  customSchedule = false;
   businessSchedule: any;
   personSchedule: any;
   person: any;
@@ -58,12 +58,11 @@ export class AddPersonPage implements OnInit {
   selectedImage = { imageLink: '', selected: false };
   currentAlbumPhotos: any;
   photos: { imageLink: string, selected: boolean }[] = [];
-
   togglesCounter: number = 0;
   @ViewChild('_fileInput') _fileInput: any;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
   cropped?: string;
-  image: string | undefined = BASE64_STRING
+  image: string | undefined = BASE64_STRING;
   new_image: string = "false";
   onboarding: boolean = false;
   scheduleExceptions: any[] = [];
@@ -71,34 +70,44 @@ export class AddPersonPage implements OnInit {
   isEditing: any = false;
   addedExceptions: boolean = false;
   defaultImage = true;
-  isMobile=false
-  constructor(private alertController: AlertController, private _cd: ChangeDetectorRef, private _dialog: LyDialog, private userService: UserService, private modalController: ModalController, private navParams: NavParams, private actionSheetController: ActionSheetController) {
+  isMobile = false;
+
+  // Property for segment control
+  selectedSegment: string = 'schedule';
+  personId: any="";
+
+  constructor(
+    private alertController: AlertController,
+    private _cd: ChangeDetectorRef,
+    private _dialog: LyDialog,
+    private userService: UserService,
+    private modalController: ModalController,
+    private navParams: NavParams,
+    private actionSheetController: ActionSheetController
+  ) {
     for (let i = 0; i < 24; i++) {
       this.hours.push(this.formatHour(i, '00'));
       this.hours.push(this.formatHour(i, '30'));
     }
     this.hours.push(this.formatHour(23, '59'));
-    this.isMobile=this.userService.isMobile();
+    this.isMobile = this.userService.isMobile();
   }
 
   ngOnInit() {
-
+    // Initialization logic if needed
   }
 
   ionViewWillEnter() {
-    console.log(this.navParams.get('defaultImage'))
-    if(this.navParams.get('defaultImage')==undefined){
-      console.log('mpika')
-
-      this.defaultImage=true
-    }else{
-      this.defaultImage = this.navParams.get('defaultImage');;
-      console.log('mpika2')
-
+    console.log(this.navParams.get('defaultImage'));
+    if(this.navParams.get('defaultImage') === undefined){
+      console.log('Default image is undefined, setting to true');
+      this.defaultImage = true;
+    } else{
+      this.defaultImage = this.navParams.get('defaultImage');
+      console.log('Default image set from navParams:', this.defaultImage);
     }
     this.businessSchedule = this.navParams.get('data');
     this.personSchedule = this.navParams.get('personSchedule');
-    this.customSchedule = this.navParams.get('toggled');
     this.personName = this.navParams.get('personName'); // Get the name of the person
     this.onboarding = this.navParams.get('onboarding');
     this.isEditing = this.navParams.get('isEditing');
@@ -110,26 +119,17 @@ export class AddPersonPage implements OnInit {
     if (!this.onboarding) {
       if (this.navParams.get('scheduleExceptions') != undefined) {
         this.scheduleExceptions = this.navParams.get('scheduleExceptions');
-        
-        
-        this.scheduleExceptions = this.scheduleExceptions.map(this.formatException);
-        
-        
-        this.daysControl.setValue(this.scheduleExceptions); // Set all exceptions as selected
+        this.scheduleExceptions = this.scheduleExceptions.map(this.formatException.bind(this)); // Ensure correct context
       } else {
         this.scheduleExceptions = [];
       }
+      this.personId=this.navParams.get('personId')
     }
   
-    if (this.customSchedule) {
-      this.applypersonSchedule();
-    }
+    this.applypersonSchedule();
     
     this._cd.detectChanges();
   }
-  
-
-
 
   applypersonSchedule() {
     // Transform personSchedule to a dictionary for easier access
@@ -154,9 +154,6 @@ export class AddPersonPage implements OnInit {
     });
   }
 
-
-
-
   formatHour(hour: number, minutes: string): string {
     return this.pad(hour) + ':' + minutes;
   }
@@ -165,12 +162,9 @@ export class AddPersonPage implements OnInit {
     day.timeIntervals.splice(index, 1);
   }
 
-
   pad(num: number): string {
     return num < 10 ? '0' + num : num.toString();
   }
-
-
 
   dismiss() {
     this.modalController.dismiss();
@@ -178,14 +172,13 @@ export class AddPersonPage implements OnInit {
 
   addTimeInterval(day: any) {
     const previousInterval = day.timeIntervals[day.timeIntervals.length - 1];
-    const defaultStart = previousInterval ? previousInterval.end : '9:00';
+    const defaultStart = previousInterval ? previousInterval.end : '09:00';
     const defaultEnd = previousInterval ? this.addHours(previousInterval.end, 2) : '11:00';
 
     day.timeIntervals.push({ start: defaultStart, end: defaultEnd });
   }
 
   public scheduleToReturn: any;
-
 
   async confirm() {
     this.showErrors = true; // Set the flag to true when trying to save
@@ -195,25 +188,21 @@ export class AddPersonPage implements OnInit {
       return;
     }
 
-    this.scheduleToReturn = this.customSchedule ? this.days : this.businessSchedule;
+    this.scheduleToReturn = this.days;
 
     let deformattedSelectedExceptions = [];
     if (!this.onboarding) {
-      // Fetch only the selected exceptions
-      const selectedExceptions = this.daysControl.value;
+      // Use scheduleExceptions from Exceptions UI
+      const selectedExceptions = this.scheduleExceptions;
 
-      // Deformat only these selected exceptions
-      
-      
       if (selectedExceptions != null) {
         deformattedSelectedExceptions = this.deformatExceptions(selectedExceptions);
-
       }
     }
 
     if (!this.onboarding) {
       let body = {
-        id: this.navParams.get('personId'),
+        id:  this.personId,
         name: this.personName,
         surname: this.personSurName,
         image: (() => {
@@ -233,48 +222,26 @@ export class AddPersonPage implements OnInit {
           return 'default';
         })(),
         exceptions: deformattedSelectedExceptions,
-        schedule: this.customSchedule
-          ? this.scheduleToReturn
+        schedule:  this.scheduleToReturn
               .filter((day: { open: any; }) => day.open)
               .map(({ name, timeIntervals }: { name: string; timeIntervals: any[] }) => ({
                 day: name,
                 intervals: timeIntervals.map((interval: { start: any; end: any; }) => `${interval.start}-${interval.end}`)
               }))
-          : this.businessSchedule.map((day: { name: any; timeIntervals: any[]; }) => {
-              const mappedDay = day.name;
-              return {
-                day: mappedDay,
-                intervals: day.timeIntervals.map(interval => `${interval.start}-${interval.end}`),
-              };
-            }),
+        
       };
       
-      
-      this.saveEmployee(body)
+      this.saveEmployee(body);
     } else {
-      if (this.customSchedule) {
-        await this.modalController.dismiss({
-          'personName': this.personName,
-          'personSurName': this.personSurName,
-          'scheduleExceptions': deformattedSelectedExceptions,
-          'days': this.scheduleToReturn,
-          'image': this.image,
-          'defaultImage': this.defaultImage
-        });
-      } else {
-        await this.modalController.dismiss({
-          'personName': this.personName,
-          'personSurName': this.personSurName,
-          'scheduleExceptions': deformattedSelectedExceptions,
-          'days': this.businessSchedule,
-          'image': this.image,
-          'defaultImage': this.defaultImage
-
-        });
-      }
+      await this.modalController.dismiss({
+        'personName': this.personName,
+        'personSurName': this.personSurName,
+        'scheduleExceptions': deformattedSelectedExceptions,
+        'days': this.scheduleToReturn,
+        'image': this.image,
+        'defaultImage': this.defaultImage
+      });
     }
-
-
   }
 
   dismissModalAfterEdit() {
@@ -287,11 +254,9 @@ export class AddPersonPage implements OnInit {
   saveEmployee(body: any) {
     this.userService.saveEmployee(body, !this.addedExceptions, false, false).subscribe(data => {
       this.userService.presentToast("Το άτομο αποθηκεύτηκε επιτυχώς.", "success");
-      this.dismissModalAfterEdit()
+      this.dismissModalAfterEdit();
     }, err => {
       if (err.status === 409) {
-        
-        
         this.presentChoiceAlert(err.error, body);
       } else {
         this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -310,10 +275,8 @@ export class AddPersonPage implements OnInit {
       handlerFn = () => {
         this.userService.saveEmployee(body, true, true, false).subscribe(
           data => {
-            this.dismissModalAfterEdit()
-
+            this.dismissModalAfterEdit();
             this.userService.presentToast("Το άτομο αποθηκεύτηκε επιτυχώς.", "success");
-
           },
           err => {
             this.userService.presentToast("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.", "danger");
@@ -326,8 +289,7 @@ export class AddPersonPage implements OnInit {
       handlerFn = () => {
         this.userService.saveEmployee(body, true, false, true).subscribe(
           data => {
-            this.dismissModalAfterEdit()
-
+            this.dismissModalAfterEdit();
             this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς.", "success");
           },
           err => {
@@ -350,8 +312,7 @@ export class AddPersonPage implements OnInit {
           handler: () => {
             this.userService.saveEmployee(body, true, false, false).subscribe(
               data => {
-                this.dismissModalAfterEdit()
-
+                this.dismissModalAfterEdit();
                 this.userService.presentToast("Η ομάδα αποθηκεύτηκε επιτυχώς χωρίς καμία ακύρωση.", "success");
               },
               err => {
@@ -372,9 +333,6 @@ export class AddPersonPage implements OnInit {
 
     await alert.present();
   }
-
-
-
 
   goBack() {
     this.modalController.dismiss();
@@ -402,7 +360,6 @@ export class AddPersonPage implements OnInit {
         }
       }
 
-
       // If this is not the first day toggled and the day has no intervals yet, copy the template to the day
       if (this.firstDayToggled !== day && day.timeIntervals.length === 0) {
         day.timeIntervals = JSON.parse(JSON.stringify(this.firstDayTemplate)); // Deep copy
@@ -411,8 +368,6 @@ export class AddPersonPage implements OnInit {
   }
 
   onStartTimeChange(selectedStartTime: string, timeInterval: any, day: any) {
-    
-
     const parsedSelectedStartTime = moment(selectedStartTime, 'HH:mm');
 
     for (let previousInterval of day.timeIntervals) {
@@ -424,13 +379,11 @@ export class AddPersonPage implements OnInit {
       const parsedPreviousEndTime = moment(previousInterval.end, 'HH:mm');
 
       if (parsedSelectedStartTime.isBetween(parsedPreviousStartTime, parsedPreviousEndTime, undefined, '[]')) {
-        this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger")
-        
+        this.userService.presentToast("Η ώρα έναρξης δεν μπορεί να είναι μέσα στο διάστημα άλλων χρονικών διαστημάτων της ίδιας μέρας", "danger");
 
         new Promise(resolve => setTimeout(resolve, 0)).then(() => {
           timeInterval.start = this.addHours(previousInterval.end, 1); // Suggesting next available time slot after last interval's end time
           selectedStartTime = timeInterval.start;
-          
         });
 
         break;
@@ -439,36 +392,29 @@ export class AddPersonPage implements OnInit {
       }
     }
 
-    if (this.firstDayToggled.name == day.name) {
-      
+    if (this.firstDayToggled && this.firstDayToggled.name == day.name) {
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
 
-
   onEndTimeChange(selectedEndTime: string, timeInterval: any, day: any) {
-    
-
     const parsedEndTime = moment(selectedEndTime, 'HH:mm');
     const parsedStartTime = moment(timeInterval.start, 'HH:mm');
 
     if (parsedEndTime.isBefore(parsedStartTime)) {
-      this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger")
-      
+      this.userService.presentToast("Η ώρα τερματισμού πρέπει να είναι μετά την ώρα έναρξης", "danger");
 
-      // delay setting the new value until next event loop to give the UI a chance to update
+      // Delay setting the new value until next event loop to give the UI a chance to update
       new Promise(resolve => setTimeout(resolve, 0)).then(() => {
         timeInterval.end = this.addHours(timeInterval.start, 2);
         selectedEndTime = timeInterval.end;
-        
       });
 
     } else {
       timeInterval.end = selectedEndTime; // Only update end time if it's not before start time
     }
 
-    if (this.firstDayToggled.name == day.name) {
-      
+    if (this.firstDayToggled && this.firstDayToggled.name == day.name) {
       this.firstDayTemplate = JSON.parse(JSON.stringify(this.firstDayToggled.timeIntervals)); // Deep copy
     }
   }
@@ -488,17 +434,11 @@ export class AddPersonPage implements OnInit {
         return '23:59';
       }
     } else {
-      
       return '';
     }
   }
 
- 
-
-
-
   openCropperDialog(imageURL: string | undefined) {
-    
     this.cropped = null!;
     this._dialog.open(CropperDialog, {
       data: imageURL,
@@ -507,11 +447,10 @@ export class AddPersonPage implements OnInit {
     }).afterClosed.subscribe((result?: ImgCropperEvent) => {
       if (result) {
         this.cropped = result.dataURL;
-        this.image = this.cropped
+        this.image = this.cropped;
         this._cd.markForCheck();
-        this.new_image = "true"
+        this.new_image = "true";
         this.defaultImage = false;
-
       }
     });
   }
@@ -559,14 +498,12 @@ export class AddPersonPage implements OnInit {
     await actionSheet.present();
   }
 
-
-
   importFromStorage() {
     this._fileInput.nativeElement.click();
   }
 
   importFromCamera() {
-    this.takePicture()
+    this.takePicture();
   }
 
   async takePicture() {
@@ -577,7 +514,7 @@ export class AddPersonPage implements OnInit {
     });
     
     // do something with the captured image
-    this.openCropperDialog(image.webPath)
+    this.openCropperDialog(image.webPath);
   }
 
   getFileUrl(input: HTMLInputElement): string {
@@ -598,8 +535,7 @@ export class AddPersonPage implements OnInit {
     const { data } = await modal.onDidDismiss();
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
-      this.openCropperDialog(this.selectedImage.imageLink)
-      
+      this.openCropperDialog(this.selectedImage.imageLink);
     }
   }
 
@@ -613,11 +549,9 @@ export class AddPersonPage implements OnInit {
     const { data } = await modal.onDidDismiss();
     if (data) {
       this.selectedImage = data.imageSelected; // Update the person's table types with the returned data
-      this.openCropperDialog(this.selectedImage.imageLink)
-      
+      this.openCropperDialog(this.selectedImage.imageLink);
     }
   }
-
 
   handleClick() {
     if (this.scheduleExceptions?.length === 0 || this.scheduleExceptions === null) {
@@ -626,8 +560,6 @@ export class AddPersonPage implements OnInit {
   }
 
   @ViewChild('mySelect') mySelect!: MatSelect;
-
-
 
   async openDateTimePicker() {
     this.mySelect.close();
@@ -646,54 +578,37 @@ export class AddPersonPage implements OnInit {
       const formattedException = this.formatException(data);
       if (this.scheduleExceptions) {
         this.scheduleExceptions.push(formattedException);
-        this.daysControl.setValue(this.scheduleExceptions);
-        this.addedExceptions = true
+        this.addedExceptions = true;
       } else {
         console.error("scheduleExceptions is not initialized");
       }
-
-      
-      
     }
   }
 
-  formatException(exception: { start: moment.MomentInput; end: moment.MomentInput; repeat: boolean }): any {
-    const formattedStart = moment.utc(exception.start).locale('el').format('DD/MM/YY HH:mm');
-    const formattedEnd = moment.utc(exception.end).locale('el').format('DD/MM/YY HH:mm');
+  formatException(exception: any): any {
+    const formattedStart = moment.utc(exception.startDatetime).locale('el').format('DD/MM/YY HH:mm');
+    const formattedEnd = moment.utc(exception.endDatetime).locale('el').format('DD/MM/YY HH:mm');
 
     return {
+      id: exception.id, // Include the exception ID
       formatted: `${formattedStart} - ${formattedEnd}`,
-      originalStart: exception.start,
-      originalEnd: exception.end,
-      repeat: exception.repeat ? "Επαναλαμβανόμενο" : "Μία φορά"
+      status: exception.available ? "Διαθέσιμο" : "Μη Διαθέσιμο",
+      repeat: exception.repeatable ? "Επαναλαμβανόμενο" : "Μία φορά",
+      original: exception // Keep the original exception data
     };
   }
 
-  deformatExceptions(exceptionsArray: Array<{
-    formatted: string,
-    originalStart: moment.MomentInput,
-    originalEnd: moment.MomentInput,
-    repeat: string
-  }>): any[] {
+  deformatExceptions(exceptionsArray: Array<any>): any[] {
     return exceptionsArray.map(exception => {
-      
-
-      const start = exception.originalStart;
-      const end = exception.originalEnd;
-      const repeat = exception.repeat === "Επαναλαμβανόμενο";
-
-      
-      
-      
-
       return {
-        start: start,
-        end: end,
-        repeat: repeat
+        id: exception.id,
+        start: exception.originalStart || exception.original.startDatetime,
+        end: exception.originalEnd || exception.original.endDatetime,
+        isAvailable: exception.status === "Διαθέσιμο",
+        repeat: exception.repeat === "Επαναλαμβανόμενο"
       };
     });
   }
-
 
   disabledSaveButton(): boolean {
     return !this.personName?.trim() || !this.personSurName?.trim();
@@ -708,5 +623,74 @@ export class AddPersonPage implements OnInit {
     }
   }
 
+  /**
+   * Methods for Exceptions/Leaves Segment
+   */
 
+  async openAddExceptionModal() {
+    const modal = await this.modalController.create({
+      component: AddScheduleExceptionPage,
+      componentProps: {
+        objectId: this.personId, // Indicate adding a new exception
+      },
+    });
+  
+    modal.onDidDismiss().then((result: any) => {
+      if (result.data) {
+        const newException = {
+          objectId: this.personId,
+          startDatetime: result.data.start,
+          endDatetime: result.data.end,
+          available: result.data.isAvailable,
+          repeatable: result.data.isRepeatable,
+        };
+        const formattedException = this.formatException(newException);
+        this.scheduleExceptions.push(formattedException);
+        this._cd.markForCheck();
+        this.addedExceptions = true;
+       
+    }});
+  
+    return await modal.present();
+  }
+
+  async editException(exception: any, index: number) {
+    const modal = await this.modalController.create({
+      component: AddScheduleExceptionPage,
+      componentProps: {
+        objectId: exception.id,
+        firstDateTime: exception.original.startDatetime,
+        endDateTime: exception.original.endDatetime,
+        isAvailable: exception.original.available,
+        isRepeatable: exception.original.repeatable,
+      },
+    });
+  
+    modal.onDidDismiss().then((result: any) => {
+      if (result.data) {
+        const updatedException = {
+          id: exception.id, 
+          startDatetime: result.data.start,
+          endDatetime: result.data.end,
+          available: result.data.isAvailable,
+          repeatable: result.data.isRepeatable,
+        };
+        this.scheduleExceptions[index] = this.formatException(updatedException);
+        this._cd.markForCheck();
+        this.addedExceptions = true;
+       
+      }
+    });
+  
+    return await modal.present();
+  }
+
+
+
+  async deleteException(index: number) {
+    this.scheduleExceptions.splice(index, 1);
+    this._cd.markForCheck();
+
+  
+  }
 }

@@ -63,7 +63,7 @@ export class HomePage implements OnInit {
   private mouseMoveListener!: () => void;
   private destroy$ = new Subject<void>();
 
-  
+
   lineChartLabels: string[] = [];
   isListView = false;
   public lineChartType: ChartType = 'line';
@@ -104,7 +104,7 @@ export class HomePage implements OnInit {
   startDate: any;
   endDate: any;
   dateRangeText: string = "";
-  calendarDaysLength: number = 2;
+  calendarDaysLength: number = 1;
   employeeIds: any = "";
   generalScheduleExceptions: any = [];
   private newAppointmentSubscription: Subscription;
@@ -112,14 +112,14 @@ export class HomePage implements OnInit {
   hasNewNotifications: boolean = false;
   fullCalendarWidth: string = "auto";
   private timerSubscription: Subscription;
-  
-  constructor(     private renderer: Renderer2,private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
+
+  constructor(private renderer: Renderer2, private router: Router, private themeService: ThemeService, private alertController: AlertController, private popoverController: PopoverController, private cdr: ChangeDetectorRef, private platform: Platform, private rout: Router, private userService: UserService, private navCtrl: NavController, private modalController: ModalController) {
     this.lastKnownMinute = new Date().getMinutes();
     this.timerSubscription = interval(60000) // 60,000 ms = 1 minute
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(() => {
-      this.checkAndRun();
-    });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkAndRun();
+      });
     this.newAppointmentSubscription = this.userService.refreshAppointment$.subscribe((newAppointment) => {
       if (newAppointment) {
         // Handle the new appointment logic here
@@ -138,10 +138,10 @@ export class HomePage implements OnInit {
   notificationPromptPWA() {
 
 
-    const isIos =this.platform.is('ios');
+    const isIos = this.platform.is('ios');
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
-    if ( isIos && isPWA) {
+    if (isIos && isPWA) {
       this.goToNotificationPrompt()
     }
   }
@@ -178,49 +178,67 @@ export class HomePage implements OnInit {
     }
     this.userService.sseConnect(window.location.toString());
 
-    this.userService.getEmployeesOfExpert().subscribe(
+    // Fetch general exceptions first
+    this.userService.getWrarioGeneralExceptions().subscribe(
       data => {
-        this.employees = data;
-        this.employeeIds = this.employees.map((employee: any) => employee.id).join(',');
-        this.calendarOptions.resources = this.employees.map((employee: any) => {
-          const color = this.getRandomLightColor();
-          return {
-            id: employee.id,
-            title: employee.name + " " + employee.surname[0] + ".",
-            color: color,
-            borderColor: this.darkenColor(color),
-            image: employee.image === "default" ? '../../assets/icon/default-profile.png' : employee.image
-          };
-        });
-        this.changeAgendaDuration(data.length);
-        this.ngAfterViewChecked();
+        console.log('General Exceptions fetched:', data); // Debugging Log
+        this.generalScheduleExceptions = data;
+        this.cdr.markForCheck(); // Update view
 
-        if (!this.startDate) {
-          this.startDate = new Date();
-        }
-        if (!this.endDate) {
-          this.endDate = new Date();
-          this.endDate.setDate(this.startDate.getDate() + this.calendarDaysLength);
-        }
+        // Now fetch employees
+        this.userService.getEmployeesOfExpert().subscribe(
+          employeesData => {
+            console.log('Employees fetched:', employeesData); // Debugging Log
+            this.employees = employeesData;
+            this.employeeIds = this.employees.map((employee: any) => employee.id).join(',');
+            this.calendarOptions.resources = this.employees.map((employee: any) => {
+              const color = this.getRandomLightColor();
+              return {
+                id: employee.id,
+                title: `${employee.name} ${employee.surname[0]}.`,
+                color: color,
+                borderColor: this.darkenColor(color),
+                image: employee.image === "default" ? '../../assets/icon/default-profile.png' : employee.image
+              };
+            });
+            this.changeAgendaDuration(this.employees.length);
+            this.ngAfterViewChecked();
 
-        this.getAppointmentsOfRange(this.startDate, this.endDate);
-        this.calendarComponent.getApi().setOption('locale', 'el');
+            if (!this.startDate) {
+              this.startDate = new Date();
+            }
+            if (!this.endDate) {
+              this.endDate = new Date();
+              this.endDate.setDate(this.startDate.getDate() + this.calendarDaysLength);
+            }
 
-        this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(data2 => {
-          this.addBackgroundEvents(data2);
-          this.updateDateRangeText();
-          this.cdr.markForCheck(); // Add this line
-        });
+            this.getAppointmentsOfRange(this.startDate, this.endDate);
+            this.calendarComponent.getApi().setOption('locale', 'el');
+
+            // Fetch employee working plans after employees are loaded
+            this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(
+              workingPlansData => {
+                console.log('Employee Working Plans fetched:', workingPlansData); // Debugging Log
+                this.addBackgroundEvents(workingPlansData);
+                this.updateDateRangeText();
+                this.cdr.markForCheck();
+              },
+              err => {
+                console.error('Error fetching employee working plans:', err);
+              }
+            );
+          },
+          err => {
+            console.error('Error fetching employees:', err);
+          }
+        );
       },
       err => {
-        console.error(err);
+        console.error('Error fetching general schedule exceptions:', err);
       }
     );
-    this.userService.getWrario().subscribe(data => {
-      this.generalScheduleExceptions = data.exceptions;
-      this.cdr.markForCheck(); // Add this line
-    });
   }
+
 
 
 
@@ -280,16 +298,16 @@ export class HomePage implements OnInit {
 
   }
 
- async goToNotificationPrompt() {
-  const hasAcceptedNotifications = localStorage.getItem('pushNotificationsAccepted');
-  if(!hasAcceptedNotifications){
-    const modal = await this.modalController.create({
-      component: NotificationPromptPage,
-    });
-    return await modal.present();
-  
-  }
-     
+  async goToNotificationPrompt() {
+    const hasAcceptedNotifications = localStorage.getItem('pushNotificationsAccepted');
+    if (!hasAcceptedNotifications) {
+      const modal = await this.modalController.create({
+        component: NotificationPromptPage,
+      });
+      return await modal.present();
+
+    }
+
 
   }
 
@@ -390,6 +408,7 @@ export class HomePage implements OnInit {
   calendarOptions: CalendarOptions = {
     initialView: 'resourceTimeGridWeek',
     datesAboveResources: true,
+ 
     timeZone: 'local',
     plugins: [timeGridPlugin, interactionPlugin, resourceTimeGridPlugin, dayGridPlugin],
     views: {
@@ -402,7 +421,7 @@ export class HomePage implements OnInit {
     },
     events: [],  // Initialize with an empty array
     eventLongPressDelay: 1000,
-    
+
     resources: [],
     headerToolbar: false,
     weekends: true,
@@ -411,7 +430,7 @@ export class HomePage implements OnInit {
     height: 'auto',
     stickyHeaderDates: true,
     locale: elLocale,  // Use the imported locale here
-    slotDuration: '00:10:00',
+    slotDuration: '00:15:00',
     slotLabelInterval: { minutes: 30 },
     slotLabelFormat: { hour: 'numeric', minute: '2-digit' },
     slotMinTime: '00:00',  // Will be dynamically updated
@@ -430,7 +449,7 @@ export class HomePage implements OnInit {
 
   eventContent(arg: any) {
     const yphresiaName = arg.event.extendedProps.yphresiaName || '';
-  
+
     let timeAndTitle = `
       <div class="event-container" style="position: relative; padding: 5px; border-left: 3.5px solid ${arg.borderColor}; height: 100%; color: black;">
         <div class="event-title" style="font-size: 12px; font-weight: 600;">${arg.event.title}</div>
@@ -442,21 +461,21 @@ export class HomePage implements OnInit {
         -->
       </div>
     `;
-    
+
     return { html: timeAndTitle };
   }
-  
+
 
   handleEventResize(info: any) {
     const event = info.event;
-  
+
     // Get the employeeAppointmentId from the extendedProps
     const employeeAppointmentId = event.extendedProps.employeeAppointmentId;
-  
+
     // Get the new start and end times
     const newStart = event.start.toISOString();
     const newEnd = event.end.toISOString();
-  
+
     // Confirm with the user
     this.alertController.create({
       header: 'Επιβεβαίωση',
@@ -474,20 +493,20 @@ export class HomePage implements OnInit {
           text: 'Ναι',
           handler: () => {
             // Save changes to backend
-           /* this.userService.updateEmployeeAppointment(
-              employeeAppointmentId,
-              newStart,
-              newEnd
-            ).subscribe(
-              response => {
-                this.getAppointmentsOfRange(this.startDate, this.endDate);
-                this.userService.presentToast("Η υπηρεσία ενημερώθηκε επιτυχώς!", "success");
-              },
-              error => {
-                this.userService.presentToast("Σφάλμα κατά την ενημέρωση της υπηρεσίας.", "danger");
-                this.getAppointmentsOfRange(this.startDate, this.endDate);
-              }
-            );*/
+            /* this.userService.updateEmployeeAppointment(
+               employeeAppointmentId,
+               newStart,
+               newEnd
+             ).subscribe(
+               response => {
+                 this.getAppointmentsOfRange(this.startDate, this.endDate);
+                 this.userService.presentToast("Η υπηρεσία ενημερώθηκε επιτυχώς!", "success");
+               },
+               error => {
+                 this.userService.presentToast("Σφάλμα κατά την ενημέρωση της υπηρεσίας.", "danger");
+                 this.getAppointmentsOfRange(this.startDate, this.endDate);
+               }
+             );*/
           }
         }
       ]
@@ -495,9 +514,9 @@ export class HomePage implements OnInit {
       alert.present();
     });
   }
-  
-  
-  
+
+
+
 
   dayHeaderContent(arg: any) {
     const date = arg.date;
@@ -895,7 +914,7 @@ export class HomePage implements OnInit {
 
 
       }*/
-        this.calendarDaysLength = 1
+      this.calendarDaysLength = 1
 
       if (this.isMobile) {
         this.calendarDaysLength = 1
@@ -1030,12 +1049,13 @@ export class HomePage implements OnInit {
     const startDay = formatDate(startDate, 'dd', 'el');
     const endDay = formatDate(adjustedEndDate, 'dd', 'el');
     const monthYear = formatDate(adjustedEndDate, 'MMMM yyyy', 'el');
+    this.dateRangeText = `${startDay} ${monthYear}`;
 
-    if (startDay === endDay && formatDate(startDate, 'MMMM yyyy', 'el') === monthYear) {
+    /*if (startDay === endDay && formatDate(startDate, 'MMMM yyyy', 'el') === monthYear) {
       this.dateRangeText = `${startDay} ${monthYear}`;
     } else {
       this.dateRangeText = `${startDay}-${endDay} ${monthYear}`;
-    }
+    }*/
   }
 
 
@@ -1064,7 +1084,7 @@ export class HomePage implements OnInit {
       };
     });
   }
-  
+
 
 
 
@@ -1139,121 +1159,149 @@ export class HomePage implements OnInit {
     return await modal.present();
   }
 
-  addBackgroundEvents(workingPlans: any[]) {
-    const backgroundEvents: EventInput[] = [];
-    let minStartTime = '24:00';
-    let maxEndTime = '00:00';
-    console.log(workingPlans)
-    const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+  // In addBackgroundEvents method, modify the logic:
+addBackgroundEvents(workingPlans: any[]) {
+  const backgroundEvents: EventInput[] = [];
+  const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
 
-    // Get the current background event color from the Ionic CSS variable
-    const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--ion-color-medium').trim();
+  // We will store both available and unavailable intervals.
+  // Ultimately, what matters for min/max time is available intervals.
+  let globalEarliestStart = '24:00';
+  let globalLatestEnd = '00:00';
 
-    workingPlans.forEach(plan => {
-      const resourceId = plan.objectId; // Assuming each working plan has an objectId
-      const daysWithSchedule: { [key: string]: boolean } = {};
+  console.log('--- Add Background Events with Dynamic Min/Max Times ---');
 
-      plan.personSchedule.forEach((schedule: any) => {
-        daysWithSchedule[schedule.day] = true;
-        const unavailableIntervals = this.getUnavailableIntervals(schedule.intervals);
-        unavailableIntervals.forEach((interval: string) => {
-          const [start, end] = interval.split('-');
-          backgroundEvents.push({
-            resourceId: resourceId, // Assign resourceId to each event
-            startTime: start,
-            endTime: end,
-            daysOfWeek: [this.getDayOfWeek(schedule.day)],
-            display: 'background',
-            color: backgroundColor, // Use Ionic CSS variable for color
-            editable: false,
-            extendedProps: {
-              isBackgroundEvent: true // Custom property to indicate background event
-            }
-          });
+  workingPlans.forEach(plan => {
+    const resourceId = plan.objectId;
+    const daysWithSchedule: { [key: string]: boolean } = {};
+    let unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
 
-          // Update minStartTime and maxEndTime based on the available intervals
-          schedule.intervals.forEach((availableInterval: string) => {
-            const [availableStart, availableEnd] = availableInterval.split('-');
-            if (availableStart < minStartTime) {
-              minStartTime = availableStart;
-            }
-            if (availableEnd > maxEndTime) {
-              maxEndTime = availableEnd;
-            }
-          });
-        });
+    console.log(`Processing Working Plan for Employee ID: ${resourceId}`);
+
+    // Step 1: Compute unavailable intervals from the given schedule.
+    plan.personSchedule.forEach((schedule: any) => {
+      const dayName = schedule.day;
+      daysWithSchedule[dayName] = true;
+      const availableIntervals = schedule.intervals; // e.g. ['09:00-17:00']
+
+      console.log(`  Employee Schedule for ${dayName}: Available Intervals - ${availableIntervals.join(', ')}`);
+
+      // Convert available intervals into gaps of unavailability
+      const computedUnavailable = this.getUnavailableIntervals(availableIntervals, dayName);
+      unavailableIntervals = unavailableIntervals.concat(computedUnavailable);
+
+      // Track global earliest start & latest end from available intervals
+      availableIntervals.forEach((interval: { split: (arg0: string) => [any, any]; }) => {
+        const [start, end] = interval.split('-');
+        if (start < globalEarliestStart) globalEarliestStart = start;
+        if (end > globalLatestEnd) globalLatestEnd = end;
       });
+    });
 
-      // Block days not in the schedule
-      daysOfWeek.forEach((day, index) => {
-        if (!daysWithSchedule[day]) {
-          backgroundEvents.push({
-            resourceId: resourceId, // Assign resourceId to each event
-            startTime: '00:00',
-            endTime: '24:00',
-            daysOfWeek: [index],
-            display: 'background',
-            color: backgroundColor, // Use Ionic CSS variable for color
-            editable: false,
-            extendedProps: {
-              isBackgroundEvent: true // Custom property to indicate background event
-            }
-          });
-        }
-      });
+    // Step 2: Apply General Exceptions
+    this.generalScheduleExceptions.forEach((exception: any) => {
+      const start = exception.startDatetime;
+      const end = exception.endDatetime;
+      const isAvailable = exception.available;
 
-      if (plan.exceptions) {
-        plan.exceptions.forEach((exception: any) => {
-          const start = new Date(exception.start);
-          const end = new Date(exception.end);
-          end.setHours(end.getHours()); // Manually add 1 hour to the end time
+      const exceptionStart = new Date(start);
+      const exceptionEnd = new Date(end);
+      const dayOfWeek = exceptionStart.getDay(); // 0=Sun,6=Sat
+      const dayName = daysOfWeek[dayOfWeek];
+      const startTime = exceptionStart.toTimeString().slice(0, 5);
+      const endTime = exceptionEnd.toTimeString().slice(0, 5);
 
-          backgroundEvents.push({
-            resourceId: resourceId, // Assign resourceId to each event
-            start: start.toISOString(),
-            end: end.toISOString(),
-            display: 'background',
-            color: backgroundColor, // Use Ionic CSS variable for color
-            editable: false,
-            extendedProps: {
-              isBackgroundEvent: true // Custom property to indicate background event
-            }
-          });
-        });
+      if (!isAvailable) {
+        // Add to unavailable intervals
+        unavailableIntervals.push({ dayName: dayName, start: startTime, end: endTime });
+      } else {
+        // If available exception extends beyond normal plan, we must adjust global times
+        if (startTime < globalEarliestStart) globalEarliestStart = startTime;
+        if (endTime > globalLatestEnd) globalLatestEnd = endTime;
+
+        // Remove these intervals from the unavailable set if they overlap
+        unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
       }
     });
 
-    // Add general schedule exceptions
-    if (this.generalScheduleExceptions) {
-      console.log(this.generalScheduleExceptions)
-      this.generalScheduleExceptions.forEach((exception: any) => {
-        const start = new Date(exception.start);
-        const end = new Date(exception.end);
-        end.setHours(end.getHours()); // Manually add 1 hour to the end time
+    // Step 3: Apply Employee-Specific Exceptions
+    if (plan.exceptions) {
+      plan.exceptions.forEach((exception: any) => {
+        const start = exception.startDatetime;
+        const end = exception.endDatetime;
+        const isAvailable = exception.available;
 
-        backgroundEvents.push({
-          start: start.toISOString(),
-          end: end.toISOString(),
-          display: 'background',
-          color: backgroundColor, // Use Ionic CSS variable for color
-          editable: false,
-          extendedProps: {
-            isBackgroundEvent: true // Custom property to indicate background event
-          }
-        });
+        const exceptionStart = new Date(start);
+        const exceptionEnd = new Date(end);
+        const dayOfWeek = exceptionStart.getDay();
+        const dayName = daysOfWeek[dayOfWeek];
+        const startTime = exceptionStart.toTimeString().slice(0, 5);
+        const endTime = exceptionEnd.toTimeString().slice(0, 5);
+
+        if (!isAvailable) {
+          // Add to unavailable intervals
+          unavailableIntervals.push({ dayName: dayName, start: startTime, end: endTime });
+        } else {
+          // Available exception might extend overall working time
+          if (startTime < globalEarliestStart) globalEarliestStart = startTime;
+          if (endTime > globalLatestEnd) globalLatestEnd = endTime;
+
+          unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
+        }
       });
     }
 
-    // Store background events
-    this.backgroundEvents = backgroundEvents;
+    // Merge overlapping intervals
+    unavailableIntervals = this.mergeOverlappingIntervals(unavailableIntervals);
 
-    // Set minStartTime and maxEndTime for the calendar
-    this.calendarOptions.slotMinTime = minStartTime;
-    this.calendarOptions.slotMaxTime = maxEndTime;
+    // Step 4: Block entire days not in schedule
+    daysOfWeek.forEach((day, index) => {
+      if (!daysWithSchedule[day]) {
+        unavailableIntervals.push({ dayName: day, start: '00:00', end: '24:00' });
+      }
+    });
 
-    // Merge and update the calendar with all events
-    this.mergeAndSetEvents();
+    // Get the background color for the resource
+    const resource = this.calendarComponent.getApi().getResourceById(resourceId);
+    const backgroundColor = '#d9d9d9';
+
+    // Step 5: Add background events for unavailable intervals
+    unavailableIntervals.forEach(interval => {
+      const dayIndex = this.getDayOfWeekByName(interval.dayName);
+      if (dayIndex === -1) return; 
+      backgroundEvents.push({
+        resourceId: resourceId,
+        daysOfWeek: [dayIndex],
+        startTime: interval.start,
+        endTime: interval.end,
+        display: 'background',
+        color: backgroundColor,
+        editable: false,
+        extendedProps: {
+          isBackgroundEvent: true
+        }
+      });
+    });
+  });
+
+  // Step 6: Now that we have global earliest and latest times,
+  // set the calendar slotMinTime and slotMaxTime dynamically.
+  this.calendarOptions.slotMinTime = globalEarliestStart;
+  this.calendarOptions.slotMaxTime = globalLatestEnd;
+
+  // Save the background events and merge
+  this.backgroundEvents = backgroundEvents;
+  this.mergeAndSetEvents();
+}
+  
+  
+  
+  // Helper to get day index by name
+  getDayOfWeekByName(dayName: string): number {
+    const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+    return days.indexOf(dayName);
   }
+  
 
 
 
@@ -1265,42 +1313,199 @@ export class HomePage implements OnInit {
   }
 
 
-  mergeAndSetEvents() {
-    const mergedEvents = [...this.events, ...this.backgroundEvents];
+ 
 
-    const calendarApi = this.calendarComponent.getApi();
-    calendarApi.removeAllEvents();
-    calendarApi.addEventSource(mergedEvents);
+  
+  // Utility to convert "HH:MM" to minutes since midnight
+  // Utility to convert "HH:MM" to minutes since midnight
+// Utility to convert "HH:MM" to minutes since midnight
+timeToMinutes(time: string): number {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
 
-    // Apply the updated options
-    calendarApi.setOption('slotMinTime', this.calendarOptions.slotMinTime);
-    calendarApi.setOption('slotMaxTime', this.calendarOptions.slotMaxTime);
-    calendarApi.setOption('events', mergedEvents);
+// Utility to convert minutes since midnight back to "HH:MM"
+minutesToTime(minutes: number): string {
+  const hrs = Math.floor(minutes / 60).toString().padStart(2, '0');
+  const mins = (minutes % 60).toString().padStart(2, '0');
+  return `${hrs}:${mins}`;
+}
 
-    this.cdr.detectChanges(); // Add this line
+// Subtract available intervals from unavailable intervals
+// Subtract available intervals from unavailable intervals
+subtractIntervals(
+  unavail: { dayName: string; start: string; end: string }[],
+  avail: { dayName: string; start: string; end: string }[]
+): { dayName: string; start: string; end: string }[] {
+  let result: { dayName: string; start: string; end: string }[] = [];
+
+  console.log('--- Subtract Intervals ---');
+  console.log('Unavailable Intervals:', JSON.stringify(unavail, null, 2));
+  console.log('Available Intervals to Subtract:', JSON.stringify(avail, null, 2));
+
+  unavail.forEach(u => {
+    let uStart = this.timeToMinutes(u.start);
+    let uEnd = this.timeToMinutes(u.end);
+    const currentDayName = u.dayName;
+
+    console.log(`Processing Unavailable Interval: ${currentDayName} ${u.start}-${u.end}`);
+
+    // Filter available intervals for the same day
+    const availForDay = avail.filter(a => a.dayName === currentDayName);
+    console.log(`Available Intervals for ${currentDayName}:`, availForDay);
+
+    let remainingIntervals: { start: number; end: number }[] = [{ start: uStart, end: uEnd }];
+
+    availForDay.forEach(a => {
+      let aStart = this.timeToMinutes(a.start);
+      let aEnd = this.timeToMinutes(a.end);
+
+      console.log(`  Subtracting Available Interval: ${a.start}-${a.end}`);
+
+      remainingIntervals = remainingIntervals.flatMap(interval => {
+        if (aEnd <= interval.start || aStart >= interval.end) {
+          // No overlap
+          return [interval];
+        }
+
+        const newIntervals: { start: number; end: number }[] = [];
+
+        if (aStart > interval.start) {
+          newIntervals.push({ start: interval.start, end: aStart });
+          console.log(`    Created new unavailable interval: ${this.minutesToTime(interval.start)}-${this.minutesToTime(aStart)}`);
+        }
+
+        if (aEnd < interval.end) {
+          newIntervals.push({ start: aEnd, end: interval.end });
+          console.log(`    Created new unavailable interval: ${this.minutesToTime(aEnd)}-${this.minutesToTime(interval.end)}`);
+        }
+
+        return newIntervals;
+      });
+    });
+
+    // Add the remaining intervals
+    remainingIntervals.forEach(interval => {
+      if (interval.start < interval.end) {
+        const formattedStart = this.minutesToTime(interval.start);
+        const formattedEnd = this.minutesToTime(interval.end);
+        result.push({ dayName: currentDayName, start: formattedStart, end: formattedEnd });
+        console.log(`  Final Unavailable Interval after Subtraction: ${formattedStart}-${formattedEnd}`);
+      }
+    });
+  });
+
+  console.log('Resulting Unavailable Intervals after Subtraction:', JSON.stringify(result, null, 2));
+  console.log('--- End Subtract Intervals ---');
+
+  return result;
+}
+
+
+mergeAndSetEvents() {
+  const mergedEvents = [...this.backgroundEvents, ...this.events]; // Background events first
+
+  console.log('--- Merging and Setting Events ---');
+  console.log('Background Events:', JSON.stringify(this.backgroundEvents, null, 2));
+  console.log('Appointment Events:', JSON.stringify(this.events, null, 2));
+
+  const calendarApi = this.calendarComponent.getApi();
+  calendarApi.removeAllEvents();
+  calendarApi.addEventSource(mergedEvents);
+
+  // Apply the updated options
+  calendarApi.setOption('slotMinTime', this.calendarOptions.slotMinTime);
+  calendarApi.setOption('slotMaxTime', this.calendarOptions.slotMaxTime);
+  calendarApi.setOption('events', mergedEvents);
+
+  this.cdr.detectChanges(); // Trigger change detection
+  console.log("FINAL EVENTS");
+  console.log(JSON.stringify(mergedEvents, null, 2));
+  console.log('--- End Merging and Setting Events ---');
+}
+
+
+// Merge overlapping intervals per day to avoid overlaps
+// Merge overlapping intervals per day to avoid overlaps
+mergeOverlappingIntervals(intervals: { dayName: string; start: string; end: string }[]): { dayName: string; start: string; end: string }[] {
+  const groupedByDay: { [key: string]: { start: string; end: string }[] } = {};
+
+  intervals.forEach(interval => {
+    if (!groupedByDay[interval.dayName]) {
+      groupedByDay[interval.dayName] = [];
+    }
+    groupedByDay[interval.dayName].push({ start: interval.start, end: interval.end });
+  });
+
+  const merged: { dayName: string; start: string; end: string }[] = [];
+
+  console.log('--- Merging Overlapping Intervals ---');
+
+  for (const dayName in groupedByDay) {
+    console.log(`  Merging intervals for ${dayName}:`, groupedByDay[dayName]);
+
+    const dayIntervals = groupedByDay[dayName].sort((a, b) => this.timeToMinutes(a.start) - this.timeToMinutes(b.start));
+
+    let current = dayIntervals[0];
+    console.log(`    Starting merge with: ${current.start}-${current.end}`);
+
+    for (let i = 1; i < dayIntervals.length; i++) {
+      const next = dayIntervals[i];
+      console.log(`    Comparing with next interval: ${next.start}-${next.end}`);
+
+      if (this.timeToMinutes(next.start) <= this.timeToMinutes(current.end)) {
+        // Overlapping intervals, merge them
+        const newEndMinutes = Math.max(this.timeToMinutes(current.end), this.timeToMinutes(next.end));
+        const newEndTime = this.minutesToTime(newEndMinutes);
+        console.log(`      Overlapping detected. Merging ${current.start}-${current.end} with ${next.start}-${next.end} to ${current.start}-${newEndTime}`);
+        current.end = newEndTime;
+      } else {
+        // No overlap, push the current interval and move to next
+        merged.push({ dayName, start: current.start, end: current.end });
+        console.log(`      No overlap. Pushing merged interval: ${current.start}-${current.end}`);
+        current = next;
+      }
+    }
+
+    // Push the last interval
+    merged.push({ dayName, start: current.start, end: current.end });
+    console.log(`    Pushing final merged interval for ${dayName}: ${current.start}-${current.end}`);
   }
 
+  console.log('Resulting Merged Intervals:', JSON.stringify(merged, null, 2));
+  console.log('--- End Merging Overlapping Intervals ---');
 
-  getUnavailableIntervals(availableIntervals: string[]): string[] {
+  return merged;
+}
+
+
+
+
+
+
+  getUnavailableIntervals(availableIntervals: string[], dayName: string): { dayName: string; start: string; end: string }[] {
     const fullDayStart = '00:00';
     const fullDayEnd = '24:00';
     let lastEnd = fullDayStart;
-
-    const unavailableIntervals = availableIntervals.reduce((acc: string[], interval: string) => {
+  
+    const unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
+  
+    availableIntervals.forEach(interval => {
       const [start, end] = interval.split('-');
       if (start > lastEnd) {
-        acc.push(`${lastEnd}-${start}`);
+        unavailableIntervals.push({ dayName, start: lastEnd, end: start });
       }
       lastEnd = end;
-      return acc;
-    }, []);
-
+    });
+  
     if (lastEnd < fullDayEnd) {
-      unavailableIntervals.push(`${lastEnd}-${fullDayEnd}`);
+      unavailableIntervals.push({ dayName, start: lastEnd, end: fullDayEnd });
     }
-
+  
     return unavailableIntervals;
   }
+  
+  
 
   getDayOfWeek(day: string): number {
     const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
@@ -1310,6 +1515,8 @@ export class HomePage implements OnInit {
 
 
 };
+
+
 
 
 

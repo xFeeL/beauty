@@ -148,8 +148,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/choose-variation/choose-variation.module').then( m => m.ChooseVariationPageModule)
   },
   {
-    path: 'wrario',
-    loadChildren: () => import('./pages/wrario/wrario.module').then( m => m.WrarioPageModule)
+    path: 'closures',
+    loadChildren: () => import('./pages/closures/closures.module').then( m => m.ClosuresPageModule)
   },
   {
     path: 'reservation-settings',
@@ -186,7 +186,8 @@ const routes: Routes = [
   {
     path: 'failed-payment',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },  {
+  },
+  {
     path: 'edit-auto-renewal',
     loadChildren: () => import('./pages/edit-auto-renewal/edit-auto-renewal.module').then( m => m.EditAutoRenewalPageModule)
   },

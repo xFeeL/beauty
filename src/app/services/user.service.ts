@@ -15,13 +15,13 @@ import { ModalController, Platform } from '@ionic/angular';
 import { KrathshPage } from '../pages/krathsh/krathsh.page';
 
 
-//let API_URL = "http://localhost:8080/common/";
-//let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-//let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+//let API_URL = "https://api.fyx.gr/common/";
+//let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+//let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
-let API_URL = "http://localhost:8080/common/";
-let Authenticated_API_URL = "http://localhost:8080/common-auth/"
-let beautyAuthenticated_API_URL = "http://localhost:8080/beauty-auth/"
+let API_URL = "https://api.fyx.gr/common/";
+let Authenticated_API_URL = "https://api.fyx.gr/common-auth/"
+let beautyAuthenticated_API_URL = "https://api.fyx.gr/beauty-auth/"
 
 
 @Injectable({
@@ -83,11 +83,11 @@ export class UserService {
   sseConnect(call: string) {
     if (!this.platform.is('cordova') && !this.platform.is('capacitor')) {
     if (this.eventSource == undefined) {
-      this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-      this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+      this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+      this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
     } else {
       if (this.eventSource.readyState != 1) {
-        this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+        this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
       }
     }
   }
@@ -152,8 +152,8 @@ export class UserService {
 
 
           setTimeout(() => {
-            this.eventSource = this.getEventSource("http://localhost:8080/common-auth/stream?application=beauty")
-            this.getServerSentEvent("http://localhost:8080/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
+            this.eventSource = this.getEventSource("https://api.fyx.gr/common-auth/stream?application=beauty")
+            this.getServerSentEvent("https://api.fyx.gr/common-auth/stream?application=beauty").subscribe((data: any) => console.log(data));
           }, 5000);
         }
       };
@@ -479,6 +479,48 @@ export class UserService {
 
   }
 
+  createException(body: any): Observable<any> {
+    return this.http.post(
+      `${Authenticated_API_URL}create-exception`, 
+      body, 
+      { headers: this.getHeaders(), withCredentials: true }
+    ).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+  
+  deleteException(exceptionId: string): Observable<any> {
+    return this.http.post(
+      `${Authenticated_API_URL}delete-exception?exception_id=${exceptionId}`, 
+      {}, 
+      { headers: this.getHeaders(), withCredentials: true }
+    ).pipe(
+      catchError(error => this.handleError(error, 'POST', {}))
+    );
+  }
+
+  updateException(body: any): Observable<any> {
+    return this.http.post(
+      `${Authenticated_API_URL}update-exception`, 
+      body, 
+      { headers: this.getHeaders(), withCredentials: true }
+    ).pipe(
+      catchError(error => this.handleError(error, 'POST', body))
+    );
+  }
+  
+  getScheduledExceptions(objectId: string | null): Observable<any> {
+    const url = objectId 
+      ? `${Authenticated_API_URL}get-scheduled-exceptions?object_id=${objectId}` 
+      : `${Authenticated_API_URL}get-scheduled-exceptions`;
+      
+    return this.http.get(url, { headers: this.getHeaders(), withCredentials: true }).pipe(
+      catchError(error => this.handleError(error, 'GET'))
+    );
+  }
+  
+  
+
 
 
   saveEmployee(body: any, safeDelete: boolean, cancelAllForDeletedEmployees: boolean, cancelAllForNewException: boolean): Observable<any> {
@@ -714,7 +756,7 @@ export class UserService {
    * @returns {Promise<any>} - A Promise that resolves when the token has been registered.
    */
   registerToken(token: String, jwt: String): Promise<any> {
-    return this.http.get("http://localhost:8080/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
+    return this.http.get("https://api.fyx.gr/auth/register-token?token=" + token, { headers: this.getHeaders(), withCredentials: true }).toPromise()
   }
 
 
@@ -889,18 +931,14 @@ export class UserService {
    * @param floors The expert's floors.
    * @returns An Observable that resolves to the server response.
    */
-  onBoarding(name: string, expertCategories: string, address: string, coordinates: string, photo: string | undefined, days: any[], people: any[], services: any[], servicesCategories: any[], packages: any[]): Observable<any> {
+  onBoarding(name: string, expertCategories: string, address: string, coordinates: string, photo: string | undefined): Observable<any> {
     const body = {
       name: name,
       expertCategories: expertCategories,
       address: address,
       coordinates: coordinates,
       photo: photo === "default" ? "default" : photo?.split(",")[1],
-      expertWP: days,
-      people: people,
-      services: services,
-      servicesCategories: servicesCategories,
-      packages: packages
+    
     };
     return this.http.post(beautyAuthenticated_API_URL + "onboarding", body, { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error, 'POST', body, true))
@@ -1294,8 +1332,8 @@ export class UserService {
    * Get working hours
    * @returns Observable of working hours
    */
-  getWrario(): Observable<any> {
-    return this.http.get(beautyAuthenticated_API_URL + "get-wrario", { headers: this.getHeaders(), withCredentials: true }).pipe(
+  getWrarioGeneralExceptions(): Observable<any> {
+    return this.http.get(beautyAuthenticated_API_URL + "get-wrario-general-exceptions", { headers: this.getHeaders(), withCredentials: true }).pipe(
       catchError(error => this.handleError(error))
     );
   }

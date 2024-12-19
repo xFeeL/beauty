@@ -471,7 +471,7 @@ export class OnboardingPage {
     }
     
     
-    this.userService.onBoarding(this.expertName, expertCategories, this.address,this.coordinates, this.expertImage, this.days, this.people, this.services, this.serviceCategories,this.packages).subscribe(data => {
+    this.userService.onBoarding(this.expertName, expertCategories, this.address,this.coordinates, this.expertImage).subscribe(data => {
       this.userService.presentToast("Τα στοιχεία σας καταχωρήθηκαν με επιτυχία!", "success")
       localStorage.setItem('authenticated', "true");
       this.userService._isAuthenticated.next(true);

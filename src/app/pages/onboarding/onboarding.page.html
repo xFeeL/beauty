@@ -199,11 +199,11 @@
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="!(selectedItems.length>0)" color="primary" class="beginButton" no-caps
-                (click)="nextSlide($event)"><ion-icon color="light"
-                  name="arrow-forward-circle-outline"></ion-icon></ion-button>
+                (click)="saveData()"><ion-text color="light">Τέλος</ion-text></ion-button>
             </div>
+            
           </swiper-slide>
-          <swiper-slide class="ion-padding" data-hash="slide6">
+          <!--<swiper-slide class="ion-padding" data-hash="slide6">
             <div class="slider-text">
               <h3>Ωράριο λειτουργίας</h3>
             </div>
@@ -240,20 +240,14 @@
               </div>
             </ion-list>
             
-            <!--<div class="navigator ion-padding">
-              <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
-                  name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button [disabled]="!isOpenDayExists()"
-                color="primary" class="beginButton" no-caps (click)="nextSlide($event)">
-                <ion-icon color="light" name="arrow-forward-circle-outline"></ion-icon>
-              </ion-button>
-            </div>-->
+           
             <div class="navigator ion-padding">
               <ion-button color="primary" class="beginButton" no-caps (click)="previousSlide()"><ion-icon color="light"
                   name="arrow-back-circle-outline"></ion-icon></ion-button> <ion-button
                 [disabled]="!isOpenDayExists()" color="primary" class="beginButton" no-caps
                 (click)="saveData()"><ion-text color="light">Τέλος</ion-text> </ion-button>
             </div>
-          </swiper-slide>
+          </swiper-slide>-->
           <!--<swiper-slide class="ion-padding" data-hash="slide7">
             <div class="slider-text">
               <h3>Ομάδα Εξυπηρέτησης</h3>

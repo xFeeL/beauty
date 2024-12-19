@@ -295,11 +295,12 @@ export class KrathseisPage implements OnInit {
     this.userService.getAppointments(this.krathseistatus, this.page, this.mode).subscribe(data => {
       for (let k = 0; k < data.length; k++) {
         data[k][11] = data[k][3];
-        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM, h:mm a');
+        data[k][3] = moment(data[k][3]).locale("el").format('Do MMM YYYY, h:mm a');
         data[k][4] = data[k][4].split('$')[0] + " " + data[k][4].split('$')[1];
         data[k].selected = false; // Initialize selected property
         this.krathseis.push(data[k]);
       }
+      console.log(this.krathseis)
       this.initialized = true;
       this.cdr.markForCheck();
     }, err => {

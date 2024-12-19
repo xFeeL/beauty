@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { IonicModule } from '@ionic/angular';
 
-import { WrarioPageRoutingModule } from './wrario-routing.module';
+import { ClosuresPageRoutingModule } from './closures-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { WrarioPage } from './wrario.page';
+import { ClosuresPage } from './closures.page';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,8 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatTooltipModule,
     ReactiveFormsModule,
-    WrarioPageRoutingModule
+    ClosuresPageRoutingModule
   ],
-  declarations: [WrarioPage]
+  declarations: [ClosuresPage]
 })
-export class WrarioPageModule {}
+export class ClosuresPageModule {}

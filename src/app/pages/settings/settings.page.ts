@@ -15,7 +15,7 @@ import { TeamServicesPage } from '../team-services/team-services.page';
 import { AutomatedNotificationsPage } from '../automated-notifications/automated-notifications.page';
 import { ReservationSettingsPage } from '../reservation-settings/reservation-settings.page';
 import { SocialMediaPage } from '../social-media/social-media.page';
-import { WrarioPage } from '../wrario/wrario.page';
+import { ClosuresPage } from '../closures/closures.page';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ChargesPage } from '../charges/charges.page';
 import { EditProfilePage } from '../edit-profile/edit-profile.page';
@@ -63,9 +63,9 @@ export class SettingsPage implements OnInit {
   needRefresh: boolean = false;
   settings = [
     {
-      name: 'Ωράριο',
+      name: 'Περίοδοι κλειστής επιχείρησης',
       icon: '../../../assets/icon/opening-hours.png',
-      page: 'schedule'
+      page: 'closures'
     },
     {
       name: 'Ομάδα & Υπηρεσίες',
@@ -178,9 +178,9 @@ export class SettingsPage implements OnInit {
       modal = await this.modalController.create({
         component: ReservationSettingsPage,
       });
-    } else if (item.page == "schedule") {
+    } else if (item.page == "closures") {
       modal = await this.modalController.create({
-        component: WrarioPage,
+        component: ClosuresPage,
       });
     } else if (item.page == "charges") {
       modal = await this.modalController.create({

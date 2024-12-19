@@ -5,58 +5,106 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="light">Προσθήκη εξαίρεσης</ion-title>
+    <ion-title color="light">Προσθήκη εξαίρεσης/άδειας</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding background">
-  <ion-card class="rad ion-no-margin">
+ 
+<!-- Date and Time Selection -->
+<ion-card class="rad ion-margin-top ion-no-margin">
+  <ion-card-header>
+    <ion-text color="primary"><b>Ημερομηνία / Ώρα</b></ion-text>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- From datetime button -->
+    <ion-item>
+      <ion-label class="ion-no-margin">Από:</ion-label>
+      <ion-datetime-button datetime="fromDatetime"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="fromDatetime"
+            [(ngModel)]="firstDateTime"
+            presentation="date-time"
+            hourCycle="h24"
+            minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"
+            [max]="maxDate"
+            [min]="minDate"
+            locale="el-GR"
+            doneText="OK"
+            cancelText="Ακυρο"
+            [showDefaultButtons]="true">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+
+    <!-- To datetime button -->
+    <ion-item>
+      <ion-label class="ion-no-margin">Έως:</ion-label>
+      <ion-datetime-button datetime="toDatetime"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="toDatetime"
+            [(ngModel)]="endDateTime"
+            presentation="date-time"
+            hourCycle="h24"
+            minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"
+            [max]="maxDate"
+            [min]="firstDateTime"
+            locale="el-GR"
+            doneText="OK"
+            cancelText="Ακυρο"
+            [showDefaultButtons]="true">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+  </ion-card-content>
+</ion-card>
+
+  <!-- Conditionally Display Status Selection -->
+  <ion-card class="rad ion-margin-top ion-no-margin" *ngIf="objectId !== null">
     <ion-card-header>
-      <ion-text color="primary"><b>Τύπος εξαίρεσης</b></ion-text>
+      <ion-text color="primary"><b>Διαθεσιμότητα</b></ion-text>
     </ion-card-header>
     <ion-card-content>
-      <ion-segment [(ngModel)]="exceptionType" mode="ios">
-        <ion-segment-button class="capsoff" value="once">Μία φορά</ion-segment-button>
-        <ion-segment-button class="capsoff" value="repeated">Επαναλαμβανόμενο</ion-segment-button>
-      </ion-segment>
+      <ion-radio-group [(ngModel)]="exceptionStatus">
+        <ion-list-header>
+          <ion-label>Να είναι το άτομο διαθέσιμο για κρατήσεις σε αυτό το χρονικό διάστημα; </ion-label>
+        </ion-list-header>
+
+        <ion-item>
+          <ion-label>Μη διαθέσιμο</ion-label>
+          <ion-radio slot="start" value="closed"></ion-radio>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Διαθέσιμο</ion-label>
+          <ion-radio slot="start" value="open"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
     </ion-card-content>
   </ion-card>
 
-  <ion-card  class="rad ion-margin-top ion-no-margin">
-    <ion-card-header>
-      <ion-text color="primary"><b>Ημερομηνία / Ώρα</b></ion-text>
+   <!-- Exception Type Selection -->
+   <ion-card class="rad ion-no-margin ion-margin-top">
+    <ion-card-header class=" ">
+      <ion-text color="primary"><b>Επαναληψιμότητα</b></ion-text>
     </ion-card-header>
-    <ion-card-content>
-      <!-- From datetime button -->
-      <ion-item>
-        <ion-label class="ion-no-margin">Από:</ion-label>
-        <ion-datetime-button datetime="fromDatetime"></ion-datetime-button>
-        <ion-modal [keepContentsMounted]="true">
-          <ng-template>
-            <ion-datetime id="fromDatetime" [(ngModel)]="firstDateTime" presentation="date-time" hourCycle="h24"
-              minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [max]="maxDate" [min]="minDate" locale="el-GR"
-              doneText="OK" cancelText="Ακυρο" [showDefaultButtons]="true" >
-            </ion-datetime>
-          </ng-template>
-        </ion-modal>
-      </ion-item>
-
-      <!-- To datetime button -->
-      <ion-item>
-        <ion-label class="ion-no-margin">Έως:</ion-label>
-        <ion-datetime-button datetime="toDatetime"></ion-datetime-button>
-        <ion-modal [keepContentsMounted]="true">
-          <ng-template>
-            <ion-datetime id="toDatetime" [(ngModel)]="endDateTime" presentation="date-time" hourCycle="h24"
-              minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [max]="maxDate" [min]="firstDateTime" locale="el-GR"
-              [showDefaultButtons]="true" doneText="OK" cancelText="Ακυρο"></ion-datetime>
-          </ng-template>
-        </ion-modal>
-      </ion-item>
+    <ion-card-content class="ion-no-margin">
+      <ion-segment [(ngModel)]="exceptionType" mode="ios">
+        <ion-segment-button class="capsoff" value="once">Μία φορά</ion-segment-button>
+        <ion-segment-button class="capsoff" value="repeated">Κάθε χρόνο</ion-segment-button>
+      </ion-segment>
     </ion-card-content>
   </ion-card>
 </ion-content>
 
 <ion-footer>
-  <ion-button class="ion-no-margin capsoff" expand="full" (click)="saveScheduleException()" ><ion-text color="light">Αποθήκευση</ion-text></ion-button>
+  <ion-button class="ion-no-margin capsoff" expand="full" (click)="saveScheduleException()">
+    <ion-text color="light">Αποθήκευση</ion-text>
+  </ion-button>
 </ion-footer>
