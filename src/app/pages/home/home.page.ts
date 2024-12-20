@@ -1160,140 +1160,138 @@ export class HomePage implements OnInit {
   }
 
   // In addBackgroundEvents method, modify the logic:
-addBackgroundEvents(workingPlans: any[]) {
-  const backgroundEvents: EventInput[] = [];
-  const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
-
-  // We will store both available and unavailable intervals.
-  // Ultimately, what matters for min/max time is available intervals.
-  let globalEarliestStart = '24:00';
-  let globalLatestEnd = '00:00';
-
-  console.log('--- Add Background Events with Dynamic Min/Max Times ---');
-
-  workingPlans.forEach(plan => {
-    const resourceId = plan.objectId;
-    const daysWithSchedule: { [key: string]: boolean } = {};
-    let unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
-
-    console.log(`Processing Working Plan for Employee ID: ${resourceId}`);
-
-    // Step 1: Compute unavailable intervals from the given schedule.
-    plan.personSchedule.forEach((schedule: any) => {
-      const dayName = schedule.day;
-      daysWithSchedule[dayName] = true;
-      const availableIntervals = schedule.intervals; // e.g. ['09:00-17:00']
-
-      console.log(`  Employee Schedule for ${dayName}: Available Intervals - ${availableIntervals.join(', ')}`);
-
-      // Convert available intervals into gaps of unavailability
-      const computedUnavailable = this.getUnavailableIntervals(availableIntervals, dayName);
-      unavailableIntervals = unavailableIntervals.concat(computedUnavailable);
-
-      // Track global earliest start & latest end from available intervals
-      availableIntervals.forEach((interval: { split: (arg0: string) => [any, any]; }) => {
-        const [start, end] = interval.split('-');
-        if (start < globalEarliestStart) globalEarliestStart = start;
-        if (end > globalLatestEnd) globalLatestEnd = end;
+  addBackgroundEvents(workingPlans: any[]) {
+    const backgroundEvents: EventInput[] = [];
+    const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+  
+    // We will store unavailable intervals first.
+    let globalEarliestStart = '24:00';
+    let globalLatestEnd = '00:00';
+  
+    console.log('--- Add Background Events with Dynamic Min/Max Times ---');
+  
+    workingPlans.forEach(plan => {
+      const resourceId = plan.objectId;
+      const daysWithSchedule: { [key: string]: boolean } = {};
+      let unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
+  
+      console.log(`Processing Working Plan for Employee ID: ${resourceId}`);
+  
+      // Step 1: Compute unavailable intervals from the given schedule.
+      plan.personSchedule.forEach((schedule: any) => {
+        const dayName = schedule.day;
+        daysWithSchedule[dayName] = true;
+        const availableIntervals = schedule.intervals; // e.g. ['09:00-17:00']
+  
+        console.log(`  Employee Schedule for ${dayName}: Available Intervals - ${availableIntervals.join(', ')}`);
+  
+        // Convert available intervals into gaps of unavailability
+        const computedUnavailable = this.getUnavailableIntervals(availableIntervals, dayName);
+        unavailableIntervals = unavailableIntervals.concat(computedUnavailable);
+  
+        // Track global earliest start & latest end from available intervals
+        availableIntervals.forEach((interval: string) => {
+          const [start, end] = interval.split('-');
+          if (start < globalEarliestStart) globalEarliestStart = start;
+          if (end > globalLatestEnd) globalLatestEnd = end;
+        });
       });
-    });
-
-    // Step 2: Apply General Exceptions
-    this.generalScheduleExceptions.forEach((exception: any) => {
-      const start = exception.startDatetime;
-      const end = exception.endDatetime;
-      const isAvailable = exception.available;
-
-      const exceptionStart = new Date(start);
-      const exceptionEnd = new Date(end);
-      const dayOfWeek = exceptionStart.getDay(); // 0=Sun,6=Sat
-      const dayName = daysOfWeek[dayOfWeek];
-      const startTime = exceptionStart.toTimeString().slice(0, 5);
-      const endTime = exceptionEnd.toTimeString().slice(0, 5);
-
-      if (!isAvailable) {
-        // Add to unavailable intervals
-        unavailableIntervals.push({ dayName: dayName, start: startTime, end: endTime });
-      } else {
-        // If available exception extends beyond normal plan, we must adjust global times
-        if (startTime < globalEarliestStart) globalEarliestStart = startTime;
-        if (endTime > globalLatestEnd) globalLatestEnd = endTime;
-
-        // Remove these intervals from the unavailable set if they overlap
-        unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
-      }
-    });
-
-    // Step 3: Apply Employee-Specific Exceptions
-    if (plan.exceptions) {
-      plan.exceptions.forEach((exception: any) => {
+  
+      // Step 2: If a day has no schedule, block entire day BEFORE applying exceptions
+      daysOfWeek.forEach((day) => {
+        if (!daysWithSchedule[day]) {
+          unavailableIntervals.push({ dayName: day, start: '00:00', end: '24:00' });
+        }
+      });
+  
+      // Step 3: Apply General Exceptions
+      this.generalScheduleExceptions.forEach((exception: any) => {
         const start = exception.startDatetime;
         const end = exception.endDatetime;
         const isAvailable = exception.available;
-
+  
         const exceptionStart = new Date(start);
         const exceptionEnd = new Date(end);
-        const dayOfWeek = exceptionStart.getDay();
+        const dayOfWeek = exceptionStart.getDay(); // 0=Sun,6=Sat
         const dayName = daysOfWeek[dayOfWeek];
         const startTime = exceptionStart.toTimeString().slice(0, 5);
         const endTime = exceptionEnd.toTimeString().slice(0, 5);
-
+  
         if (!isAvailable) {
           // Add to unavailable intervals
           unavailableIntervals.push({ dayName: dayName, start: startTime, end: endTime });
         } else {
-          // Available exception might extend overall working time
+          // If available exception extends beyond normal plan, adjust global times
           if (startTime < globalEarliestStart) globalEarliestStart = startTime;
           if (endTime > globalLatestEnd) globalLatestEnd = endTime;
-
+  
+          // Remove these intervals from the unavailable set
           unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
         }
       });
-    }
-
-    // Merge overlapping intervals
-    unavailableIntervals = this.mergeOverlappingIntervals(unavailableIntervals);
-
-    // Step 4: Block entire days not in schedule
-    daysOfWeek.forEach((day, index) => {
-      if (!daysWithSchedule[day]) {
-        unavailableIntervals.push({ dayName: day, start: '00:00', end: '24:00' });
+  
+      // Step 4: Apply Employee-Specific Exceptions
+      if (plan.exceptions) {
+        plan.exceptions.forEach((exception: any) => {
+          const start = exception.startDatetime;
+          const end = exception.endDatetime;
+          const isAvailable = exception.available;
+  
+          const exceptionStart = new Date(start);
+          const exceptionEnd = new Date(end);
+          const dayOfWeek = exceptionStart.getDay();
+          const dayName = daysOfWeek[dayOfWeek];
+          const startTime = exceptionStart.toTimeString().slice(0, 5);
+          const endTime = exceptionEnd.toTimeString().slice(0, 5);
+  
+          if (!isAvailable) {
+            // Add to unavailable intervals
+            unavailableIntervals.push({ dayName: dayName, start: startTime, end: endTime });
+          } else {
+            // Available exception might extend overall working time
+            if (startTime < globalEarliestStart) globalEarliestStart = startTime;
+            if (endTime > globalLatestEnd) globalLatestEnd = endTime;
+  
+            unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
+          }
+        });
       }
-    });
-
-    // Get the background color for the resource
-    const resource = this.calendarComponent.getApi().getResourceById(resourceId);
-    const backgroundColor = '#d9d9d9';
-
-    // Step 5: Add background events for unavailable intervals
-    unavailableIntervals.forEach(interval => {
-      const dayIndex = this.getDayOfWeekByName(interval.dayName);
-      if (dayIndex === -1) return; 
-      backgroundEvents.push({
-        resourceId: resourceId,
-        daysOfWeek: [dayIndex],
-        startTime: interval.start,
-        endTime: interval.end,
-        display: 'background',
-        color: backgroundColor,
-        editable: false,
-        extendedProps: {
-          isBackgroundEvent: true
-        }
+  
+      // Merge overlapping intervals after all exceptions are applied
+      unavailableIntervals = this.mergeOverlappingIntervals(unavailableIntervals);
+  
+      // Assign background color for the resource
+      const resource = this.calendarComponent.getApi().getResourceById(resourceId);
+      const backgroundColor = '#b3b3b3';
+  
+      // Step 5: Add background events for unavailable intervals
+      unavailableIntervals.forEach(interval => {
+        const dayIndex = this.getDayOfWeekByName(interval.dayName);
+        if (dayIndex === -1) return; 
+        backgroundEvents.push({
+          resourceId: resourceId,
+          daysOfWeek: [dayIndex],
+          startTime: interval.start,
+          endTime: interval.end,
+          display: 'background',
+          color: backgroundColor,
+          editable: false,
+          extendedProps: {
+            isBackgroundEvent: true
+          }
+        });
       });
     });
-  });
-
-  // Step 6: Now that we have global earliest and latest times,
-  // set the calendar slotMinTime and slotMaxTime dynamically.
-  this.calendarOptions.slotMinTime = globalEarliestStart;
-  this.calendarOptions.slotMaxTime = globalLatestEnd;
-
-  // Save the background events and merge
-  this.backgroundEvents = backgroundEvents;
-  this.mergeAndSetEvents();
-}
   
+    // Step 6: Now that we have global earliest and latest times,
+    // set the calendar slotMinTime and slotMaxTime dynamically.
+    this.calendarOptions.slotMinTime = globalEarliestStart;
+    this.calendarOptions.slotMaxTime = globalLatestEnd;
+  
+    // Save the background events and merge
+    this.backgroundEvents = backgroundEvents;
+    this.mergeAndSetEvents();
+  }
   
   
   // Helper to get day index by name

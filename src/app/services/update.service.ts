@@ -71,14 +71,14 @@ export class UpdateService {
    */
   private async promptMandatoryUpdate(latestVersion: string, downloadUrl: string, releaseNotes: string) {
     const alert = await this.alertController.create({
-      header: 'Mandatory Update',
+      header: 'Υποχρεωτικό Update',
       message: releaseNotes
-        ? `${releaseNotes}<br><br>A new version (${latestVersion}) is available and required to continue using the app.`
-        : `A new version (${latestVersion}) is available and required to continue using the app.`,
+        ? `${releaseNotes}<br><br>Μία νέα έκδοση (${latestVersion}) είναι διαθέσιμη και απαραίτητη για να συνεχίσετε να χρησιμοποιείτε την εφαρμογή.`
+        : `Μία νέα έκδοση (${latestVersion}) είναι διαθέσιμη και απαραίτητη για να συνεχίσετε να χρησιμοποιείτε την εφαρμογή.`,
       backdropDismiss: false,
       buttons: [
         {
-          text: 'Update Now',
+          text: 'Update τώρα',
           handler: () => {
             this.redirectToPlayStore(downloadUrl);
           },

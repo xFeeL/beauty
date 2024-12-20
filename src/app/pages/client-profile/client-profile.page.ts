@@ -48,11 +48,7 @@ export class ClientProfilePage implements OnInit {
       this.expert = data
       
     })
-    this.userService.getNumberOfReservationsClient(this.userId).subscribe(data => {
-      this.numberOfReservations = data
-    }, err => {
-
-    })
+   
     this.getUserData();
     this.getReservations();
 

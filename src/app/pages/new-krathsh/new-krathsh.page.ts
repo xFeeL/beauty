@@ -184,7 +184,18 @@ export class NewKrathshPage implements OnInit {
 
 
       this.onMonthChange();
+      this.userService.getAvailableDays(this.month, this.year, this.allEmployeeIds).subscribe(data => {
+        let availableDates = data || [];
 
+        this.dayValues = availableDates.join(',');
+        if (!this.editing) {
+          this.scrollToBottomSetTimeout(150);
+
+        }
+        this._cd.markForCheck(); // Add this line
+
+      }, err => {
+      });
     }
 
     this.canSelectDate = this.selectedServices.every(s => s.selectedEmployeeId);
