@@ -71,7 +71,7 @@ export class OtpVerificationPage implements OnInit {
         this.completeLogin();
       }
     },err=>{
-      if (err && err.error == "Wrong OTP") {
+      if (err && err.error.errorReturned == "Wrong OTP") {
         this.userService.presentToast("Λάθος Κωδικός", "danger");
       } 
       this.loading=false
@@ -92,7 +92,7 @@ export class OtpVerificationPage implements OnInit {
   
   completeLogin() {
 
-    if (this.navData.authType === "ordinary") {
+    //if (this.navData.authType === "ordinary") {
       this.login_user.phone = this.navData.phone;
       this.login_user.password = this.navData.password;
       this.userService.login(this.login_user).subscribe(data => {
@@ -102,32 +102,32 @@ export class OtpVerificationPage implements OnInit {
       }, err => {
         this.handleLoginError(err);
       });
-    } else {
+   /* } else {
       this.userService.loginOAuth(this.navData.token, this.navData.authType).subscribe(data => {
         this.userService.userLogin(data.expertId);
 
         this.rout.navigate(['/tabs/home']);
       }, err => {
-        this.handleOAuthError(err);
+       // this.handleOAuthError(err);
       });
-    }
+    }*/
   }
 
   handleLoginError(err: any) {
-    if (err.error == "Mobile") {
+    if (err.error.errorReturned == "Mobile") {
       this.userService.requestOTP(this.login_user.phone).subscribe(data => {
         this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
         this.userService.setNavData({ phone: this.login_user.phone, password: this.login_user.password });
         this.rout.navigate(['/otp-verification']);
       });
-    } else if (err.error == "Onboarding") {
+    } else if (err.error.errorReturned == "Onboarding") {
       this.rout.navigate(['/onboarding']);
     } else {
       this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
     }
   }
 
-  handleOAuthError(err: any) {
+  /*handleOAuthError(err: any) {
     if (err.error == "Mobile") {
       this.userService.requestOTP(this.navData.phone).subscribe(data => {
         this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
@@ -139,7 +139,7 @@ export class OtpVerificationPage implements OnInit {
     } else {
       this.userService.presentToast("Κάτι πήγε στραβά.", "danger");
     }
-  }
+  }*/
 
 
   goBack() {

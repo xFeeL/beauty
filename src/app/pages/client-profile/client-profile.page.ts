@@ -380,13 +380,13 @@ async editClient() {
               this.needReload = true;
             },
             err => {
-              if (err.error === "phone") {
+              if (err.error.errorReturned === "phone") {
                 this.userService.presentToast("Ο αριθμός τηλεφώνου πρέπει να έχει τη μορφή 6999999999 ή +306999999999.", "danger");
-              } else if (err.error === "name") {
+              } else if (err.error.errorReturned === "name") {
                 this.userService.presentToast("Το όνομα δεν μπορεί να περιέχει ειδικούς χαρακτήρες.", "danger");
-              } else if (err.error === "email") {
+              } else if (err.error.errorReturned === "email") {
                 this.userService.presentToast("Παρακαλώ εισάγετε ένα έγκυρο email.", "danger");
-              } else if (err.error === "server_error") {
+              } else if (err.error.errorReturned === "server_error") {
                 this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger");
               } else {
                 this.userService.presentToast("Κάτι πήγε στραβά. Προσπαθήστε ξανά.", "danger");

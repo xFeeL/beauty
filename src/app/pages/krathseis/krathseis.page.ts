@@ -303,15 +303,21 @@ export class KrathseisPage implements OnInit {
       console.log(this.krathseis)
       this.initialized = true;
       this.cdr.markForCheck();
+      if (data.message == 'No more data') {
+        this.disableInfiniteScroll = true;
+      }
+      this.initialized = true;
+      this.cdr.markForCheck();
     }, err => {
-      if (err.error.text == 'No more data') {
+      console.log(err)
+      if (err.error.message == 'No more data') {
         this.disableInfiniteScroll = true;
       }
       this.initialized = true;
       this.cdr.markForCheck();
     });
   }
-
+  
 
   segmentChanged(event: any) {
     switch (event.detail.value) {

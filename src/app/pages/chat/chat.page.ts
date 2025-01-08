@@ -81,10 +81,10 @@ export class ChatPage implements OnInit {
     })
   
     this.userService.getUserImage(this.userId).subscribe(data => {
-      this.profile_image = data
+      this.profile_image = data.imageUrl
       this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     }, err => {
-      this.profile_image = err.error.text
+      this.profile_image = err.error.imageUrl
       this.changeDetectorRef.detectChanges(); // Trigger change detection manually
     })
   

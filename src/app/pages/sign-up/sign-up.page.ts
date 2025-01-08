@@ -87,10 +87,10 @@ export class SignUpPage implements OnInit {
 
   next() {
    
-    if (!this.google && !this.facebook) {
+    //if (!this.google && !this.facebook) {
       this.userService.setNavData({ phone: this.mobile, email: this.email_input });
       this.rout.navigate(['new-password']);
-    } else if (this.google) {
+   /* } else if (this.google) {
       this.user = new User();
       this.user.app = "beauty";
       this.user.email = this.email_input;
@@ -113,10 +113,10 @@ export class SignUpPage implements OnInit {
       }, err => {
         this.handleOAuthError(err);
       });
-    }
+    }*/
   }
 
-  handleOAuthError(err: any) {
+ /* handleOAuthError(err: any) {
     if (err.error === "Email exists" || err.error?.text === "Email exists") {
       this.userService.presentToast("Αυτό το E-mail χρησιμοποείται ήδη.", "danger");
     } else if (err.error === "Phone exists" || err.error?.text === "Phone exists") {
@@ -130,7 +130,7 @@ export class SignUpPage implements OnInit {
       });
       this.rout.navigate(['otp-verification']);
     }
-  }
+  }*/
 
 
   emailCheck() {

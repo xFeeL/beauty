@@ -91,7 +91,7 @@ export class StatsPage implements OnInit {
     }, err => {
       this.statsNumberLoading = false;
       console.error('Error fetching stats numbers:', err);
-      if(err.error=="HISTORY_NOT_VISIBLE" || err.error.text=="HISTORY_NOT_VISIBLE"){
+      if(err.error.errorReturned=="HISTORY_NOT_VISIBLE" || err.error.text=="HISTORY_NOT_VISIBLE"){
         this.historyNotAvailable=true
         this.cdr.markForCheck();
 

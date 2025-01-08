@@ -84,9 +84,9 @@ export class EditProfilePage {
       this.updatedAddress = true
     }
     this.userService.getExpertImage().subscribe(data => {
-      this.image = data
+      this.image = data.imageUrl
     }, err => {
-      this.image = err.error.text
+      this.image = err.error.imageUrl
     });
     this.userService.getExpertData().subscribe(data => {
       let temp = data.name.split("$");
@@ -156,13 +156,10 @@ export class EditProfilePage {
       this.userService.presentToast("Το προφίλ σας άλλαξε με επιτυχία!", "success")
       this.goBack()
     }, err => {
-      if (err.error == "Slug") {
-        this.userService.presentToast("Το όνομα υπάρχει ήδη. Πρακαλώ επιλέξτε κάποιο άλλο.", "danger")
-
-      } else {
+    
         this.userService.presentToast("Κάτι πήγε στραβά! Βεβαιωθείτε ότι δεν χρησιμοποείτε ειδικούς χαρακτήρες.", "danger")
 
-      }
+      
     }
     );
   }

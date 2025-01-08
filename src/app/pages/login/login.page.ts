@@ -106,13 +106,14 @@ export class LoginPage implements OnInit {
   }
 
   handleLoginError(err: any) {
-    if (err.error == "Mobile") {
+    console.log(err)
+    if (err.error.errorReturned == "Mobile") {
       this.userService.requestOTP(this.user.phone).subscribe(data => {
         this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
         this.userService.setNavData({ email: this.user.email, password: this.user.password, authType: "ordinary", phone: this.user.phone });
         this.router.navigate(['/otp-verification']);
       });
-    } else if (err.error == "Onboarding") {
+    } else if (err.error.errorReturned == "Onboarding") {
 
       this.router.navigate(['/onboarding']);
     } else {
@@ -120,7 +121,7 @@ export class LoginPage implements OnInit {
     }
   }
 
-  googleOAuth() {
+  /*googleOAuth() {
     if (!this.isInAppBrowser) {
 
     this.googlLoginSpinner=true
@@ -139,9 +140,9 @@ export class LoginPage implements OnInit {
     this.userService.presentToast('Αυτή η λειτουργία είναι διαθέσιμη μόνο σε συμβατά προγράμματα περιήγησης.', 'warning');
 
   }
-  }
+  }*/
 
-  handleOAuthError(err: any, user: any) {
+  /*handleOAuthError(err: any, user: any) {
     this.googlLoginSpinner=false
 
     if (err.error == "Mobile") {
@@ -155,7 +156,7 @@ export class LoginPage implements OnInit {
     } else {
       this.userService.presentToast("Το κινητό ή ο κωδικός είναι λάθος.", "danger");
     }
-  }
+  }*/
 
   onAppChange(event: any) {
     const selectedValue = event.detail.value;

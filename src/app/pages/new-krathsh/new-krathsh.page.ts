@@ -154,7 +154,7 @@ export class NewKrathshPage implements OnInit {
         this._cd.markForCheck(); // Add this line
   
       }, err => {
-        if (err.error == "Service doesn't exist") {
+        if (err.error.errorReturned == "Service doesn't exist") {
           this.selectedServices = [];
           this._cd.markForCheck(); // Add this line
         }
@@ -441,7 +441,7 @@ validateEmail(email:any) {
         this._cd.markForCheck(); // Add this line
       },err => {
         // Extract the error code from the back-end response
-        const errorMessage = err.error.error;
+        const errorMessage = err.error.error.errorReturned;
     
         // Handle specific error messages
         switch (errorMessage) {
@@ -520,13 +520,10 @@ validateEmail(email:any) {
 
     }, err => {
       this.saveButtonEnabled = true
+      this.userService.presentToast("Η συγκεκριμένη χρονική περιόδος δεν είναι πλέον διαθέσιμη.", "danger")
 
 
-      if (err.error == "Slot taken") {
-        this.userService.presentToast("Η συγκεκριμένη χρονική περιόδος δεν είναι πλέον διαθέσιμη.", "danger")
-      } else {
-        this.userService.presentToast("Η συγκεκριμένη χρονική περιόδος δεν είναι πλέον διαθέσιμη.", "danger")
-      }
+     
     })
   }
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
@@ -660,7 +657,7 @@ validateEmail(email:any) {
       this._cd.markForCheck(); // Add this line
   
     }, err => {
-      if (err.error == "Service doesn't exist") {
+      if (err.error.errorReturned == "Service doesn't exist") {
         this.selectedServices = [];
         this._cd.markForCheck(); // Add this line
       }

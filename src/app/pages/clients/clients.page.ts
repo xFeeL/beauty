@@ -279,7 +279,7 @@ export class ClientsPage implements OnInit {
           },
           (err) => {
             // Extract the error code from the back-end response
-            const errorMessage = err.error.error;
+            const errorMessage = err.error.error.errorReturned;
 
             // Handle specific error messages
             switch (errorMessage) {

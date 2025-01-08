@@ -88,7 +88,7 @@ export class ReviewsPage implements OnInit {
       this.fiveStarReviews = this.fiveStarReviews / this.reviews.length;
 
     }, err => {
-      this.reviews = err.error.text;   //epeidi den einai json to response gurnaei error
+      //this.reviews = err.error.text;   //epeidi den einai json to response gurnaei error
 
     }
     );

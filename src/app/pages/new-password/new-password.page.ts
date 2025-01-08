@@ -85,15 +85,15 @@ export class NewPasswordPage implements OnInit {
         this.route.navigate(['otp-verification']);
       }, err => {
 
-        if (err.error == "Phone exists") {
+        if (err.error.errorReturned == "Phone exists") {
           this.userService.presentToast("Το τηλέφωνο που χρησιμοποιήσατε υπάρχει. Παρακαλώ επιλέξτε άλλο τηλέφωνο.", "danger");
           this.navCtrl.back();
 
-        } else if (err.error == "Email exists") {
+        } else if (err.error.errorReturned == "Email exists") {
           this.userService.presentToast("Το E-mail που χρησιμοποιήσατε υπάρχει. Παρακαλώ επιλέξτε άλλο E-mail.", "danger");
           this.navCtrl.back();
 
-        } else if (err.error == "OK") {
+        } else if (err.error.errorReturned == "OK") {
           this.userService.presentToast("Η εγγραφή ήταν επιτυχής. Παρακαλούμε επαληθεύστε το τηλέφωνο σας.", "success");
           this.userService.setNavData([this.signup_user.phone, this.signup_user.password, "ordinary"])
           this.route.navigate(['otp-verification']);

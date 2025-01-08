@@ -478,14 +478,11 @@ export class OnboardingPage {
       window.location.href = '/tabs/home';
 
     }, err => {
-      
-      if (err.error == "Slug") {
-        this.userService.presentToast("Το όνομα επιχείρησης υπάρχει ήδη. Πρακαλώ επιλέξτε κάποιο άλλο.", "danger")
-        this.swiper.slideTo(1)
-      } else if (err.error == "Name") {
+      console.log(err)
+       if (err.error.errorReturned == "name") {
         this.userService.presentToast("Το όνομα επιχείρησης δεν είναι έγκυρο. Πρακαλώ επιλέξτε κάποιο άλλο.", "danger")
         this.swiper.slideTo(1)
-      } else if (err.error == "Categories") {
+      } else if (err.error.errorReturned == "Categories") {
         this.userService.presentToast("Κάτι πήγε στραβά με τις κατηγορίες. Πρακαλώ ξανά προσπαθήστε.", "danger")
         this.swiper.slideTo(4)
       }
