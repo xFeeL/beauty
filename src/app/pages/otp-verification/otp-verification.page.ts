@@ -49,11 +49,7 @@ export class OtpVerificationPage implements OnInit {
     this.rout.navigate(['new-password']);
   }
 
-  toTab2() {
-    // this.tabID = 2
 
-    this.user.forgotPassword(this.email);
-  }
 
   toTab3(field1: string, field2: string, field3: string, field4: string, field5: string, field6: string) {
     this.OTPbuttonDisabled = "false";

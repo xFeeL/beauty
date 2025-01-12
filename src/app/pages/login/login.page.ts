@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
   variableDisabled: string | undefined;
   disabledButton = "true";
   regex_email_test: any;
-  googlLoginSpinner=false
+  googlLoginSpinner = false
   isInAppBrowser: boolean = false;
 
   phoneMask: MaskitoOptions = {
@@ -35,7 +35,7 @@ export class LoginPage implements OnInit {
   };
   readonly options: MaskitoOptions = this.phoneMask;
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  authenticated: boolean=false;
+  authenticated: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -43,15 +43,15 @@ export class LoginPage implements OnInit {
     private menu: MenuController,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
-    private platform:Platform,
+    private platform: Platform,
   ) { }
   ;
   ionViewWillEnter() {
 
     if (localStorage.getItem('authenticated') == 'true') {
-      this.authenticated=true
-    }else{
-      this.authenticated=false
+      this.authenticated = true
+    } else {
+      this.authenticated = false
 
     }
 
@@ -63,11 +63,11 @@ export class LoginPage implements OnInit {
     //If user is exist, redirect it to home page.
     //this.redirectPage(this.userService.currentUserValue);
     GoogleAuth.initialize({
-      
+
       clientId: '1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com',
       scopes: [],
       grantOfflineAccess: true,
-      
+
     });
 
     FacebookLogin.initialize({ appId: '3238436183073244' });
@@ -78,16 +78,16 @@ export class LoginPage implements OnInit {
 
   }
 
- checkIfInAppBrowser() {
-  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+  checkIfInAppBrowser() {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
 
-  // Improved regular expression (removed duplicate 'Instagram')
-  if (/FBAN|FBAV|Instagram|Twitter|LinkedIn|TikTok|Snapchat|Pinterest|Messenger|WhatsApp|Line|WeChat/i.test(userAgent)) {
-    this.isInAppBrowser = true;
-  } else {
-    this.isInAppBrowser = false;
+    // Improved regular expression (removed duplicate 'Instagram')
+    if (/FBAN|FBAV|Instagram|Twitter|LinkedIn|TikTok|Snapchat|Pinterest|Messenger|WhatsApp|Line|WeChat/i.test(userAgent)) {
+      this.isInAppBrowser = true;
+    } else {
+      this.isInAppBrowser = false;
+    }
   }
-}
 
 
   login() {
@@ -107,13 +107,13 @@ export class LoginPage implements OnInit {
 
   handleLoginError(err: any) {
     console.log(err)
-    if (err.error.errorReturned == "Mobile") {
+    if (err.error != null && err.error.errorReturned == "Mobile") {
       this.userService.requestOTP(this.user.phone).subscribe(data => {
         this.userService.presentToast("Παρακαλώ επιβεβαίωστε τον αριθμό του κινητού σας.", "warning");
         this.userService.setNavData({ email: this.user.email, password: this.user.password, authType: "ordinary", phone: this.user.phone });
         this.router.navigate(['/otp-verification']);
       });
-    } else if (err.error.errorReturned == "Onboarding") {
+    } else if (err.error != null && err.error.errorReturned == "Onboarding") {
 
       this.router.navigate(['/onboarding']);
     } else {

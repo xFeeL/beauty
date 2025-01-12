@@ -799,11 +799,16 @@ export class UserService {
       localStorage.setItem('darkMode', darkMode);
     }
 
-    const params = new HttpParams().append('phone', phone).append('password', password);
-    console.log("SENDING THE LOGIN")
-    return this.http.post<any>(API_URL + 'login', params, { withCredentials: true }).pipe(
+    // Prepare JSON body
+    const body = {
+      phone: phone,
+      password: password
+    };
+
+    console.log("SENDING THE LOGIN");
+    return this.http.post<any>(API_URL + 'login', body, { withCredentials: true }).pipe(
       tap(response => {
-        console.log(response)
+        console.log(response);
         if (response && response.statusCode === 200) {
           localStorage.setItem('authenticated', 'true');
           this._isAuthenticated.next(true);
@@ -823,6 +828,7 @@ export class UserService {
       })
     );
   }
+
 
   /**
    * Registers a new user with OAuth.
@@ -907,18 +913,14 @@ export class UserService {
   }
 
 
-
-
-
-  /**
-   * Sends a password reset email.
-   * @param email The email to send the reset to.
-   * @returns A Promise that resolves with the server response.
-   */
-  forgotPassword(email: String): Promise<any> {
-    return this.http.post(API_URL + "forgot-password", email).toPromise();
+  forgotPassword(phone: string): Promise<any> {
+    const body = { phone: phone };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(API_URL + "forgot-password", body, { headers: headers }).toPromise();
   }
-
 
 
   /**
