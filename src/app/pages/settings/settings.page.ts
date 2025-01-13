@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { MatSelect } from '@angular/material/select';
 import { AddScheduleExceptionPage } from '../add-schedule-exception/add-schedule-exception.page';
-import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/facebook-login';
+//import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/facebook-login';
 import { GuidePage } from '../guide/guide.page';
 import { ExternalService } from 'src/app/services/external.service';
 import { ChangePasswordPage } from '../change-password/change-password.page';

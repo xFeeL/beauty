@@ -4,11 +4,11 @@ import { UserService } from '../../services/user.service';
 
 import { MenuController, LoadingController, ToastController, Platform } from '@ionic/angular';
 import { User } from '../../models/user';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import {
+//import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+/*import {
   FacebookLogin,
   FacebookLoginResponse,
-} from '@capacitor-community/facebook-login';
+} from '@capacitor-community/facebook-login';*/
 import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
 @Component({
   selector: 'app-login',
@@ -62,15 +62,15 @@ export class LoginPage implements OnInit {
     //this.menu.enable(false);
     //If user is exist, redirect it to home page.
     //this.redirectPage(this.userService.currentUserValue);
-    GoogleAuth.initialize({
+    /*GoogleAuth.initialize({
 
       clientId: '1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com',
       scopes: [],
       grantOfflineAccess: true,
 
-    });
+    });*/
 
-    FacebookLogin.initialize({ appId: '3238436183073244' });
+    //FacebookLogin.initialize({ appId: '3238436183073244' });
   }
 
   ngAfterViewInit() {
@@ -232,7 +232,7 @@ export class LoginPage implements OnInit {
   async facebookOAuth(): Promise<void> {
     const FACEBOOK_PERMISSIONS = ['public_profile', 'email'];
 
-    const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
+    /*const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
     if (result && result.accessToken) {
       let user = { token: result.accessToken.token, userId: result.accessToken.userId }
       this.userService.loginOAuth(result.accessToken.token, "facebook").subscribe(data => {
@@ -240,7 +240,7 @@ export class LoginPage implements OnInit {
         localStorage.setItem('authenticated', "true");
 
       })
-    }
+    }*/
   }
 
 

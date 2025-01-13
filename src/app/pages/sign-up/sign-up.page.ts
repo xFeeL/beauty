@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router'
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+//import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
-import { FacebookLogin } from '@capacitor-community/facebook-login';
+//import { FacebookLogin } from '@capacitor-community/facebook-login';
 import { MaskitoOptions, MaskitoElementPredicateAsync } from '@maskito/core';
 
 @Component({
@@ -49,11 +49,11 @@ export class SignUpPage implements OnInit {
   constructor(private rout: Router, private userService: UserService) { }
 
   ngOnInit() {
-    GoogleAuth.initialize({
+   /* GoogleAuth.initialize({
       clientId: '1079825245656-ha5q3hdr5s6h3ocu8j1oem9e5g836j1n.apps.googleusercontent.com',
       scopes: [],
       grantOfflineAccess: true,
-    });
+    });*/
     //FacebookLogin.initialize({ appId: '3238436183073244' });
 
   }
@@ -199,12 +199,12 @@ export class SignUpPage implements OnInit {
 
   async googleOAuth() {
     if (!this.isInAppBrowser) {
-      const user = await GoogleAuth.signIn();
+     /* const user = await GoogleAuth.signIn();
       this.disabledEmail = true
       this.email_input = user.email;
       this.token = user.authentication.idToken;
       this.google = true
-      this.emailCheck()
+      this.emailCheck()*/
     } else {
       this.userService.presentToast('Αυτή η λειτουργία είναι διαθέσιμη μόνο σε συμβατά προγράμματα περιήγησης.', 'warning');
     }
@@ -213,13 +213,13 @@ export class SignUpPage implements OnInit {
   async facebookOAuth(): Promise<void> {
     const FACEBOOK_PERMISSIONS = ['public_profile', 'email'];
 
-    const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
-    if (result && result.accessToken) {
+    //const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
+    /*if (result && result.accessToken) {
       this.logininfo = { token: result.accessToken.token, userId: result.accessToken.userId }
       this.getUserInfo()
 
       //this.router.navigate(["/tabs/home"], navigationExtras);
-    }
+    }*/
   }
 
   async getUserInfo() {

@@ -4,11 +4,11 @@ import { UserService } from 'src/app/services/user.service';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import {
+/*import {
   FacebookLogin,
   FacebookLoginPlugin,
   FacebookLoginResponse,
-} from '@capacitor-community/facebook-login';
+} from '@capacitor-community/facebook-login';*/
 import { Camera, GalleryPhoto } from '@capacitor/camera';
 import { FileInfo, Filesystem } from '@capacitor/filesystem';
 import { FacebookImagesPage } from '../facebook-images/facebook-images.page';
@@ -47,7 +47,7 @@ export class PortfolioPage implements OnInit {
 
   @ViewChild('_fileInput') _fileInput: any;
 
-  fbLogin!: FacebookLoginPlugin;
+  //fbLogin!: FacebookLoginPlugin;
   facebookAccessToken: any;
   newImages: Array<string>=new Array<string>;
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
@@ -58,11 +58,11 @@ export class PortfolioPage implements OnInit {
   isCreating: boolean=false;
 
   constructor(private actionSheetCtrl: ActionSheetController,private modalController:ModalController,private plt: Platform,private userService:UserService,private navCtl:NavController,private sanitizer: DomSanitizer,private alertController: AlertController,private router:Router,private actionSheetController:ActionSheetController,) {
-    this.fbLogin = FacebookLogin;
+    //this.fbLogin = FacebookLogin;
   }
 
   ngOnInit() {
-    FacebookLogin.initialize({ appId: '718122076068329' });
+   // FacebookLogin.initialize({ appId: '718122076068329' });
 
     this.getPortfolio();
   }

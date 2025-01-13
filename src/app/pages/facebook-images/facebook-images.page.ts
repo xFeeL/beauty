@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/facebook-login';
+//import { FacebookLogin, FacebookLoginPlugin } from '@capacitor-community/facebook-login';
 import { ModalController, NavParams } from '@ionic/angular';
 import { ExternalService } from 'src/app/services/external.service';
 import { UserService } from 'src/app/services/user.service';
@@ -16,7 +16,7 @@ export class FacebookImagesPage implements OnInit {
   currentAlbum: any; // The currently selected album
   photos: { imageLink: string, selected:boolean}[] = [];
   albums: { folder_name: string, imageLink: string, id: string }[] = [];
-  fbLogin!: FacebookLoginPlugin;
+ // fbLogin!: FacebookLoginPlugin;
   albumChosen: boolean=false;
   pageName: any="";
   choosePage: boolean=true;
@@ -31,10 +31,10 @@ export class FacebookImagesPage implements OnInit {
 
   }
   ionViewWillEnter(){
-    FacebookLogin.initialize({ appId: '718122076068329' }).then(() => {
+    /*FacebookLogin.initialize({ appId: '718122076068329' }).then(() => {
       this.setupFbLogin();
       this.facebookOAuth();
-  });
+  //});*/
   }
 
   backToPages(){
@@ -44,10 +44,10 @@ export class FacebookImagesPage implements OnInit {
   }
   
 
-  async setupFbLogin() {
+ /* async setupFbLogin() {
     this.fbLogin = FacebookLogin;
   
-}
+}*/
 
 goToPage(page:any){
   this.albums=[]
@@ -85,11 +85,11 @@ getAlbums(token:string,pageId:string){
   })
 }
 
-async facebookOAuth(): Promise<void> {
+/*async facebookOAuth(): Promise<void> {/
   this.pagesToChoose=[]
 this.choosePage=true
   const FACEBOOK_PERMISSIONS = ['user_photos','pages_show_list','pages_read_engagement']
-  const result = await this.fbLogin.login({ permissions: FACEBOOK_PERMISSIONS });
+ // const result = await this.fbLogin.login({ permissions: FACEBOOK_PERMISSIONS });
   if (result && result.accessToken) {
     
     this.facebookAccessToken=result.accessToken.token
@@ -127,7 +127,7 @@ this.choosePage=true
    
     
   }
-}
+}*/
 
 
   selectImage(image:any){

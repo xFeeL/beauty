@@ -4,7 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Camera, CameraResultType, CameraSource, GalleryPhoto } from '@capacitor/camera';
 import { Filesystem } from '@capacitor/filesystem';
-import { FacebookLogin, FacebookLoginPlugin, FacebookLoginResponse } from '@capacitor-community/facebook-login';
+//import { FacebookLogin, FacebookLoginPlugin, FacebookLoginResponse } from '@capacitor-community/facebook-login';
 import { ExternalService } from 'src/app/services/external.service';
 import { ImgCropperEvent } from '@alyle/ui/image-cropper';
 import { LyDialog } from '@alyle/ui/dialog';
@@ -30,7 +30,7 @@ export class ImagesPage implements OnInit {
   currentAlbumPhotos: any;
   selectedImage = { imageLink: '', selected: false };
   currentAlbum: any; 
-  fbLogin!: FacebookLoginPlugin;
+  //fbLogin!: FacebookLoginPlugin;
   facebookAccessToken: any;
   @ViewChild('newPhotosModal') newPhotosModal!: IonModal;
   newPhotos = new Array<String>();
@@ -70,7 +70,7 @@ export class ImagesPage implements OnInit {
   }
 
   ngOnInit() {
-    FacebookLogin.initialize({ appId: '718122076068329' });
+   // FacebookLogin.initialize({ appId: '718122076068329' });
   }
 
   ionViewWillEnter() {
@@ -83,7 +83,7 @@ export class ImagesPage implements OnInit {
   }
 
   async setupFbLogin() {
-    this.fbLogin = FacebookLogin;
+   // this.fbLogin = FacebookLogin;
   }
 
   deleteFolderImages() {
