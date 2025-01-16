@@ -17,7 +17,7 @@ export class UpdateService {
     private platform: Platform,
     private alertController: AlertController,
     private toastController: ToastController
-  ) {}
+  ) { }
 
   /**
    * Initialize the UpdateService by fetching the current app version.
@@ -37,19 +37,19 @@ export class UpdateService {
    * Check for app updates by communicating with the backend.
    */
   async checkForUpdates() {
-    if ( !Capacitor.isNativePlatform()) {
+    if (!Capacitor.isNativePlatform()) {
       console.log('Not a native platform. Skipping update check.');
       return;
     }
-    let platform=""
-    if(!this.platform.is('android')){
-      platform ="iOS"
-    }else{
-      platform ="android"
+    let platform = ""
+    if (!this.platform.is('android')) {
+      platform = "iOS"
+    } else {
+      platform = "android"
 
     }
 
-    this.userService.checkAppVersion(this.currentVersion,platform).subscribe(
+    this.userService.checkAppVersion(this.currentVersion, platform).subscribe(
       async (response) => {
         if (response.newVersionAvailable) {
           const latestVersion = response.latestVersion;
@@ -58,9 +58,9 @@ export class UpdateService {
           const releaseNotes = response.releaseNotes || '';
 
           if (mandatoryUpdate) {
-            await this.promptMandatoryUpdate(latestVersion, downloadUrl, releaseNotes);
+            await this.promptMandatoryUpdate(latestVersion, downloadUrl, releaseNotes, platform);
           } else {
-            await this.promptOptionalUpdate(latestVersion, downloadUrl, releaseNotes);
+            await this.promptOptionalUpdate(latestVersion, downloadUrl, releaseNotes, platform);
           }
         } else {
           console.log('The app is up-to-date.');
@@ -76,7 +76,7 @@ export class UpdateService {
   /**
    * Prompt the user for a mandatory update.
    */
-  private async promptMandatoryUpdate(latestVersion: string, downloadUrl: string, releaseNotes: string) {
+  private async promptMandatoryUpdate(latestVersion: string, downloadUrl: string, releaseNotes: string, platform: string) {
     const alert = await this.alertController.create({
       header: 'Υποχρεωτικό Update',
       message: releaseNotes
@@ -87,7 +87,12 @@ export class UpdateService {
         {
           text: 'Update τώρα',
           handler: () => {
-            this.redirectToPlayStore(downloadUrl);
+            if (platform = "android") {
+              this.redirectToPlayStore(downloadUrl);
+
+            } else {
+              this.redirectToAppleStore(downloadUrl)
+            }
           },
         },
       ],
@@ -99,7 +104,7 @@ export class UpdateService {
   /**
    * Prompt the user for an optional update.
    */
-  private async promptOptionalUpdate(latestVersion: string, downloadUrl: string, releaseNotes: string) {
+  private async promptOptionalUpdate(latestVersion: string, downloadUrl: string, releaseNotes: string, platform: string) {
     const alert = await this.alertController.create({
       header: 'Update Available',
       message: releaseNotes
@@ -114,7 +119,12 @@ export class UpdateService {
         {
           text: 'Update Now',
           handler: () => {
-            this.redirectToPlayStore(downloadUrl);
+            if (platform = "android") {
+              this.redirectToPlayStore(downloadUrl);
+
+            } else {
+              this.redirectToAppleStore(downloadUrl)
+            }
           },
         },
       ],
@@ -133,20 +143,40 @@ export class UpdateService {
       this.showErrorToast('Unable to redirect to Play Store for updates.');
       return;
     }
-  
+
     const intentUrl = `intent://details?id=${packageId}#Intent;scheme=market;package=com.android.vending;end`;
     const fallbackUrl = `https://play.google.com/store/apps/details?id=${packageId}`;
-  
+
     // Attempt to open the Play Store app using the intent scheme
     window.open(intentUrl, '_system');
-  
+
     // Fallback to opening the Play Store page in the browser after a short delay
     setTimeout(() => {
       window.open(fallbackUrl, '_system');
     }, 2000);
   }
-  
-  
+
+  private redirectToAppleStore(url: string) {
+    // Basic validation: Apple Store URL should start with itms-apps://
+    if (!url.startsWith('itms-apps://')) {
+      console.error('Invalid Apple Store URL:', url);
+      this.showErrorToast('Unable to redirect to the Apple Store for updates.');
+      return;
+    }
+
+    // Attempt to open the Apple Store app
+    window.open(url, '_system');
+
+    // Optional fallback: open the same store page in the browser after a brief delay
+    setTimeout(() => {
+      // Convert the "itms-apps://" URL to a regular HTTPS-based Apple Store URL
+      // For example: itms-apps://apps.apple.com/app/id6739831765 --> https://apps.apple.com/app/id6739831765
+      const fallbackUrl = url.replace('itms-apps://', 'https://');
+      window.open(fallbackUrl, '_system');
+    }, 2000);
+  }
+
+
   /**
    * Extract the package ID from the Play Store URL.
    * This method ensures that only the package ID is extracted, ignoring any additional query parameters.
