@@ -267,9 +267,9 @@ export class UserService {
     );
   }
 
-  checkPlaystoreVersion(currentVersion: string): Observable<any> {
-    const params = new HttpParams().set('version', currentVersion);
-    return this.http.get(API_URL + "check-playstore-version", {
+  checkAppVersion(currentVersion: string,platform:string): Observable<any> {
+    const params = new HttpParams().set('version', currentVersion).set('platform', platform);
+    return this.http.get(API_URL + "check-app-version", {
       headers: this.getHeaders(),
       params: params,
       withCredentials: true,

@@ -37,12 +37,19 @@ export class UpdateService {
    * Check for app updates by communicating with the backend.
    */
   async checkForUpdates() {
-    if (!this.platform.is('android') || !Capacitor.isNativePlatform()) {
-      console.log('Not a native Android platform. Skipping update check.');
+    if ( !Capacitor.isNativePlatform()) {
+      console.log('Not a native platform. Skipping update check.');
       return;
     }
+    let platform=""
+    if(!this.platform.is('android')){
+      platform ="iOS"
+    }else{
+      platform ="android"
 
-    this.userService.checkPlaystoreVersion(this.currentVersion).subscribe(
+    }
+
+    this.userService.checkAppVersion(this.currentVersion,platform).subscribe(
       async (response) => {
         if (response.newVersionAvailable) {
           const latestVersion = response.latestVersion;
