@@ -118,25 +118,26 @@ export class ClosuresPage implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  /**
-   * Opens the Add Schedule Exception modal.
-   */
+
+  
   async openAddExceptionModal() {
     const modal = await this.modalController.create({
       component: AddScheduleExceptionPage,
       componentProps: {
-        objectId: null, // Indicate adding a general exception
+        objectId: null,
       },
     });
   
     modal.onDidDismiss().then((result: OverlayEventDetail<any>) => {
       if (result.data) {
         const newException = {
-          objectId: null, // Null because it is a working plan of expert
+          objectId: null,
           startDatetime: result.data.start,
           endDatetime: result.data.end,
-          available: result.data.isAvailable, // Correctly set isAvailable
-          repeatable: result.data.isRepeatable, // Capture repeatable status
+          available: result.data.isAvailable,
+          repeatable: result.data.isRepeatable,
+          safeToSave: false,  // initial call does not override overlap check
+          cancelAllFutureOverlappingAppointments: false
         };
   
         this.userService.createException(newException).subscribe(
@@ -144,11 +145,17 @@ export class ClosuresPage implements OnInit {
             this.scheduleExceptions.push(this.formatException(response));
             this.userService.presentToast('Η εξαίρεση δημιουργήθηκε επιτυχώς.', 'success');
             this.cdr.markForCheck();
-            this.changesHaveBeenMade = true; // Mark as having unsaved changes
+            this.changesHaveBeenMade = true;
           },
           (error: any) => {
-            console.error('Error creating exception:', error);
-            this.userService.presentToast('Σφάλμα κατά τη δημιουργία της εξαίρεσης.', 'danger');
+            if (error.status === 406 && error.error.overlaps) {
+              // Present alert options if overlapping appointments are detected.
+              const overlappingDates = error.error.overlaps;
+              this.presentAlertWithChoices(overlappingDates, newException);
+            } else {
+              console.error('Error creating exception:', error);
+              this.userService.presentToast('Σφάλμα κατά τη δημιουργία της εξαίρεσης.', 'danger');
+            }
           }
         );
       }
@@ -164,35 +171,44 @@ export class ClosuresPage implements OnInit {
     const modal = await this.modalController.create({
       component: AddScheduleExceptionPage,
       componentProps: {
-        objectId: null, // Indicates its general exception
-
+        objectId: exception.original.objectId, // or pass null if it's a general exception
         firstDateTime: exception.original.startDatetime,
         endDateTime: exception.original.endDatetime,
-        isAvailable: exception.original.isAvailable,
-        isRepeatable: exception.original.isRepeatable, // Pass current repeatable status
+        isAvailable: exception.original.available,
+        isRepeatable: exception.original.repeatable // Pass current repeatable status
       },
     });
   
     modal.onDidDismiss().then((result: OverlayEventDetail<any>) => {
       if (result.data) {
-        const updatedException = {
+        // Prepare the update payload, initially setting safeToSave false
+        const payload = {
           id: exception.original.id,
+          objectId: exception.original.objectId, // or result data if changed
           startDatetime: result.data.start,
           endDatetime: result.data.end,
-          available: result.data.isAvailable, // Use isAvailable directly
-          repeatable: result.data.isRepeatable, // Capture repeatable status
+          available: result.data.isAvailable,
+          repeatable: result.data.isRepeatable,
+          safeToSave: false, // initial flag - pre-check will decide
+          cancelAllFutureOverlappedAppointments: false // default value
         };
   
-        this.userService.updateException(updatedException).subscribe(
+        this.userService.updateException(payload).subscribe(
           (response: any) => {
             this.scheduleExceptions[index] = this.formatException(response);
             this.userService.presentToast('Η εξαίρεση ενημερώθηκε επιτυχώς.', 'success');
             this.cdr.markForCheck();
-            this.changesHaveBeenMade = true; // Mark as having unsaved changes
+            this.changesHaveBeenMade = true;
           },
           (error: any) => {
-            console.error('Error updating exception:', error);
-            this.userService.presentToast('Σφάλμα κατά την ενημέρωση της εξαίρεσης.', 'danger');
+            if (error.status === 406 && error.error.overlaps) {
+              // If the backend returns an overlap conflict, prompt the user.
+              const overlappingDates = error.error.overlaps;
+              this.presentAlertWithChoicesForUpdate(overlappingDates, payload, index);
+            } else {
+              console.error('Error updating exception:', error);
+              this.userService.presentToast('Σφάλμα κατά την ενημέρωση της εξαίρεσης.', 'danger');
+            }
           }
         );
       }
@@ -200,6 +216,58 @@ export class ClosuresPage implements OnInit {
   
     return await modal.present();
   }
+  
+  /**
+   * Presents an alert prompting the user how to handle overlapping appointments.
+   */
+  async presentAlertWithChoicesForUpdate(overlappingDates: string, payload: any, index: number) {
+    const alert = await this.alertController.create({
+      header: 'Προσοχή!',
+      message: 'Υπάρχουν κρατήσεις στις ημερομηνίες: ' + overlappingDates + '. Επιθυμείτε να ακυρωθούν;',
+      buttons: [
+        {
+          text: 'Ακύρωση Όλων',
+          handler: () => {
+            payload.safeToSave = true;
+            payload.cancelAllFutureOverlappedAppointments = true;
+            this.sendUpdateRequest(payload, index);
+          }
+        },
+        {
+          text: 'Παράβλεψη',
+          handler: () => {
+            payload.safeToSave = true;
+            payload.cancelAllFutureOverlappedAppointments = false;
+            this.sendUpdateRequest(payload, index);
+          }
+        },
+        {
+          text: 'Ακύρωση',
+          role: 'cancel'
+        }
+      ]
+    });
+    await alert.present();
+  }
+  
+  /**
+   * Helper method to retry the update request with updated flags.
+   */
+  sendUpdateRequest(payload: any, index: number) {
+    this.userService.updateException(payload).subscribe(
+      (response: any) => {
+        this.scheduleExceptions[index] = this.formatException(response);
+        this.userService.presentToast('Η εξαίρεση ενημερώθηκε επιτυχώς.', 'success');
+        this.cdr.markForCheck();
+        this.changesHaveBeenMade = true;
+      },
+      (error: any) => {
+        console.error('Error updating exception with new flags:', error);
+        this.userService.presentToast('Σφάλμα κατά την ενημέρωση της εξαίρεσης.', 'danger');
+      }
+    );
+  }
+  
   
   
   
@@ -263,31 +331,56 @@ export class ClosuresPage implements OnInit {
    *
    * @param overlappingDates - A string listing the overlapping dates.
    */
-  async presentAlertWithChoices(overlappingDates: string) {
+  async presentAlertWithChoices(overlappingDates: string, exceptionPayload: any) {
     const alert = await this.alertController.create({
       header: 'Προσοχή!',
-      message: 'Υπάρχουν κρατήσεις που δεν έχουν ολοκληρωθεί τις ημερομηνίες: ' + overlappingDates,
+      message: 'Υπάρχουν κρατήσεις για τις εξής ημερομηνίες: ' + overlappingDates + '. Επιθυμείτε να ακυρωθούν;',
       buttons: [
         {
           text: 'Ακύρωση Όλων',
           handler: () => {
-            this.saveAllWithOptions(true, true);
+            // Set flags to cancel overlapping appointments and safe to save
+            exceptionPayload.safeToSave = true;
+            exceptionPayload.cancelAllFutureOverlappingAppointments = true;
+            this.createExceptionWithPayload(exceptionPayload);
           }
         },
         {
-          text: 'Καμία Ακύρωση',
+          text: 'Παράβλεψη',
           handler: () => {
-            this.saveAllWithOptions(true, false);
+            // Set flags to safe-to-save without cancellation
+            exceptionPayload.safeToSave = true;
+            exceptionPayload.cancelAllFutureOverlappingAppointments = false;
+            this.createExceptionWithPayload(exceptionPayload);
           }
         },
         {
-          text: 'Πίσω',
+          text: 'Ακύρωση',
           role: 'cancel'
         }
       ]
     });
     await alert.present();
   }
+  
+  /**
+   * Helper method to (re)attempt the createException API call with updated flags.
+   */
+  createExceptionWithPayload(payload: any) {
+    this.userService.createException(payload).subscribe(
+      (response: any) => {
+        this.scheduleExceptions.push(this.formatException(response));
+        this.userService.presentToast('Η εξαίρεση δημιουργήθηκε επιτυχώς.', 'success');
+        this.cdr.markForCheck();
+        this.changesHaveBeenMade = true;
+      },
+      (error: any) => {
+        console.error('Error creating exception with updated flags:', error);
+        this.userService.presentToast('Σφάλμα κατά τη δημιουργία της εξαίρεσης.', 'danger');
+      }
+    );
+  }
+  
 
   /**
    * Saves wrario data with options to cancel overlapping appointments.

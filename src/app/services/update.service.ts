@@ -87,7 +87,7 @@ export class UpdateService {
         {
           text: 'Update τώρα',
           handler: () => {
-            if (platform = "android") {
+            if (platform == "android") {
               this.redirectToPlayStore(downloadUrl);
 
             } else {
@@ -119,7 +119,7 @@ export class UpdateService {
         {
           text: 'Update Now',
           handler: () => {
-            if (platform = "android") {
+            if (platform == "android") {
               this.redirectToPlayStore(downloadUrl);
 
             } else {
