@@ -21,7 +21,7 @@ import { ClientProfilePage } from '../client-profile/client-profile.page';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NewKrathshPage } from '../new-krathsh/new-krathsh.page';
 import { MatTooltip } from '@angular/material/tooltip';
-import { CalendarOptions, EventInput } from '@fullcalendar/core';
+import { CalendarOptions, DatesSetArg, EventInput } from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
@@ -181,14 +181,12 @@ export class HomePage implements OnInit {
     // Fetch general exceptions first
     this.userService.getWrarioGeneralExceptions().subscribe(
       data => {
-        console.log('General Exceptions fetched:', data); // Debugging Log
         this.generalScheduleExceptions = data;
         this.cdr.markForCheck(); // Update view
 
         // Now fetch employees
         this.userService.getEmployeesOfExpert().subscribe(
           employeesData => {
-            console.log('Employees fetched:', employeesData); // Debugging Log
             this.employees = employeesData;
             this.employeeIds = this.employees.map((employee: any) => employee.id).join(',');
             this.calendarOptions.resources = this.employees.map((employee: any) => {
@@ -218,8 +216,8 @@ export class HomePage implements OnInit {
             // Fetch employee working plans after employees are loaded
             this.userService.getEmployeeWorkingPlans(this.employeeIds).subscribe(
               workingPlansData => {
-                console.log('Employee Working Plans fetched:', workingPlansData); // Debugging Log
-                this.addBackgroundEvents(workingPlansData);
+                this.cachedWorkingPlans = workingPlansData;
+                this.addBackgroundEvents(this.cachedWorkingPlans);
                 this.updateDateRangeText();
                 this.cdr.markForCheck();
               },
@@ -399,7 +397,7 @@ export class HomePage implements OnInit {
   @ViewChild(FullCalendarComponent) calendarComponent: FullCalendarComponent | any;
   @ViewChild('calendarContainer') calendarContainer: ElementRef | any;
 
-  dateExample = new Date().toISOString();
+  dateExample: string = new Date().toISOString().split('T')[0];
   events: EventInput[] = [
 
   ];
@@ -740,14 +738,24 @@ export class HomePage implements OnInit {
   updateCurrentMonth() {
     const calendarApi = this.calendarComponent.getApi();
     const currentDate = calendarApi.view.currentStart;
-    const endDate = calendarApi.view.currentStart;
-    const month = currentDate.toLocaleString('default', { month: 'short' });
-    const year = currentDate.getFullYear();
-    this.dateExample = `${month} ${year}`;
-    this.updateDateRangeText();
-    this.getAppointmentsOfRange(this.startDate, this.endDate)
 
+    // Ensure currentDate is a valid Date object
+    if (!(currentDate instanceof Date) || isNaN(currentDate.getTime())) {
+      console.error('Invalid currentDate:', currentDate);
+      return;
+    }
+
+    // Format the date to 'YYYY-MM-DD'
+    this.dateExample = this.formatDateForAPI(currentDate);
+
+    // Update the date range text and fetch appointments
+    this.updateDateRangeText();
+    this.getAppointmentsOfRange(this.startDate, this.endDate);
+
+    // Trigger change detection if using OnPush strategy
+    this.cdr.markForCheck();
   }
+
   onDateSelected(event: any) {
     const selectedDate = new Date(event.detail.value);
     this.calendarComponent.getApi().gotoDate(selectedDate);
@@ -1021,14 +1029,21 @@ export class HomePage implements OnInit {
     return formatDate(date, 'yyyy-MM-dd', 'el-GR');
   }
 
-
-  handleDatesSet(arg: any) {
+  public cachedWorkingPlans: any[] = [];
+  handleDatesSet(arg: DatesSetArg) {
     this.startDate = arg.start;
     this.endDate = arg.end;
-    this.updateDateRangeText(this.startDate, this.endDate);
 
-    // Fetch appointments for the new date range
+    // Re-fetch appointments for new range
     this.getAppointmentsOfRange(this.startDate, this.endDate);
+
+    // Re-generate backgrounds for new range
+    if (this.employees?.length && this.employeeIds) {
+      // we already have this.cachedWorkingPlans
+      this.addBackgroundEvents(this.cachedWorkingPlans);
+    }
+
+    this.updateDateRangeText(this.startDate, this.endDate);
   }
 
 
@@ -1161,173 +1176,335 @@ export class HomePage implements OnInit {
 
   // In addBackgroundEvents method, modify the logic:
   // In addBackgroundEvents method
-  addBackgroundEvents(workingPlans: any[]) {
-    const backgroundEvents: EventInput[] = [];
-    const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+  public addBackgroundEvents(workingPlans: any[]): void {
+    console.log('[DEBUG] addBackgroundEvents called with workingPlans:', workingPlans);
   
-    // Ορισμός global ορίων για τις διαθέσιμες ώρες.
+    // Clear any old background events to avoid duplicates
+    this.backgroundEvents = [];
+  
+    const calendarApi = this.calendarComponent.getApi();
+    const activeStart = moment(calendarApi.view.activeStart).startOf('day');
+    const activeEnd = moment(calendarApi.view.activeEnd).startOf('day');
+    const activeStartYear = activeStart.year();
+    const activeEndYear = activeEnd.year();
+  
+    console.log(`[DEBUG] Active Start: ${activeStart.toISOString()}, Active End: ${activeEnd.toISOString()}`);
+    console.log(`[DEBUG] Active Start Year: ${activeStartYear}, Active End Year: ${activeEndYear}`);
+  
+    // Keep track of earliest + latest times for slotMinTime/slotMaxTime
     let globalEarliestStart = '24:00';
     let globalLatestEnd = '00:00';
   
-    console.log('--- Add Background Events: Starting processing ---');
+    // Define days of the week in Greek
+    const daysOfWeek = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
   
+    // Iterate through each employee's working plan
     workingPlans.forEach(plan => {
+      console.log(`[DEBUG] Processing plan for resourceId: ${plan.objectId}`);
       const resourceId = plan.objectId;
-      const daysWithSchedule: { [key: string]: boolean } = {};
+  
       let unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
+      let availableIntervals: { dayName: string; start: string; end: string }[] = [];
   
-      console.log(`\nProcessing Working Plan for Employee ID: ${resourceId}`);
-  
-      // 1. Δημιουργία αρχικών "unavailable" intervals με βάση το personSchedule.
+      // 1) Base "unavailable" intervals from personSchedule
       plan.personSchedule.forEach((schedule: any) => {
         const dayName = schedule.day;
-        daysWithSchedule[dayName] = true;
-        const availableIntervals = schedule.intervals; // π.χ. ["09:00-17:00"]
-        console.log(`  Schedule for ${dayName} available intervals: ${availableIntervals.join(', ')}`);
+        const availableSchedIntervals = schedule.intervals || [];
+        console.log(`[DEBUG] Available intervals for ${dayName}:`, availableSchedIntervals);
   
-        const computedUnavailable = this.getUnavailableIntervals(availableIntervals, dayName);
-        console.log(`    Computed base unavailable for ${dayName}:`, JSON.stringify(computedUnavailable));
+        // Convert "available" => "unavailable"
+        const computedUnavailable = this.getUnavailableIntervals(availableSchedIntervals, dayName);
+        console.log(`[DEBUG] Computed unavailable intervals for ${dayName}:`, computedUnavailable);
         unavailableIntervals = unavailableIntervals.concat(computedUnavailable);
   
-        // Ενημέρωση global ορίων από τα διαθέσιμα intervals.
-        availableIntervals.forEach((interval: string) => {
+        // Update global earliest & latest
+        availableSchedIntervals.forEach((interval: string) => {
           const [start, end] = interval.split('-');
-          if (start < globalEarliestStart) { 
-            globalEarliestStart = start; 
+          if (start < globalEarliestStart) {
+            globalEarliestStart = start;
+            console.log(`[DEBUG] Updated globalEarliestStart to: ${globalEarliestStart}`);
           }
-          if (end > globalLatestEnd) { 
-            globalLatestEnd = end; 
+          if (end > globalLatestEnd) {
+            globalLatestEnd = end;
+            console.log(`[DEBUG] Updated globalLatestEnd to: ${globalLatestEnd}`);
           }
         });
       });
   
-      // Εάν κάποια ημέρα δεν έχει schedule, αποκλείστε ολόκληρη την ημέρα.
-      daysOfWeek.forEach(day => {
-        if (!daysWithSchedule[day]) {
-          console.log(`  No schedule for ${day} so blocking full day.`);
-          unavailableIntervals.push({ dayName: day, start: '00:00', end: '24:00' });
+      // 2) If a day has no schedule => block entire day
+      const allDays = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+      allDays.forEach(d => {
+        const hasDay = plan.personSchedule.some((s: any) => s.day === d);
+        if (!hasDay) {
+          unavailableIntervals.push({ dayName: d, start: '00:00', end: '24:00' });
+          console.log(`[DEBUG] No schedule for ${d}, blocking entire day.`);
         }
       });
   
-      console.log(`  Unavailable intervals after base schedule for Employee ${resourceId}:`, JSON.stringify(unavailableIntervals));
-  
-      // 2. Επεξεργασία γενικών (general) exceptions (όπου δεν είναι διαθέσιμες).
+      // 3) Handle closed "general" exceptions
       const closedGeneralExceptions = this.generalScheduleExceptions.filter((ex: any) => !ex.available);
-      console.log(`  Found ${closedGeneralExceptions.length} general closed exception(s):`, JSON.stringify(closedGeneralExceptions));
+      console.log(`[DEBUG] Closed general exceptions:`, closedGeneralExceptions);
       closedGeneralExceptions.forEach((exception: any) => {
-        const exStart = new Date(exception.startDatetime);
-        const exEnd   = new Date(exception.endDatetime);
-        const totalDays = Math.ceil((exEnd.getTime() - exStart.getTime()) / (1000 * 60 * 60 * 24));
-        for (let i = 0; i < totalDays; i++) {
-          let curDay = new Date(exStart);
-          curDay.setDate(curDay.getDate() + i);
-          const curDayStr = curDay.toDateString();
-          const startDayStr = exStart.toDateString();
-          const endDayStr = exEnd.toDateString();
-          let startTime: string;
-          let endTime: string;
-  
-          if (curDayStr === startDayStr && curDayStr === endDayStr) {
-            startTime = exStart.toTimeString().slice(0, 5);
-            endTime = exEnd.toTimeString().slice(0, 5);
-          } else if (curDayStr === startDayStr) {
-            startTime = exStart.toTimeString().slice(0, 5);
-            endTime = "24:00";
-          } else if (curDayStr === endDayStr) {
-            startTime = "00:01";
-            endTime = exEnd.toTimeString().slice(0, 5);
-          } else {
-            // Για ενδιάμεσες ημέρες, αποκλείστε ολόκληρη την ημέρα.
-            startTime = "00:00";
-            endTime = "24:00";
-          }
-  
-          const dayName = daysOfWeek[curDay.getDay()];
-          console.log(`    Adding general closed exception for ${dayName} on ${curDay.toDateString()}: ${startTime} - ${endTime}`);
-          unavailableIntervals.push({ dayName, start: startTime, end: endTime });
-        }
+        console.log(`[DEBUG] Applying general exception:`, exception);
+        this.applyExceptionToIntervals(
+          exception,
+          unavailableIntervals,
+          daysOfWeek,
+          activeStart,
+          activeEnd,
+          activeStartYear,
+          activeEndYear
+        );
       });
   
-      // 3. Επεξεργασία employee-specific exceptions (που δεν είναι διαθέσιμες).
+      // 4) Handle closed employee exceptions
       if (plan.exceptions) {
         const closedEmployeeExceptions = plan.exceptions.filter((ex: any) => !ex.available);
-        console.log(`  Found ${closedEmployeeExceptions.length} employee closed exception(s) for employee ${resourceId}:`, JSON.stringify(closedEmployeeExceptions));
+        console.log(`[DEBUG] Closed employee exceptions:`, closedEmployeeExceptions);
         closedEmployeeExceptions.forEach((exception: any) => {
-          const exceptionStart = new Date(exception.startDatetime);
-          const dayName = daysOfWeek[exceptionStart.getDay()];
-          const startTime = exceptionStart.toTimeString().slice(0, 5);
-          const endTime = new Date(exception.endDatetime).toTimeString().slice(0, 5);
-          console.log(`    Adding employee closed exception for ${dayName}: ${startTime}-${endTime}`);
-          unavailableIntervals.push({ dayName, start: startTime, end: endTime });
+          console.log(`[DEBUG] Applying employee exception:`, exception);
+          this.applyExceptionToIntervals(
+            exception,
+            unavailableIntervals,
+            daysOfWeek,
+            activeStart,
+            activeEnd,
+            activeStartYear,
+            activeEndYear
+          );
         });
-      }
   
-      // 4. Επαναφορά (subtraction) των available exceptions για προτεραιότητα.
-      if (plan.exceptions) {
+        // 5) Handle available exceptions
         const availableExceptions = plan.exceptions.filter((ex: any) => ex.available);
-        if (availableExceptions.length > 0) {
-          console.log(`  Final subtraction of available exceptions for employee ${resourceId}:`, JSON.stringify(availableExceptions));
-          availableExceptions.forEach((exception: any) => {
-            const exceptionStart = new Date(exception.startDatetime);
-            const dayName = daysOfWeek[exceptionStart.getDay()];
-            const startTime = exceptionStart.toTimeString().slice(0, 5);
-            const endTime = new Date(exception.endDatetime).toTimeString().slice(0, 5);
-            console.log(`    Subtracting available exception for ${dayName}: ${startTime}-${endTime}`);
-            unavailableIntervals = this.subtractIntervals(unavailableIntervals, [{ dayName, start: startTime, end: endTime }]);
-            console.log(`    Unavailable intervals after available exception subtraction:`, JSON.stringify(unavailableIntervals));
-          });
-        }
+        console.log(`[DEBUG] Available exceptions to subtract:`, availableExceptions);
+  
+        availableExceptions.forEach((exception: any) => {
+          console.log(`[DEBUG] Processing available exception:`, exception);
+          this.applyExceptionToIntervals(
+            exception,
+            availableIntervals,
+            daysOfWeek,
+            activeStart,
+            activeEnd,
+            activeStartYear,
+            activeEndYear
+          );
+        });
+  
+        // 6) Subtract available intervals from unavailable intervals
+        unavailableIntervals = this.subtractIntervals(unavailableIntervals, availableIntervals);
+        console.log(`[DEBUG] Unavailable intervals after subtracting available intervals:`, unavailableIntervals);
       }
   
-      console.log(`  Unavailable intervals before merging for employee ${resourceId}:`, JSON.stringify(unavailableIntervals));
+      // 7) Merge overlapping unavailable intervals
+      const mergedUnavailable = this.mergeOverlappingIntervals(unavailableIntervals);
+      console.log(`[DEBUG] Merged unavailable intervals:`, mergedUnavailable);
   
-      // 5. Συγχώνευση (merge) των overlapping intervals.
-      console.log('--- Calling mergeOverlappingIntervals ---');
-      const mergedIntervals = this.mergeOverlappingIntervals(unavailableIntervals);
-      console.log(`  Unavailable intervals after merging for employee ${resourceId}:`, JSON.stringify(mergedIntervals));
-  
-      // 6. Δημιουργία background events από τα τελικά merged intervals.
+      // 8) Build background events for unavailable intervals
+      const dayByDayDates = this.getDatesInRange(activeStart.toDate(), activeEnd.toDate());
       const backgroundColor = '#b3b3b3';
-      mergedIntervals.forEach(interval => {
-        const dayIndex = this.getDayOfWeekByName(interval.dayName);
-        if (dayIndex === -1) return;
-        console.log(`    Creating background event for ${interval.dayName}: ${interval.start}-${interval.end}`);
-        backgroundEvents.push({
-          resourceId,
-          daysOfWeek: [dayIndex],
-          startTime: interval.start,
-          endTime: interval.end,
-          display: 'background',
-          color: backgroundColor,
-          editable: false,
-          extendedProps: { isBackgroundEvent: true }
+  
+      mergedUnavailable.forEach(interval => {
+        const dayIndex = daysOfWeek.indexOf(interval.dayName);
+        if (dayIndex === -1) {
+          console.warn(`[WARN] Invalid dayName "${interval.dayName}" in interval:`, interval);
+          return;
+        }
+  
+        dayByDayDates.forEach(dateObj => {
+          if (dateObj.getDay() === dayIndex) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const isoDate = `${y}-${m}-${d}`;
+  
+            const eventStart = `${isoDate}T${interval.start}:00`;
+            const eventEnd = (interval.end === '24:00')
+              ? `${isoDate}T23:59:59`
+              : `${isoDate}T${interval.end}:00`;
+  
+            console.log(`[DEBUG] Creating background event: Start=${eventStart}, End=${eventEnd}, Resource=${resourceId}`);
+            this.backgroundEvents.push({
+              resourceId,
+              start: eventStart,
+              end: eventEnd,
+              display: 'background',
+              color: backgroundColor,
+              editable: false,
+              extendedProps: { isBackgroundEvent: true }
+            });
+          }
         });
       });
     });
   
-    console.log('Global available boundaries:', { globalEarliestStart, globalLatestEnd });
+    // 9) Finalize slotMinTime and slotMaxTime
+    console.log(`[DEBUG] Final slotMinTime: ${globalEarliestStart}, slotMaxTime: ${globalLatestEnd}`);
     this.calendarOptions.slotMinTime = globalEarliestStart;
     this.calendarOptions.slotMaxTime = globalLatestEnd;
   
-    // Ενοποίηση των background events με τα appointment events.
-    this.backgroundEvents = backgroundEvents;
+    // 10) Merge and set events
     this.mergeAndSetEvents();
+  }
   
-    console.log('--- Add Background Events: Completed processing ---');
+  
+  
+  
+  
+  private applyExceptionToIntervals(
+    exception: any,
+    targetIntervals: { dayName: string; start: string; end: string }[],
+    daysOfWeek: string[],
+    activeStart: moment.Moment,  // Changed to Moment object
+    activeEnd: moment.Moment,    // Changed to Moment object
+    startYear: number,
+    endYear: number
+  ): void {
+    const exStart = moment(exception.startDatetime);
+    const exEnd = moment(exception.endDatetime);
+    const isRepeatable = exception.repeatable === true;
+  
+    console.log(`[DEBUG] Applying exception: ${JSON.stringify(exception)} | Repeatable: ${isRepeatable}`);
+  
+    // Determine years to process based on the active view range
+    let yearsToProcess: number[] = [];
+  
+    if (isRepeatable) {
+      // For repeatable exceptions, process both the current year and the previous year
+      yearsToProcess.push(startYear - 1, startYear);
+    } else {
+      yearsToProcess.push(exStart.year());
+    }
+  
+    // Remove duplicate years and ensure they are within the active view range
+    yearsToProcess = Array.from(new Set(yearsToProcess)).filter(year => year >= startYear - 1 && year <= endYear);
+  
+    console.log(`[DEBUG] Years to process for this exception:`, yearsToProcess);
+  
+    yearsToProcess.forEach(year => {
+      console.log(`[DEBUG] Processing year: ${year}`);
+  
+      // Clone the original exception dates and set the year
+      let newStart = exStart.clone().year(year);
+      let newEnd = exEnd.clone().year(year);
+  
+      // If the end date is before or same as the start date, it spans to the next year
+      if (newEnd.isSameOrBefore(newStart)) {
+        newEnd.add(1, 'year');
+        console.log(`[DEBUG] Exception spans over to the next year. New End: ${newEnd.toISOString()}`);
+      }
+  
+      console.log(`[DEBUG] Year ${year} - New Start: ${newStart.toISOString()}, New End: ${newEnd.toISOString()}`);
+  
+      // Clamp the newStart and newEnd to the active view range
+      const clampedStart = moment.max(newStart, activeStart);
+      const clampedEnd = moment.min(newEnd, activeEnd);
+  
+      console.log(`[DEBUG] Year ${year} - Clamped Start: ${clampedStart.toISOString()}, Clamped End: ${clampedEnd.toISOString()}`);
+  
+      if (!clampedStart.isBefore(clampedEnd)) {
+        console.log(`[DEBUG] No overlap for year ${year}. Skipping.`);
+        return;
+      }
+  
+      // Iterate through each day in the clamped date range
+      let currentDay = clampedStart.clone().startOf('day');
+      const endDay = clampedEnd.clone().startOf('day');
+  
+      while (currentDay.isSameOrBefore(endDay)) {
+        const dayName = daysOfWeek[currentDay.day()];
+        let intervalStart = '00:00';
+        let intervalEnd = '24:00';
+  
+        // If it's the start day, set the start time
+        if (currentDay.isSame(clampedStart, 'day')) {
+          intervalStart = clampedStart.format('HH:mm');
+        }
+  
+        // If it's the end day, set the end time
+        if (currentDay.isSame(clampedEnd, 'day')) {
+          intervalEnd = clampedEnd.format('HH:mm');
+        }
+  
+        console.log(`[DEBUG] Adding interval for year ${year}: ${dayName} ${intervalStart}-${intervalEnd}`);
+        targetIntervals.push({ dayName, start: intervalStart, end: intervalEnd });
+  
+        // Move to the next day
+        currentDay.add(1, 'day');
+      }
+    });
+  }
+  
+ 
+  
+  
+
+  /**
+   * If an exception is repeatable, replicate it across each year in [startYear..endYear].
+   * If not repeatable, only apply the actual date range from exception.startDatetime to exception.endDatetime.
+   */
+ 
+  
+  getTimeString(date: Date): string {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
   
 
+  // The rest of the logic for getDatesInRange, getUnavailableIntervals, subtractIntervals, etc.
+  // remains the same, with some logs added.
+
+
+
+
+  private getDatesInRange(start: Date, end: Date): Date[] {
+    const dates: Date[] = [];
+    const current = new Date(start);
+    // We'll stop once current >= end
+    while (current < end) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    return dates;
+  }
+
+  /**
+   * Utility: Return an array of intervals that represent the times
+   * when the day is NOT available, given an array of "available" intervals.
+   */
+  private getUnavailableIntervals(
+    availableIntervals: string[],
+    dayName: string
+  ): { dayName: string; start: string; end: string }[] {
+    const fullDayStart = '00:00';
+    const fullDayEnd = '24:00';
+    let lastEnd = fullDayStart;
+
+    const unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
+
+    availableIntervals.forEach(interval => {
+      const [start, end] = interval.split('-');
+      if (start > lastEnd) {
+        unavailableIntervals.push({ dayName, start: lastEnd, end: start });
+      }
+      lastEnd = end;
+    });
+
+    if (lastEnd < fullDayEnd) {
+      unavailableIntervals.push({ dayName, start: lastEnd, end: fullDayEnd });
+    }
+
+    return unavailableIntervals;
+  }
 
 
 
   // Helper to get day index by name
-  getDayOfWeekByName(dayName: string): number {
+  private getDayOfWeekByName(dayName: string): number {
     const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
     return days.indexOf(dayName);
   }
-
-
-
 
 
   convertToLocalTimezone(dateString: string): Date {
@@ -1357,81 +1534,51 @@ export class HomePage implements OnInit {
 
   // Subtract available intervals from unavailable intervals
   // Subtract available intervals from unavailable intervals
-  subtractIntervals(
+  private subtractIntervals(
     unavail: { dayName: string; start: string; end: string }[],
     avail: { dayName: string; start: string; end: string }[]
   ): { dayName: string; start: string; end: string }[] {
-    let result: { dayName: string; start: string; end: string }[] = [];
-
-    console.log('--- Subtract Intervals ---');
-    console.log('Unavailable Intervals:', JSON.stringify(unavail, null, 2));
-    console.log('Available Intervals to Subtract:', JSON.stringify(avail, null, 2));
-
+    const result: { dayName: string; start: string; end: string }[] = [];
+  
     unavail.forEach(u => {
-      let uStart = this.timeToMinutes(u.start);
-      let uEnd = this.timeToMinutes(u.end);
-      const currentDayName = u.dayName;
-
-      console.log(`Processing Unavailable Interval: ${currentDayName} ${u.start}-${u.end}`);
-
-      // Filter available intervals for the same day
-      const availForDay = avail.filter(a => a.dayName === currentDayName);
-      console.log(`Available Intervals for ${currentDayName}:`, availForDay);
-
-      let remainingIntervals: { start: number; end: number }[] = [{ start: uStart, end: uEnd }];
-
-      availForDay.forEach(a => {
-        let aStart = this.timeToMinutes(a.start);
-        let aEnd = this.timeToMinutes(a.end);
-
-        console.log(`  Subtracting Available Interval: ${a.start}-${a.end}`);
-
-        remainingIntervals = remainingIntervals.flatMap(interval => {
-          if (aEnd <= interval.start || aStart >= interval.end) {
-            // No overlap
-            return [interval];
-          }
-
-          const newIntervals: { start: number; end: number }[] = [];
-
-          if (aStart > interval.start) {
-            newIntervals.push({ start: interval.start, end: aStart });
-            console.log(`    Created new unavailable interval: ${this.minutesToTime(interval.start)}-${this.minutesToTime(aStart)}`);
-          }
-
-          if (aEnd < interval.end) {
-            newIntervals.push({ start: aEnd, end: interval.end });
-            console.log(`    Created new unavailable interval: ${this.minutesToTime(aEnd)}-${this.minutesToTime(interval.end)}`);
-          }
-
-          return newIntervals;
-        });
-      });
-
-      // Add the remaining intervals
-      remainingIntervals.forEach(interval => {
-        if (interval.start < interval.end) {
-          const formattedStart = this.minutesToTime(interval.start);
-          const formattedEnd = this.minutesToTime(interval.end);
-          result.push({ dayName: currentDayName, start: formattedStart, end: formattedEnd });
-          console.log(`  Final Unavailable Interval after Subtraction: ${formattedStart}-${formattedEnd}`);
+      let currentStart = this.timeToMinutes(u.start);
+      const uEnd = this.timeToMinutes(u.end);
+      const dayAvail = avail.filter(a => a.dayName === u.dayName)
+        .map(a => ({ start: this.timeToMinutes(a.start), end: this.timeToMinutes(a.end) }))
+        .sort((a, b) => a.start - b.start);
+  
+      let pointer = currentStart;
+      
+      dayAvail.forEach(a => {
+        if (a.start > pointer) {
+          result.push({
+            dayName: u.dayName,
+            start: this.minutesToTime(pointer),
+            end: this.minutesToTime(a.start)
+          });
         }
+        pointer = Math.max(pointer, a.end);
       });
+  
+      if (pointer < uEnd) {
+        result.push({
+          dayName: u.dayName,
+          start: this.minutesToTime(pointer),
+          end: this.minutesToTime(uEnd)
+        });
+      }
     });
-
-    console.log('Resulting Unavailable Intervals after Subtraction:', JSON.stringify(result, null, 2));
-    console.log('--- End Subtract Intervals ---');
-
+  
     return result;
   }
+  
+  
 
 
   mergeAndSetEvents() {
     const mergedEvents = [...this.backgroundEvents, ...this.events]; // Background events first
 
-    console.log('--- Merging and Setting Events ---');
-    console.log('Background Events:', JSON.stringify(this.backgroundEvents, null, 2));
-    console.log('Appointment Events:', JSON.stringify(this.events, null, 2));
+
 
     const calendarApi = this.calendarComponent.getApi();
     calendarApi.removeAllEvents();
@@ -1443,91 +1590,71 @@ export class HomePage implements OnInit {
     calendarApi.setOption('events', mergedEvents);
 
     this.cdr.detectChanges(); // Trigger change detection
-    console.log("FINAL EVENTS");
-    console.log(JSON.stringify(mergedEvents, null, 2));
-    console.log('--- End Merging and Setting Events ---');
+
   }
 
 
   // Merge overlapping intervals per day to avoid overlaps
   // Merge overlapping intervals per day to avoid overlaps
-  mergeOverlappingIntervals(intervals: { dayName: string; start: string; end: string }[]): { dayName: string; start: string; end: string }[] {
+  private mergeOverlappingIntervals(
+    intervals: { dayName: string; start: string; end: string }[]
+  ): { dayName: string; start: string; end: string }[] {
+    console.log('[DEBUG] mergeOverlappingIntervals called with intervals:', intervals);
+  
     const groupedByDay: { [key: string]: { start: string; end: string }[] } = {};
-
+    const result: { dayName: string; start: string; end: string }[] = [];
+  
     intervals.forEach(interval => {
       if (!groupedByDay[interval.dayName]) {
         groupedByDay[interval.dayName] = [];
       }
       groupedByDay[interval.dayName].push({ start: interval.start, end: interval.end });
     });
-
-    const merged: { dayName: string; start: string; end: string }[] = [];
-
-    console.log('--- Merging Overlapping Intervals ---');
-
+  
+    console.log('[DEBUG] Intervals grouped by day:', groupedByDay);
+  
     for (const dayName in groupedByDay) {
-      console.log(`  Merging intervals for ${dayName}:`, groupedByDay[dayName]);
-
-      const dayIntervals = groupedByDay[dayName].sort((a, b) => this.timeToMinutes(a.start) - this.timeToMinutes(b.start));
-
+      const dayIntervals = groupedByDay[dayName].sort(
+        (a, b) => this.timeToMinutes(a.start) - this.timeToMinutes(b.start)
+      );
+      console.log(`[DEBUG] Sorted intervals for ${dayName}:`, dayIntervals);
+  
       let current = dayIntervals[0];
-      console.log(`    Starting merge with: ${current.start}-${current.end}`);
-
+  
       for (let i = 1; i < dayIntervals.length; i++) {
         const next = dayIntervals[i];
-        console.log(`    Comparing with next interval: ${next.start}-${next.end}`);
-
+  
         if (this.timeToMinutes(next.start) <= this.timeToMinutes(current.end)) {
           // Overlapping intervals, merge them
-          const newEndMinutes = Math.max(this.timeToMinutes(current.end), this.timeToMinutes(next.end));
+          const newEndMinutes = Math.max(
+            this.timeToMinutes(current.end),
+            this.timeToMinutes(next.end)
+          );
           const newEndTime = this.minutesToTime(newEndMinutes);
-          console.log(`      Overlapping detected. Merging ${current.start}-${current.end} with ${next.start}-${next.end} to ${current.start}-${newEndTime}`);
+  
+          console.log(`[DEBUG] Merging intervals: ${current.start}-${current.end} and ${next.start}-${next.end} into ${current.start}-${newEndTime}`);
           current.end = newEndTime;
         } else {
           // No overlap, push the current interval and move to next
-          merged.push({ dayName, start: current.start, end: current.end });
-          console.log(`      No overlap. Pushing merged interval: ${current.start}-${current.end}`);
+          console.log(`[DEBUG] No overlap. Adding interval: ${current.start}-${current.end}`);
+          result.push({ dayName, start: current.start, end: current.end });
           current = next;
         }
       }
-
-      // Push the last interval
-      merged.push({ dayName, start: current.start, end: current.end });
-      console.log(`    Pushing final merged interval for ${dayName}: ${current.start}-${current.end}`);
+      // Push last interval
+      console.log(`[DEBUG] Adding last interval for ${dayName}: ${current.start}-${current.end}`);
+      result.push({ dayName, start: current.start, end: current.end });
     }
-
-    console.log('Resulting Merged Intervals:', JSON.stringify(merged, null, 2));
-    console.log('--- End Merging Overlapping Intervals ---');
-
-    return merged;
+  
+    console.log('[DEBUG] Merged overlapping intervals result:', result);
+    return result;
   }
+  
 
 
 
 
 
-
-  getUnavailableIntervals(availableIntervals: string[], dayName: string): { dayName: string; start: string; end: string }[] {
-    const fullDayStart = '00:00';
-    const fullDayEnd = '24:00';
-    let lastEnd = fullDayStart;
-
-    const unavailableIntervals: { dayName: string; start: string; end: string }[] = [];
-
-    availableIntervals.forEach(interval => {
-      const [start, end] = interval.split('-');
-      if (start > lastEnd) {
-        unavailableIntervals.push({ dayName, start: lastEnd, end: start });
-      }
-      lastEnd = end;
-    });
-
-    if (lastEnd < fullDayEnd) {
-      unavailableIntervals.push({ dayName, start: lastEnd, end: fullDayEnd });
-    }
-
-    return unavailableIntervals;
-  }
 
 
 
